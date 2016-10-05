@@ -10,7 +10,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/etools-ajax/etools-ajax.html">
-<link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
@@ -25,9 +24,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         padding: 10px;
       }
-      iron-list {
-        flex: 1 1 auto;
-      }
     </style>
 
     <etools-ajax
@@ -38,20 +34,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <paper-material elevation="2">
 
-      <iron-list items="[[data]]">
-        <template>
-          <div>
-            <span class="unique-id">[[item.id]]</span>
-            <span class="traveler">[[item.traveler]]</span>
-            <span class="purpose">[[item.purpose]]</span>
-            <span class="date">[[item.startDate]]</span>
-            <span class="date">[[item.endDate]]</span>
-            <span class="status">[[item.status]]</span>
-            <paper-icon-button icon="icons:content-copy"></paper-icon-button>
-            <paper-icon-button icon="maps:directions-car"></paper-icon-button>
-          </div>
+      <table>
+        <tr>
+          <th class="unique-id">reference</th>
+          <th class="traveler"> traveler</th>
+          <th class="purpose">purpose</th>
+          <th class="date">start date</th>
+          <th class="date">end date</th>
+          <th class="status">status</th>
+          <th class="actions"> actions</th>
+        </tr>
+        <template is="dom-repeat" items="[[data]]">
+          <tr>
+            <td class="unique-id">[[item.id]]</td>
+            <td class="traveler">[[item.traveler]]</td>
+            <td class="purpose">[[item.purpose]]</td>
+            <td class="date">[[item.startDate]]</td>
+            <td class="date">[[item.endDate]]</td>
+            <td class="status">[[item.status]]</td>
+            <td>
+              <paper-icon-button icon="icons:content-copy"></paper-icon-button>
+              <paper-icon-button icon="maps:directions-car"></paper-icon-button>
+            </td>
+          </tr>
         </template>
-      </iron-list>
+      </table>
+
     </paper-material>
   </template>
 
@@ -67,7 +75,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       _handleListResponse: function(event, data) {
         if(data instanceof Array){
-          this.set('data', data.slice(0, 5))
+          this.set('data', data.slice(0,10))
         }
       }
 
