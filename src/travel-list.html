@@ -9,6 +9,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+
+
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="travel-list">
@@ -18,8 +25,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         padding: 10px;
       }
+      iron-list {
+        flex: 1 1 auto;
+      }
     </style>
+
+    <etools-ajax
+            url="../mock-data/travel-list.json"
+            on-response="_handleListResponse"
+    >
+    </etools-ajax>
+
+    <paper-material elevation="2">
+
+      <iron-list items="[[data]]">
+        <template>
+          <div>
+            <span class="unique-id">[[item.id]]</span>
+            <span class="traveler">[[item.traveler]]</span>
+            <span class="purpose">[[item.purpose]]</span>
+            <span class="date">[[item.startDate]]</span>
+            <span class="date">[[item.endDate]]</span>
+            <span class="status">[[item.status]]</span>
+            <paper-icon-button icon="icons:content-copy"></paper-icon-button>
+            <paper-icon-button icon="maps:directions-car"></paper-icon-button>
+          </div>
+        </template>
+      </iron-list>
+    </paper-material>
   </template>
+
 
   <script>
     Polymer({
@@ -27,9 +62,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       properties: {
         data: {
           type: Array,
-          value: ['a',2,3]
+          value: []
+        },
+      },
+      _handleListResponse: function(event, data) {
+        if(data instanceof Array){
+          this.set('data', data.slice(0, 5))
         }
       }
+
     });
   </script>
 </dom-module>
