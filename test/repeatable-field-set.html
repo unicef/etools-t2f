@@ -1,0 +1,83 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>kart-home</title>
+
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+
+  <!-- Import the element to test -->
+  <link rel="import" href="../src/repeatable-field-set.html">
+
+</head>
+<body>
+
+<test-fixture id="el">
+  <template>
+    <repeatable-field-set title="mock title"></repeatable-field-set>
+  </template>
+</test-fixture>
+
+<script>
+  suite('default repeatable-field-set element', function() {
+    var el;
+
+    setup(function() {
+
+      el = fixture('el');
+    });
+
+    test('can be instanciated', function() {
+
+      expect(el.is).to.equal('repeatable-field-set');
+    });
+
+    test('are opened', function() {
+
+      assert.equal(el.open, true);
+    });
+
+    test('has the FAB', function() {
+
+      expect(el.hidePlus).to.not.be.ok;
+      Polymer.dom(el.root).flush();
+      var theFabTag = Polymer.dom(el.root).querySelector('paper-fab');
+      expect(theFabTag).to.exist;
+    });
+
+    test('shows the title given with the attribute', function() {
+
+      Polymer.dom(el.root).flush();
+      var titleShown = Polymer.dom(el.root).querySelector('span.title').innerHTML;
+      expect(titleShown).to.equal('mock title');
+    });
+
+    test('can toggled to be open when clicking the icons, which change accordingly', function() {
+
+      var collapsable = Polymer.dom(el.root).querySelector('#collapse');
+      expect(collapsable.opened).to.be.ok;
+      var btn = Polymer.dom(el.root).querySelectorAll('paper-icon-button')[0];
+      var btn2 = Polymer.dom(el.root).querySelectorAll('paper-icon-button')[1];
+      // expect(btn.getAttribute('hidden')).not.to.be.ok;
+      // expect(btn2.getAttribute('hidden')).to.be.ok;
+      expect(btn.getAttribute('hidden')).to.not.be.ok;
+      expect(btn2.getAttribute('hidden')).to.equal('');
+
+      btn.click();
+      Polymer.dom(el.root).flush();
+      expect(collapsable.opened).to.not.be.ok;
+      expect(btn.getAttribute('hidden')).to.equal('');
+      expect(btn2.getAttribute('hidden')).not.to.be.ok;
+
+      el._toggle();
+      Polymer.dom(el.root).flush();
+      expect(collapsable.opened).to.be.ok;
+    });
+
+  });
+</script>
+
+</body>
+</html>
