@@ -1,30 +1,46 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/etools-ajax/etools-ajax.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/iron-icons/maps-icons.html">
-<link rel="import" href="../bower_components/paper-material/paper-material.html">
 
-
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="shared-styles.html">
 
+<link rel="import" href="./list-element.html">
+
+
 <dom-module id="travel-list">
+
+  <style include="iron-flex shared-styles">
+    :host {
+      display: block;
+      padding: 10px 30px;
+    }
+    paper-card {
+      width: 100%;
+      margin-top: 20px;
+    }
+    .headingrow {
+      width: 100%;
+      border-bottom: 1px solid lightgrey;
+    }
+    .headings {
+      display: block;
+      float: left;
+    }
+    .w10 {
+      width: 10%;
+    }
+    .w15 {
+      width: 15%;
+    }
+    .w20 {
+      width: 20%;
+    }
+  </style>
+
   <template>
-    <style include="shared-styles">
-      :host {
-        display: block;
-        padding: 10px;
-      }
-    </style>
 
     <etools-ajax
             url="../mock-data/travel-list.json"
@@ -32,37 +48,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     >
     </etools-ajax>
 
-    <paper-material elevation="2">
+    <div class="horizontal layout">
+      <h3 class="flex">Travel to field (heading)</h3>
+      <paper-button on-click="toNewTravel" raised>Add New Travel</paper-button>
+    </div>
 
-      <table>
-        <tr>
-          <th class="unique-id">reference</th>
-          <th class="traveler"> traveler</th>
-          <th class="purpose">purpose</th>
-          <th class="date">start date</th>
-          <th class="date">end date</th>
-          <th class="status">status</th>
-          <th class="actions"> actions</th>
-        </tr>
-        <template is="dom-repeat" items="[[data]]">
-          <tr>
-            <td class="unique-id">[[item.id]]</td>
-            <td class="traveler">[[item.traveler]]</td>
-            <td class="purpose">[[item.purpose]]</td>
-            <td class="date">[[item.startDate]]</td>
-            <td class="date">[[item.endDate]]</td>
-            <td class="status">[[item.status]]</td>
-            <td>
-              <paper-icon-button icon="icons:content-copy"></paper-icon-button>
-              <paper-icon-button icon="maps:directions-car"></paper-icon-button>
-            </td>
-          </tr>
-        </template>
-      </table>
+    <!-- Filtering -->
 
-    </paper-material>
+    <paper-card heading="Travel listing">
+
+      <div class="headingrow clearfix">
+        <div class="headings w15">REF.NUM.</div>
+        <div class="headings w20">Purpose of travel</div>
+        <div class="headings w15">Travelers</div>
+        <div class="headings w10">Start</div>
+        <div class="headings w10">End</div>
+        <div class="headings w15">Status</div>
+        <div class="headings w15">Action</div>
+      </div>
+
+      <template is="dom-repeat" items="[[data]]">
+      <list-element data="[[item]]"></list-element>
+      </template>
+
+
+      <!-- TODO
+        'Showing x-xx of xxx results'
+        pagination
+       -->
+    </paper-card>
+
   </template>
-
 
   <script>
     Polymer({
@@ -70,8 +86,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       properties: {
         data: {
           type: Array,
-          value: []
-        },
+          value: ['a',2,3]
+        }
       },
       _handleListResponse: function(event, data) {
         if(data instanceof Array){
