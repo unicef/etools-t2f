@@ -1,15 +1,6 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="shared-styles.html">
@@ -60,7 +51,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <div class="headingrow clearfix">
         <div class="headings w15">REF.NUM.</div>
-        <div class="headings w20">Purpuse of travel</div>
+        <div class="headings w20">Purpose of travel</div>
         <div class="headings w15">Travelers</div>
         <div class="headings w10">Start</div>
         <div class="headings w10">End</div>
@@ -87,7 +78,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        -->
     </paper-card>
 
-
   </template>
 
   <script>
@@ -98,9 +88,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Array,
           value: ['a',2,3]
         }
-      },
-      toNewTravel: function() {
-        console.warn('This should immediately route to new travel page!');
       }
     });
   </script>
