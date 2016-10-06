@@ -1,7 +1,8 @@
 
-
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/etools-ajax/etools-ajax.html">
+
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="shared-styles.html">
 
@@ -40,6 +41,12 @@
 
   <template>
 
+    <etools-ajax
+            url="../mock-data/travel-list.json"
+            on-response="_handleListResponse"
+    >
+    </etools-ajax>
+
     <div class="horizontal layout">
       <h3 class="flex">Travel to field (heading)</h3>
       <paper-button on-click="toNewTravel" raised>Add New Travel</paper-button>
@@ -59,18 +66,9 @@
         <div class="headings w15">Action</div>
       </div>
 
-      <list-element></list-element>
-      <list-element></list-element>
-      <list-element></list-element>
-      <list-element></list-element>
-      <list-element></list-element>
-      <list-element></list-element>
-      <list-element></list-element>
-      <list-element></list-element>
-      <list-element></list-element>
-      <list-element></list-element>
-      <list-element></list-element>
-      <list-element></list-element>
+      <template is="dom-repeat" items="[[data]]">
+        <list-element data="[[item]]"></list-element>
+      </template>
 
       <!-- TODO
         'Showing x-xx of xxx results'
@@ -91,7 +89,13 @@
       },
       toNewTravel: function() {
         console.warn('This should immediately route to the make new project view.');
+      },
+      _handleListResponse: function(event, data) {
+        if(data instanceof Array){
+          this.set('data', data.slice(0,10))
+        }
       }
+
     });
   </script>
 </dom-module>
