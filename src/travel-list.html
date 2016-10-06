@@ -9,16 +9,70 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="travel-list">
+
+  <style include="iron-flex shared-styles">
+    :host {
+      display: block;
+      padding: 10px 30px;
+    }
+    paper-card {
+      width: 100%;
+      margin-top: 20px;
+    }
+    .headingrow {
+      width: 100%;
+      border-bottom: 1px solid green;
+    }
+    .headings {
+      display: block;
+      float: left;
+    }
+    .w10 {
+      width: 10%;
+    }
+    .w15 {
+      width: 15%;
+    }
+    .w20 {
+      width: 20%;
+    }
+  </style>
+
   <template>
-    <style include="shared-styles">
-      :host {
-        display: block;
-        padding: 10px;
-      }
-    </style>
+
+    <div class="horizontal layout">
+      <h3 class="flex">Travel to field (heading)</h3>
+      <paper-button on-click="toNewTravel" raised>Add New Travel</paper-button>
+    </div>
+
+    <!-- Filtering will come here -->
+
+    <paper-card heading="Travel listing">
+
+      <div class="headingrow clearfix">
+        <div class="headings w15">REF.NUM.</div>
+        <div class="headings w20">Purpuse of travel</div>
+        <div class="headings w15">Travelers</div>
+        <div class="headings w10">Start</div>
+        <div class="headings w10">End</div>
+        <div class="headings w15">Status</div>
+        <div class="headings w15">Action</div>
+      </div>
+
+      <!-- CONTAINER
+        dom-repeat with custom element...
+        'Showing x-xx of xxx results'
+        pagination
+       -->
+    </paper-card>
+
+
   </template>
 
   <script>
@@ -29,6 +83,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Array,
           value: ['a',2,3]
         }
+      },
+      toNewTravel: function() {
+        console.warn('This should immediately route to new travel page!');
       }
     });
   </script>
