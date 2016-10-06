@@ -1,0 +1,71 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="list-element">
+
+  <style include="iron-flex shared-styles">
+    :host {
+      display: block;
+    }
+    .headingrow {
+      width: 100%;
+    }
+    .headings {
+      display: block;
+      float: left;
+    }
+    .w10 {
+      width: 10%;
+    }
+    .w15 {
+      width: 15%;
+    }
+    .w20 {
+      width: 20%;
+    }
+  </style>
+
+  <template>
+
+      <div class="headingrow clearfix">
+        <div class="headings w15">{{data.refNr}}</div>
+        <div class="headings w20">{{data.purpose}}</div>
+        <div class="headings w15">{{data.travelers}}</div>
+        <div class="headings w10">{{data.start}}</div>
+        <div class="headings w10">{{data.end}}</div>
+        <div class="headings w15">{{data.status}}</div>
+        <div class="headings w15">duplicate</div>
+      </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'list-element',
+      properties: {
+        data: {
+          type: Object,
+          value: {
+            refNr: '2016/12576-1',
+            purpose: 'Office Technical Report',
+            travelers: 'John Smith Jr.',
+            start: '06/25/2016',
+            end: '06/26/2016',
+            status: 'certified'
+          }
+        }
+      }
+    });
+  </script>
+</dom-module>

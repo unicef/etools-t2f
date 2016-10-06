@@ -14,6 +14,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="shared-styles.html">
 
+<link rel="import" href="./list-element.html">
+
+
 <dom-module id="travel-list">
 
   <style include="iron-flex shared-styles">
@@ -27,7 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
     .headingrow {
       width: 100%;
-      border-bottom: 1px solid green;
+      border-bottom: 1px solid lightgrey;
     }
     .headings {
       display: block;
@@ -51,7 +54,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-button on-click="toNewTravel" raised>Add New Travel</paper-button>
     </div>
 
-    <!-- Filtering will come here -->
+    <!-- Filtering -->
 
     <paper-card heading="Travel listing">
 
@@ -65,8 +68,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div class="headings w15">Action</div>
       </div>
 
-      <!-- CONTAINER
-        dom-repeat with custom element...
+      <list-element></list-element>
+      <list-element></list-element>
+      <list-element></list-element>
+      <list-element></list-element>
+      <list-element></list-element>
+      <list-element></list-element>
+      <list-element></list-element>
+      <list-element></list-element>
+      <list-element></list-element>
+      <list-element></list-element>
+      <list-element></list-element>
+      <list-element></list-element>
+
+      <!-- TODO
         'Showing x-xx of xxx results'
         pagination
        -->
