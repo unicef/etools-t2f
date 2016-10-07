@@ -30,6 +30,22 @@
         margin: 16px 0;
         color: #212121;
       }
+      .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .clearfix:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+      }
+      *[hidden] {
+          display: none;
+      }
     </style>
   </template>
 </dom-module>

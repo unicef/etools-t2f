@@ -1,0 +1,91 @@
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="list-pagination">
+
+  <style include="iron-flex shared-styles travel-list">
+    :host {
+      display: block;
+    }
+    .scroller {
+      padding-left: 20px;
+    }
+    .middle {
+      /* get the text to the middle!!! */
+    }
+    /*iron-icon not pale clickable*/
+    /*unselectable*/
+    .pale {
+      color: lightgray;
+    }
+  </style>
+
+  <template>
+    <div class="layout horizontal clearfix">
+
+      <p>Showing you {{showingnr}} of {{maxnr}} results</p>
+
+      <div class="flex horizontal layout scroller">
+
+        <iron-icon
+          id="first"
+          icon="icons:chevron-left"
+          hidden="{{hidefirst}}"
+          class="flex"
+          on-click="goleft">
+        </iron-icon>
+        <iron-icon hidden="{{!hidefirst}}" icon="icons:chevron-left" class="flex pale"></iron-icon>
+
+        <div class="flex middle">1</div>
+        <div class="flex middle">...</div>
+        <div class="flex middle">3</div>
+        <div class="flex middle">4</div>
+        <div class="flex middle">5</div>
+        <div class="flex middle">...</div>
+        <div class="flex middle">{{maxtabnr}}</div>
+
+        <iron-icon
+          id="first"
+          icon="icons:chevron-right"
+          hidden="{{hidelast}}"
+          class="flex"
+          on-click="goright">
+        </iron-icon>
+        <iron-icon hidden="{{!hidelast}}" icon="icons:chevron-right" class="flex pale"></iron-icon>
+
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'list-pagination',
+      properties: {
+        tabnr: {
+          type: String,
+          observer: '_chevronhidingrecalc'
+        },
+        maxtabnr: String,
+        showingnr: String,
+        maxnr: String,
+        hidefirst: {
+          type: String,
+          value: ''
+        }
+      },
+      '_chevronhidingrecalc': function() {
+        this.set('hidefirst', (this.tabnr <= 1));
+        this.set('hidelast', (this.tabnr >= this.maxtabnr));
+      },
+      goleft: function() {
+        this.set('tabnr', +this.tabnr-1);
+      },
+      goright: function() {
+        this.set('tabnr', +this.tabnr+1);
+      }
+    });
+  </script>
+</dom-module>

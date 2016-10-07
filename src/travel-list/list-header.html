@@ -22,7 +22,8 @@
   <template>
     <div class="headingrow clearfix">
       <template is="dom-repeat" items="[[data]]">
-      <div class$="headings [[_sizeClassGenerator(item)]]">[[item.label]]</div>
+        <!-- TODO: sort data!!! -->
+        <div class$="headings [[_sizeClassGenerator(item)]]">[[item.label]]</div>
       </template>
     </div>
 
@@ -38,7 +39,7 @@
         }
       },
       ready: function() {
-        console.log("list-header ready")
+        // console.log("list-header ready");
       },
       _sizeClassGenerator: function(item) {
         return 'w' + item.size;

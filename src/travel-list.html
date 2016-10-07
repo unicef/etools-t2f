@@ -10,6 +10,7 @@
 
 <link rel="import" href="travel-list/list-element.html">
 <link rel="import" href="travel-list/list-header.html">
+<link rel="import" href="travel-list/list-pagination.html">
 
 
 <dom-module id="travel-list">
@@ -42,8 +43,7 @@
 
     <etools-ajax
             url="/mock-data/travel-list.json"
-            on-success="_handleListResponse"
-    >
+            on-success="_handleListResponse">
     </etools-ajax>
 
     <div class="horizontal layout">
@@ -57,18 +57,20 @@
 
     <paper-card heading="Travel listing">
 
-
       <list-header data="[[headings]]">
-
       </list-header>
+
       <template is="dom-repeat" items="[[data]]">
         <list-element data="[[item]]"></list-element>
       </template>
 
-      <!-- TODO
-        'Showing x-xx of xxx results'
-        pagination
-       -->
+      <list-pagination
+        showingnr="{{data.length}}"
+        maxnr="{{datalength}}"
+        tabnr="99"
+        maxtabnr="{{maxtabnr}}">
+      </list-pagination>
+
     </paper-card>
 
   </template>
@@ -81,16 +83,25 @@
           type: Array,
           value: []
         },
+        datalength: {
+          type: Number,
+          value: 0
+        },
         headings: {
           type: Array,
           value: []
-        }
-
+        },
+        tabnr: Number,
+        maxtabnr: Number,
+        showingnr: Number,
+        maxnr: Number
       },
       _handleListResponse: function(event, data) {
-        console.log(data, event);
-        if(data.values instanceof Array){
-          this.set('data', data.values.slice(0,10))
+
+        if(data.values instanceof Array) {
+          this.set('datalength', data.values.length);
+          this.set('maxtabnr', Math.ceil( data.values.length / 10 ));
+          this.set('data', data.values.slice(0,10));
         }
 
         if(data.headers instanceof  Array) {
