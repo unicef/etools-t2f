@@ -8,8 +8,8 @@
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="shared-styles.html">
 
-<link rel="import" href="./list-element.html">
-<link rel="import" href="./list-header.html">
+<link rel="import" href="travel-list/list-element.html">
+<link rel="import" href="travel-list/list-header.html">
 
 
 <dom-module id="travel-list">
@@ -48,7 +48,9 @@
 
     <div class="horizontal layout">
       <h3 class="flex">Travel to field (heading)</h3>
-      <paper-button on-click="toNewTravel" raised>Add New Travel</paper-button>
+      <a href="/plan-travel" tabindex="-1">
+        <paper-button raised>Add New Travel</paper-button>
+      </a>
     </div>
 
     <!-- Filtering -->
@@ -84,9 +86,6 @@
           value: []
         }
 
-      },
-      toNewTravel: function() {
-        console.warn('This should immediately route to the make new project view.');
       },
       _handleListResponse: function(event, data) {
         console.log(data, event);
