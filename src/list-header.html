@@ -1,0 +1,48 @@
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="list-header">
+
+  <style include="shared-styles travel-list">
+    :host {
+      display: block;
+    }
+    .headingrow {
+      width: 100%;
+      border-bottom: 1px solid lightgrey;
+    }
+    .headings {
+      display: block;
+      float: left;
+      font-weight:bold;
+    }
+  </style>
+
+  <template>
+    <div class="headingrow clearfix">
+      <template is="dom-repeat" items="[[data]]">
+      <div class$="headings [[_sizeClassGenerator(item)]]">[[item.label]]</div>
+      </template>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'list-header',
+      properties: {
+        data: {
+          type: Array,
+          value: []
+        }
+      },
+      ready: function() {
+        console.log("list-header ready")
+      },
+      _sizeClassGenerator: function(item) {
+        return 'w' + item.size;
+      }
+    });
+  </script>
+</dom-module>

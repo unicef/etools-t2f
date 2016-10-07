@@ -1,11 +1,12 @@
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="list-element">
 
-  <style include="iron-flex shared-styles">
+  <style include="shared-styles travel-list">
     :host {
       display: block;
     }
@@ -16,27 +17,27 @@
       display: block;
       float: left;
     }
-    .w10 {
-      width: 10%;
-    }
-    .w15 {
-      width: 15%;
-    }
-    .w20 {
-      width: 20%;
+
+    .truncate {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   </style>
 
   <template>
 
       <div class="headingrow clearfix">
-        <div class="headings w15">-{{data.id}}</div>
-        <div class="headings w20">-{{data.purpose}}</div>
-        <div class="headings w15">-{{data.traveler}}</div>
-        <div class="headings w10">-{{data.startDate}}</div>
-        <div class="headings w10">-{{data.endDate}}</div>
-        <div class="headings w15">-{{data.status}}</div>
-        <div class="headings w15">-Btns</div>
+        <div class="headings w15">[[data.id]]</div>
+        <div class="headings w20 truncate">[[data.purpose]]</div>
+        <div class="headings w15">[[data.traveler]]</div>
+        <div class="headings w10">[[data.startDate]]</div>
+        <div class="headings w10">[[data.endDate]]</div>
+        <div class="headings w15">[[data.status]]</div>
+        <div class="headings w15">
+          <paper-icon-button icon="icons:content-copy"></paper-icon-button>
+          <paper-icon-button icon="maps:directions-car"></paper-icon-button>
+        </div>
       </div>
 
   </template>

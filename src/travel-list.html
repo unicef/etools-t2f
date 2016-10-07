@@ -3,10 +3,13 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/etools-ajax/etools-ajax.html">
 
+
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="shared-styles.html">
 
 <link rel="import" href="./list-element.html">
+<link rel="import" href="./list-header.html">
 
 
 <dom-module id="travel-list">
@@ -20,13 +23,9 @@
       width: 100%;
       margin-top: 20px;
     }
-    .headingrow {
-      width: 100%;
-      border-bottom: 1px solid lightgrey;
-    }
     .headings {
-      display: block;
-      float: left;
+      box-sizing: border-box;
+      padding: 5px;
     }
     .w10 {
       width: 10%;
@@ -56,16 +55,10 @@
 
     <paper-card heading="Travel listing">
 
-      <div class="headingrow clearfix">
-        <div class="headings w15">REF.NUM.</div>
-        <div class="headings w20">Purpose of travel</div>
-        <div class="headings w15">Traveler</div>
-        <div class="headings w10">Start</div>
-        <div class="headings w10">End</div>
-        <div class="headings w15">Status</div>
-        <div class="headings w15">Action</div>
-      </div>
 
+      <list-header data="[[headings]]">
+
+      </list-header>
       <template is="dom-repeat" items="[[data]]">
         <list-element data="[[item]]"></list-element>
       </template>
@@ -84,15 +77,24 @@
       properties: {
         data: {
           type: Array,
-          value: ['a',2,3]
+          value: []
+        },
+        headings: {
+          type: Array,
+          value: []
         }
+
       },
       toNewTravel: function() {
         console.warn('This should immediately route to the make new project view.');
       },
       _handleListResponse: function(event, data) {
-        if(data instanceof Array){
-          this.set('data', data.slice(0,10))
+        if(data.values instanceof Array){
+          this.set('data', data.values.slice(0,10))
+        }
+
+        if(data.headers instanceof  Array) {
+          this.set('headings', data.headers);
         }
       }
 
