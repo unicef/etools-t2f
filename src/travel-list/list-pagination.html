@@ -10,7 +10,7 @@
     :host {
       display: block;
     }
-    .scroller {
+    .paginater {
       padding-left: 20px;
     }
     .middle {
@@ -28,7 +28,7 @@
 
       <p>Showing you {{showingnr}} of {{maxnr}} results</p>
 
-      <div class="flex horizontal layout scroller">
+      <div class="flex horizontal layout paginater">
 
         <iron-icon
           id="first"
@@ -71,10 +71,8 @@
         maxtabnr: String,
         showingnr: String,
         maxnr: String,
-        hidefirst: {
-          type: String,
-          value: ''
-        }
+        hidefirst: Boolean,
+        hidelast: Boolean
       },
       '_chevronhidingrecalc': function() {
         this.set('hidefirst', (this.tabnr <= 1));
