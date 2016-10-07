@@ -2,6 +2,10 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+
 <link rel="import" href="../shared-styles.html">
 
 <dom-module id="list-pagination">
@@ -10,53 +14,66 @@
     :host {
       display: block;
     }
-    .paginater {
-      padding-left: 20px;
+    .chev {
+      width: 60px;
     }
-    .middle {
-      /* get the text to the middle!!! */
-    }
-    /*iron-icon not pale clickable*/
-    /*unselectable*/
+    /* iron-icon not pale clickable */
+    iron-icon
+    /* unselectable */
     .pale {
-      color: lightgray;
+      /* greying out */
+    }
+    .rightfloat {
+      float: right;
+    }
+    paper-dropdown-menu {
+      padding: 0 30px;
+      transform: translate(0, -8px);
+      /* prefixes!! */
     }
   </style>
 
   <template>
-    <div class="layout horizontal clearfix">
+    <div class="layout horizontal clearfix rightfloat">
 
-      <p>Showing you {{showingnr}} of {{maxnr}} results</p>
+      <span>Rows per page:</span>
 
-      <div class="flex horizontal layout paginater">
+      <paper-dropdown-menu no-label-float vertical-align="bottom" horizontal-align="right">
+        <paper-listbox class="dropdown-content" selected="0">
+          <paper-item>10</paper-item>
+          <paper-item>25</paper-item>
+          <paper-item>50</paper-item>
+          <paper-item>100</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
 
-        <iron-icon
-          id="first"
-          icon="icons:chevron-left"
-          hidden="{{hidefirst}}"
-          class="flex"
-          on-click="goleft">
-        </iron-icon>
-        <iron-icon hidden="{{!hidefirst}}" icon="icons:chevron-left" class="flex pale"></iron-icon>
+      <span>first - last of {{maxnr}}</span>
 
-        <div class="flex middle">1</div>
-        <div class="flex middle">...</div>
-        <div class="flex middle">3</div>
-        <div class="flex middle">4</div>
-        <div class="flex middle">5</div>
-        <div class="flex middle">...</div>
-        <div class="flex middle">{{maxtabnr}}</div>
+      <iron-icon
+        icon="icons:chevron-left"
+        hidden="{{hidefirst}}"
+        class="chev"
+        on-click="goleft">
+      </iron-icon>
+      <iron-icon
+        hidden="{{!hidefirst}}"
+        icon="icons:chevron-left"
+        class="chev pale">
+      </iron-icon>
 
-        <iron-icon
-          id="first"
-          icon="icons:chevron-right"
-          hidden="{{hidelast}}"
-          class="flex"
-          on-click="goright">
-        </iron-icon>
-        <iron-icon hidden="{{!hidelast}}" icon="icons:chevron-right" class="flex pale"></iron-icon>
+      <iron-icon
+        id="first"
+        icon="icons:chevron-right"
+        hidden="{{hidelast}}"
+        class="chev"
+        on-click="goright">
+      </iron-icon>
+      <iron-icon
+        hidden="{{!hidelast}}"
+        icon="icons:chevron-right"
+        class="chev pale">
+      </iron-icon>
 
-      </div>
     </div>
   </template>
 
@@ -65,24 +82,32 @@
       is: 'list-pagination',
       properties: {
         tabnr: {
-          type: String,
+          type: Number,
           observer: '_chevronhidingrecalc'
         },
-        maxtabnr: String,
-        showingnr: String,
-        maxnr: String,
+        // rowselection: {
+        //   type: Array,
+        //   value: [ 25, 50, 100 ]
+        // },
+        // rowsize: {
+        //   type: Number,
+        //   value: 25
+        // },
+        maxtabnr: Number,
+        showingnr: Number,
+        maxnr: Number,
         hidefirst: Boolean,
         hidelast: Boolean
       },
       '_chevronhidingrecalc': function() {
-        this.set('hidefirst', (this.tabnr <= 1));
-        this.set('hidelast', (this.tabnr >= this.maxtabnr));
+        this.set('hidefirst', (this.tabnr === 1));
+        this.set('hidelast', (this.tabnr === this.maxtabnr));
       },
       goleft: function() {
-        this.set('tabnr', +this.tabnr-1);
+        this.set('tabnr', this.tabnr - 1);
       },
       goright: function() {
-        this.set('tabnr', +this.tabnr+1);
+        this.set('tabnr', this.tabnr + 1);
       }
     });
   </script>
