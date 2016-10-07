@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "polymer serve --port 3000 & npm run watch",
     "test": "polymer test",
-    "watch": "browser-sync start --proxy localhost:3000 --files 'src/*.html, src/*.js, images/*' --no-ghost-mode "
+    "watch": "browser-sync start --proxy localhost:3000 --files 'src/**/*, images/*, mock-data/*' --no-ghost-mode "
   },
 
   "engines": {
