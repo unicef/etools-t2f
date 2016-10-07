@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/etools-ajax/etools-ajax.html">
 
 
 <link   rel="import" href="./travel-details.html">
@@ -26,6 +27,8 @@
             }
         </style>
 
+        <etools-ajax url="/mock-data/structure.json" on-success="_handleStructure"></etools-ajax>
+
         <paper-tabs selected="{{selected}}">
             <paper-tab>Travel details</paper-tab>
             <paper-tab>Attachments</paper-tab>
@@ -33,7 +36,7 @@
         </paper-tabs>
 
         <iron-pages selected="{{selected}}">
-            <travel-details></travel-details>
+            <travel-details structure="[[structure]]"></travel-details>
             <travel-attachments></travel-attachments>
             <travel-report></travel-report>
         </iron-pages>
@@ -53,7 +56,18 @@
                 selected: {
                     type: Number,
                     value: 0
+                },
+                structure: {
+                    type: Object,
+                    value: {},
+                    notify: true,
+                    reflectToAttribute: true
                 }
+            },
+            _handleStructure: function(event, data) {
+                Object.freeze(data);
+                console.log(data);
+                this.set('structure', data);
             }
         });
     </script>

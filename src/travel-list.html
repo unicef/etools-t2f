@@ -88,7 +88,6 @@
 
       },
       _handleListResponse: function(event, data) {
-        console.log(data, event);
         if(data.values instanceof Array){
           this.set('data', data.values.slice(0,10))
         }
