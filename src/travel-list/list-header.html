@@ -22,8 +22,7 @@
   <template>
     <div class="headingrow clearfix">
       <template is="dom-repeat" items="[[data]]">
-        <!-- TODO: sort data!!! -->
-        <div class$="headings [[_sizeClassGenerator(item)]]">[[item.label]]</div>
+        <div on-click="_clickOnLabel" class$="headings [[_sizeClassGenerator(item)]]">[[item.label]]</div>
       </template>
     </div>
 
@@ -36,6 +35,14 @@
         data: {
           type: Array,
           value: []
+        },
+        orderedBy: {
+          type: String,
+          notify: true
+        },
+        reverseOrder: {
+          type: Boolean,
+          notify: true,
         }
       },
       ready: function() {
@@ -43,6 +50,18 @@
       },
       _sizeClassGenerator: function(item) {
         return 'w' + item.size;
+      },
+      _clickOnLabel: function(event) {
+
+        var newOrderBy = event.model.item.label;
+        if (newOrderBy === this.orderedBy) {
+          this.set('orderedBy', newOrderBy);
+          this.set('reverseOrder', !this.reverseOrder);
+        } else {
+          this.set('orderedBy', newOrderBy);
+          this.set('reverseOrder', false);
+        }
+        // console.log('HEADER ordering: ', this.orderedBy, 'reverse?:', this.reverseOrder);
       }
     });
   </script>

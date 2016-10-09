@@ -42,8 +42,8 @@
   <template>
 
     <etools-ajax
-            url="/mock-data/travel-list.json"
-            on-success="_handleListResponse">
+      url="/mock-data/travel-list.json"
+      on-success="_handleListResponse">
     </etools-ajax>
 
     <div class="horizontal layout">
@@ -57,7 +57,7 @@
 
     <paper-card heading="Travel listing">
 
-      <list-header data="[[headings]]">
+      <list-header data="[[headings]]" ordered-by="{{orderedBy}}" reverse-order="{{reverseOrder}}">
       </list-header>
 
       <template is="dom-repeat" items="[[data]]">
@@ -65,7 +65,7 @@
       </template>
 
       <list-pagination
-        showingnr="{{data.length}}"
+        showingNr="{{data.length}}"
         maxnr="{{datalength}}"
         tabnr="99"
         maxtabnr="{{maxtabnr}}">
@@ -93,9 +93,32 @@
         },
         tabnr: Number,
         maxtabnr: Number,
-        showingnr: Number,
-        maxnr: Number
+        showingNr: {
+          type: Number,
+          value: 0
+        },
+        maxnr: {
+          type: Number,
+          value: 0
+        },
+        itemsPerPage: {
+          type: Number,
+          value: 10
+        },
+        orderedBy: {
+          type: String,
+          value: 'NEEDDEFAULT', // Which one should be the default?
+          reflecToAttribute: true,
+        },
+        reverseOrder: {
+          type: Boolean,
+          value: false,
+          reflecToAttribute: true,
+        }
       },
+      observers: [
+        'orderingChanged(orderedBy, reverseOrder, itemsPerPage)'
+      ],
       _handleListResponse: function(event, data) {
 
         if(data.values instanceof Array) {
@@ -107,8 +130,10 @@
         if(data.headers instanceof  Array) {
           this.set('headings', data.headers);
         }
+      },
+      orderingChanged: function(orderedBy, reverseOrder, itemsPerPage) {
+        console.warn('API call MOCK:', orderedBy, reverseOrder, itemsPerPage);
       }
-
     });
   </script>
 </dom-module>
