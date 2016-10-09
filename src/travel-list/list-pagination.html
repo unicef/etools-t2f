@@ -39,11 +39,12 @@
       <span>Rows per page:</span>
 
       <paper-dropdown-menu no-label-float vertical-align="bottom" horizontal-align="right">
-        <paper-listbox class="dropdown-content" selected="0">
-          <paper-item>10</paper-item>
-          <paper-item>25</paper-item>
-          <paper-item>50</paper-item>
-          <paper-item>100</paper-item>
+        <paper-listbox class="dropdown-content" on-iron-select="itemsNrChanged" selected="0">
+
+          <template is="dom-repeat" items="[[rowSelection]]">
+            <paper-item>[[item]]</paper-item>
+          </template>
+
         </paper-listbox>
       </paper-dropdown-menu>
 
@@ -85,19 +86,19 @@
           type: Number,
           observer: '_chevronhidingrecalc'
         },
-        // rowselection: {
-        //   type: Array,
-        //   value: [ 25, 50, 100 ]
-        // },
-        // rowsize: {
-        //   type: Number,
-        //   value: 25
-        // },
         maxtabnr: Number,
         showingnr: Number,
         maxnr: Number,
         hidefirst: Boolean,
-        hidelast: Boolean
+        hidelast: Boolean,
+        rowSelection: {
+          type: Array,
+          value: [10, 25, 50, 100]
+        },
+        itemsPerPage: {
+          type: Number,
+          notify: true
+        }
       },
       '_chevronhidingrecalc': function() {
         this.set('hidefirst', (this.tabnr === 1));
@@ -108,6 +109,9 @@
       },
       goright: function() {
         this.set('tabnr', this.tabnr + 1);
+      },
+      itemsNrChanged: function(event, item) {
+        this.set('itemsPerPage', +item.item.innerText);
       }
     });
   </script>
