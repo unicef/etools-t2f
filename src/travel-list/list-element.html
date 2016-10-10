@@ -22,11 +22,11 @@
   <template>
 
       <div class="headingrow clearfix">
-        <div class="headings w15">[[data.id]]</div>
+        <div class="headings w15">[[data.reference_number]]</div>
         <div class="headings w20 truncate">[[data.purpose]]</div>
         <div class="headings w15">[[data.traveler]]</div>
-        <div class="headings w10">[[data.startDate]]</div>
-        <div class="headings w10">[[data.endDate]]</div>
+        <div class="headings w10">[[data.start_date]]</div>
+        <div class="headings w10">[[data.end_date]]</div>
         <div class="headings w15">[[data.status]]</div>
         <div class="headings w15">
           <paper-icon-button icon="social:person-add"></paper-icon-button>
@@ -41,15 +41,7 @@
       is: 'list-element',
       properties: {
         data: {
-          type: Object,
-          value: {
-            id: '2016/12576-1',
-            purpose: 'Office Technical Report',
-            traveler: 'John Smith Jr.',
-            startDate: '06/25/2016',
-            endDate: '06/26/2016',
-            status: 'certified'
-          }
+          type: Object
         }
       }
     });

@@ -50,14 +50,15 @@
         if (newOrderBy === this.orderObj.orderedBy) {
           this.set('orderObj', {
             orderedBy: newOrderBy,
-            reverseOrder: !this.orderObj.reverseOrder
+            reverse: !this.orderObj.reverse
           });
         } else {
           this.set('orderObj', {
             orderedBy: newOrderBy,
-            reverseOrder: false
+            reverse: false
           });
         }
+        // console.log('HEADER ordering: ', this.orderObj.orderedBy, 'reverse?:', this.orderObj.reverse);
       }
     });
   </script>

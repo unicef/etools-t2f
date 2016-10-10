@@ -42,8 +42,10 @@
   <template>
 
     <etools-ajax
-      url="/mock-data/travel-list.json"
-      on-success="_handleListResponse">
+      url="http://localhost:8000/api/et2f/travels/"
+      params='{{ajaxParams}}'
+      auto=true
+      on-success="handleListResponse">
     </etools-ajax>
 
     <div class="horizontal layout">
@@ -90,15 +92,20 @@
         },
         headings: {
           type: Array,
-          value: []
+          // Should fetch these from a common structure.json !!
+          value: [
+            { "size": 15, "label": "Ref Num." },
+            { "size": 20, "label": "Purpose" },
+            { "size": 15, "label": "Travelers" },
+            { "size": 10, "label": "Start Date" },
+            { "size": 10, "label": "End Date" },
+            { "size": 15, "label": "Status" },
+            { "size": 15, "label": "Actions" }
+          ]
         },
         tabnr: Number,
         maxtabnr: Number,
         showingNr: {
-          type: Number,
-          value: 0
-        },
-        maxnr: {
           type: Number,
           value: 0
         },
@@ -109,9 +116,17 @@
         orderObj: {
           type: Object,
           value: {
-            orderedBy: 'Travelers',
+            orderedBy: 'Purpose',
             reverse: false
           }
+        },
+        page: {
+          type: Number,
+          value: 1
+        },
+        ajaxParams: {
+          type: Object,
+          computed: 'processParams(orderObj, itemsPerPage, labelLib)'
         },
         labelLib: {
           type: Object,
@@ -119,49 +134,36 @@
             'Ref Num.': 'id',
             'Purpose': 'purpose',
             'Travelers': 'traveler',
-            'Start Date': 'startDate',
-            'End Date': 'startDate',
+            'Start Date': 'start_date',
+            'End Date': 'start_date',
             'Status': 'status'
           }
-        },
-        mockData: Array
-      },
-      observers: [
-        'orderingChanged(orderObj, itemsPerPage, mockData)'
-      ],
-      _handleListResponse: function(event, data) {
-
-        if(data.values instanceof Array) {
-          this.set('datalength', data.values.length);
-          this.set('maxtabnr', Math.ceil( data.values.length / this.itemsPerPage ));
-          this.set('data', data.values.slice(0, this.itemsPerPage));
-          this.set('mockData', data);
-        }
-
-        if(data.headers instanceof Array) {
-          this.set('headings', data.headers);
         }
       },
-      orderingChanged: function(orderObj, itemsPerPage, mockData) {
+      processParams: function(orderObj, itemsPerPage, lib) {
+        var params = {
+          sort_by: lib[orderObj.orderedBy],
+          reverse: orderObj.reverse,
+          page: 1, // BINDDDD!
+          page_size: itemsPerPage
+        };
+        console.warn('New query params: ', params);
+        return params;
+      },
+      handleListResponse: function(event, data) {
 
-        console.warn('API call MOCK:', orderObj, itemsPerPage);
+        console.info('Got new payload', data);
 
-        // All the following is just for mocking the API call,
-        // we have all the data to do a proper call though...
-        var orderKey = this.labelLib[orderObj.orderedBy];
-        var toShow = this.mockData.values
-          .slice(0) // Cloning
-          .sort(function(a,b) {   // Sorting
-            return a[orderKey].localeCompare(b[orderKey])
+        // Nico said we need this if for thefirst time, I have my doubts
+        if(data.data instanceof Array) {
+          this.set('datalength', data.total_count);
+          this.set('maxtabnr', Math.ceil( data.total_count / this.itemsPerPage ));
+          data.data.forEach(function(travel) {
+            travel.start_date = travel.start_date.split('T')[0];
+            travel.end_date = travel.end_date.split('T')[0];
           });
-
-        if (orderObj.reverseOrder) {
-          toShow.reverse();
+          this.set('data', data.data);
         }
-
-        toShow = toShow.slice(0, this.itemsPerPage); // Only the needed
-
-        this.set('data', toShow);
       }
     });
   </script>
