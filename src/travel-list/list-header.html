@@ -36,17 +36,10 @@
           type: Array,
           value: []
         },
-        orderedBy: {
-          type: String,
+        orderObj: {
+          type: Object,
           notify: true
-        },
-        reverseOrder: {
-          type: Boolean,
-          notify: true,
         }
-      },
-      ready: function() {
-        // console.log("list-header ready");
       },
       _sizeClassGenerator: function(item) {
         return 'w' + item.size;
@@ -54,14 +47,17 @@
       _clickOnLabel: function(event) {
 
         var newOrderBy = event.model.item.label;
-        if (newOrderBy === this.orderedBy) {
-          this.set('orderedBy', newOrderBy);
-          this.set('reverseOrder', !this.reverseOrder);
+        if (newOrderBy === this.orderObj.orderedBy) {
+          this.set('orderObj', {
+            orderedBy: newOrderBy,
+            reverseOrder: !this.orderObj.reverseOrder
+          });
         } else {
-          this.set('orderedBy', newOrderBy);
-          this.set('reverseOrder', false);
+          this.set('orderObj', {
+            orderedBy: newOrderBy,
+            reverseOrder: false
+          });
         }
-        // console.log('HEADER ordering: ', this.orderedBy, 'reverse?:', this.reverseOrder);
       }
     });
   </script>

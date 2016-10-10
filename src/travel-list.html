@@ -57,7 +57,7 @@
 
     <paper-card heading="Travel listing">
 
-      <list-header data="[[headings]]" ordered-by="{{orderedBy}}" reverse-order="{{reverseOrder}}">
+      <list-header data="[[headings]]" order-obj="{{orderObj}}">
       </list-header>
 
       <template is="dom-repeat" items="[[data]]">
@@ -106,15 +106,12 @@
           type: Number,
           value: 10
         },
-        orderedBy: {
-          type: String,
-          value: 'Travelers',
-          reflecToAttribute: true,
-        },
-        reverseOrder: {
-          type: Boolean,
-          value: false,
-          reflecToAttribute: true,
+        orderObj: {
+          type: Object,
+          value: {
+            orderedBy: 'Travelers',
+            reverse: false
+          }
         },
         labelLib: {
           type: Object,
@@ -130,7 +127,7 @@
         mockData: Array
       },
       observers: [
-        'orderingChanged(orderedBy, reverseOrder, itemsPerPage, mockData)'
+        'orderingChanged(orderObj, itemsPerPage, mockData)'
       ],
       _handleListResponse: function(event, data) {
 
@@ -145,20 +142,20 @@
           this.set('headings', data.headers);
         }
       },
-      orderingChanged: function(orderedBy, reverseOrder, itemsPerPage, mockData) {
+      orderingChanged: function(orderObj, itemsPerPage, mockData) {
 
-        console.warn('API call MOCK:', orderedBy, reverseOrder, itemsPerPage);
+        console.warn('API call MOCK:', orderObj, itemsPerPage);
 
         // All the following is just for mocking the API call,
         // we have all the data to do a proper call though...
-        var orderKey = this.labelLib[orderedBy];
+        var orderKey = this.labelLib[orderObj.orderedBy];
         var toShow = this.mockData.values
           .slice(0) // Cloning
           .sort(function(a,b) {   // Sorting
             return a[orderKey].localeCompare(b[orderKey])
           });
 
-        if (this.reverseOrder) {
+        if (orderObj.reverseOrder) {
           toShow.reverse();
         }
 
