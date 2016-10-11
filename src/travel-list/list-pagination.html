@@ -48,7 +48,7 @@
         </paper-listbox>
       </paper-dropdown-menu>
 
-      <span>first - last of {{maxnr}}</span>
+      <span>{{firstShown}} - {{lastShown}} of {{maxnr}}</span>
 
       <iron-icon
         icon="icons:chevron-left"
@@ -63,7 +63,6 @@
       </iron-icon>
 
       <iron-icon
-        id="first"
         icon="icons:chevron-right"
         hidden="{{hidelast}}"
         class="chev"
@@ -82,36 +81,70 @@
     Polymer({
       is: 'list-pagination',
       properties: {
-        tabnr: {
-          type: Number,
-          observer: '_chevronhidingrecalc'
-        },
-        maxtabnr: Number,
-        showingnr: Number,
         maxnr: Number,
-        hidefirst: Boolean,
-        hidelast: Boolean,
+        pages: {
+          type: Object,
+          notify: true
+        },
+        hidefirst: {
+          type: Boolean,
+          computed: '_hideFirst(pages.page, pages.itemsPerPage, maxnr)'
+        },
+        hidelast: {
+          type: Boolean,
+          computed: '_hideLast(pages.page, pages.itemsPerPage, maxnr)'
+        },
         rowSelection: {
           type: Array,
           value: [10, 25, 50, 100]
         },
-        itemsPerPage: {
+        firstShown: {
           type: Number,
+          computed: '_firstShownNr(pages.itemsPerPage, pages.page)',
+          notify: true
+        },
+        lastShown: {
+          type: Number,
+          computed: '_lastShownNr(pages.itemsPerPage, pages.page, maxnr)',
           notify: true
         }
       },
-      '_chevronhidingrecalc': function() {
-        this.set('hidefirst', (this.tabnr === 1));
-        this.set('hidelast', (this.tabnr === this.maxtabnr));
+      _hideFirst: function(page, itemsPerPage, maxnr) {
+
+        return page === 1;
+      },
+      _hideLast: function(page, itemsPerPage, maxnr) {
+
+        return page === Math.ceil(maxnr / itemsPerPage);
+      },
+      _firstShownNr: function(itemsPerPage, page) {
+
+        return itemsPerPage * (page-1);
+      },
+      _lastShownNr: function(itemsPerPage, page, maxnr) {
+
+        return (itemsPerPage * page) > maxnr ? maxnr : (itemsPerPage * page);
       },
       goleft: function() {
-        this.set('tabnr', this.tabnr - 1);
+
+        this.set('pages', {
+          page: this.pages.page - 1,
+          itemsPerPage: this.pages.itemsPerPage
+        });
       },
       goright: function() {
-        this.set('tabnr', this.tabnr + 1);
+
+        this.set('pages', {
+          page: this.pages.page + 1,
+          itemsPerPage: this.pages.itemsPerPage
+        });
       },
       itemsNrChanged: function(event, item) {
-        this.set('itemsPerPage', +item.item.innerText);
+
+        this.set('pages', {
+          page: 1,
+          itemsPerPage: +item.item.innerText
+        });
       }
     });
   </script>

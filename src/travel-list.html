@@ -57,7 +57,7 @@
 
     <!-- Filtering -->
 
-    <paper-card heading="Travel listing">
+    <paper-card heading="{{headingText}}">
 
       <list-header data="[[headings]]" order-obj="{{orderObj}}">
       </list-header>
@@ -67,11 +67,8 @@
       </template>
 
       <list-pagination
-        showingNr="{{data.length}}"
         maxnr="{{datalength}}"
-        tabnr="99"
-        maxtabnr="{{maxtabnr}}"
-        items-per-page="{{itemsPerPage}}">
+        pages="{{pages}}">
       </list-pagination>
 
     </paper-card>
@@ -90,6 +87,10 @@
           type: Number,
           value: 0
         },
+        headingText: {
+          type: String,
+          computed: '_computeHeading(pages, datalength)'
+        },
         headings: {
           type: Array,
           // Should fetch these from a common structure.json !!
@@ -103,15 +104,12 @@
             { "size": 15, "label": "Actions" }
           ]
         },
-        tabnr: Number,
-        maxtabnr: Number,
-        showingNr: {
-          type: Number,
-          value: 0
-        },
-        itemsPerPage: {
-          type: Number,
-          value: 10
+        pages: {
+          type: Object,
+          value: {
+            itemsPerPage: 10,
+            page: 1
+          }
         },
         orderObj: {
           type: Object,
@@ -120,13 +118,9 @@
             reverse: false
           }
         },
-        page: {
-          type: Number,
-          value: 1
-        },
         ajaxParams: {
           type: Object,
-          computed: 'processParams(orderObj, itemsPerPage, labelLib)'
+          computed: '_processParams(orderObj, pages, labelLib)'
         },
         labelLib: {
           type: Object,
@@ -140,30 +134,29 @@
           }
         }
       },
-      processParams: function(orderObj, itemsPerPage, lib) {
-        var params = {
-          sort_by: lib[orderObj.orderedBy],
+      _computeHeading: function(pages, datalength) {
+        var start = (pages.page - 1) * pages.itemsPerPage;
+        var end = (pages.itemsPerPage * pages.page) > datalength ? datalength : (pages.itemsPerPage * pages.page);
+        return start + ' - ' + end + ' of ' + datalength + ' results to show';
+      },
+      _processParams: function(orderObj, pages, labelLib) {
+        return {
+          sort_by: labelLib[orderObj.orderedBy],
           reverse: orderObj.reverse,
-          page: 1, // BINDDDD!
-          page_size: itemsPerPage
+          page: pages.page,
+          page_size: pages.itemsPerPage
         };
-        console.warn('New query params: ', params);
-        return params;
       },
       handleListResponse: function(event, data) {
 
-        console.info('Got new payload', data);
+        console.info('Got payload', data);
 
-        // Nico said we need this if for thefirst time, I have my doubts
-        if(data.data instanceof Array) {
-          this.set('datalength', data.total_count);
-          this.set('maxtabnr', Math.ceil( data.total_count / this.itemsPerPage ));
-          data.data.forEach(function(travel) {
-            travel.start_date = travel.start_date.split('T')[0];
-            travel.end_date = travel.end_date.split('T')[0];
-          });
-          this.set('data', data.data);
-        }
+        this.set('datalength', data.total_count);
+        data.data.forEach(function(travel) {
+          travel.start_date = travel.start_date.split('T')[0];
+          travel.end_date = travel.end_date.split('T')[0];
+        });
+        this.set('data', data.data);
       }
     });
   </script>
