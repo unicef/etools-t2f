@@ -1,5 +1,6 @@
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../shared-styles.html">
 
 <dom-module id="list-header">
@@ -7,22 +8,54 @@
   <style include="shared-styles travel-list">
     :host {
       display: block;
+      padding: 0;
+      margin: 0;
     }
     .headingrow {
       width: 100%;
       border-bottom: 1px solid lightgrey;
     }
-    .headings {
+    .localheadings {
       display: block;
+      box-sizing: border-box;
       float: left;
-      font-weight:bold;
+      font-weight: 500;
+      padding: 0 0 0 20px;
+      cursor: pointer; /*Chrome bug, works in safari, */
+    }
+    .heading {
+      line-height: 56px;
+      font-size: 12px;
+    }
+    .localheadings iron-icon {
+      width: 16px;
+      height: 16px;
+      color: rgba(0,0,0,0.54);
+    }
+    .localheadings:hover iron-icon {
+      color: rgba(0,0,0,0.86);
     }
   </style>
 
   <template>
     <div class="headingrow clearfix">
-      <template is="dom-repeat" items="[[data]]">
-        <div on-click="_clickOnLabel" class$="headings [[_sizeClassGenerator(item)]]">[[item.label]]</div>
+      <template is="dom-repeat" items="[[metaData]]" observe="item.down item.up">
+        <div on-click="_clickOnLabel" class$="localheadings [[_sizeClassGenerator(item)]]">
+          <span class="textsec heading">[[item.label]]</span>
+
+          <iron-icon
+            icon="icons:arrow-downward"
+            hidden$="{{item.down}}"
+            on-click="">
+          </iron-icon>
+
+          <iron-icon
+            icon="icons:arrow-upward"
+            hidden$="{{item.up}}"
+            on-click="">
+          </iron-icon>
+
+        </div>
       </template>
     </div>
 
@@ -39,7 +72,16 @@
         orderObj: {
           type: Object,
           notify: true
-        }
+        },
+        metaData: {
+          type: Array,
+          computed: '_getMetaData(data, orderObj)'
+        },
+        // arrows: {
+        //   type: Object,
+        //   computed: '_computeArrows(data, orderObj)',
+        //   reflectToAttribute: true
+        // }
       },
       _sizeClassGenerator: function(item) {
         return 'w' + item.size;
@@ -47,7 +89,7 @@
       _clickOnLabel: function(event) {
 
         var newOrderBy = event.model.item.label;
-        if (newOrderBy === "Actions") { return; } // Don't reorder by passive
+        if (newOrderBy === "Duplicate") { return; } // Don't reorder by passive
 
         if (newOrderBy === this.orderObj.orderedBy) {
           this.set('orderObj', {
@@ -60,7 +102,55 @@
             reverse: false
           });
         }
-      }
+      },
+
+      _getMetaData: function(data, orderObj) {
+        console.log('Computing metadata fn. called');
+        console.log(data, orderObj);
+
+        var metaData = data.map(function(el) {
+          el.up = !(orderObj.orderedBy === el.label && !orderObj.reverse);
+          el.down = !(orderObj.orderedBy === el.label && orderObj.reverse);
+          return el;
+        });
+
+        console.log('metaData: ', metaData);
+        return metaData;
+      },
+
+
+
+
+
+      // _computeArrows: function(data, orderObj) {
+      //   // console.log('Computing arrows fn. called');
+      //   // console.log(data, orderObj);
+
+      //   var arrows = data.reduce(function(ret, el) {
+      //     ret.up[el.label] = orderObj.orderedBy === el.label && !orderObj.reverse ? 'hidden' : '';
+      //     ret.down[el.label] = orderObj.orderedBy === el.label && orderObj.reverse ? 'hidden': '';
+      //     return ret;
+      //   }, {up: {}, down: {}});
+
+      //   console.log('Arrows: ', arrows);
+      //   return arrows;
+      // },
+
+
+      // downArr: function (item) {
+      //   console.log('hsgfhjsjfhdjkfhjk');
+      //   return function() {
+      //     this.arrows.down[item.label];
+      //   }
+      // }
+
+
+      // _downwardHidden: function(label) {
+      //   var thisLabel = label === this.orderObj.orderedBy;
+      //   var down = !this.orderObj.reverse;
+      //   console.log('thisLabel:', thisLabel, 'down:', down);
+      //   return !(down && thisLabel);
+      // }
     });
   </script>
 </dom-module>

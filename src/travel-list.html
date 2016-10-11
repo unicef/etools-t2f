@@ -28,6 +28,13 @@
       box-sizing: border-box;
       padding: 5px;
     }
+    .cardheading {
+      display: block;
+      font-size: 20px;
+      margin-left: 20px;
+      font-weight: 500;
+      line-height: 64px;
+    }
     .w10 {
       width: 10%;
     }
@@ -57,7 +64,9 @@
 
     <!-- Filtering -->
 
-    <paper-card heading="{{showingResults}} results to show">
+    <paper-card>
+
+      <span class="textprim cardheading">{{showingResults}} results to show</span>
 
       <list-header data="[[headings]]" order-obj="{{orderObj}}">
       </list-header>
@@ -96,13 +105,13 @@
           type: Array,
           // Should fetch these from a common structure.json !!
           value: [
-            { "size": 15, "label": "Ref Num." },
-            { "size": 20, "label": "Purpose" },
-            { "size": 15, "label": "Travelers" },
-            { "size": 10, "label": "Start Date" },
-            { "size": 10, "label": "End Date" },
+            { "size": 15, "label": "Reference #" },
+            { "size": 20, "label": "Purpose of travel" },
+            { "size": 15, "label": "Traveler(s)" },
+            { "size": 10, "label": "Start" },
+            { "size": 10, "label": "End" },
             { "size": 15, "label": "Status" },
-            { "size": 15, "label": "Actions" }
+            { "size": 15, "label": "Duplicate" }
           ]
         },
         pages: {
@@ -115,7 +124,7 @@
         orderObj: {
           type: Object,
           value: {
-            orderedBy: 'Purpose',
+            orderedBy: 'Purpose of travel',
             reverse: false
           },
           observer: '_orderingChanged'
@@ -127,11 +136,11 @@
         labelLib: {
           type: Object,
           value: {
-            'Ref Num.': 'id',
-            'Purpose': 'purpose',
-            'Travelers': 'traveler',
-            'Start Date': 'start_date',
-            'End Date': 'start_date',
+            'Reference #': 'id',
+            'Purpose of travel': 'purpose',
+            'Traveler(s)': 'traveler',
+            'Start': 'start_date',
+            'End': 'start_date',
             'Status': 'status'
           }
         }
@@ -155,7 +164,7 @@
       },
       handleListResponse: function(event, data) {
 
-        console.info('Got payload', data);
+        // console.info('Got payload', data);
 
         this.set('datalength', data.total_count);
         data.data.forEach(function(travel) {
