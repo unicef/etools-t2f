@@ -25,6 +25,10 @@
             *[hidden] {
                 display: none;
             }
+            paper-tabs, paper-toolbar {
+                background-color: var(--paper-blue-900);
+                color: #fff;
+            }
         </style>
 
         <etools-ajax url="/mock-data/structure.json" on-success="_handleStructure"></etools-ajax>
@@ -61,7 +65,7 @@
                     type: Object,
                     value: {},
                     notify: true,
-                    reflectToAttribute: true
+                    reflectToAttribute: false
                 }
             },
             _handleStructure: function(event, data) {

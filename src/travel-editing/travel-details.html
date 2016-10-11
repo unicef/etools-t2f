@@ -2,13 +2,19 @@
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+
 
 
 <link rel="import" href="../shared-styles.html">
+<link rel="import" href="./repeatable-field-set.html">
+<link rel="import" href="./searchable-selection.html">
+<link rel="import" href="./datepicker-input.html">
 
 <dom-module id="travel-details">
     <template>
-        <style include="shared-styles">
+        <style include="shared-styles iron-flex iron-flex-alignment iron-flex-factors">
             :host {
                 display: block;
                 width: 100%;
@@ -16,11 +22,27 @@
             *[hidden] {
                 display: none;
             }
+
+
         </style>
 
+        <repeatable-field-set hide-plus="true" title="Travel Details">
+            <div>
+                <div class="layout horizontal">
+                    <searchable-selection class="flex-3" options="{{structure.traveler}}" label="Traveler"></searchable-selection>
+                    <searchable-selection class="flex-3" options="{{structure.supervisor}}" label="Supervisor"></searchable-selection>
+                    <searchable-selection class="flex-3" options="{{structure.office}}" label="Office"></searchable-selection>
+                    <searchable-selection class="flex-3" options="{{structure.section}}" label="Section"></searchable-selection>
+                </div>
+                <div class="layout horizontal">
+                    <datepicker-input class="flex-3" label="Start Date"></datepicker-input>
+                    <datepicker-input class="flex-3" label="End Date"></datepicker-input>
+                    <div class="flex-6"></div>
+                </div>
+            </div>
+        </repeatable-field-set>
 
-
-            </template>
+    </template>
 
     <script>
         Polymer({

@@ -6,7 +6,7 @@
     "src/travel-editing/repeatable-field-set.html",
     "src/travel-list/list-element.html",
     "src/travel-list/list-header.html",
-    "src/travel-list/travel-list.html",
+    "src/travel-list.html",
     "src/custom-404.html",
     "src/shared-styles.html"
 

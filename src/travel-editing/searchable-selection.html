@@ -1,0 +1,116 @@
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+
+
+
+
+<dom-module id="searchable-selection">
+    <template>
+        <style include="">
+            :host {
+                display: block;
+                width: 100%;
+            }
+            *[hidden] {
+                display: none;
+            }
+            paper-dropdown-menu {
+                width:90%;
+                margin-left: 5%;
+                margin-right: 5%;
+            }
+            paper-input {
+                position: absolute;
+                top:0;
+                left:0;
+                width:90%;
+                margin: 10px;
+            }
+            .input-wrapper {
+                position: relative;
+                z-index:10;
+                background: #fff;
+                width:100%;
+                height: 100%;
+            }
+            paper-listbox {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+            .list-wrapper {
+                position: relative;
+                z-index:5;
+                margin-top:40px;
+                height:50vh;
+                width:100%;
+                overflow-y: scroll;
+            }
+        </style>
+
+
+        <paper-dropdown-menu label="[[label]]" horizontal-align="left">
+            <div class="dropdown-content">
+                <div class="input-wrapper">
+                    <paper-input no-label-float label="Search" type="text" value="{{search}}"></paper-input>
+                </div>
+                <div class="list-wrapper">
+                    <paper-listbox >
+                        <template is="dom-repeat" items="[[realOptions]]" filter="{{_filterFunction(search)}}">
+                            <paper-item>{{item.label}}</paper-item>
+                        </template>
+                    </paper-listbox>
+                </div>
+            </div>
+        </paper-dropdown-menu>
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'searchable-selection',
+            properties: {
+                options: {
+                    type: Array,
+                    observer: '_optionsChanged'
+                },
+                label: {
+                    type: String
+                },
+                showSearch: {
+                    type: Boolean,
+                    value: true,
+                },
+                value: {
+                    type: String,
+                    notify: true,
+                },
+                realOptions: {
+                    type: Array
+                }
+            },
+            _optionsChanged: function() {
+                if (this.options && this.options.length > 0 && !(this.options[0] instanceof Object)) {
+                    var opt = this.options.map(function(item, index) {
+                        return {value: index, label: item};
+                    });
+                    this.set('realOptions', opt)
+                }
+            },
+            _filterFunction: function(searchKey) {
+                return function (item){
+                    if(searchKey && searchKey.length > 0) {
+                        return item.label && item.label.indexOf(searchKey) > -1;
+                    }
+                    return true
+                };
+
+            }
+        });
+    </script>
+</dom-module>
