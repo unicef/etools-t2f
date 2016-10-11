@@ -1,0 +1,44 @@
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+
+
+
+
+<dom-module id="paper-chip">
+    <template>
+        <style >
+            :host {
+                display: block;
+                width: 100%;
+                background: gray;
+            }
+
+
+        </style>
+
+      <span>
+          {{data.label}}
+          <paper-icon-button icon="close" on-click="_fireClose"></paper-icon-button>
+      </span>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'paper-chip',
+            properties: {
+                data: {
+                    type: Object,
+                    notifies: true
+                }
+            },
+            _fireClose: function () {
+                this.fire('chip-delete', this.data)
+            }
+
+        });
+    </script>
+</dom-module>
