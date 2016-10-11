@@ -57,7 +57,7 @@
 
     <!-- Filtering -->
 
-    <paper-card heading="{{headingText}}">
+    <paper-card heading="{{showingResults}} results to show">
 
       <list-header data="[[headings]]" order-obj="{{orderObj}}">
       </list-header>
@@ -68,7 +68,8 @@
 
       <list-pagination
         maxnr="{{datalength}}"
-        pages="{{pages}}">
+        pages="{{pages}}"
+        showing-results="{{showingResults}}">
       </list-pagination>
 
     </paper-card>
@@ -87,9 +88,9 @@
           type: Number,
           value: 0
         },
-        headingText: {
+        showingResults: {
           type: String,
-          computed: '_computeHeading(pages, datalength)'
+          computed: '_computeResultsToShow(pages, datalength)'
         },
         headings: {
           type: Array,
@@ -134,10 +135,10 @@
           }
         }
       },
-      _computeHeading: function(pages, datalength) {
+      _computeResultsToShow: function(pages, datalength) {
         var start = (pages.page - 1) * pages.itemsPerPage;
         var end = (pages.itemsPerPage * pages.page) > datalength ? datalength : (pages.itemsPerPage * pages.page);
-        return start + ' - ' + end + ' of ' + datalength + ' results to show';
+        return start + ' - ' + end + ' of ' + datalength;
       },
       _processParams: function(orderObj, pages, labelLib) {
         return {

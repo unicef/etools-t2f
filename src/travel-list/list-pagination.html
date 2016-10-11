@@ -48,7 +48,7 @@
         </paper-listbox>
       </paper-dropdown-menu>
 
-      <span>{{firstShown}} - {{lastShown}} of {{maxnr}}</span>
+      <span>{{showingResults}}</span>
 
       <iron-icon
         icon="icons:chevron-left"
@@ -98,15 +98,8 @@
           type: Array,
           value: [10, 25, 50, 100]
         },
-        firstShown: {
-          type: Number,
-          computed: '_firstShownNr(pages.itemsPerPage, pages.page)',
-          notify: true
-        },
-        lastShown: {
-          type: Number,
-          computed: '_lastShownNr(pages.itemsPerPage, pages.page, maxnr)',
-          notify: true
+        showingResults: {
+          type: String
         }
       },
       _hideFirst: function(page, itemsPerPage, maxnr) {
@@ -116,14 +109,6 @@
       _hideLast: function(page, itemsPerPage, maxnr) {
 
         return page === Math.ceil(maxnr / itemsPerPage);
-      },
-      _firstShownNr: function(itemsPerPage, page) {
-
-        return itemsPerPage * (page-1);
-      },
-      _lastShownNr: function(itemsPerPage, page, maxnr) {
-
-        return (itemsPerPage * page) > maxnr ? maxnr : (itemsPerPage * page);
       },
       goleft: function() {
 
