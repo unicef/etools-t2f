@@ -90,7 +90,7 @@
         },
         showingResults: {
           type: String,
-          computed: '_computeResultsToShow(pages, datalength)'
+          computed: '_computeResultsToShow(pages, datalength, pages.page)'
         },
         headings: {
           type: Array,
@@ -117,11 +117,12 @@
           value: {
             orderedBy: 'Purpose',
             reverse: false
-          }
+          },
+          observer: '_orderingChanged'
         },
         ajaxParams: {
           type: Object,
-          computed: '_processParams(orderObj, pages, labelLib)'
+          computed: '_processParams(orderObj, pages, labelLib, pages.page)'
         },
         labelLib: {
           type: Object,
@@ -134,6 +135,10 @@
             'Status': 'status'
           }
         }
+      },
+      _orderingChanged: function() {
+
+        this.set('pages.page', 1);
       },
       _computeResultsToShow: function(pages, datalength) {
         var start = (pages.page - 1) * pages.itemsPerPage;
