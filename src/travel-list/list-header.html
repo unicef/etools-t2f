@@ -47,6 +47,8 @@
       _clickOnLabel: function(event) {
 
         var newOrderBy = event.model.item.label;
+        if (newOrderBy === "Actions") { return; } // Don't reorder by passive
+
         if (newOrderBy === this.orderObj.orderedBy) {
           this.set('orderObj', {
             orderedBy: newOrderBy,
@@ -58,7 +60,6 @@
             reverse: false
           });
         }
-        // console.log('HEADER ordering: ', this.orderObj.orderedBy, 'reverse?:', this.orderObj.reverse);
       }
     });
   </script>
