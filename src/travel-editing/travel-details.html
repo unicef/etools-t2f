@@ -37,7 +37,7 @@
                 <div class="layout horizontal">
                     <datepicker-input class="flex-3" label="Start Date"></datepicker-input>
                     <datepicker-input class="flex-3" label="End Date"></datepicker-input>
-                    <searchable-selection class="flex-6" options="[[structure.travel]]" multi label="Travel"></searchable-selection>
+                    <searchable-selection class="flex-6" options="[[structure.travel]]" multi label="Travel" value="{{travelSample}}"></searchable-selection>
                 </div>
             </div>
         </repeatable-field-set>
@@ -56,6 +56,10 @@
                 structure: {
                     type: Object,
                     value: {}
+                },
+                travelSample: {
+                    type: Array,
+//                    value: [{value: 1, label: 'air'}, {value: 2, label: 'plane'}]
                 }
             }
         });

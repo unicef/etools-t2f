@@ -6,6 +6,8 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input-container.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 
 <link rel="import" href="paper-chip.html">
@@ -18,19 +20,17 @@
         <style include="iron-flex iron-flex-alignment">
             :host {
                 display: block;
-                width: 100%;
+                width: calc( 100% - 10px );
+                margin-right:5px;
+                margin-left: 5px;
             }
             *[hidden] {
                 display: none;
             }
             .external-wrapper {
-                width:90%;
-                max-width: 90%;
-                margin-left: 5%;
-                margin-right: 5%;
+                width:100%;
                 position: relative;
             }
-
             .search-input {
                 position: absolute;
                 top:0;
@@ -54,12 +54,20 @@
                 width:100%;
                 height: 45px;
             }
-
-            .multi-wrapper {
+            .multi-container {
                 position: relative;
-                height:44px;
-                border-bottom: 1px solid #737373;
-                margin: 8px 0;
+                height: 61px;
+            }
+            .multi-container paper-input-container {
+                height:45px
+            }
+
+            .custom-input {
+                height: 25px;
+            }
+            .chip-container {
+                position: relative;
+                width:100%;
             }
             paper-listbox {
                 margin-left: 10px;
@@ -86,27 +94,26 @@
             .iron-selected .tick-icon {
                 display: block
             }
-
-            .wide {
-                --paper-menu-button-dropdown: {
-                    width: 100%;
-                }
-            }
         </style>
 
         <div id="main" class="external-wrapper">
             <template is="dom-if" if="{{!multi}}">
-                <paper-input class="value-container" label="[[label]]" value="[[value.label]]"> </paper-input>
+                <paper-input class="value-container" on-tap="_openMenu" label="[[label]]" value="[[value.label]]"> </paper-input>
             </template>
 
             <template is="dom-if" if="{{multi}}">
-                <div class="multi-wrapper">
-                    <template is="dom-repeat" items="[[value]]">
-                        <paper-chip on-chip-delete="_removeItem" data="[[item]]"></paper-chip>
-                    </template>
+                <div class="multi-container" >
+                    <paper-input-container class="chip-container" on-tap="_openMenu">
+                        <label>[[label]]</label>
+                        <div class="paper-input-input custom-input">
+                            <template is="dom-repeat" items="[[value]]">
+                                <paper-chip on-chip-delete="_removeItem" data="[[item]]" class="flex-none self-end "></paper-chip>
+                            </template>
+                        </div>
+                    </paper-input-container>
                 </div>
             </template>
-            <paper-menu-button  horizontal-align="right" id="dropdownMenu" class="wide" ignore-select$="[[multi]]">
+            <paper-menu-button  horizontal-align="right" id="dropdownMenu"  ignore-select$="[[multi]]" opened="{{menuOpened}}">
                 <paper-icon-button icon="arrow-drop-down" class="dropdown-trigger "></paper-icon-button>
                 <div class="dropdown-content ">
                     <div class="input-wrapper">
@@ -150,6 +157,8 @@
                 value: {
                     type: String,
                     notify: true,
+                    reflectToAttribute: true,
+                    observer: '_valueChanged'
                 },
                 realOptions: {
                     type: Array
@@ -160,10 +169,14 @@
                     reflectToAttribute: true
                 },
                 selectedValues: {
-                    notifies: true,
+                    notifies: true
+                },
+                menuOpened: {
+                    type: Boolean,
+                    value: false,
+                    notifies: true
                 }
             },
-            observers: ['_valueSelected(selectedValues.*)'],
             _optionsChanged: function() {
                 if (this.options && this.options.length > 0 && !(this.options[0] instanceof Object)) {
                     var opt = this.options.map(function(item, index) {
@@ -180,6 +193,13 @@
                     return true
                 };
 
+            },
+            _valueChanged: function() {
+                if(this.multi && this.value.length > 0 && !this.selectedValues) {
+                    this.set('selectedValues', this.value.map(function(item) {
+                        return ""+item.value;
+                    }))
+                }
             },
             _valueSelected: function() {
                 var self = this;
@@ -205,20 +225,30 @@
 
             },
             _removeItem: function(event, details) {
-               var newValue = [];
-                this.value.forEach(function(value) {
-                    if(parseInt(value.value, 10) === parseInt(details.value,10)) {
-                        return;
-                    }
-                    newValue.push(value);
-                })
+                var newValue = this.value.filter(function(item) {
+                    return parseInt(item.value, 10) !== parseInt(details.value,10)
+                });
+                var newSelected = this.selectedValues.filter(function(item) {
+                    return parseInt(item, 10) !== parseInt(details.value,10)
+                });
                 this.set('value', newValue);
+                this.set('selectedValues', newSelected);
+
+            },
+            _openMenu: function () {
+                if (this.value && this.value instanceof Array && this.value.length > 0){
+                    return;
+                }
+                this.set('menuOpened', true);
             },
             attached: function() {
                 var self = this;
                 var dropDown =  this.$.dropdownMenu;
                 dropDown.addEventListener('paper-dropdown-open', function() {
-                   dropDown.$.dropdown.style.width = self.$.main.offsetWidth + 'px';
+                    dropDown.$.dropdown.style.width = self.$.main.offsetWidth + 'px';
+                });
+                dropDown.addEventListener('paper-dropdown-close', function() {
+                    self._valueSelected();
                 });
             }
         });
