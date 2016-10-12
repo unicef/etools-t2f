@@ -13,7 +13,7 @@
     }
     .headingrow {
       width: 100%;
-      border-bottom: 1px solid lightgrey;
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.3);
     }
     .localheadings {
       display: block;
@@ -75,13 +75,9 @@
         },
         metaData: {
           type: Array,
-          computed: '_getMetaData(data, orderObj)'
-        },
-        // arrows: {
-        //   type: Object,
-        //   computed: '_computeArrows(data, orderObj)',
-        //   reflectToAttribute: true
-        // }
+          computed: '_getMetaData(data, orderObj)',
+          notify: true
+        }
       },
       _sizeClassGenerator: function(item) {
         return 'w' + item.size;
@@ -118,39 +114,6 @@
         return metaData;
       },
 
-
-
-
-
-      // _computeArrows: function(data, orderObj) {
-      //   // console.log('Computing arrows fn. called');
-      //   // console.log(data, orderObj);
-
-      //   var arrows = data.reduce(function(ret, el) {
-      //     ret.up[el.label] = orderObj.orderedBy === el.label && !orderObj.reverse ? 'hidden' : '';
-      //     ret.down[el.label] = orderObj.orderedBy === el.label && orderObj.reverse ? 'hidden': '';
-      //     return ret;
-      //   }, {up: {}, down: {}});
-
-      //   console.log('Arrows: ', arrows);
-      //   return arrows;
-      // },
-
-
-      // downArr: function (item) {
-      //   console.log('hsgfhjsjfhdjkfhjk');
-      //   return function() {
-      //     this.arrows.down[item.label];
-      //   }
-      // }
-
-
-      // _downwardHidden: function(label) {
-      //   var thisLabel = label === this.orderObj.orderedBy;
-      //   var down = !this.orderObj.reverse;
-      //   console.log('thisLabel:', thisLabel, 'down:', down);
-      //   return !(down && thisLabel);
-      // }
     });
   </script>
 </dom-module>

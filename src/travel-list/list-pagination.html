@@ -1,4 +1,4 @@
-
+ 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
@@ -13,30 +13,35 @@
   <style include="iron-flex shared-styles travel-list">
     :host {
       display: block;
+      padding: 0;
     }
-    .chev {
-      width: 60px;
+    iron-icon {
+      width: 24px;
+      height: 24px;
+      margin: 0 24px;
+      cursor: pointer;
     }
-    /* iron-icon not pale clickable */
-    iron-icon
-    /* unselectable */
-    .pale {
-      /* greying out */
+    iron-icon.textsec {
+      cursor: default;
     }
     .rightfloat {
       float: right;
     }
+    .lh {
+      line-height: 56px;
+    }
+    span.textsec.lh {
+      font-size: 12px;
+    }
     paper-dropdown-menu {
       padding: 0 30px;
-      transform: translate(0, -8px);
-      /* prefixes!! */
     }
   </style>
 
   <template>
     <div class="layout horizontal clearfix rightfloat">
 
-      <span>Rows per page:</span>
+      <span class="textsec lh">Rows per page:</span>
 
       <paper-dropdown-menu no-label-float vertical-align="bottom" horizontal-align="right">
         <paper-listbox class="dropdown-content" on-iron-select="itemsNrChanged" selected="0">
@@ -48,7 +53,7 @@
         </paper-listbox>
       </paper-dropdown-menu>
 
-      <span>{{showingResults}}</span>
+      <span class="textsec lh unselectable">{{showingResults}}</span>
 
       <iron-icon
         icon="icons:chevron-left"
@@ -59,7 +64,7 @@
       <iron-icon
         hidden="{{!hidefirst}}"
         icon="icons:chevron-left"
-        class="chev pale">
+        class="chev textsec">
       </iron-icon>
 
       <iron-icon
@@ -71,7 +76,7 @@
       <iron-icon
         hidden="{{!hidelast}}"
         icon="icons:chevron-right"
-        class="chev pale">
+        class="chev textsec">
       </iron-icon>
 
     </div>
