@@ -5,7 +5,8 @@
     "src/custom-404.html",
     "src/repeatable-field-set.html",
     "src/shared-styles.html",
-    "src/travel-list.html"
+    "src/travel-list.html",
+    "src/travel-status.html"
   ],
   "sourceGlobs": [
    "src/**/*",

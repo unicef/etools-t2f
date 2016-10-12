@@ -1,0 +1,180 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="travel-status">
+
+  <style include="shared-styles iron-flex iron-flex-alignment" is="custom-style">
+
+    :host {
+      display: block;
+    }
+    paper-card {
+      --paper-card-header-color: white;
+      --paper-card-header-text: {
+        font-size: 20px;
+        text-align: center;
+      }
+      --paper-card-header: {
+        background-color: #1E86BF;
+      }
+      --paper-card-content: {
+        /*Set the height of this with mediaquery, the inner ones are flexing!*/
+        height: 300px;
+      }
+    }
+    .reject {
+      display: none;
+    }
+    .reject.blue {
+      display: block;
+    }
+    .circlenr {
+      display: block;
+      float: left;
+      width: 24px;
+      height: 24px;
+      background-color: rgba(0,0,0,0.38);
+      color: white;
+      font-size: 12px;
+      line-height: 24px;
+      border-radius: 50%;
+      text-align: center;
+    }
+    .circlenr iron-icon {
+      color: white;
+      display: none;
+    }
+    .circlenr span.green {
+      display: none;
+    }
+    .circlenr iron-icon.green {
+      display: block;
+    }
+    .circlenr iron-icon.green {
+      width: 18px;
+      padding-left: 3px;
+    }
+    .red, .statuscont span.status.red {
+      color: #EA4022;
+    }
+    .status {
+      color: rgba(0,0,0,0.54);
+      font-size: 14px;
+      padding-left: 6px;
+    }
+
+    .statuscont.appr.rejected {
+      display: none;
+    }
+    .statuscont.green .status {
+      color: rgba(0,0,0,0.87);
+      font-weight: 500;
+    }
+    .statuscont.green .circlenr {
+      background-color: #8DC63F;
+    }
+
+    .statuscont.blue .status {
+      color: rgba(0,0,0,0.87);
+      font-weight: 500;
+    }
+    .statuscont.blue .circlenr {
+      background-color: #00AEEF;
+    }
+    .vertline {
+      margin: 7px 12px;
+      border-left: 1px solid #BDBDBD;
+    }
+
+  </style>
+
+  <template>
+
+    <paper-card heading="Travel status">
+
+      <div class="card-content vertical layout">
+
+        <div class$="statuscont [[_computeStatusClass('Planned', status)]]">
+          <div class="circlenr">
+            <span class$="[[_computeStatusClass('Planned', status)]]">1</span>
+            <iron-icon class$="[[_computeStatusClass('Planned', status)]]" icon="icons:done"></iron-icon>
+          </div>
+          <span class="status">Planned</span>
+        </div>
+
+        <div class="vertline flex"></div>
+
+        <div class$="statuscont [[_computeStatusClass('Submitted', status)]]">
+          <div class="circlenr">
+            <span class$="[[_computeStatusClass('Submitted', status)]]">2</span>
+            <iron-icon class$="[[_computeStatusClass('Submitted', status)]]" icon="icons:done"></iron-icon>
+          </div>
+          <span class="status">Submitted</span>
+        </div>
+
+        <div class="vertline flex"></div>
+
+        <div class$="statuscont appr [[_computeStatusClass('Approved', status)]]">
+          <div class="circlenr">
+            <span class$="[[_computeStatusClass('Approved', status)]]">3</span>
+            <iron-icon class$="[[_computeStatusClass('Approved', status)]]" icon="icons:done"></iron-icon>
+          </div>
+          <span class="status">Approved</span>
+        </div>
+
+        <div class$="statuscont reject [[_computeStatusClass('Rejected', status)]]">
+          <iron-icon class="red" icon="icons:report-problem"></iron-icon>
+          <span class="status red">Rejected</span>
+        </div>
+
+        <div class="vertline flex"></div>
+
+        <div class$="statuscont [[_computeStatusClass('Sent for payment', status)]]">
+          <div class="circlenr">
+            <span class$="[[_computeStatusClass('Sent for payment', status)]]">4</span>
+            <iron-icon class$="[[_computeStatusClass('Sent for payment', status)]]" icon="icons:done"></iron-icon>
+          </div>
+          <span class="status">Sent for payment</span>
+        </div>
+
+<!--         <span>cancelled</span>
+        <span>completed</span> -->
+
+      </div>
+
+      <div class="card-actions">
+        <!-- iffed buttons -->
+      </div>
+
+    </paper-card>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-status',
+      properties: {
+        status: {
+          type: String,
+          value: 'Rejected'
+        }
+      },
+      _computeStatusClass: function(label, status) {
+
+        var statClass = label == status ? 'blue' : '';
+        var statLib = ['Planned', 'Submitted', 'Approved', 'Rejected', 'Sent for payment'];
+        if (statLib.indexOf(label) < statLib.indexOf(status)) {
+          statClass = 'green';
+        }
+        if (status === 'Rejected') {
+          statClass += ' rejected';
+        }
+        return statClass;
+      }
+    });
+  </script>
+</dom-module>
