@@ -25,8 +25,8 @@
             }
         </style>
 
-        <paper-input id="date-input" readonly label="[[label]]" value="[[date]]">
-            <etools-datepicker suffix pretty-date="{{date}}"></etools-datepicker>
+        <paper-input id="date-input" readonly label="[[label]]" on-tap="_openCalendar" value="[[date]]">
+            <etools-datepicker open="{{opened}}" suffix pretty-date="{{date}}"></etools-datepicker>
         </paper-input>
 
     </template>
@@ -42,6 +42,15 @@
                     type: Date,
                     value: null,
                     notify: true,
+                },
+                opened: {
+                    type: Boolean,
+                    value: false
+                }
+            },
+            _openCalendar: function() {
+                if(!this.opened) {
+                    this.set('opened', true)
                 }
             }
 
