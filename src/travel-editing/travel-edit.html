@@ -6,9 +6,11 @@
 <link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
 
-<link   rel="import" href="travel-plan.html">
+<link   rel="import" href="travel-details.html">
 <link   rel="import" href="./travel-attachments.html">
 <link   rel="import" href="./travel-report.html">
 
@@ -21,23 +23,54 @@
             :host {
                 display: block;
                 width: 100%;
+                --paper-tabs: {
+                    background: #FFF;
+                };
+                --paper-tabs-selection-bar-color: #00AEEF;
             }
             *[hidden] {
                 display: none;
             }
-            paper-tabs, paper-toolbar {
-                background-color: var(--paper-blue-900);
-                color: #fff;
+            .custom-toolbar {
+                --paper-toolbar-title: {
+                    margin-left: 12px;
+                };
+                --paper-toolbar-medium: {
+                    height: 112px;
+                };
+                --paper-toolbar: {
+                    background: #FFF;
+                    color: #000;
+                    box-shadow: inset 0 -1px 0 0 rgba(0,0,0,0.26);
+                    margin-bottom: 12px;
+                };
             }
+
         </style>
+
+
 
         <etools-ajax url="/mock-data/structure.json" on-success="_handleStructure"></etools-ajax>
 
-        <paper-tabs selected="{{selected}}">
-            <paper-tab>Travel details</paper-tab>
-            <paper-tab>Attachments</paper-tab>
-            <paper-tab>Travel Report</paper-tab>
-        </paper-tabs>
+        <paper-toolbar class="medium-tall custom-toolbar">
+            <div class="title">Add travel to field</div>
+            <paper-button >
+                <iron-icon icon="get-app"></iron-icon>
+                Export
+            </paper-button>
+            <paper-button >
+                <iron-icon icon="print"></iron-icon>
+                Print
+            </paper-button>
+
+            <paper-tabs  class="bottom " selected="{{selected}}">
+                <paper-tab>Travel details</paper-tab>
+                <paper-tab>Attachments</paper-tab>
+                <paper-tab>Report</paper-tab>
+            </paper-tabs>
+        </paper-toolbar>
+
+
 
         <iron-pages selected="{{selected}}">
             <travel-details structure="[[structure]]"></travel-details>

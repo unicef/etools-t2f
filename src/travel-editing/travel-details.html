@@ -3,6 +3,9 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 
 
 
@@ -22,12 +25,21 @@
             *[hidden] {
                 display: none;
             }
-
+            .custom-margin {
+                width: calc( 100% - 10px );
+                margin-left: 5px;
+            }
 
         </style>
 
         <repeatable-field-set hide-plus="true" title="Travel Plan">
             <div>
+                <div class="layout horizontal">
+                    <paper-checkbox class="flex-3 custom-margin">TA required? </paper-checkbox>
+                    <paper-checkbox class="flex-3 custom-margin">International travel? </paper-checkbox>
+                    <span class="flex-3">Reference #: </span>
+                    <div class="flex-3"></div>
+                </div>
                 <div class="layout horizontal">
                     <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Traveler"></searchable-selection>
                     <searchable-selection class="flex-3" options="[[structure.supervisor]]" label="Supervisor"></searchable-selection>
@@ -37,7 +49,15 @@
                 <div class="layout horizontal">
                     <datepicker-input class="flex-3" label="Start Date"></datepicker-input>
                     <datepicker-input class="flex-3" label="End Date"></datepicker-input>
-                    <searchable-selection class="flex-6" options="[[structure.travel]]" multi label="Travel" value="{{travelSample}}"></searchable-selection>
+                    <paper-input class="flex-3" label="Estimated travel cost"></paper-input>
+                    <searchable-selection class="flex-3" options="[[structure.currency]]"  label="Currency"></searchable-selection>
+                </div>
+                <div class="layout horizontal">
+                    <searchable-selection class="flex-6" options="[[structure.travel]]" multi label="Mode of travel" value="{{travelSample}}"></searchable-selection>
+                    <div class="flex-6"></div>
+                </div>
+                <div class="layout horizontal">
+                    <paper-textarea  label= "Purpose of travel" class="flex-12" required char-counter maxlength="500"></paper-textarea>
                 </div>
             </div>
         </repeatable-field-set>
@@ -59,7 +79,6 @@
                 },
                 travelSample: {
                     type: Array,
-//                    value: [{value: 1, label: 'air'}, {value: 2, label: 'plane'}]
                 }
             }
         });

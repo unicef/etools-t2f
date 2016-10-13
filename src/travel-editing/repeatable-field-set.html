@@ -14,14 +14,18 @@
         <style include="shared-styles">
             :host {
                 display: block;
-                width: 100%;
+                width: calc( 100% - 48px) ;
+                margin: 24px;
+
+                --paper-toolbar-height: 48px;
+                --paper-toolbar-background: #1E86BF;
             }
             *[hidden] {
                 display: none;
             }
-            paper-toolbar {
-                background-color: var(--paper-blue-900);
-                color: #fff;
+            .field-container {
+                background: #FFF;
+                padding: 48px;
             }
         </style>
 
@@ -39,7 +43,7 @@
             </template>
             <iron-collapse id="collapse" opened>
                 <template is="dom-repeat" items="{{model}}">
-                    <paper-material>
+                    <paper-material class="field-container">
                         <content></content>
                     </paper-material>
                 </template>
