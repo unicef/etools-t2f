@@ -10,7 +10,7 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 
-<link rel="import" href="paper-chip.html">
+<link rel="import" href="paper-chip-list.html">
 
 
 
@@ -62,9 +62,7 @@
                 height:45px
             }
 
-            .custom-input {
-                height: 25px;
-            }
+
             .chip-container {
                 position: relative;
                 width:100%;
@@ -103,13 +101,9 @@
 
             <template is="dom-if" if="{{multi}}">
                 <div class="multi-container" >
-                    <paper-input-container class="chip-container" on-tap="_openMenu">
+                    <paper-input-container id="customPaperInput" class="chip-container" on-tap="_openMenu" attr-for-value="chip-value">
                         <label>[[label]]</label>
-                        <div class="paper-input-input custom-input">
-                            <template is="dom-repeat" items="[[value]]">
-                                <paper-chip on-chip-delete="_removeItem" data="[[item]]" class="flex-none self-end "></paper-chip>
-                            </template>
-                        </div>
+                        <paper-chip-list on-chip-delete="_removeItem"  class="paper-input-input" chip-value="{{value}}"></paper-chip-list>
                     </paper-input-container>
                 </div>
             </template>
@@ -157,7 +151,6 @@
                 value: {
                     type: String,
                     notify: true,
-                    reflectToAttribute: true,
                     observer: '_valueChanged'
                 },
                 realOptions: {
@@ -194,9 +187,9 @@
                 };
 
             },
-            _valueChanged: function() {
-                if(this.multi && this.value.length > 0 && !this.selectedValues) {
-                    this.set('selectedValues', this.value.map(function(item) {
+            _valueChanged: function(value) {
+                if(this.multi && value && value.length > 0 && !this.selectedValues) {
+                    this.set('selectedValues', value.map(function(item) {
                         return ""+item.value;
                     }))
                 }
@@ -225,13 +218,9 @@
 
             },
             _removeItem: function(event, details) {
-                var newValue = this.value.filter(function(item) {
-                    return parseInt(item.value, 10) !== parseInt(details.value,10)
-                });
                 var newSelected = this.selectedValues.filter(function(item) {
                     return parseInt(item, 10) !== parseInt(details.value,10)
                 });
-                this.set('value', newValue);
                 this.set('selectedValues', newSelected);
 
             },
