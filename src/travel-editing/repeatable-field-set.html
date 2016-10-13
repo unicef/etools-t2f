@@ -6,12 +6,14 @@
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="../shared-styles.html">
 
 <dom-module id="repeatable-field-set">
     <template>
-        <style include="shared-styles">
+        <style include="shared-styles iron-flex iron-flex-alignment">
             :host {
                 display: block;
                 width: calc( 100% - 48px) ;
@@ -43,7 +45,15 @@
             </template>
             <iron-collapse id="collapse" opened>
                 <template is="dom-repeat" items="{{model}}">
-                    <paper-material class="field-container">
+                    <paper-material class="field-container layout horizontal">
+                        <template is="dom-if" if="{{!hidePlus}}">
+                            <div class="layout vertical center-justified">
+                                <paper-icon-button  icon="cancel"></paper-icon-button>
+                                <template is="dom-if" if="{{allowCopy}}">
+                                    <paper-icon-button  icon="content-copy"></paper-icon-button>
+                                </template>
+                            </div>
+                        </template>
                         <content></content>
                     </paper-material>
                 </template>
@@ -80,6 +90,10 @@
                 showHeader: {
                     type: Boolean,
                     value: true,
+                },
+                allowCopy: {
+                    type: Boolean,
+                    value: false
                 }
             },
             _addElement: function() {

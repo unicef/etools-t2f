@@ -29,11 +29,14 @@
                 width: calc( 100% - 10px );
                 margin-left: 5px;
             }
+            .wide {
+                width:100%;
+            }
 
         </style>
 
         <repeatable-field-set hide-plus="true" title="Travel Plan">
-            <div>
+            <div class="wide">
                 <div class="layout horizontal">
                     <paper-checkbox class="flex-3 custom-margin">TA required? </paper-checkbox>
                     <paper-checkbox class="flex-3 custom-margin">International travel? </paper-checkbox>
@@ -58,6 +61,26 @@
                 </div>
                 <div class="layout horizontal">
                     <paper-textarea  label= "Purpose of travel" class="flex-12" required char-counter maxlength="500"></paper-textarea>
+                </div>
+            </div>
+        </repeatable-field-set>
+
+        <repeatable-field-set  title="Travel Activities" allow-copy>
+            <div>
+                <div class="layout horizontal">
+                    <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Traveler"></searchable-selection>
+                    <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Traveler"></searchable-selection>
+                    <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Traveler"></searchable-selection>
+                    <div class="flex-3"></div>
+                </div>
+                <div class="layout horizontal">
+                    <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Traveler"></searchable-selection>
+                    <searchable-selection class="flex-3" options="[[structure.supervisor]]" label="Supervisor"></searchable-selection>
+                    <searchable-selection class="flex-3" options="[[structure.office]]" label="Office"></searchable-selection>
+                    <searchable-selection class="flex-3" options="[[structure.section]]" label="Section"></searchable-selection>
+                </div>
+                <div class="layout horizontal">
+
                 </div>
             </div>
         </repeatable-field-set>
