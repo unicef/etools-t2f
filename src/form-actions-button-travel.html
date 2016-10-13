@@ -1,0 +1,190 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="form-actions-button-travel">
+
+  <style include="shared-styles iron-flex iron-flex-alignment" is="custom-style">
+    :host {
+      display: block;
+    }
+    paper-button {
+      padding: 0;
+      height: 36px;
+      background-color: #00AEEF;
+      color: white;
+      width: 100%;
+      margin: 0;
+    }
+    paper-menu-button {
+      padding: 0 4px;
+    }
+    paper-icon-button {
+      border-left: 1px solid rgba(255,255,255,0.3);
+    }
+    .main-btn-part {
+      text-align: center;
+    }
+  </style>
+
+  <template>
+
+    <paper-button raised class="layout horizontal">
+      <div  on-click="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
+      <paper-menu-button horizontal-align="right">
+        <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
+        <paper-menu class="dropdown-content">
+          <template is="dom-repeat" items="[[actions.secondary]]">
+
+            <paper-item on-click="_clickSecondary">[[item.name]]</paper-item>
+
+          </template>
+        </paper-menu>
+      </paper-menu-button>
+    </paper-button>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'form-actions-button-travel',
+      properties: {
+        userType: String,
+        status: String,
+        actions: {
+          type: Object,
+          computed: '_computeActions(userType, status)'
+        }
+      },
+      actList: {
+        'submit': {
+          name: 'Submit',
+          icon: '',
+          endPoint: 'submit'
+        },
+        'approve': {
+          name: 'Approve',
+          icon: '',
+          endPoint: 'approve'
+        },
+        'reject': {
+          name: 'Reject',
+          icon: '',
+          endPoint: 'reject'
+        },
+        'cancel': {
+          name: 'Cancel',
+          icon: '',
+          endPoint: 'cancel'
+        },
+        'reOpen': {
+          name: 'Reopen',
+          icon: '',
+          endPoint: 'reopen'
+        },
+        'sendForPayment': {
+          name: 'Send for payment',
+          icon: '',
+          endPoint: 'send_for_payment'
+        },
+        'submitCertificate': {
+          name: 'Submit certificate',
+          icon: '',
+          endPoint: 'submit_certificate'
+        }
+      },
+      _computeActions: function(userType, status) {
+
+        var ret = {};
+
+        switch (userType) {
+
+          case 'traveler', 'administrator':
+            switch (status) {
+              case 'Planned':
+                ret.primary = this.actList.submit;
+                ret.secondary = [this.actList.cancel];
+                break;
+
+              case 'Submitted':
+                ret.primary = this.actList.cancel;
+                ret.secondary = [];
+                break;
+
+              case 'Approved':
+                ret.primary = this.actList.sendForPayment;
+                ret.secondary = [this.actList.cancel];
+                break;
+
+              case 'Rejected':
+                ret.primary = this.actList.submit;
+                ret.secondary = [this.actList.cancel];
+                break;
+
+              case 'Sent for payment':
+                ret.primary = this.actList.submitCertificate;
+                ret.secondary = [];
+                break;
+
+              case 'Cancelled':
+                ret.primary = this.actList.reOpen;
+                ret.secondary = [];
+                break;
+            }
+            break;
+
+          case 'supervisor':
+            switch (status) {
+              case 'Submitted':
+                ret.primary = this.actList.approve;
+                ret.secondary = [this.actList.reject, this.actList.cancel];
+                break;
+            }
+            break;
+
+          case 'ffp':
+            switch (status) {
+              case 'Submitted':
+                ret.primary = this.actList.cancel;
+                ret.secondary = [];
+                break;
+
+              case 'Approved':
+                ret.primary = this.actList.cancel;
+                ret.secondary = [];
+                break;
+
+              case 'Rejected':
+                ret.primary = this.actList.cancel;
+                ret.secondary = [];
+                break;
+
+              case 'Sent for payment':
+                ret.primary = this.actList.cancel;
+                ret.secondary = [];
+                break;
+
+              case 'Cancelled':
+                ret.primary = this.actList.cancel;
+                ret.secondary = [];
+                break;
+            }
+
+        }
+
+        return ret;
+      },
+      _clickPrimary: function() {
+        console.info('Primary action:', this.actions.primary, 'clicked, backend...');
+      },
+      _clickSecondary: function(event) {
+        console.info('Secondary action:', event.model.item, 'clicked, backend...');
+      }
+    });
+  </script>
+</dom-module>

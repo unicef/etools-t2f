@@ -4,6 +4,7 @@
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="form-actions-button-travel.html">
 
 <dom-module id="travel-status">
 
@@ -24,6 +25,9 @@
       --paper-card-content: {
         min-width: 200px;
         padding: 0;
+      }
+      --paper-card-actions: {
+        padding: 24px;
       }
     }
     .big {
@@ -172,7 +176,7 @@
         </div>
 
         <div class="card-actions">
-          <!-- iffed buttons -->
+          <form-actions-button-travel user-type="supervisor" status="Submitted"></form-actions-button-travel>
         </div>
 
       </template>
