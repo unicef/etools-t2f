@@ -21,9 +21,16 @@
       --paper-card-header: {
         background-color: #1E86BF;
       }
+    }
+    paper-card.default {
       --paper-card-content: {
-        /*Set the height of this with mediaquery, the inner ones are flexing!*/
+        /* Set the height of this with mediaquery, the inner ones are flexing! */
         height: 300px;
+      }
+    }
+    paper-card.small {
+      --paper-card-content: {
+        height: 100px;
       }
     }
     .reject {
@@ -58,6 +65,10 @@
       width: 18px;
       padding-left: 3px;
     }
+    .circlenr iron-icon.green.thumbs {
+      width: 16px;
+      padding-left: 4px;
+    }
     .red, .statuscont span.status.red {
       color: #EA4022;
     }
@@ -66,7 +77,16 @@
       font-size: 14px;
       padding-left: 6px;
     }
-
+    .status.black {
+      color: rgba(0,0,0,0.87);
+      font-weight: 500;
+    }
+    .statusdate {
+      color: rgba(0,0,0,0.54);
+      font-size: 12px;
+      line-height: 20px;
+      padding-left: 6px;
+    }
     .statuscont.appr.rejected {
       display: none;
     }
@@ -94,61 +114,88 @@
 
   <template>
 
-    <paper-card heading="Travel status">
+    <paper-card heading="Travel status" class$="[[_isSmallClass(status)]]">
 
-      <div class="card-content vertical layout">
+      <template is="dom-if" if="[[_showFirst(status)]]">
 
-        <div class$="statuscont [[_computeStatusClass('Planned', status)]]">
-          <div class="circlenr">
-            <span class$="[[_computeStatusClass('Planned', status)]]">1</span>
-            <iron-icon class$="[[_computeStatusClass('Planned', status)]]" icon="icons:done"></iron-icon>
+        <div class="card-content vertical layout">
+
+          <div class$="statuscont [[_computeStatusClass('Planned', status)]]">
+            <div class="circlenr">
+              <span class$="[[_computeStatusClass('Planned', status)]]">1</span>
+              <iron-icon class$="[[_computeStatusClass('Planned', status)]]" icon="icons:done"></iron-icon>
+            </div>
+            <span class="status">Planned</span>
           </div>
-          <span class="status">Planned</span>
-        </div>
 
-        <div class="vertline flex"></div>
+          <div class="vertline flex"></div>
 
-        <div class$="statuscont [[_computeStatusClass('Submitted', status)]]">
-          <div class="circlenr">
-            <span class$="[[_computeStatusClass('Submitted', status)]]">2</span>
-            <iron-icon class$="[[_computeStatusClass('Submitted', status)]]" icon="icons:done"></iron-icon>
+          <div class$="statuscont [[_computeStatusClass('Submitted', status)]]">
+            <div class="circlenr">
+              <span class$="[[_computeStatusClass('Submitted', status)]]">2</span>
+              <iron-icon class$="[[_computeStatusClass('Submitted', status)]]" icon="icons:done"></iron-icon>
+            </div>
+            <span class="status">Submitted</span>
           </div>
-          <span class="status">Submitted</span>
-        </div>
 
-        <div class="vertline flex"></div>
+          <div class="vertline flex"></div>
 
-        <div class$="statuscont appr [[_computeStatusClass('Approved', status)]]">
-          <div class="circlenr">
-            <span class$="[[_computeStatusClass('Approved', status)]]">3</span>
-            <iron-icon class$="[[_computeStatusClass('Approved', status)]]" icon="icons:done"></iron-icon>
+          <div class$="statuscont appr [[_computeStatusClass('Approved', status)]]">
+            <div class="circlenr">
+              <span class$="[[_computeStatusClass('Approved', status)]]">3</span>
+              <iron-icon class$="[[_computeStatusClass('Approved', status)]]" icon="icons:done"></iron-icon>
+            </div>
+            <span class="status">Approved</span>
           </div>
-          <span class="status">Approved</span>
-        </div>
 
-        <div class$="statuscont reject [[_computeStatusClass('Rejected', status)]]">
-          <iron-icon class="red" icon="icons:report-problem"></iron-icon>
-          <span class="status red">Rejected</span>
-        </div>
-
-        <div class="vertline flex"></div>
-
-        <div class$="statuscont [[_computeStatusClass('Sent for payment', status)]]">
-          <div class="circlenr">
-            <span class$="[[_computeStatusClass('Sent for payment', status)]]">4</span>
-            <iron-icon class$="[[_computeStatusClass('Sent for payment', status)]]" icon="icons:done"></iron-icon>
+          <div class$="statuscont reject [[_computeStatusClass('Rejected', status)]]">
+            <iron-icon class="red" icon="icons:report-problem"></iron-icon>
+            <span class="status red">Rejected</span>
           </div>
-          <span class="status">Sent for payment</span>
+
+          <div class="vertline flex"></div>
+
+          <div class$="statuscont [[_computeStatusClass('Sent for payment', status)]]">
+            <div class="circlenr">
+              <span class$="[[_computeStatusClass('Sent for payment', status)]]">4</span>
+              <iron-icon class$="[[_computeStatusClass('Sent for payment', status)]]" icon="icons:done"></iron-icon>
+            </div>
+            <span class="status">Sent for payment</span>
+          </div>
         </div>
 
-<!--         <span>cancelled</span>
-        <span>completed</span> -->
+        <div class="card-actions">
+          <!-- iffed buttons -->
+        </div>
 
-      </div>
+      </template>
 
-      <div class="card-actions">
-        <!-- iffed buttons -->
-      </div>
+      <template is="dom-if" if="{{_showCompleted(status)}}">
+        <div class="card-content">
+          <div class="statuscont horizontal layout center green">
+            <div class="circlenr">
+              <iron-icon class="green thumbs" icon="icons:thumb-up"></iron-icon>
+            </div>
+            <div class="flex vertical layout">
+              <span class="status black">Completed</span>
+              <span class="statusdate">on [[completedDate]]</span>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template is="dom-if" if='{{_showCancelled(status)}}'>
+        <div class="card-content">
+          <div class="statuscont horizontal layout center">
+            <iron-icon icon="icons:cancel"></iron-icon>
+            <div class="flex vertical layout">
+              <span class="status black">Completed</span>
+              <span class="statusdate">on [[rejectedDate]]</span>
+            </div>
+          </div>
+        </div>
+      </template>
+
 
     </paper-card>
 
@@ -160,7 +207,15 @@
       properties: {
         status: {
           type: String,
-          value: 'Rejected'
+          value: 'Completed'
+        },
+        rejectedDate: {
+          type: String,
+          value: '13 October, 2016'
+        },
+        completedDate: {
+          type: String,
+          value: '14 October, 2018'
         }
       },
       _computeStatusClass: function(label, status) {
@@ -174,6 +229,18 @@
           statClass += ' rejected';
         }
         return statClass;
+      },
+      _showFirst: function(status) {
+        return ['Cancelled', 'Completed'].indexOf(status) < 0;
+      },
+      _showCancelled: function(status) {
+        return status === 'Cancelled';
+      },
+      _showCompleted: function(status) {
+        return status === 'Completed';
+      },
+      _isSmallClass: function(status) {
+        return ['Cancelled', 'Completed'].indexOf(status) >= 0 ? 'small' : 'default';
       }
     });
   </script>
