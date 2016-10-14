@@ -26,8 +26,10 @@
                 display: none;
             }
             .custom-margin {
-                width: calc( 100% - 10px );
-                margin-left: 5px;
+                width: calc( 100% - 24px );
+                height: auto;
+                margin-left: 12px;
+                margin-bottom: 12px;
             }
             .wide {
                 width:100%;
@@ -35,8 +37,8 @@
 
         </style>
 
-        <repeatable-field-set hide-plus="true" title="Travel Plan">
-            <div class="wide">
+        <repeatable-field-set hide-plus="true" title="Travel Plan" >
+            <div class="wide field-1" >
                 <div class="layout horizontal">
                     <paper-checkbox class="flex-3 custom-margin">TA required? </paper-checkbox>
                     <paper-checkbox class="flex-3 custom-margin">International travel? </paper-checkbox>
@@ -56,33 +58,35 @@
                     <searchable-selection class="flex-3" options="[[structure.currency]]"  label="Currency"></searchable-selection>
                 </div>
                 <div class="layout horizontal">
-                    <searchable-selection class="flex-6" options="[[structure.travel]]" multi label="Mode of travel" value="{{travelSample}}"></searchable-selection>
+                    <searchable-selection class="flex-6" options="[[structure.travel]]" multi label="Mode of travel" value=""></searchable-selection>
                     <div class="flex-6"></div>
                 </div>
                 <div class="layout horizontal">
-                    <paper-textarea  label= "Purpose of travel" class="flex-12" required char-counter maxlength="500"></paper-textarea>
+                    <paper-textarea  label= "Purpose of travel" class="flex-12 custom-margin" required char-counter maxlength="500"></paper-textarea>
                 </div>
             </div>
         </repeatable-field-set>
 
-        <repeatable-field-set  title="Travel Activities" allow-copy>
-            <div>
-                <div class="layout horizontal">
-                    <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Traveler"></searchable-selection>
-                    <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Traveler"></searchable-selection>
-                    <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Traveler"></searchable-selection>
-                    <div class="flex-3"></div>
-                </div>
-                <div class="layout horizontal">
-                    <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Traveler"></searchable-selection>
-                    <searchable-selection class="flex-3" options="[[structure.supervisor]]" label="Supervisor"></searchable-selection>
-                    <searchable-selection class="flex-3" options="[[structure.office]]" label="Office"></searchable-selection>
-                    <searchable-selection class="flex-3" options="[[structure.section]]" label="Section"></searchable-selection>
-                </div>
-                <div class="layout horizontal">
+        <repeatable-field-set title="Travel Activities" model="{{data.activities}}" id-attribute="id" allow-copy>
 
+            <template is="dom-repeat" items="{{data.activities}}">
+                <div class$="wide field-{{item.id}}">
+                    <div class="layout horizontal">
+                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Travel Type" value="{{item.travelerType}}"></searchable-selection>
+                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Partner"></searchable-selection>
+                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Partnership"></searchable-selection>
+                    </div>
+                    <div class="layout horizontal">
+                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Result/Activities to be monitored"></searchable-selection>
+                        <searchable-selection class="flex-8" options="[[structure.supervisor]]" label="Mode of travel" multi></searchable-selection>
+                    </div>
+                    <div class="layout horizontal">
+                        <datepicker-input class="flex-4" label="When?"></datepicker-input>
+                        <paper-checkbox class="flex-8 custom-margin self-end">I am a Primary Traveler </paper-checkbox>
+                    </div>
                 </div>
-            </div>
+            </template>
+
         </repeatable-field-set>
 
     </template>
@@ -94,16 +98,15 @@
                 data: {
                     type: Object,
                     notify: true,
-                    reflectToAttribute: true
+                    value: {
+                        activities: [{id: 1}, {id: 2}]
+                    }
                 },
                 structure: {
                     type: Object,
                     value: {}
-                },
-                travelSample: {
-                    type: Array,
                 }
-            }
+            },
         });
     </script>
 </dom-module>
