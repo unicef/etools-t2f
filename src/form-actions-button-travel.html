@@ -5,6 +5,7 @@
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/etools-ajax/etools-ajax.html">
 
 <link rel="import" href="shared-styles.html">
 
@@ -35,8 +36,18 @@
 
   <template>
 
+    <etools-ajax
+       url="./structure/actions-list.json"
+       on-success="_setActList">
+    </etools-ajax>
+
+    <etools-ajax
+       url="./structure/form-actions-permissions-travel.json"
+       on-success="_setPermissions" />
+    </etools-ajax>
+
     <paper-button raised class="layout horizontal">
-      <div  on-click="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
+      <div on-click="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
       <paper-menu-button horizontal-align="right">
         <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
         <paper-menu class="dropdown-content">
@@ -56,126 +67,27 @@
       properties: {
         userType: String,
         status: String,
+        actList: Object,
+        permissions: Object,
+
         actions: {
           type: Object,
-          computed: '_computeActions(userType, status)'
+          computed: '_computeActions(actList, permissions, status, userType)'
         }
       },
-      actList: {
-        'submit': {
-          name: 'Submit',
-          icon: '',
-          endPoint: 'submit'
-        },
-        'approve': {
-          name: 'Approve',
-          icon: '',
-          endPoint: 'approve'
-        },
-        'reject': {
-          name: 'Reject',
-          icon: '',
-          endPoint: 'reject'
-        },
-        'cancel': {
-          name: 'Cancel',
-          icon: '',
-          endPoint: 'cancel'
-        },
-        'reOpen': {
-          name: 'Reopen',
-          icon: '',
-          endPoint: 'reopen'
-        },
-        'sendForPayment': {
-          name: 'Send for payment',
-          icon: '',
-          endPoint: 'send_for_payment'
-        },
-        'submitCertificate': {
-          name: 'Submit certificate',
-          icon: '',
-          endPoint: 'submit_certificate'
-        }
+      _setActList: function(e, data) {
+        this.set('actList', data);
       },
-      _computeActions: function(userType, status) {
+      _setPermissions: function(e, data) {
+        this.set('permissions', data);
+      },
+      _computeActions: function(actList, permissions, status, userType) {
+        var ret = permissions[userType][status];
 
-        var ret = {};
-
-        switch (userType) {
-
-          case 'traveler', 'administrator':
-            switch (status) {
-              case 'Planned':
-                ret.primary = this.actList.submit;
-                ret.secondary = [this.actList.cancel];
-                break;
-
-              case 'Submitted':
-                ret.primary = this.actList.cancel;
-                ret.secondary = [];
-                break;
-
-              case 'Approved':
-                ret.primary = this.actList.sendForPayment;
-                ret.secondary = [this.actList.cancel];
-                break;
-
-              case 'Rejected':
-                ret.primary = this.actList.submit;
-                ret.secondary = [this.actList.cancel];
-                break;
-
-              case 'Sent for payment':
-                ret.primary = this.actList.submitCertificate;
-                ret.secondary = [];
-                break;
-
-              case 'Cancelled':
-                ret.primary = this.actList.reOpen;
-                ret.secondary = [];
-                break;
-            }
-            break;
-
-          case 'supervisor':
-            switch (status) {
-              case 'Submitted':
-                ret.primary = this.actList.approve;
-                ret.secondary = [this.actList.reject, this.actList.cancel];
-                break;
-            }
-            break;
-
-          case 'ffp':
-            switch (status) {
-              case 'Submitted':
-                ret.primary = this.actList.cancel;
-                ret.secondary = [];
-                break;
-
-              case 'Approved':
-                ret.primary = this.actList.cancel;
-                ret.secondary = [];
-                break;
-
-              case 'Rejected':
-                ret.primary = this.actList.cancel;
-                ret.secondary = [];
-                break;
-
-              case 'Sent for payment':
-                ret.primary = this.actList.cancel;
-                ret.secondary = [];
-                break;
-
-              case 'Cancelled':
-                ret.primary = this.actList.cancel;
-                ret.secondary = [];
-                break;
-            }
-
-        }
+        ret.primary = actList[ret.primary];
+        ret.secondary = ret.secondary.map(function(el, i) {
+          return actList[el];
+        });
 
         return ret;
       },
