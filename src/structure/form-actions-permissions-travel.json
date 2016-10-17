@@ -6,7 +6,7 @@
     },
     "Submitted": {
       "primary": "cancel",
-      "secondary": [""]
+      "secondary": []
     },
     "Approved": {
       "primary": "sendForPayment",
@@ -18,11 +18,11 @@
     },
     "Sent for payment": {
       "primary": "submitCertificate",
-      "secondary": [""]
+      "secondary": []
     },
     "Cancelled": {
       "primary": "reOpen",
-      "secondary": [""]
+      "secondary": []
     }
   },
   "administrator": {
@@ -32,7 +32,7 @@
     },
     "Submitted": {
       "primary": "cancel",
-      "secondary": [""]
+      "secondary": []
     },
     "Approved": {
       "primary": "sendForPayment",
@@ -44,17 +44,17 @@
     },
     "Sent for payment": {
       "primary": "submitCertificate",
-      "secondary": [""]
+      "secondary": []
     },
     "Cancelled": {
       "primary": "reOpen",
-      "secondary": [""]
+      "secondary": []
     }
   },
   "supervisor": {
     "Planned": {
       "primary": "",
-      "secondary": [""]
+      "secondary": []
     },
     "Submitted": {
       "primary": "approve",
@@ -62,45 +62,45 @@
     },
     "Approved": {
       "primary": "",
-      "secondary": [""]
+      "secondary": []
     },
     "Rejected": {
       "primary": "",
-      "secondary": [""]
+      "secondary": []
     },
     "Sent for payment": {
       "primary": "",
-      "secondary": [""]
+      "secondary": []
     },
     "Cancelled": {
       "primary": "",
-      "secondary": [""]
+      "secondary": []
     }
   },
   "ffp": {
     "Planned": {
       "primary": "",
-      "secondary": [""]
+      "secondary": []
     },
     "Submitted": {
       "primary": "cancel",
-      "secondary": [""]
+      "secondary": []
     },
     "Approved": {
       "primary": "cancel",
-      "secondary": [""]
+      "secondary": []
     },
     "Rejected": {
       "primary": "cancel",
-      "secondary": [""]
+      "secondary": []
     },
     "Sent for payment": {
       "primary": "cancel",
-      "secondary": [""]
+      "secondary": []
     },
     "Cancelled": {
       "primary": "",
-      "secondary": [""]
+      "secondary": []
     }
   }
 }

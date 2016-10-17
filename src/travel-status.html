@@ -1,3 +1,18 @@
+<!--
+  Status indicator for the statuses: [
+    'Planned',          'Submitted', 'Approved', 'Rejected',
+    'Sent for payment', 'Cancelled', 'Completed']
+
+  Properties:
+    user-type: required, String, lowercase, eg: 'administrator'
+    status: required, String, Capital, eg: 'Submitted'
+    cancelled-date: String, formatted, eg: '2016/07/19', only needed when status=='Cancelled'
+    completed-date: String, formatted, eg: '2016/07/19', only needed when status=='Completed'
+
+  Files:
+    "./structure/actions-list.json"
+    "./structure/form-actions-permissions-travel.json"
+-->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -27,7 +42,7 @@
         padding: 0;
       }
       --paper-card-actions: {
-        padding: 24px;
+        padding: 0;
       }
     }
     .big {
@@ -117,7 +132,6 @@
       margin: 7px 12px;
       border-left: 1px solid #BDBDBD;
     }
-
   </style>
 
   <template>
@@ -176,7 +190,7 @@
         </div>
 
         <div class="card-actions">
-          <form-actions-button-travel user-type="supervisor" status="Submitted"></form-actions-button-travel>
+          <form-actions-button-travel user-type="[[userType]]" status="[[status]]" show-at-all="{{showActions}}"></form-actions-button-travel>
         </div>
 
       </template>
@@ -213,22 +227,16 @@
 
 
     </paper-card>
-
   </template>
 
   <script>
     Polymer({
       is: 'travel-status',
       properties: {
-        status: {
-          type: String
-        },
-        cancelledDate: {
-          type: String
-        },
-        completedDate: {
-          type: String
-        }
+        status: String,
+        cancelledDate: String,
+        completedDate: String,
+        userType: String
       },
       _computeStatusClass: function(label, status) {
 
@@ -256,4 +264,5 @@
       }
     });
   </script>
+
 </dom-module>

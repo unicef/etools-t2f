@@ -1,3 +1,14 @@
+<!--
+  The two part button, which will fire the form actions
+
+  Properties:
+    user-type: required, String, lowercase, eg: 'administrator'
+    status: required, String, Capital, eg: 'Submitted'
+
+  Files:
+    "./structure/actions-list.json"
+    "./structure/form-actions-permissions-travel.json"
+-->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
@@ -14,6 +25,7 @@
   <style include="shared-styles iron-flex iron-flex-alignment" is="custom-style">
     :host {
       display: block;
+      margin: 24px;
     }
     paper-button {
       padding: 0;
@@ -43,11 +55,14 @@
 
     <etools-ajax
        url="./structure/form-actions-permissions-travel.json"
-       on-success="_setPermissions" />
+       on-success="_setPermissions">
     </etools-ajax>
 
     <paper-button raised class="layout horizontal">
+
       <div on-click="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
+
+      <template is="dom-if" if="[[showDropdown]]">
       <paper-menu-button horizontal-align="right">
         <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
         <paper-menu class="dropdown-content">
@@ -58,6 +73,8 @@
           </template>
         </paper-menu>
       </paper-menu-button>
+      </template>
+
     </paper-button>
   </template>
 
@@ -73,6 +90,14 @@
         actions: {
           type: Object,
           computed: '_computeActions(actList, permissions, status, userType)'
+        },
+        show: {
+          type: Boolean,
+          computed: '_showAtAll(actions)'
+        },
+        showDropdown: {
+          type: Boolean,
+          computed: '_showSecondary(actions)'
         }
       },
       _setActList: function(e, data) {
@@ -91,6 +116,16 @@
 
         return ret;
       },
+      _showAtAll: function(actions) {
+        var shouldShow = actions.primary !== '';
+        console.log('Show at all?', shouldShow);
+        return shouldShow;
+      },
+      _showSecondary: function(actions) {
+        var showSecondary = Array.isArray(actions.secondary) && actions.secondary.length != 0;
+        console.log('Show secondary?', showSecondary);
+        return showSecondary;
+      },
       _clickPrimary: function() {
         console.info('Primary action:', this.actions.primary, 'clicked, backend...');
       },
@@ -99,4 +134,5 @@
       }
     });
   </script>
+
 </dom-module>
