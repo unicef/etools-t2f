@@ -33,6 +33,9 @@
       background-color: #00AEEF;
       color: white;
     }
+    paper-button.grey {
+      background-color: rgba(0,0,0,0.54);
+    }
     paper-menu-button {
       padding: 0 4px;
     }
@@ -57,7 +60,7 @@
     </etools-ajax>
 
     <template is="dom-if" if="[[show]]">
-      <paper-button raised class="layout horizontal">
+      <paper-button raised class$="layout horizontal [[_buttonGreyClass()]]">
 
         <div on-click="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
 
@@ -100,6 +103,9 @@
           type: Boolean,
           computed: '_showSecondary(actions)'
         }
+      },
+      _buttonGreyClass: function() {
+        return (this.actions.primary.name === 'Cancel' && !this._showSecondary(this.actions)) ? 'grey' : '';
       },
       _setActList: function(e, data) {
 
