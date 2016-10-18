@@ -98,27 +98,21 @@
         </style>
 
         <div id="main" class="external-wrapper">
-            <template is="dom-if" if="{{!multi}}">
-                <paper-input class="value-container" on-tap="_openMenu" label="[[label]]" value="[[value.label]]"> </paper-input>
-            </template>
+                <paper-input hidden$="{{multi}}" class="value-container" on-tap="_openMenu" label="[[label]]" value="[[value.label]]"> </paper-input>
 
-            <template is="dom-if" if="{{multi}}">
-                <div class="multi-container" >
+                <div class="multi-container" hidden$="{{!multi}}" >
                     <paper-input-container id="customPaperInput" class="chip-container" on-tap="_openMenu" attr-for-value="chip-value">
                         <label>[[label]]</label>
                         <paper-chip-list on-chip-delete="_removeItem"  class="paper-input-input" chip-value="{{value}}"></paper-chip-list>
                     </paper-input-container>
                 </div>
-            </template>
             <paper-menu-button  horizontal-align="right" id="dropdownMenu"  ignore-select$="[[multi]]" opened="{{menuOpened}}">
                 <paper-icon-button icon="arrow-drop-down" class="dropdown-trigger "></paper-icon-button>
                 <div class="dropdown-content ">
-                    <div class="input-wrapper">
-                        <template is="dom-if" if="!hideSearch">
+                    <div class="input-wrapper"  hidden$="{{hideSearch}}">
                             <paper-input no-label-float class="search-input" label="Search" type="text" value="{{search}}">
                                 <iron-icon icon="search" prefix></iron-icon>
                             </paper-input>
-                        </template>
                     </div>
                     <div class="list-wrapper">
                         <paper-listbox  multi="[[multi]]" attr-for-selected="internal-id" selected="{{selectedValues}}" selected-values="{{selectedValues}}">
