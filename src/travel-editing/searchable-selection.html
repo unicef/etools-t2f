@@ -60,19 +60,12 @@
             .multi-container {
                 position: relative;
                 height: 61px;
-            }
-            .multi-container paper-input-container {
-                height:45px
-            }
 
-
-            .chip-container {
-                position: relative;
-                width:100%;
-            }
-            paper-listbox {
-                margin-left: 8px;
-                margin-right: 8px;
+                --paper-input-container: {
+                    height: 45px;
+                    position: relative;
+                    width:100%;
+                }
             }
             .list-wrapper {
                 position: relative;
@@ -81,12 +74,15 @@
                 min-width:150px;
                 width:100%;
                 overflow-y: auto;
-            }
 
-            paper-item {
-                padding: 0;
+                --paper-listbox: {
+                    margin-left: 8px;
+                    margin-right: 8px;
+                };
+                --paper-item: {
+                    padding: 0;
+                }
             }
-
             .tick-icon {
                 display:none;
                 padding-right:8px;
@@ -101,7 +97,7 @@
                 <paper-input hidden$="{{multi}}" class="value-container" on-tap="_openMenu" label="[[label]]" value="[[value.label]]"> </paper-input>
 
                 <div class="multi-container" hidden$="{{!multi}}" >
-                    <paper-input-container id="customPaperInput" class="chip-container" on-tap="_openMenu" attr-for-value="chip-value">
+                    <paper-input-container id="customPaperInput" on-tap="_openMenu" attr-for-value="chip-value">
                         <label>[[label]]</label>
                         <paper-chip-list on-chip-delete="_removeItem"  class="paper-input-input" chip-value="{{value}}"></paper-chip-list>
                     </paper-input-container>
