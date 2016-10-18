@@ -54,7 +54,7 @@
                     <paper-icon-button hidden$="{{open}}" on-click="_toggle" icon="icons:expand-more"></paper-icon-button>
 
                     <div class="title">[[title]] <span hidden$="{{hidePlus}}">({{model.length}})</span></div>
-                    <paper-fab hidden$="{{hidePlus}}" icon="add" on-click="_addElement" hidden$="{{!open}}"></paper-fab>
+                    <paper-fab hidden$="{{hidePlus}}" icon="add" on-tap="_addElement" hidden$="{{!open}}"></paper-fab>
                 </paper-toolbar>
                 <iron-collapse id="collapse" opened>
                     <template is="dom-repeat" items="[[model]]">
@@ -125,7 +125,7 @@
             _addElement: function(e) {
                 if(!this.hidePlus) {
                     var newObj = {};
-                    newObj[this.idAttribute] = this._findMaxId(e.model.item) + 1;
+                    newObj[this.idAttribute] = this._findMaxId(this.model) + 1;
                     this.push('model', newObj)
                 }
 
