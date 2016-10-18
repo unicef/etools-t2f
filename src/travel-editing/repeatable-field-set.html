@@ -49,31 +49,25 @@
 
         <div class="element-container">
             <paper-material elevation="2">
-                <template is="dom-if" if="{{showHeader}}">
-                    <paper-toolbar>
-                        <paper-icon-button hidden$="{{!open}}" on-click="_toggle" icon="icons:expand-less"></paper-icon-button>
-                        <paper-icon-button hidden$="{{open}}" on-click="_toggle" icon="icons:expand-more"></paper-icon-button>
+                <paper-toolbar hidden$="{{!showHeader}}">
+                    <paper-icon-button hidden$="{{!open}}" on-click="_toggle" icon="icons:expand-less"></paper-icon-button>
+                    <paper-icon-button hidden$="{{open}}" on-click="_toggle" icon="icons:expand-more"></paper-icon-button>
 
-                        <div class="title">[[title]] <span hidden$="{{hidePlus}}">({{model.length}})</span></div>
-                        <template is="dom-if" if="{{!hidePlus}}" >
-                            <paper-fab icon="add" on-click="_addElement" hidden$="{{!open}}"></paper-fab>
-                        </template>
-                    </paper-toolbar>
-                </template>
+                    <div class="title">[[title]] <span hidden$="{{hidePlus}}">({{model.length}})</span></div>
+                    <paper-fab hidden$="{{hidePlus}}" icon="add" on-click="_addElement" hidden$="{{!open}}"></paper-fab>
+                </paper-toolbar>
                 <iron-collapse id="collapse" opened>
                     <template is="dom-repeat" items="[[model]]">
                         <paper-material class="field-container layout horizontal">
-                            <template is="dom-if" if="{{!hidePlus}}">
+                            <div class="action-container layout horizontal" hidden$="{{hidePlus}}">
                                 <paper-badge  hidden$="{{!showCounter}}" label="{{_displayIndex(index)}}" for="side-actions-{{index}}"></paper-badge>
                                 <div class="layout vertical center-justified wrap" id="side-actions-{{index}}">
                                     <paper-icon-button on-click="_deleteElement"   icon="cancel"></paper-icon-button>
-                                    <template is="dom-if" if="{{allowCopy}}">
-                                        <span hidden > {{item.id}}</span>
-                                        <paper-icon-button  on-click="_copyElement"   icon="content-copy"></paper-icon-button>
-                                    </template>
+                                    <span hidden > {{item.id}}</span>
+                                    <paper-icon-button hidden$="{{!allowCopy}}"  on-click="_copyElement"   icon="content-copy"></paper-icon-button>
                                 </div>
                                 <div class="vertical-bar" ></div>
-                            </template>
+                            </div>
                             <content  select="{{_composeSelectId(item)}}"></content>
                         </paper-material>
                     </template>
@@ -129,22 +123,28 @@
                 return '.field-1'
             },
             _addElement: function(e) {
-                var newObj = {};
-                newObj[this.idAttribute] =this._findMaxId(e.model.item) + 1;
-                this.push('model', newObj)
+                if(!this.hidePlus) {
+                    var newObj = {};
+                    newObj[this.idAttribute] = this._findMaxId(e.model.item) + 1;
+                    this.push('model', newObj)
+                }
 
             },
             _deleteElement: function(e) {
-                var index = this._findIndex(e.model.item);
-                if( index !== -1) {
-                    this.splice('model', index, 1);
+                if(!this.hidePlus) {
+                    var index = this._findIndex(e.model.item);
+                    if (index !== -1) {
+                        this.splice('model', index, 1);
+                    }
                 }
             },
             _copyElement: function(e) {
-                var index = this._findIndex(e.model.item);
-                var copy = JSON.parse(JSON.stringify(this.model[index]));
-                copy[this.idAttribute] =  this._findMaxId() + 1;
-                this.splice('model', index + 1, 0, copy );
+                if(!this.hidePlus && this.allowCopy) {
+                    var index = this._findIndex(e.model.item);
+                    var copy = JSON.parse(JSON.stringify(this.model[index]));
+                    copy[this.idAttribute] = this._findMaxId() + 1;
+                    this.splice('model', index + 1, 0, copy);
+                }
 
             },
             _findIndex: function(details) {
