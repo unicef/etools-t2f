@@ -14,16 +14,22 @@
 
 <dom-module id="repeatable-field-set">
     <template>
-        <style include="shared-styles iron-flex iron-flex-alignment iron-flex-factor">
+        <style is="custom-style" include="shared-styles iron-flex iron-flex-alignment iron-flex-factor">
             :host {
                 display: block;
                 width:100%;
                 --paper-toolbar-height: 48px;
-                --paper-toolbar-background: #1E86BF;
+                --paper-toolbar-background: var(--searchable-selection-background, #1E86BF);
                 --paper-fab: {
-                    transform: translate3d(0, 24px, 0);
+                    position:absolute;
+                    right:0;
+                    top:20px;
                     background: #8DC63F;
                     z-index:100;
+                };
+                --paper-toolbar-title: {
+                    text-align: center;
+                    margin-left:0;
                 };
                 --paper-badge-background: rgba(0,0,0,0.38)
             }

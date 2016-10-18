@@ -37,7 +37,9 @@
             .wide {
                 width:100%;
             }
-
+            .orange-header {
+                --searchable-selection-background: #FF9640;
+            }
         </style>
 
         <repeatable-field-set hide-plus="true" title="Travel Plan" >
@@ -113,7 +115,9 @@
 
 
         <repeatable-field-set title="Deductions" model="[1]" hide-plus>
+            <div class="filed-1">
             Deductions placeholder
+            </div>
         </repeatable-field-set>
 
         <repeatable-field-set title="Expenses" model="{{data.expenses}}" id-attribute="id" show-counter>
@@ -140,6 +144,12 @@
                     </div>
                 </div>
             </template>
+        </repeatable-field-set>
+
+        <repeatable-field-set class="orange-header" title="Cost summary" model="[1]" hide-plus>
+            <div class="filed-1">
+                Deductions placeholder
+            </div>
         </repeatable-field-set>
 
 
