@@ -31,7 +31,8 @@
     "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
     "etools-datepicker": "^1.0.0",
     "etools-dropdown": "^1.0.0",
-    "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.1"
+    "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.1",
+    "paper-badge": "PolymerElements/paper-badge#^1.1.4"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

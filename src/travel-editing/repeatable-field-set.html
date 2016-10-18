@@ -8,12 +8,13 @@
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
 
 <link rel="import" href="../shared-styles.html">
 
 <dom-module id="repeatable-field-set">
     <template>
-        <style include="shared-styles iron-flex iron-flex-alignment">
+        <style include="shared-styles iron-flex iron-flex-alignment iron-flex-factor">
             :host {
                 display: block;
                 width:100%;
@@ -23,7 +24,8 @@
                     transform: translate3d(0, 24px, 0);
                     background: #8DC63F;
                     z-index:100;
-                }
+                };
+                --paper-badge-background: rgba(0,0,0,0.38)
             }
             .element-container {
                 display: block;
@@ -37,8 +39,11 @@
                 background: #FFF;
                 padding: 48px;
             }
-            .action-icon {
-                border-right: 1px solid rgba(0,0,0, 0.3);
+            .vertical-bar {
+                height: auto;
+                margin-top: 16px;
+                width: 1px;
+                background: rgba(0,0,0, 0.3);
             }
         </style>
 
@@ -50,8 +55,8 @@
                         <paper-icon-button hidden$="{{open}}" on-click="_toggle" icon="icons:expand-more"></paper-icon-button>
 
                         <div class="title">[[title]] <span hidden$="{{hidePlus}}">({{model.length}})</span></div>
-                        <template is="dom-if" if="{{!hidePlus}}">
-                            <paper-fab icon="add" on-click=_addElement></paper-fab>
+                        <template is="dom-if" if="{{!hidePlus}}" >
+                            <paper-fab icon="add" on-click="_addElement" hidden$="{{!open}}"></paper-fab>
                         </template>
                     </paper-toolbar>
                 </template>
@@ -59,13 +64,15 @@
                     <template is="dom-repeat" items="[[model]]">
                         <paper-material class="field-container layout horizontal">
                             <template is="dom-if" if="{{!hidePlus}}">
-                                <div class="layout vertical center-justified action-icon">
+                                <paper-badge  hidden$="{{!showCounter}}" label="{{_displayIndex(index)}}" for="side-actions-{{index}}"></paper-badge>
+                                <div class="layout vertical center-justified wrap" id="side-actions-{{index}}">
                                     <paper-icon-button on-click="_deleteElement"   icon="cancel"></paper-icon-button>
                                     <template is="dom-if" if="{{allowCopy}}">
                                         <span hidden > {{item.id}}</span>
-                                        <paper-icon-button on-click="_copyElement"   icon="content-copy"></paper-icon-button>
+                                        <paper-icon-button  on-click="_copyElement"   icon="content-copy"></paper-icon-button>
                                     </template>
                                 </div>
+                                <div class="vertical-bar" ></div>
                             </template>
                             <content  select="{{_composeSelectId(item)}}"></content>
                         </paper-material>
@@ -100,6 +107,10 @@
                     type: Boolean,
                     value: true,
                 },
+                showCounter: {
+                    type: Boolean,
+                    value: false,
+                },
                 allowCopy: {
                     type: Boolean,
                     value: false
@@ -107,6 +118,9 @@
                 idAttribute: {
                     type: String
                 }
+            },
+            _displayIndex: function(index) {
+                return index + 1;
             },
             _composeSelectId: function(item) {
                 if(item instanceof Object) {

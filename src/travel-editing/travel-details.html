@@ -26,10 +26,12 @@
                 display: none;
             }
             .custom-margin {
-                width: calc( 100% - 24px );
-                height: auto;
-                margin-left: 12px;
-                margin-bottom: 12px;
+                --paper-input-container: {
+                    width: calc(100% - 24px);
+                    height: auto;
+                    margin-left: 12px;
+                    margin-bottom: 12px;
+                };
             }
             .wide {
                 width:100%;
@@ -46,23 +48,23 @@
                     <div class="flex-3"></div>
                 </div>
                 <div class="layout horizontal">
-                    <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Traveler"></searchable-selection>
-                    <searchable-selection class="flex-3" options="[[structure.supervisor]]" label="Supervisor"></searchable-selection>
-                    <searchable-selection class="flex-3" options="[[structure.office]]" label="Office"></searchable-selection>
-                    <searchable-selection class="flex-3" options="[[structure.section]]" label="Section"></searchable-selection>
+                    <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Traveler" value="{{baseDetails.traveler}}"></searchable-selection>
+                    <searchable-selection class="flex-3" options="[[structure.supervisor]]" label="Supervisor" value="{{baseDetails.supervisor}}"></searchable-selection>
+                    <searchable-selection class="flex-3" options="[[structure.office]]" label="Office" value="{{baseDetails.office}}"></searchable-selection>
+                    <searchable-selection class="flex-3" options="[[structure.section]]" label="Section" value="{{baseDetails.section}}"></searchable-selection>
                 </div>
                 <div class="layout horizontal">
-                    <datepicker-input class="flex-3" label="Start Date"></datepicker-input>
-                    <datepicker-input class="flex-3" label="End Date"></datepicker-input>
-                    <paper-input class="flex-3" label="Estimated travel cost"></paper-input>
-                    <searchable-selection class="flex-3" options="[[structure.currency]]"  label="Currency"></searchable-selection>
+                    <datepicker-input class="flex-3" label="Start Date" value="{{baseDetails.startDate}}"></datepicker-input>
+                    <datepicker-input class="flex-3" label="End Date " value="{{baseDetails.endDate}}"></datepicker-input>
+                    <paper-input class="flex-3 custom-margin" label="Estimated travel cost" value="{{baseDetails.estimatedTravelCost}}"></paper-input>
+                    <searchable-selection class="flex-3" options="[[structure.currency]]"  label="Currency" value="{{baseDetails.currency}}"></searchable-selection>
                 </div>
                 <div class="layout horizontal">
-                    <searchable-selection class="flex-6" options="[[structure.travel]]" multi label="Mode of travel" value=""></searchable-selection>
+                    <searchable-selection class="flex-6" options="[[structure.travel]]" multi label="Mode of travel" value="{{baseDetails.modeOfTravel}}"></searchable-selection>
                     <div class="flex-6"></div>
                 </div>
                 <div class="layout horizontal">
-                    <paper-textarea  label= "Purpose of travel" class="flex-12 custom-margin" required char-counter maxlength="500"></paper-textarea>
+                    <paper-textarea  label= "Purpose of travel" class="flex-12 custom-margin" required char-counter maxlength="500" value="{{baseDetails.purpose}}"></paper-textarea>
                 </div>
             </div>
         </repeatable-field-set>
@@ -73,21 +75,72 @@
                 <div class$="wide field-{{item.id}}">
                     <div class="layout horizontal">
                         <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Travel Type" value="{{item.travelerType}}"></searchable-selection>
-                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Partner"></searchable-selection>
-                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Partnership"></searchable-selection>
+                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Partner"  value="{{item.partner}}"></searchable-selection>
+                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Partnership"  value="{{item.partnership}}"></searchable-selection>
                     </div>
                     <div class="layout horizontal">
-                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Result/Activities to be monitored"></searchable-selection>
-                        <searchable-selection class="flex-8" options="[[structure.supervisor]]" label="Mode of travel" multi></searchable-selection>
+                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Result/Activities to be monitored"  value="{{item.activitiesToBeMonitored}}"></searchable-selection>
+                        <searchable-selection class="flex-8" options="[[structure.supervisor]]" label="Travel locations" multi  value="{{item.modeOfTravel}}"></searchable-selection>
                     </div>
                     <div class="layout horizontal">
-                        <datepicker-input class="flex-4" label="When?"></datepicker-input>
+                        <datepicker-input class="flex-4" label="When?"  value="{{item.when}}"></datepicker-input>
                         <paper-checkbox class="flex-8 custom-margin self-end">I am a Primary Traveler </paper-checkbox>
                     </div>
                 </div>
             </template>
 
         </repeatable-field-set>
+
+        <repeatable-field-set title="Itinerary" model="{{data.itinerary}}" id-attribute="id" show-counter>
+            <template is="dom-repeat" items="{{data.itinerary}}">
+                <div class$="wide field-{{item.id}}">
+                    <div class="layout horizontal">
+                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="From" value="{{item.from}}"></searchable-selection>
+                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="To" value="{{item.to}}"></searchable-selection>
+                        <searchable-selection class="flex-4" options="[[structure.traveler]]" label="DSA Region" value="{{item.dsaRegion}}"></searchable-selection>
+                    </div>
+
+                    <div class="layout horizontal">
+                        <datepicker-input class="flex-4" label="Departing"  value="{{item.departing}}"></datepicker-input>
+                        <datepicker-input class="flex-4" label="Arriving"  value="{{item.arriving}}"></datepicker-input>
+                        <searchable-selection class="flex-2" options="[[structure.traveler]]" label="Mode of  travel" value="{{item.modeOfTravel}}"></searchable-selection>
+                        <paper-checkbox class="flex-2 custom-margin self-end">Overnight travel? </paper-checkbox>
+                    </div>
+                </div>
+            </template>
+        </repeatable-field-set>
+
+
+        <repeatable-field-set title="Deductions" model="[1]" hide-plus>
+            Deductions placeholder
+        </repeatable-field-set>
+
+        <repeatable-field-set title="Expenses" model="{{data.expenses}}" id-attribute="id" show-counter>
+            <template is="dom-repeat" items="{{data.expenses}}">
+                <div class$="wide field-{{item.id}}">
+                    <div class="layout horizontal">
+                        <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Travel expense type" value="{{item.expenseType}}"></searchable-selection>
+                        <paper-input class="flex-3 custom-margin"  label="Amount" type="number"  value="{{item.amount}}"></paper-input>
+                        <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Document currency" value="{{item.documentCurrency}}"></searchable-selection>
+                        <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Accounting currency" value="{{item.accountingCurrency}}"></searchable-selection>
+                    </div>
+                </div>
+            </template>
+        </repeatable-field-set>
+
+        <repeatable-field-set title="Cost Assignment" model="{{data.costAssignment}}" id-attribute="id" show-counter>
+            <template is="dom-repeat" items="{{data.costAssignment}}">
+                <div class$="wide field-{{item.id}}">
+                    <div class="layout horizontal">
+                        <searchable-selection class="flex-6" options="[[structure.traveler]]" label="WBS" value="{{item.wbs}}"></searchable-selection>
+                        <paper-input class="flex-2 custom-margin"  label="Share(%)" type="number"  value="{{item.share}}"></paper-input>
+                        <paper-input class="flex-2 custom-margin"  label="Grant(%)" type="number"  value="{{item.grant}}"></paper-input>
+                        <searchable-selection class="flex-2" options="[[structure.traveler]]" label="Fund" value="{{item.fund}}"></searchable-selection>
+                    </div>
+                </div>
+            </template>
+        </repeatable-field-set>
+
 
     </template>
 
@@ -99,7 +152,11 @@
                     type: Object,
                     notify: true,
                     value: {
-                        activities: [{id: 1}, {id: 2}]
+                        baseDetails: {},
+                        activities: [{id: 1}, {id: 2}],
+                        itinerary: [{id: 1}],
+                        expenses: [{id: 1}],
+                        costAssignment: [{id: 1}]
                     }
                 },
                 structure: {
