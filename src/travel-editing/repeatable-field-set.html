@@ -34,6 +34,9 @@
             }
             *[hidden] {
                 display: none;
+                opacity: 0;
+                height:0;
+                width:0;
             }
             .field-container {
                 background: #FFF;
@@ -125,7 +128,7 @@
             _addElement: function(e) {
                 if(!this.hidePlus) {
                     var newObj = {};
-                    newObj[this.idAttribute] = this._findMaxId(this.model) + 1;
+                    newObj[this.idAttribute] = this._findMaxId() + 1;
                     this.push('model', newObj)
                 }
 
