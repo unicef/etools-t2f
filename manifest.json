@@ -1,6 +1,6 @@
 {
-  "name": "eTools - Partnership Management Portal",
-  "short_name": "eTools - Partnership Management",
+  "name": "ET2F",
+  "short_name": "eT2F",
   "start_url": "/?homescreen=1",
   "display": "standalone",
   "theme_color": "#3f51b5",

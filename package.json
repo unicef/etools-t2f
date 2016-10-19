@@ -1,10 +1,11 @@
 {
-  "name": "polymer-starter-kit-custom-build",
-  "version": "0.0.0",
-  "description": "A starting point for Polymer 1.0 custom build apps",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:PolymerElements/generator-polymer-init-custom-build"
+  "name": "eT2F",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "dev": "polymer serve --port 3000 & npm run watch",
+    "test": "polymer test",
+    "watch": "browser-sync start --proxy localhost:3000 --files 'src/**/*, images/*, mock-data/*' --no-ghost-mode "
   },
   "license": "http://polymer.github.io/LICENSE.txt",
   "bugs": {
@@ -15,6 +16,7 @@
   },
   "private": true,
   "devDependencies": {
+    "browser-sync": "^2.17.0",
     "css-slam": "^1.1.0",
     "del": "^2.2.1",
     "gulp": "gulpjs/gulp#4.0",
