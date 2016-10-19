@@ -13,7 +13,8 @@
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 
 <!-- Own components  -->
-<link rel="import" href="./travel-list.html">
+<link rel="import" href="travel-list.html">
+<link rel="import" href="plan-travel.html">
 <link rel="import" href="./custom-404.html">
 
 <dom-module id="my-app">
@@ -59,10 +60,10 @@
 
     <app-location route="{{route}}"></app-location>
     <app-route
-        route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}">
+            route="{{route}}"
+            pattern="/:page"
+            data="{{routeData}}"
+            tail="{{subroute}}">
     </app-route>
 
     <app-drawer-layout fullbleed>
@@ -81,6 +82,7 @@
 
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <travel-list name="travel-list"></travel-list>
+          <plan-travel name="plan-travel"></plan-travel>
           <custom-404 name="custom-404"></custom-404>
         </iron-pages>
 
