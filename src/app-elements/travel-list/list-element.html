@@ -64,6 +64,35 @@
       margin-left: 10px;
       color: rgba(0,0,0,0.54);
     }
+    .statusdiv {
+      height: 32px;
+      border-radius: 2px;
+      margin: 8px 16px 8px 0;
+      font-size: 13px;
+      line-height: 32px;
+      text-align: center;
+    }
+    .statusdiv.approved {
+      background-color: rgba(141,198,63,0.6);
+    }
+    .statusdiv.planned {
+      background-color: rgba(250,237,119,0.6);
+    }
+    .statusdiv.submitted {
+      background-color: rgba(206,188,6,0.6);
+    }
+    .statusdiv.sent {
+      background-color: rgba(30,134,191,0.6);
+    }
+    .statusdiv.rejected {
+      background-color: rgba(234,64,34,0.6);
+    }
+    .statusdiv.cancelled {
+      background-color: rgba(0,0,0,0.38);
+    }
+    .statusdiv.completed {
+      background-color: rgba(0,0,0,0.24);
+    }
   </style>
 
   <template>
@@ -83,7 +112,11 @@
         <div class="headings textprim w23 truncate">[[data.purpose]]</div>
         <div class="headings textprim w11">[[data.start_date]]</div>
         <div class="headings textprim w11">[[data.end_date]]</div>
-        <div class="headings textprim bold capital w13">[[data.status]]</div>
+        <div class="headings textprim bold capital w13">
+          <div class$="statusdiv [[_statusClass(data)]]">
+            <span class="statusdivtext">[[data.status]]</span>
+          </div>
+        </div>
         <div class="headings textsec w5">
           <!-- Turn this icon into a selection menu with logic,
           the contained icons will be the following:
@@ -106,7 +139,6 @@
       },
       _statusClass: function(data) {
         var status = data.status;
-        console.log(status);
         return {
           planned: 'planned',
           approved: 'approved',
