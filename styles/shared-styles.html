@@ -117,6 +117,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --paper-icon-button-ink-color: var(--light-ink-color);
       }
 
+      h1 {
+        font-size: 22px;
+        margin: 16px 0;
+        color: #212121;
+      }
+      .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .clearfix:after {
+        visibility: hidden;
+        display: block;
+        font-size: 0;
+        content: " ";
+        clear: both;
+        height: 0;
+      }
+      *[hidden] {
+        display: none;
+      }
+      .textprim {
+        color: rgba(0,0,0,0.87);
+      }
+      .textsec {
+        color: rgba(0,0,0,0.54);
+      }
+      .texttert {
+        color: rgba(0,0,0,0.38);
+      }
+      .unselectable {
+        -webkit-user-select: none; /* Chrome/Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE10+ */
+      }
+      .capital {
+        text-transform: capitalize;
+      }
+
     </style>
   </template>
 </dom-module>
