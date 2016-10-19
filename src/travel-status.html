@@ -1,0 +1,268 @@
+<!--
+  Status indicator for the statuses: [
+    'Planned',          'Submitted', 'Approved', 'Rejected',
+    'Sent for payment', 'Cancelled', 'Completed']
+
+  Properties:
+    user-type: required, String, lowercase, eg: 'administrator'
+    status: required, String, Capital, eg: 'Submitted'
+    cancelled-date: String, formatted, eg: '2016/07/19', only needed when status=='Cancelled'
+    completed-date: String, formatted, eg: '2016/07/19', only needed when status=='Completed'
+
+  Files:
+    "./structure/actions-list.json"
+    "./structure/form-actions-permissions-travel.json"
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="form-actions-button-travel.html">
+
+<dom-module id="travel-status">
+
+  <style include="shared-styles iron-flex iron-flex-alignment" is="custom-style">
+
+    :host {
+      display: block;
+    }
+    paper-card {
+      --paper-card-header-color: white;
+      --paper-card-header-text: {
+        font-size: 20px;
+        text-align: center;
+      }
+      --paper-card-header: {
+        background-color: #1E86BF;
+      }
+      --paper-card-content: {
+        min-width: 200px;
+        padding: 0;
+      }
+      --paper-card-actions: {
+        padding: 0;
+      }
+    }
+    .big {
+      /* Set the height of this with mediaquery, the inner ones are flexing! */
+      height: 300px;
+    }
+    .small {
+      height: 88px;
+    }
+    .big, .small {
+      padding: 24px;
+      box-sizing: border-box;
+    }
+    .reject {
+      display: none;
+    }
+    .reject.blue {
+      display: block;
+    }
+    .circlenr {
+      display: block;
+      float: left;
+      width: 24px;
+      height: 24px;
+      background-color: rgba(0,0,0,0.38);
+      color: white;
+      font-size: 12px;
+      line-height: 24px;
+      border-radius: 50%;
+      text-align: center;
+    }
+    .circlenr iron-icon {
+      color: white;
+      display: none;
+    }
+    .circlenr span.green {
+      display: none;
+    }
+    .circlenr iron-icon.green {
+      display: block;
+    }
+    .circlenr iron-icon.green {
+      width: 18px;
+      padding-left: 3px;
+    }
+    .circlenr iron-icon.green.thumbs {
+      width: 16px;
+      padding-left: 4px;
+    }
+    .red, .statuscont span.status.red {
+      color: #EA4022;
+    }
+    .status {
+      color: rgba(0,0,0,0.54);
+      font-size: 14px;
+      padding-left: 6px;
+    }
+    .status.black {
+      color: rgba(0,0,0,0.87);
+      font-weight: 500;
+    }
+    .statusdate {
+      color: rgba(0,0,0,0.54);
+      font-size: 12px;
+      line-height: 20px;
+      padding-left: 6px;
+    }
+    .statuscont.appr.rejected {
+      display: none;
+    }
+    .statuscont.green .status {
+      color: rgba(0,0,0,0.87);
+      font-weight: 500;
+    }
+    .statuscont.green .circlenr {
+      background-color: #8DC63F;
+    }
+
+    .statuscont.blue .status {
+      color: rgba(0,0,0,0.87);
+      font-weight: 500;
+    }
+    .statuscont.blue .circlenr {
+      background-color: #00AEEF;
+    }
+    .vertline {
+      margin: 7px 12px;
+      border-left: 1px solid #BDBDBD;
+    }
+  </style>
+
+  <template>
+
+    <paper-card heading="Travel status">
+
+      <template is="dom-if" if="[[_showFirst(status)]]">
+
+        <div class="card-content">
+          <div class$="[[_isSmallClass(status)]] vertical layout">
+
+            <div class$="statuscont [[_computeStatusClass('Planned', status)]]">
+              <div class="circlenr">
+                <span class$="[[_computeStatusClass('Planned', status)]]">1</span>
+                <iron-icon class$="[[_computeStatusClass('Planned', status)]]" icon="icons:done"></iron-icon>
+              </div>
+              <span class="status">Planned</span>
+            </div>
+
+            <div class="vertline flex"></div>
+
+            <div class$="statuscont [[_computeStatusClass('Submitted', status)]]">
+              <div class="circlenr">
+                <span class$="[[_computeStatusClass('Submitted', status)]]">2</span>
+                <iron-icon class$="[[_computeStatusClass('Submitted', status)]]" icon="icons:done"></iron-icon>
+              </div>
+              <span class="status">Submitted</span>
+            </div>
+
+            <div class="vertline flex"></div>
+
+            <div class$="statuscont appr [[_computeStatusClass('Approved', status)]]">
+              <div class="circlenr">
+                <span class$="[[_computeStatusClass('Approved', status)]]">3</span>
+                <iron-icon class$="[[_computeStatusClass('Approved', status)]]" icon="icons:done"></iron-icon>
+              </div>
+              <span class="status">Approved</span>
+            </div>
+
+            <div class$="statuscont reject [[_computeStatusClass('Rejected', status)]]">
+              <iron-icon class="red" icon="icons:report-problem"></iron-icon>
+              <span class="status red">Rejected</span>
+            </div>
+
+            <div class="vertline flex"></div>
+
+            <div class$="statuscont [[_computeStatusClass('Sent for payment', status)]]">
+              <div class="circlenr">
+                <span class$="[[_computeStatusClass('Sent for payment', status)]]">4</span>
+                <iron-icon class$="[[_computeStatusClass('Sent for payment', status)]]" icon="icons:done"></iron-icon>
+              </div>
+              <span class="status">Sent for payment</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="card-actions">
+          <form-actions-button-travel user-type="[[userType]]" status="[[status]]" show-at-all="{{showActions}}"></form-actions-button-travel>
+        </div>
+
+      </template>
+
+      <template is="dom-if" if="{{_showCompleted(status)}}">
+        <div class="card-content">
+          <div class$="[[_isSmallClass(status)]]">
+            <div class="statuscont horizontal layout center green">
+              <div class="circlenr">
+                <iron-icon class="green thumbs" icon="icons:thumb-up"></iron-icon>
+              </div>
+              <div class="flex vertical layout">
+                <span class="status black">Completed</span>
+                <span class="statusdate">on [[completedDate]]</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template is="dom-if" if='{{_showCancelled(status)}}'>
+        <div class="card-content">
+          <div class$="[[_isSmallClass(status)]]">
+            <div class="statuscont horizontal layout center">
+              <iron-icon icon="icons:cancel"></iron-icon>
+              <div class="flex vertical layout">
+                <span class="status black">Cancelled</span>
+                <span class="statusdate">on [[cancelledDate]]</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
+
+    </paper-card>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-status',
+      properties: {
+        status: String,
+        cancelledDate: String,
+        completedDate: String,
+        userType: String
+      },
+      _computeStatusClass: function(label, status) {
+
+        var statClass = label == status ? 'blue' : '';
+        var statLib = ['Planned', 'Submitted', 'Approved', 'Rejected', 'Sent for payment'];
+        if (statLib.indexOf(label) < statLib.indexOf(status)) {
+          statClass = 'green';
+        }
+        if (status === 'Rejected') {
+          statClass += ' rejected';
+        }
+        return statClass;
+      },
+      _showFirst: function(status) {
+        return ['Cancelled', 'Completed'].indexOf(status) < 0;
+      },
+      _showCancelled: function(status) {
+        return status === 'Cancelled';
+      },
+      _showCompleted: function(status) {
+        return status === 'Completed';
+      },
+      _isSmallClass: function(status) {
+        return ['Cancelled', 'Completed'].indexOf(status) >= 0 ? 'small' : 'big';
+      }
+    });
+  </script>
+
+</dom-module>
