@@ -1,0 +1,174 @@
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/etools-ajax/etools-ajax.html">
+
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="travel-list/list-element.html">
+<link rel="import" href="travel-list/list-header.html">
+<link rel="import" href="travel-list/list-pagination.html">
+
+
+<dom-module id="travel-list">
+
+  <style include="iron-flex shared-styles">
+    :host {
+      display: block;
+      padding: 10px 30px;
+    }
+    paper-card {
+      width: 100%;
+      margin-top: 20px;
+    }
+    .cardheading {
+      display: block;
+      font-size: 20px;
+      margin-left: 20px;
+      font-weight: 500;
+      line-height: 64px;
+    }
+    .w10 {
+      width: 10%;
+    }
+    .w15 {
+      width: 15%;
+    }
+    .w20 {
+      width: 20%;
+    }
+  </style>
+
+  <template>
+
+    <etools-ajax
+      url="http://localhost:8000/api/et2f/travels/"
+      params='{{ajaxParams}}'
+      auto=true
+      on-success="handleListResponse">
+    </etools-ajax>
+
+    <div class="horizontal layout">
+      <h3 class="flex">Travel to field (heading)</h3>
+      <a href="/plan-travel" tabindex="-1">
+        <paper-button raised>Add New Travel</paper-button>
+      </a>
+    </div>
+
+    <!-- Filtering -->
+
+    <paper-card>
+
+      <span class="textprim cardheading">{{showingResults}} results to show</span>
+
+      <list-header data="[[headings]]" order-obj="{{orderObj}}">
+      </list-header>
+
+      <template is="dom-repeat" items="[[data]]">
+        <list-element data="[[item]]"></list-element>
+      </template>
+
+      <list-pagination
+        maxnr="{{datalength}}"
+        pages="{{pages}}"
+        showing-results="{{showingResults}}">
+      </list-pagination>
+
+    </paper-card>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-list',
+      properties: {
+        data: {
+          type: Array,
+          value: []
+        },
+        datalength: {
+          type: Number,
+          value: 0
+        },
+        showingResults: {
+          type: String,
+          computed: '_computeResultsToShow(pages, datalength, pages.page)'
+        },
+        headings: {
+          type: Array,
+          // Should fetch these from a common structure.json !!
+          value: [
+            { "size": 15, "label": "Reference #" },
+            { "size": 20, "label": "Purpose of travel" },
+            { "size": 15, "label": "Traveler(s)" },
+            { "size": 10, "label": "Start" },
+            { "size": 10, "label": "End" },
+            { "size": 15, "label": "Status" },
+            { "size": 15, "label": "Duplicate" }
+          ]
+        },
+        pages: {
+          type: Object,
+          value: {
+            itemsPerPage: 10,
+            page: 1
+          }
+        },
+        orderObj: {
+          type: Object,
+          value: {
+            orderedBy: 'Purpose of travel',
+            reverse: false
+          },
+          observer: '_orderingChanged'
+        },
+        ajaxParams: {
+          type: Object,
+          computed: '_processParams(orderObj, pages, labelLib, pages.page)'
+        },
+        labelLib: {
+          type: Object,
+          value: {
+            'Reference #': 'id',
+            'Purpose of travel': 'purpose',
+            'Traveler(s)': 'traveller',
+            'Start': 'start_date',
+            'End': 'start_date',
+            'Status': 'status'
+          }
+        }
+      },
+      _orderingChanged: function() {
+
+        this.set('pages.page', 1);
+      },
+      _computeResultsToShow: function(pages, datalength) {
+        var start = (pages.page - 1) * pages.itemsPerPage;
+        var end = (pages.itemsPerPage * pages.page) > datalength ? datalength : (pages.itemsPerPage * pages.page);
+        return start + ' - ' + end + ' of ' + datalength;
+      },
+      _processParams: function(orderObj, pages, labelLib) {
+        return {
+          sort_by: labelLib[orderObj.orderedBy],
+          reverse: orderObj.reverse,
+          page: pages.page,
+          page_size: pages.itemsPerPage
+        };
+      },
+      handleListResponse: function(event, data) {
+
+        // console.info('Got payload', data);
+
+        this.set('datalength', data.total_count);
+        data.data.forEach(function(travel) {
+          travel.start_date = travel.start_date.split('T')[0];
+          travel.end_date = travel.end_date.split('T')[0];
+        });
+        this.set('data', data.data);
+      }
+    });
+  </script>
+</dom-module>

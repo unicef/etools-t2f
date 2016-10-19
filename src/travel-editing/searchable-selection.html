@@ -1,0 +1,238 @@
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input-container.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+
+<link rel="import" href="paper-chip-list.html">
+
+
+
+
+<dom-module id="searchable-selection">
+    <template>
+        <style include="iron-flex iron-flex-alignment iron-flex-factors">
+            :host {
+                display: block;
+                width: 100%;
+            }
+            *[hidden] {
+                display: none;
+            }
+            .external-wrapper {
+                width: calc( 100% - 24px );
+                margin-right:12px;
+                margin-left: 12px;
+                position: relative;
+            }
+            .search-input {
+                position: absolute;
+                top:0;
+                left:0;
+                width:90%;
+                margin: 8px;
+            }
+            .value-container {
+                position: relative;
+            }
+            #dropdownMenu{
+                position:absolute;
+                right:0;
+                bottom:0;
+                padding:0;
+            }
+            .dropdown-trigger {
+                padding: 8px 0 8px 16px;
+            }
+            .input-wrapper {
+                position: relative;
+                z-index:10;
+                background: #fff;
+                width:100%;
+                height: 45px;
+            }
+            .multi-container {
+                position: relative;
+                height: 61px;
+
+                --paper-input-container: {
+                    height: 45px;
+                    position: relative;
+                    width:100%;
+                }
+            }
+            .list-wrapper {
+                position: relative;
+                z-index:5;
+                max-height:50vh;
+                min-width:150px;
+                width:100%;
+                overflow-y: auto;
+
+                --paper-listbox: {
+                    margin-left: 8px;
+                    margin-right: 8px;
+                };
+                --paper-item: {
+                    padding: 0;
+                }
+            }
+            .tick-icon {
+                display:none;
+                padding-right:8px;
+            }
+
+            .iron-selected .tick-icon {
+                display: block
+            }
+        </style>
+
+        <div id="main" class="external-wrapper">
+                <paper-input hidden$="{{multi}}" class="value-container" on-tap="_openMenu" label="[[label]]" value="[[value.label]]"> </paper-input>
+
+                <div class="multi-container" hidden$="{{!multi}}" >
+                    <paper-input-container id="customPaperInput" on-tap="_openMenu" attr-for-value="chip-value">
+                        <label>[[label]]</label>
+                        <paper-chip-list on-chip-delete="_removeItem"  class="paper-input-input" chip-value="{{value}}"></paper-chip-list>
+                    </paper-input-container>
+                </div>
+            <paper-menu-button  horizontal-align="right" id="dropdownMenu"  ignore-select$="[[multi]]" opened="{{menuOpened}}">
+                <paper-icon-button icon="arrow-drop-down" class="dropdown-trigger "></paper-icon-button>
+                <div class="dropdown-content ">
+                    <div class="input-wrapper"  hidden$="{{hideSearch}}">
+                            <paper-input no-label-float class="search-input" label="Search" type="text" value="{{search}}">
+                                <iron-icon icon="search" prefix></iron-icon>
+                            </paper-input>
+                    </div>
+                    <div class="list-wrapper">
+                        <paper-listbox  multi="[[multi]]" attr-for-selected="internal-id" selected="{{selectedValues}}" selected-values="{{selectedValues}}">
+                            <template is="dom-repeat" items="[[realOptions]]" filter="{{_filterFunction(search)}}">
+                                <paper-item internal-id$="{{item.value}}">
+                                    <iron-icon class="tick-icon" icon="check"></iron-icon>
+                                    {{item.label}}
+                                </paper-item>
+                            </template>
+                        </paper-listbox>
+                    </div>
+                </div>
+            </paper-menu-button>
+        </div>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'searchable-selection',
+            properties: {
+                options: {
+                    type: Array,
+                    observer: '_optionsChanged'
+                },
+                label: {
+                    type: String
+                },
+                hideSearch: {
+                    type: Boolean,
+                    value: false,
+                },
+                value: {
+                    type: String,
+                    notify: true,
+                    observer: '_valueChanged'
+                },
+                realOptions: {
+                    type: Array
+                },
+                multi: {
+                    type: Boolean,
+                    value: false,
+                    reflectToAttribute: true
+                },
+                selectedValues: {
+                    notifies: true
+                },
+                menuOpened: {
+                    type: Boolean,
+                    value: false,
+                    notifies: true
+                }
+            },
+            _optionsChanged: function() {
+                if (this.options && this.options.length > 0 && !(this.options[0] instanceof Object)) {
+                    var opt = this.options.map(function(item, index) {
+                        return {value: index, label: item};
+                    });
+                    this.set('realOptions', opt)
+                }
+            },
+            _filterFunction: function(searchKey) {
+                return function (item){
+                    if(searchKey && searchKey.length > 0) {
+                        return item.label && item.label.indexOf(searchKey) > -1;
+                    }
+                    return true
+                };
+
+            },
+            _valueChanged: function(value) {
+                if(this.multi && value && value.length > 0 && !this.selectedValues) {
+                    this.set('selectedValues', value.map(function(item) {
+                        return ""+item.value;
+                    }))
+                }
+            },
+            _valueSelected: function() {
+                var self = this;
+                if(this.selectedValues instanceof Array) {
+                    var newValue = [];
+                    this.selectedValues.forEach(function(selected) {
+                        self.realOptions.forEach(function(option){
+                            if(parseInt(option.value, 10) === parseInt(selected, 10)) {
+                                newValue.push(option);
+                            }
+                        })
+                    });
+                    self.set('value', newValue);
+
+                } else {
+                    this.realOptions.forEach(function(item) {
+                        if(item.value === parseInt(self.selectedValues, 10)) {
+                            self.set('value', item);
+                        }
+                    })
+                }
+
+
+            },
+            _removeItem: function(event, details) {
+                var newSelected = this.selectedValues.filter(function(item) {
+                    return parseInt(item, 10) !== parseInt(details.value,10)
+                });
+                this.set('selectedValues', newSelected);
+
+            },
+            _openMenu: function () {
+                if (this.value && this.value instanceof Array && this.value.length > 0){
+                    return;
+                }
+                this.set('menuOpened', true);
+            },
+            attached: function() {
+                var self = this;
+                var dropDown =  this.$.dropdownMenu;
+                dropDown.addEventListener('paper-dropdown-open', function() {
+                    dropDown.$.dropdown.style.width = self.$.main.offsetWidth + 'px';
+                });
+                dropDown.addEventListener('paper-dropdown-close', function() {
+                    self._valueSelected();
+                });
+            }
+        });
+    </script>
+</dom-module>

@@ -1,0 +1,141 @@
+ 
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="list-pagination">
+
+  <style include="iron-flex shared-styles travel-list">
+    :host {
+      display: block;
+      padding: 0;
+    }
+    iron-icon {
+      width: 24px;
+      height: 24px;
+      margin: 0 24px;
+      cursor: pointer;
+    }
+    iron-icon.textsec {
+      cursor: default;
+    }
+    .rightfloat {
+      float: right;
+    }
+    .lh {
+      line-height: 56px;
+    }
+    span.textsec.lh {
+      font-size: 12px;
+    }
+    paper-dropdown-menu {
+      padding: 0 30px;
+    }
+  </style>
+
+  <template>
+    <div class="layout horizontal clearfix rightfloat">
+
+      <span class="textsec lh">Rows per page:</span>
+
+      <paper-dropdown-menu no-label-float vertical-align="bottom" horizontal-align="right">
+        <paper-listbox class="dropdown-content" on-iron-select="itemsNrChanged" selected="0">
+
+          <template is="dom-repeat" items="[[rowSelection]]">
+            <paper-item>[[item]]</paper-item>
+          </template>
+
+        </paper-listbox>
+      </paper-dropdown-menu>
+
+      <span class="textsec lh unselectable">{{showingResults}}</span>
+
+      <iron-icon
+        icon="icons:chevron-left"
+        hidden="{{hidefirst}}"
+        class="chev"
+        on-click="goleft">
+      </iron-icon>
+      <iron-icon
+        hidden="{{!hidefirst}}"
+        icon="icons:chevron-left"
+        class="chev textsec">
+      </iron-icon>
+
+      <iron-icon
+        icon="icons:chevron-right"
+        hidden="{{hidelast}}"
+        class="chev"
+        on-click="goright">
+      </iron-icon>
+      <iron-icon
+        hidden="{{!hidelast}}"
+        icon="icons:chevron-right"
+        class="chev textsec">
+      </iron-icon>
+
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'list-pagination',
+      properties: {
+        maxnr: Number,
+        pages: {
+          type: Object,
+          notify: true
+        },
+        hidefirst: {
+          type: Boolean,
+          computed: '_hideFirst(pages.page, pages.itemsPerPage, maxnr)'
+        },
+        hidelast: {
+          type: Boolean,
+          computed: '_hideLast(pages.page, pages.itemsPerPage, maxnr)'
+        },
+        rowSelection: {
+          type: Array,
+          value: [10, 25, 50, 100]
+        },
+        showingResults: {
+          type: String
+        }
+      },
+      _hideFirst: function(page, itemsPerPage, maxnr) {
+
+        return page === 1;
+      },
+      _hideLast: function(page, itemsPerPage, maxnr) {
+
+        return page === Math.ceil(maxnr / itemsPerPage);
+      },
+      goleft: function() {
+
+        this.set('pages', {
+          page: this.pages.page - 1,
+          itemsPerPage: this.pages.itemsPerPage
+        });
+      },
+      goright: function() {
+
+        this.set('pages', {
+          page: this.pages.page + 1,
+          itemsPerPage: this.pages.itemsPerPage
+        });
+      },
+      itemsNrChanged: function(event, item) {
+
+        this.set('pages', {
+          page: 1,
+          itemsPerPage: +item.item.innerText
+        });
+      }
+    });
+  </script>
+</dom-module>

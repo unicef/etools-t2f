@@ -1,0 +1,179 @@
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
+
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="repeatable-field-set">
+    <template>
+        <style is="custom-style" include="shared-styles iron-flex iron-flex-alignment iron-flex-factor">
+            :host {
+                display: block;
+                width:100%;
+                --paper-toolbar-height: 48px;
+                --paper-toolbar-background: var(--searchable-selection-background, #1E86BF);
+                --paper-fab: {
+                    position:absolute;
+                    right:0;
+                    top:20px;
+                    background: #8DC63F;
+                    z-index:100;
+                };
+                --paper-toolbar-title: {
+                    text-align: center;
+                    margin-left:0;
+                };
+                --paper-badge-background: rgba(0,0,0,0.38)
+            }
+            .element-container {
+                display: block;
+                width: calc( 100% - 48px) ;
+                margin: 24px;
+            }
+            *[hidden] {
+                display: none;
+                opacity: 0;
+                height:0;
+                width:0;
+            }
+            .field-container {
+                background: #FFF;
+                padding: 48px;
+            }
+            .vertical-bar {
+                height: auto;
+                margin-top: 16px;
+                width: 1px;
+                background: rgba(0,0,0, 0.3);
+            }
+        </style>
+
+        <div class="element-container">
+            <paper-material elevation="2">
+                <paper-toolbar hidden$="{{!showHeader}}">
+                    <paper-icon-button hidden$="{{!open}}" on-click="_toggle" icon="icons:expand-less"></paper-icon-button>
+                    <paper-icon-button hidden$="{{open}}" on-click="_toggle" icon="icons:expand-more"></paper-icon-button>
+
+                    <div class="title">[[title]] <span hidden$="{{hidePlus}}">({{model.length}})</span></div>
+                    <paper-fab hidden$="{{hidePlus}}" icon="add" on-tap="_addElement" hidden$="{{!open}}"></paper-fab>
+                </paper-toolbar>
+                <iron-collapse id="collapse" opened>
+                    <template is="dom-repeat" items="[[model]]">
+                        <paper-material class="field-container layout horizontal">
+                            <div class="action-container layout horizontal" hidden$="{{hidePlus}}">
+                                <paper-badge  hidden$="{{!showCounter}}" label="{{_displayIndex(index)}}" for="side-actions-{{index}}"></paper-badge>
+                                <div class="layout vertical center-justified wrap" id="side-actions-{{index}}">
+                                    <paper-icon-button on-click="_deleteElement"   icon="cancel"></paper-icon-button>
+                                    <span hidden > {{item.id}}</span>
+                                    <paper-icon-button hidden$="{{!allowCopy}}"  on-click="_copyElement"   icon="content-copy"></paper-icon-button>
+                                </div>
+                                <div class="vertical-bar" ></div>
+                            </div>
+                            <content select="{{_composeSelectId(item)}}"></content>
+                        </paper-material>
+                    </template>
+                </iron-collapse>
+            </paper-material>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'repeatable-field-set',
+            properties: {
+                title: {
+                    type: String
+                },
+                hidePlus: {
+                    type: Boolean,
+                    value: false
+                },
+                model: {
+                    type: Array,
+                    notify: true,
+                    value: [1],
+                },
+                open: {
+                    type: Boolean,
+                    value: true,
+                    reflectToAttribute: true
+                },
+                showHeader: {
+                    type: Boolean,
+                    value: true,
+                },
+                showCounter: {
+                    type: Boolean,
+                    value: false,
+                },
+                allowCopy: {
+                    type: Boolean,
+                    value: false
+                },
+                idAttribute: {
+                    type: String
+                }
+            },
+            _displayIndex: function(index) {
+                return index + 1;
+            },
+            _composeSelectId: function(item) {
+                if(item instanceof Object) {
+                    return '.field-' + item[this.idAttribute];
+                }
+                return '.field-1'
+            },
+            _addElement: function(e) {
+                if(!this.hidePlus) {
+                    var newObj = {};
+                    newObj[this.idAttribute] = this._findMaxId() + 1;
+                    this.push('model', newObj)
+                }
+
+            },
+            _deleteElement: function(e) {
+                if(!this.hidePlus) {
+                    var index = this._findIndex(e.model.item);
+                    if (index !== -1) {
+                        this.splice('model', index, 1);
+                    }
+                }
+            },
+            _copyElement: function(e) {
+                if(!this.hidePlus && this.allowCopy) {
+                    var index = this._findIndex(e.model.item);
+                    var copy = JSON.parse(JSON.stringify(this.model[index]));
+                    copy[this.idAttribute] = this._findMaxId() + 1;
+                    this.splice('model', index + 1, 0, copy);
+                }
+
+            },
+            _findIndex: function(details) {
+                var self = this;
+                return this.model.reduce(function (previous, item, index) {
+                    return item[self.idAttribute] == details[self.idAttribute] ? index : previous;
+                }, -1);
+            },
+            _findMaxId: function() {
+                var self = this;
+                return this.model.reduce(function(previous, item){
+                    return item[self.idAttribute] > previous ? item[self.idAttribute] : previous
+                }, -1)
+            },
+
+
+            _toggle: function() {
+                this.set('open',!this.open);
+                this.$.collapse.toggle();
+            }
+        });
+    </script>
+</dom-module>
