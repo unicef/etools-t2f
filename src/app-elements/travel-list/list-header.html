@@ -38,9 +38,7 @@
 
   <template>
     <div class="headingrow clearfix layout horizontal">
-      <div class="w60">
-        <span class="textsec heading">60a</span>
-      </div>
+      <div class="w60"></div>
       <template is="dom-repeat" items="[[metaData]]" observe="item.down item.up">
         <div on-click="_clickOnLabel" class$="localheadings [[_sizeClassGenerator(item)]]">
           <span class="textsec heading">[[item.label]]</span>

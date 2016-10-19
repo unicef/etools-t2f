@@ -2,7 +2,6 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../../bower_components/iron-icons/social-icons.html">
-<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../styles/shared-styles.html">
 
 <dom-module id="list-element">
@@ -30,13 +29,39 @@
     .capital {
       text-transform: capitalize;
     }
+    .w60 {
+      border-left-width: 3px;
+      border-left-style: solid;
+    }
+    .w60.approved {
+      border-left-color: #8DC63F;
+    }
+    .w60.planned {
+      border-left-color: #FAED77;
+    }
+    .w60.submitted {
+      border-left-color: #CEBC06;
+    }
+    .w60.sent {
+      border-left-color: #1E86BF;
+    }
+    .w60.rejected {
+      border-left-color: #EA4022;
+    }
+    .w60.cancelled {
+      border-left-color: rgba(0,0,0,0.54);
+    }
+    .w60.completed {
+      border-left-color: rgba(0,0,0,0.38);
+    }
+    /* Waiting for all the colors from designer */
   </style>
 
   <template>
 
       <div class="headingrow clearfix layout horizontal">
 
-        <div class="headings textprim bold w60">60a</div>
+        <div class$="headings textprim bold w60 [[_statusClass(data)]]">arr</div>
         <div class="headings textprim bold w13">[[data.reference_number]]</div>
         <div class="headings textprim bold w11">crDate missing</div>
         <div class="headings textprim w13">[[data.traveller]]</div>
@@ -45,8 +70,12 @@
         <div class="headings textprim w11">[[data.end_date]]</div>
         <div class="headings textprim bold capital w13">[[data.status]]</div>
         <div class="headings textsec w5">
+          <!-- Turn this icon into a selection menu with logic,
+          the contained icons will be the following:
           <paper-icon-button icon="social:person-add"></paper-icon-button>
           <paper-icon-button icon="maps:directions-car"></paper-icon-button>
+          -->
+          <paper-icon-button icon="icons:more-vert"></paper-icon-button>
         </div>
       </div>
 
@@ -59,6 +88,21 @@
         data: {
           type: Object
         }
+      },
+      _statusClass: function(data) {
+        var status = data.status;
+        console.log(status);
+        return {
+          planned: 'planned',
+          approved: 'approved',
+          approved: 'approved',
+          rejected: 'rejected',
+          submitted: 'submitted',
+          cancelled: 'cancelled',
+          completed: 'completed'
+          // Waiting for all the colors from designer
+          // the obj is to handle not oneword statuses
+        }[status];
       }
     });
   </script>
