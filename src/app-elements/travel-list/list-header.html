@@ -101,8 +101,8 @@
       },
 
       _getMetaData: function(data, orderObj) {
-        console.log('Computing metadata fn. called');
-        console.log(data, orderObj);
+        // console.log('Computing metadata fn. called');
+        // console.log(data, orderObj);
 
         var metaData = data.map(function(el) {
           el.up = !(orderObj.orderedBy === el.label && !orderObj.reverse);
@@ -110,7 +110,7 @@
           return el;
         });
 
-        console.log('metaData: ', metaData);
+        // console.log('metaData: ', metaData);
         return metaData;
       },
 

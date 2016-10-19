@@ -4,7 +4,6 @@
 <link rel="import" href="../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 
-
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 
@@ -19,10 +18,43 @@
   <style include="iron-flex shared-styles">
     :host {
       display: block;
+      margin-top: 56px;
+    }
+    .background {
+      background-color: #eeeeee;
     }
     paper-card {
+      background-color: white;
       width: 100%;
-      margin-top: 20px;
+    }
+    paper-card.sideheading {
+      margin: 0 0 12px 0;
+      height: 80px;
+    }
+    .sideheading span.title {
+      font-size: 24px;
+      padding-left: 48px;
+    }
+    .sideheading .card-content {
+      padding: 0 !important;
+      height: 80px;
+    }
+    .sideheading paper-button {
+      background-color: #00AEEF;
+      color: white;
+      font-weight: 500;
+      padding-left: 15px;
+      padding-right: 15px;
+      margin-right: 48px;
+    }
+    .sideheading paper-button span {
+      margin-left: 30px;
+      font-size: 14px;
+      text-transform: none;
+    }
+    paper-card.datatable {
+      margin: 0 24px;
+      width: calc(100% - 48px);
     }
     .cardheading {
       display: block;
@@ -44,41 +76,47 @@
 
   <template>
 
-    <etools-ajax
-      url="http://localhost:8000/api/et2f/travels/"
-      params='{{ajaxParams}}'
-      auto=true
-      on-success="handleListResponse">
-    </etools-ajax>
+    <div class="background">
 
-    <paper-toolbar class="horizontal layout">
-      <h3 class="flex">Travel to field (heading)</h3>
-      <a href="/plan-travel" tabindex="-1">
-        <paper-button raised>Add New Travel</paper-button>
-      </a>
-    </paper-toolbar>
+      <etools-ajax
+        url="http://localhost:8000/api/et2f/travels/"
+        params='{{ajaxParams}}'
+        auto=true
+        on-success="handleListResponse">
+      </etools-ajax>
 
-    <!-- Filtering -->
+      <paper-card class="sideheading">
+        <div class="card-content horizontal layout center">
+          <span class="flex title">Field monitoring</span>
+          <a href="/plan-travel" tabindex="-1">
+            <paper-button class="addnbtn" raised>
+              <iron-icon icon="add"></iron-icon>
+              <span>Add New Travel</span>
+            </paper-button>
+          </a>
+        </div>
+      </paper-card>
 
-    <paper-card>
+      <!-- Filtering -->
 
-      <span class="textprim cardheading">{{showingResults}} results to show</span>
+      <paper-card class="datatable">
 
-      <list-header data="[[headings]]" order-obj="{{orderObj}}">
-      </list-header>
+        <span class="textprim cardheading">{{showingResults}} results to show</span>
 
-      <template is="dom-repeat" items="[[data]]">
-        <list-element data="[[item]]"></list-element>
-      </template>
+        <list-header data="[[headings]]" order-obj="{{orderObj}}">
+        </list-header>
 
-      <list-pagination
-        maxnr="{{datalength}}"
-        pages="{{pages}}"
-        showing-results="{{showingResults}}">
-      </list-pagination>
+        <template is="dom-repeat" items="[[data]]">
+          <list-element data="[[item]]"></list-element>
+        </template>
 
-    </paper-card>
-
+        <list-pagination
+          maxnr="{{datalength}}"
+          pages="{{pages}}"
+          showing-results="{{showingResults}}">
+        </list-pagination>
+      </paper-card>
+    </div>
   </template>
 
   <script>
