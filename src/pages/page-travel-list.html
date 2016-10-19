@@ -175,30 +175,29 @@
         },
         ajaxParams: {
           type: Object,
-          computed: '_processParams(orderObj, pages, labelLib, pages.page)'
-        },
-        labelLib: {
-          type: Object,
-          value: {
-            'Reference #': 'id',
-            'Purpose of travel': 'purpose',
-            'Traveler(s)': 'traveller',
-            'Start date': 'start_date',
-            'End date': 'start_date',
-            'Actions': 'status'
-          }
+          computed: '_processParams(orderObj, pages)'
         }
       },
       _orderingChanged: function() {
 
         this.set('pages.page', 1);
+        // TODO: This should run before ajaxParams get calculated!!
       },
       _computeResultsToShow: function(pages, datalength) {
         var start = (pages.page - 1) * pages.itemsPerPage;
         var end = (pages.itemsPerPage * pages.page) > datalength ? datalength : (pages.itemsPerPage * pages.page);
         return start + ' - ' + end + ' of ' + datalength;
       },
-      _processParams: function(orderObj, pages, labelLib) {
+      _processParams: function(orderObj, pages) {
+        var labelLib = {
+          'Reference #': 'id',
+          'Purpose of travel': 'purpose',
+          'Traveler(s)': 'traveller',
+          'From date': 'start_date',
+          'End date': 'start_date',
+          'Status': 'status'
+          // 'Create date' backend name here!!
+        };
         return {
           sort_by: labelLib[orderObj.orderedBy],
           reverse: orderObj.reverse,
