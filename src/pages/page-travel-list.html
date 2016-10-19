@@ -2,15 +2,16 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 
 
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../shared-styles.html">
 
 <link rel="import" href="../travel-list/list-element.html">
 <link rel="import" href="../travel-list/list-header.html">
 <link rel="import" href="../travel-list/list-pagination.html">
+<link rel="import" href="../../styles/shared-styles.html">
 
 
 <dom-module id="travel-list">
@@ -51,12 +52,12 @@
       on-success="handleListResponse">
     </etools-ajax>
 
-    <div class="horizontal layout">
+    <paper-toolbar class="horizontal layout">
       <h3 class="flex">Travel to field (heading)</h3>
       <a href="/plan-travel" tabindex="-1">
         <paper-button raised>Add New Travel</paper-button>
       </a>
-    </div>
+    </paper-toolbar>
 
     <!-- Filtering -->
 
