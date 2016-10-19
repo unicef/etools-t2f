@@ -37,26 +37,6 @@
       app-header paper-icon-button {
         --paper-icon-button-ink-color: white;
       }
-
-      .drawer-list {
-        margin: 0 20px;
-      }
-      .drawer-list a {
-        display: block;
-        padding: 0 16px;
-        line-height: 40px;
-        text-decoration: none;
-        color: var(--app-secondary-color);
-      }
-      .drawer-list a.iron-selected {
-        color: black;
-        font-weight: bold;
-      }
-      .drawer-list a.subroute {
-        padding-left: 32px;
-      }
-
-
     </style>
 
     <app-location route="{{route}}"></app-location>
@@ -67,29 +47,16 @@
             tail="{{subroute}}">
     </app-route>
 
-    <app-drawer-layout fullbleed>
 
-      <!-- Drawer content -->
 
-      <!-- Main content -->
-      <app-header-layout has-scrolling-region>
 
-        <app-header condenses reveals effects="waterfall">
-          <app-toolbar>
-            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <div main-title>eT2F</div>
-          </app-toolbar>
-        </app-header>
-
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-          <travel-list name="travel-list"></travel-list>
-          <plan-travel name="plan-travel"></plan-travel>
-          <custom-404 name="custom-404"></custom-404>
-        </iron-pages>
-
-      </app-header-layout>
-
-    </app-drawer-layout>
+    <app-box fullbleed>
+      <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        <travel-list name="travel-list"></travel-list>
+        <plan-travel fullbleed name="plan-travel"></plan-travel>
+        <custom-404 name="custom-404"></custom-404>
+      </iron-pages>
+    </app-box>
 
   </template>
 

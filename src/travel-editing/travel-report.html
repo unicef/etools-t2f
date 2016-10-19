@@ -1,0 +1,36 @@
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="travel-report">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                width: 100%;
+            }
+            *[hidden] {
+                display: none;
+            }
+        </style>
+    REPORT
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'travel-report',
+            properties: {
+                data: {
+                    type: Object,
+                    notify: true,
+                    reflectToAttribute: true
+                }
+            }
+        });
+    </script>
+</dom-module>
