@@ -10,6 +10,7 @@
 
 <link rel="import" href="travel-list/list-element.html">
 <link rel="import" href="travel-list/list-header.html">
+<link rel="import" href="travel-list/list-pagination.html">
 
 
 <dom-module id="travel-list">
@@ -23,9 +24,12 @@
       width: 100%;
       margin-top: 20px;
     }
-    .headings {
-      box-sizing: border-box;
-      padding: 5px;
+    .cardheading {
+      display: block;
+      font-size: 20px;
+      margin-left: 20px;
+      font-weight: 500;
+      line-height: 64px;
     }
     .w10 {
       width: 10%;
@@ -41,9 +45,10 @@
   <template>
 
     <etools-ajax
-            url="/mock-data/travel-list.json"
-            on-success="_handleListResponse"
-    >
+      url="http://localhost:8000/api/et2f/travels/"
+      params='{{ajaxParams}}'
+      auto=true
+      on-success="handleListResponse">
     </etools-ajax>
 
     <div class="horizontal layout">
@@ -55,20 +60,23 @@
 
     <!-- Filtering -->
 
-    <paper-card heading="Travel listing">
+    <paper-card>
 
+      <span class="textprim cardheading">{{showingResults}} results to show</span>
 
-      <list-header data="[[headings]]">
-
+      <list-header data="[[headings]]" order-obj="{{orderObj}}">
       </list-header>
+
       <template is="dom-repeat" items="[[data]]">
         <list-element data="[[item]]"></list-element>
       </template>
 
-      <!-- TODO
-        'Showing x-xx of xxx results'
-        pagination
-       -->
+      <list-pagination
+        maxnr="{{datalength}}"
+        pages="{{pages}}"
+        showing-results="{{showingResults}}">
+      </list-pagination>
+
     </paper-card>
 
   </template>
@@ -81,22 +89,86 @@
           type: Array,
           value: []
         },
+        datalength: {
+          type: Number,
+          value: 0
+        },
+        showingResults: {
+          type: String,
+          computed: '_computeResultsToShow(pages, datalength, pages.page)'
+        },
         headings: {
           type: Array,
-          value: []
+          // Should fetch these from a common structure.json !!
+          value: [
+            { "size": 15, "label": "Reference #" },
+            { "size": 20, "label": "Purpose of travel" },
+            { "size": 15, "label": "Traveler(s)" },
+            { "size": 10, "label": "Start" },
+            { "size": 10, "label": "End" },
+            { "size": 15, "label": "Status" },
+            { "size": 15, "label": "Duplicate" }
+          ]
+        },
+        pages: {
+          type: Object,
+          value: {
+            itemsPerPage: 10,
+            page: 1
+          }
+        },
+        orderObj: {
+          type: Object,
+          value: {
+            orderedBy: 'Purpose of travel',
+            reverse: false
+          },
+          observer: '_orderingChanged'
+        },
+        ajaxParams: {
+          type: Object,
+          computed: '_processParams(orderObj, pages, labelLib, pages.page)'
+        },
+        labelLib: {
+          type: Object,
+          value: {
+            'Reference #': 'id',
+            'Purpose of travel': 'purpose',
+            'Traveler(s)': 'traveller',
+            'Start': 'start_date',
+            'End': 'start_date',
+            'Status': 'status'
+          }
         }
-
       },
-      _handleListResponse: function(event, data) {
-        if(data.values instanceof Array){
-          this.set('data', data.values.slice(0,10))
-        }
+      _orderingChanged: function() {
 
-        if(data.headers instanceof Array) {
-          this.set('headings', data.headers);
-        }
+        this.set('pages.page', 1);
+      },
+      _computeResultsToShow: function(pages, datalength) {
+        var start = (pages.page - 1) * pages.itemsPerPage;
+        var end = (pages.itemsPerPage * pages.page) > datalength ? datalength : (pages.itemsPerPage * pages.page);
+        return start + ' - ' + end + ' of ' + datalength;
+      },
+      _processParams: function(orderObj, pages, labelLib) {
+        return {
+          sort_by: labelLib[orderObj.orderedBy],
+          reverse: orderObj.reverse,
+          page: pages.page,
+          page_size: pages.itemsPerPage
+        };
+      },
+      handleListResponse: function(event, data) {
+
+        // console.info('Got payload', data);
+
+        this.set('datalength', data.total_count);
+        data.data.forEach(function(travel) {
+          travel.start_date = travel.start_date.split('T')[0];
+          travel.end_date = travel.end_date.split('T')[0];
+        });
+        this.set('data', data.data);
       }
-
     });
   </script>
 </dom-module>
