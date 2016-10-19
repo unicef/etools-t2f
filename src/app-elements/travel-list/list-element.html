@@ -2,11 +2,12 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../styles/shared-styles.html">
 
 <dom-module id="list-element">
 
-  <style include="shared-styles travel-list">
+  <style include="shared-styles travel-list iron-flex">
     :host {
       display: block;
       padding: 0;
@@ -21,7 +22,6 @@
       float: left;
       font-size: 13px;
       line-height: 47px;
-      padding-left: 20px;
       box-sizing: border-box;
     }
     .bold {
@@ -34,14 +34,17 @@
 
   <template>
 
-      <div class="headingrow clearfix">
-        <div class="headings textprim bold w15">[[data.reference_number]]</div>
-        <div class="headings textprim w20 truncate">[[data.purpose]]</div>
-        <div class="headings textprim w15">[[data.traveller]]</div>
-        <div class="headings textprim w10">[[data.start_date]]</div>
-        <div class="headings textprim w10">[[data.end_date]]</div>
-        <div class="headings textprim bold capital w15">[[data.status]]</div>
-        <div class="headings textsec w15">
+      <div class="headingrow clearfix layout horizontal">
+
+        <div class="headings textprim bold w60">60a</div>
+        <div class="headings textprim bold w13">[[data.reference_number]]</div>
+        <div class="headings textprim bold w11">crDate missing</div>
+        <div class="headings textprim w13">[[data.traveller]]</div>
+        <div class="headings textprim w23 truncate">[[data.purpose]]</div>
+        <div class="headings textprim w11">[[data.start_date]]</div>
+        <div class="headings textprim w11">[[data.end_date]]</div>
+        <div class="headings textprim bold capital w13">[[data.status]]</div>
+        <div class="headings textsec w5">
           <paper-icon-button icon="social:person-add"></paper-icon-button>
           <paper-icon-button icon="maps:directions-car"></paper-icon-button>
         </div>

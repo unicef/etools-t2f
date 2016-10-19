@@ -1,6 +1,7 @@
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 
@@ -64,14 +65,21 @@
       font-weight: 500;
       line-height: 64px;
     }
-    .w10 {
-      width: 10%;
+
+    .w5 {
+      width: 5%;
     }
-    .w15 {
-      width: 15%;
+    .w11 {
+      width: 11%;
     }
-    .w20 {
-      width: 20%;
+    .w13 {
+      width: 13%;
+    }
+    .w23 {
+      @apply(--layout-flex);
+    }
+    .w60 {
+      width: 60px;
     }
   </style>
 
@@ -139,14 +147,24 @@
         headings: {
           type: Array,
           // Should fetch these from a common structure.json !!
+          // value: [
+          //   { "size": 15, "label": "Reference #" },
+          //   { "size": 20, "label": "Purpose of travel" },
+          //   { "size": 15, "label": "Traveler(s)" },
+          //   { "size": 10, "label": "Start" },
+          //   { "size": 10, "label": "End" },
+          //   { "size": 15, "label": "Status" },
+          //   { "size": 15, "label": "Duplicate" }
+          // ]
           value: [
-            { "size": 15, "label": "Reference #" },
-            { "size": 20, "label": "Purpose of travel" },
-            { "size": 15, "label": "Traveler(s)" },
-            { "size": 10, "label": "Start" },
-            { "size": 10, "label": "End" },
-            { "size": 15, "label": "Status" },
-            { "size": 15, "label": "Duplicate" }
+            { "size": 13, "label": "Reference #" },
+            { "size": 11, "label": "Create date" },
+            { "size": 13, "label": "Traveler(s)" },
+            { "size": 23, "label": "Purpose of travel" },
+            { "size": 11, "label": "From date" },
+            { "size": 11, "label": "End date" },
+            { "size": 13, "label": "Status" },
+            { "size": 5, "label": "Actions" }
           ]
         },
         pages: {
@@ -174,9 +192,9 @@
             'Reference #': 'id',
             'Purpose of travel': 'purpose',
             'Traveler(s)': 'traveller',
-            'Start': 'start_date',
-            'End': 'start_date',
-            'Status': 'status'
+            'Start date': 'start_date',
+            'End date': 'start_date',
+            'Actions': 'status'
           }
         }
       },

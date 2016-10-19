@@ -20,7 +20,6 @@
       box-sizing: border-box;
       float: left;
       font-weight: 500;
-      padding: 0 0 0 20px;
       cursor: pointer; /*Chrome bug, works in safari, */
     }
     .heading {
@@ -38,21 +37,22 @@
   </style>
 
   <template>
-    <div class="headingrow clearfix">
+    <div class="headingrow clearfix layout horizontal">
+      <div class="w60">
+        <span class="textsec heading">60a</span>
+      </div>
       <template is="dom-repeat" items="[[metaData]]" observe="item.down item.up">
         <div on-click="_clickOnLabel" class$="localheadings [[_sizeClassGenerator(item)]]">
           <span class="textsec heading">[[item.label]]</span>
 
           <iron-icon
             icon="icons:arrow-downward"
-            hidden$="{{item.down}}"
-            on-click="">
+            hidden$="{{item.down}}">
           </iron-icon>
 
           <iron-icon
             icon="icons:arrow-upward"
-            hidden$="{{item.up}}"
-            on-click="">
+            hidden$="{{item.up}}">
           </iron-icon>
 
         </div>
