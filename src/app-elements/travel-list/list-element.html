@@ -199,7 +199,8 @@
       is: 'list-element',
       properties: {
         data: {
-          type: Object
+          type: Object,
+          observer: '_resetExpanded'
         },
         expanded: {
           type: Boolean,
@@ -225,6 +226,9 @@
       },
       _isDetailed: function(expanded) {
         return this.expanded;
+      },
+      _resetExpanded: function() {
+        this.set('expanded', false);
       }
     });
   </script>
