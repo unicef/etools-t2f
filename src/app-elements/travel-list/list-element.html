@@ -2,6 +2,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../../bower_components/iron-icons/social-icons.html">
+
 <link rel="import" href="../../../styles/shared-styles.html">
 
 <dom-module id="list-element">
@@ -17,12 +18,27 @@
     .headingrow {
       width: 100%;
     }
+    .headingrow2 {
+      background-color: #EEEEEE;
+      height: 64px;
+    }
     .headings {
       display: block;
       float: left;
       font-size: 13px;
       line-height: 47px;
       box-sizing: border-box;
+    }
+    .detailheadings {
+      color: rgba(0,0,0,0.54);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 32px;
+    }
+    .detailtext {
+      color: rgba(0,0,0,0.87);
+      font-weight: normal;
+      line-height: 32px;
     }
     .blue {
       color: #00AEEF;
@@ -100,8 +116,16 @@
       <div class="headingrow clearfix layout horizontal">
 
         <div class$="headings textprim bold w60 [[_statusClass(data)]]">
-          <!-- Handle expanding toggling here! -->
-          <iron-icon icon="icons:expand-more"></iron-icon>
+          <iron-icon
+            icon="icons:expand-more"
+            on-click="_toggleExpanded"
+            hidden$="[[_isDetailed(expanded)]]">
+          </iron-icon>
+          <iron-icon
+            icon="icons:expand-less"
+            on-click="_toggleExpanded"
+            hidden$="[[!_isDetailed(expanded)]]">
+          </iron-icon>
         </div>
         <div class="headings blue bold w13">
           <!-- Link here! -->
@@ -127,6 +151,47 @@
         </div>
       </div>
 
+      <div hidden$="[[!_isDetailed(expanded)]]" class="headingrow headingrow2 clearfix layout horizontal">
+        <div class$="headings textprim bold w60 [[_statusClass(data)]]"></div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detailheadings">Section</span>
+          <span class="flex detailtext">NA.</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detailheadings">Office</span>
+          <span class="flex detailtext">NA.</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detailheadings">Supervisor</span>
+          <span class="flex detailtext">NA.</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detailheadings">TA Req?</span>
+          <span class="flex detailtext">NA.</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detailheadings">TA ref. num?</span>
+          <span class="flex detailtext">NA.</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detailheadings">Approved date</span>
+          <span class="flex detailtext">NA.</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detailheadings">Attachments</span>
+          <span class="flex detailtext">NA.</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detailheadings">Actions</span>
+          <span class="flex detailtext">NA.</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detailheadings">Driver trip</span>
+          <span class="flex detailtext">NA.</span>
+        </div>
+        <div class="headings textsec w5"></div>
+      </div>
+
   </template>
 
   <script>
@@ -135,6 +200,10 @@
       properties: {
         data: {
           type: Object
+        },
+        expanded: {
+          type: Boolean,
+          value: false
         }
       },
       _statusClass: function(data) {
@@ -150,6 +219,12 @@
           // Waiting for all the colors from designer
           // the obj is to handle not oneword statuses
         }[status];
+      },
+      _toggleExpanded: function(event) {
+        this.set('expanded', !this.expanded);
+      },
+      _isDetailed: function(expanded) {
+        return this.expanded;
       }
     });
   </script>
