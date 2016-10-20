@@ -111,8 +111,8 @@
         // console.log(data, orderObj);
 
         var metaData = data.map(function(el) {
-          el.up = !(orderObj.orderedBy === el.label && !orderObj.reverse);
-          el.down = !(orderObj.orderedBy === el.label && orderObj.reverse);
+          el.down = !(orderObj.orderedBy === el.label && !orderObj.reverse);
+          el.up = !(orderObj.orderedBy === el.label && orderObj.reverse);
           return el;
         });
 
