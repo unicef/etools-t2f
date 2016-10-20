@@ -112,7 +112,7 @@
 
         <span class="textprim cardheading">{{showingResults}} results to show</span>
 
-        <list-header data="[[headings]]" order-obj="{{orderObj}}">
+        <list-header id="list-header" data="[[headings]]" order-obj="{{orderObj}}">
         </list-header>
 
         <template is="dom-repeat" items="[[data]]">
@@ -120,6 +120,7 @@
         </template>
 
         <list-pagination
+          id="list-pagination"
           maxnr="{{datalength}}"
           pages="{{pages}}"
           showing-results="{{showingResults}}">

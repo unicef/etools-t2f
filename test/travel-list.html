@@ -1,38 +1,127 @@
 <!doctype html>
 
-
 <html>
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>kart-home</title>
+  <title>test travel-list</title>
 
   <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../bower_components/web-component-tester/browser.js"></script>
 
-  <!-- Import the element to test -->
   <link rel="import" href="../src/pages/page-travel-list.html">
 
 </head>
 <body>
 
-<test-fixture id="basic">
+<test-fixture id="el">
   <template>
     <travel-list></travel-list>
   </template>
 </test-fixture>
 
 <script>
-  suite('travel-list tests', function() {
-    var home;
+  suite('<travel-list>', function() {
+
+    var el, server, mockData;
 
     setup(function() {
-      home = fixture('basic');
+      el = fixture('el');
+      server = sinon.fakeServer.create();
+      mockData = {"page_count":3,"data":[{"id":12,"reference_number":"REF08","traveller":"First Last","purpose":"00 Whatever","start_date":"2017-11-02T13:43:00Z","end_date":"2015-10-24T13:43:00Z","status":"submitted"},{"id":3,"reference_number":"REF01","traveller":"First Last","purpose":"1 Whatever","start_date":"2016-11-24T14:43:00Z","end_date":"2016-09-24T13:43:00Z","status":"planned"},{"id":5,"reference_number":"REF01","traveller":"First Last","purpose":"1 Whatever","start_date":"2015-10-24T13:43:00Z","end_date":"2016-04-14T13:43:00Z","status":"planned"},{"id":2,"reference_number":"REF01","traveller":"First Last","purpose":"1 Whatever","start_date":"2016-11-24T14:43:00Z","end_date":"2016-09-24T13:43:00Z","status":"planned"},{"id":4,"reference_number":"REF01","traveller":"First Last","purpose":"1 Whatever","start_date":"2015-10-24T13:43:00Z","end_date":"2016-04-14T13:43:00Z","status":"planned"},{"id":1,"reference_number":"REF01","traveller":"First Last","purpose":"1 Whatever","start_date":"2016-11-24T14:43:00Z","end_date":"2016-09-24T13:43:00Z","status":"planned"},{"id":21,"reference_number":"REF17","traveller":"First Last","purpose":"AZKFG Whatever","start_date":"2015-10-24T13:43:00Z","end_date":"2016-04-14T13:43:00Z","status":"cancelled"},{"id":10,"reference_number":"REF06","traveller":"Paragon Hex","purpose":"BBB Whatever","start_date":"2016-04-14T13:43:00Z","end_date":"2016-07-21T13:43:00Z","status":"submitted"},{"id":15,"reference_number":"REF11","traveller":"Paragon Hex","purpose":"CC CWhatever","start_date":"2016-07-21T13:43:00Z","end_date":"2017-11-02T13:43:00Z","status":"approved"},{"id":22,"reference_number":"REF18","traveller":"Paragon Hex","purpose":"Lolll Whatever","start_date":"2016-04-14T13:43:00Z","end_date":"2016-07-21T13:43:00Z","status":"cancelled"}],"total_count":24};
+      server.respondWith(
+        'GET',
+        /.*/,
+        [
+          200,
+          {
+            'Content-Type': 'application/json',
+            'Server': 'WSGIServer/0.1 Python/2.7.12',
+            'Vary': 'Accept',
+            'Access-Control-Allow-Origin': '*'
+          },
+          JSON.stringify(mockData)
+        ]
+      );
     });
 
-    test('first test', function() {
-//        var circle = Polymer.dom(home.root).querySelector('.main-title');
-//        assert.equal(circle.textContent, '1');
-    })
+    test('can be instantiated', function() {
+
+      expect(el.is).to.equal('travel-list');
+    });
+
+    test('has a button which leads to creating a new travel', function() {
+
+      var btn = Polymer.dom(el.root).querySelector('paper-button.addnbtn');
+      expect(btn).to.exist;
+    });
+
+    test('contains an etools-ajax, a list-header and a list-pagination component', function() {
+
+      expect(Polymer.dom(el.root).querySelector('etools-ajax')).to.exist;
+      expect(Polymer.dom(el.root).querySelector('list-header')).to.exist;
+      expect(Polymer.dom(el.root).querySelector('list-pagination')).to.exist;
+    });
+
+    test('By clicking another heading, that gets active & changes the params accordingly', function() {
+      // Click reference heading
+      var headingComp = Polymer.dom(el.root).querySelector('#list-header');
+      Polymer.dom(headingComp).flush();
+      var refHead = headingComp.querySelectorAll('span.textsec.heading')[0];
+      refHead.click();
+
+      // Check if property & parameter changed
+      expect(el.orderObj.orderedBy).to.equal('Reference #');
+      expect(el.ajaxParams.sort_by).to.equal('id');
+    });
+
+    test('By clicking the active heading, the travels orders can be reversed', function() {
+      // Click purpose heading
+      var headingComp = Polymer.dom(el.root).querySelector('#list-header');
+      Polymer.dom(headingComp).flush();
+      var activeHeader = headingComp.querySelector('div.localheadings.act');
+      expect(el.ajaxParams.reverse).to.not.be.ok;
+      activeHeader.click();
+
+      // Check ajaxParams order, the binding takes care of the new call
+      expect(el.ajaxParams.reverse).to.be.ok;
+    });
+
+    test('The amount of rows shown can be changed', function() {
+      // Selects the next element, which is 25
+      var paginationComp = Polymer.dom(el.root).querySelector('#list-pagination');
+      Polymer.dom(paginationComp).flush();
+      paginationComp.querySelector('paper-listbox').selectNext();
+
+      expect(el.ajaxParams.page_size).to.equal(25);
+    });
+
+    test('Can change pages', function() {
+      el.handleListResponse(null, mockData);
+      var paginationComp = Polymer.dom(el.root).querySelector('#list-pagination');
+
+      paginationComp.goright();
+      expect(el.pages.page).to.equal(2);
+      expect(el.ajaxParams.page).to.equal(2);
+
+      paginationComp.goleft();
+      expect(el.pages.page).to.equal(1);
+      expect(el.ajaxParams.page).to.equal(1);
+    });
+
+    test('List elements can be toggled to show more details', function() {
+
+      el.handleListResponse(null, mockData);
+      Polymer.dom.flush();
+      var listElement = Polymer.dom(el.root).querySelectorAll('list-element')[0];
+      var hidden = listElement.querySelector('.headingrow2').hasAttribute('hidden');
+      // alert('' + listElement.expanded);
+      expect(hidden).to.equal(true);
+
+      listElement._toggleExpanded();
+      Polymer.dom(listElement).flush();
+      hidden = listElement.querySelector('.headingrow2').hasAttribute('hidden');
+      expect(hidden).to.equal(false);
+    });
   });
 </script>
 

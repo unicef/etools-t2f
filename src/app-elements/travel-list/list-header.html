@@ -39,11 +39,10 @@
   <template>
     <div class="headingrow clearfix layout horizontal">
       <div class="w60"></div>
-      <template is="dom-repeat" items="[[metaData]]" observe="item.down item.up">
+      <template is="dom-repeat" items="[[metaData]]">
         <div on-click="_clickOnLabel" class$="localheadings [[_headingClassGenerator(item, orderObj.orderedBy)]]">
           <span class="textsec heading">[[item.label]]</span>
 
-            <!-- hidden$="{{item.down}}"> -->
           <iron-icon
             icon="icons:arrow-downward"
             hidden$="[[_hidden(item.down, orderObj.reverse, orderObj.orderedBy)]]">
