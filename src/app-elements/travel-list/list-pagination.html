@@ -13,7 +13,20 @@
   <style include="iron-flex shared-styles travel-list">
     :host {
       display: block;
-      padding: 0;
+      margin-top: 0;
+    }
+    paper-dropdown-menu {
+      width: 40px;
+      --paper-input-container-input: {
+        font-size: 12px;
+        color: rgba(0,0,0,0.54);
+      }
+      --paper-input-container-underline: {
+        display: none;
+      };
+    }
+    .dropdown-content {
+      background-color: white;
     }
     iron-icon {
       width: 24px;
@@ -39,7 +52,7 @@
   </style>
 
   <template>
-    <div class="layout horizontal clearfix rightfloat">
+    <div class="clearfix rightfloat horizontal layout center">
 
       <span class="textsec lh">Rows per page:</span>
 
