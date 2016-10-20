@@ -54,26 +54,26 @@
       border-left-width: 3px;
       border-left-style: solid;
     }
-    .w60.approved {
-      border-left-color: #8DC63F;
-    }
     .w60.planned {
-      border-left-color: #FAED77;
+      border-left-color: rgba(250,237,119,0.6);
+    }
+    .w60.approved {
+      border-left-color: rgba(141,198,63,0.45);
     }
     .w60.submitted {
-      border-left-color: #CEBC06;
+      border-left-color: rgba(206,188,6,0.6);
     }
     .w60.sent {
-      border-left-color: #1E86BF;
+      border-left-color: rgba(30,134,191,1);
     }
     .w60.rejected {
-      border-left-color: #EA4022;
+      border-left-color: rgba(234,64,34,1);
     }
     .w60.cancelled {
-      border-left-color: rgba(0,0,0,0.54);
+      border-left-color: rgba(0,0,0,0.38);
     }
     .w60.completed {
-      border-left-color: rgba(0,0,0,0.38);
+      border-left-color: rgba(141,198,63,1);
     }
     /* Waiting for all the colors from designer */
     .w60 iron-icon {
@@ -88,26 +88,29 @@
       line-height: 32px;
       text-align: center;
     }
-    .statusdiv.approved {
-      background-color: rgba(141,198,63,0.6);
-    }
     .statusdiv.planned {
       background-color: rgba(250,237,119,0.6);
+    }
+    .statusdiv.approved {
+      background-color: rgba(141,198,63,0.45);
     }
     .statusdiv.submitted {
       background-color: rgba(206,188,6,0.6);
     }
     .statusdiv.sent {
-      background-color: rgba(30,134,191,0.6);
+      background-color: rgba(30,134,191,1);
     }
     .statusdiv.rejected {
-      background-color: rgba(234,64,34,0.6);
+      background-color: rgba(234,64,34,1);
     }
     .statusdiv.cancelled {
       background-color: rgba(0,0,0,0.38);
     }
     .statusdiv.completed {
-      background-color: rgba(0,0,0,0.24);
+      background-color: rgba(141,198,63,1);
+    }
+    .statusdiv.rejected .statusdivtext, .statusdiv.cancelled .statusdivtext, .statusdiv.completed .statusdivtext {
+      color: white;
     }
   </style>
 
@@ -129,7 +132,7 @@
         </div>
         <div class="headings blue bold w13">
           <!-- Link here! -->
-          [[data.reference_number]]
+          <a href="">[[data.reference_number]]</a>
         </div>
         <div class="headings textprim w11">N.A.</div>
         <div class="headings textprim w13">[[data.traveller]]</div>
@@ -216,9 +219,12 @@
           rejected: 'rejected',
           submitted: 'submitted',
           cancelled: 'cancelled',
-          completed: 'completed'
-          // Waiting for all the colors from designer
-          // the obj is to handle not oneword statuses
+          completed: 'completed',
+          // For statuses, that are not wired in yet
+          'sent_for_payment': 'sent',
+          'cert_needed': 'planned',
+          'cert-approved': 'approved',
+          'cert_submitted': 'submitted',
         }[status];
       },
       _toggleExpanded: function(event) {
