@@ -1,0 +1,31 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="etools-file-upload">
+
+  <style include="">
+    :host {
+      display: block;
+
+      /* Dev helper styles */
+      border: 1px solid black;
+      margin: 20px 20px;
+    }
+  </style>
+
+  <template>
+    <span>The etools-file-upload component is here</span>
+    <input
+      hidden
+      type="file"
+      id="fileInput"
+      on-change="_fileChange"
+      multiple="false"
+      accept="{{accept}}">
+  </template>
+
+  <script>
+    Polymer({
+      is: 'etools-file-upload'
+    });
+  </script>
+</dom-module>
