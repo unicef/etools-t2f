@@ -6,12 +6,13 @@
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/etools-repetable-field-set/etools-repetable-field-set.html">
 
 
 
 
 <link rel="import" href="../../../styles/shared-styles.html">
-<link rel="import" href="repeatable-field-set.html">
+
 <link rel="import" href="searchable-selection.html">
 <link rel="import" href="datepicker-input.html">
 
@@ -22,8 +23,13 @@
                 display: block;
                 width: 100%;
             }
-            *[hidden] {
-                display: none;
+            etools-repetable-field-set {
+                width: calc( 100% - 48px);
+                margin: 24px;
+
+                --repeatable-items-collapse-container: {
+                    background: #FFF;
+                }
             }
             .custom-margin {
                 --paper-input-container: {
@@ -38,12 +44,12 @@
                 width:100%;
             }
             .orange-header {
-                --searchable-selection-background: #FF9640;
+                --repeatable-items-header-bg: #FF9640;
             }
         </style>
 
-        <repeatable-field-set hide-plus="true" title="Travel Plan" >
-            <div class="wide field-1" >
+        <etools-repetable-field-set hide-plus="{{trueValue}}" title="Travel Plan" model="[1]">
+            <div class="wide data-row-0" >
                 <div class="layout horizontal">
                     <paper-checkbox class="flex-3 custom-margin">TA required? </paper-checkbox>
                     <paper-checkbox class="flex-3 custom-margin">International travel? </paper-checkbox>
@@ -70,12 +76,12 @@
                     <paper-textarea  label= "Purpose of travel" class="flex-12 custom-margin" required char-counter maxlength="500" value="{{baseDetails.purpose}}"></paper-textarea>
                 </div>
             </div>
-        </repeatable-field-set>
+        </etools-repetable-field-set>
 
-        <repeatable-field-set title="Travel Activities" model="{{data.activities}}" id-attribute="id" allow-copy>
+        <etools-repetable-field-set title="Travel Activities" model="{{data.activities}}" id-attribute="id" allow-copy>
 
             <template is="dom-repeat" items="{{data.activities}}">
-                <div class$="wide field-{{item.id}}">
+                <div class$="wide data-row-{{index}}">
                     <div class="layout horizontal">
                         <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Travel Type" value="{{item.travelerType}}"></searchable-selection>
                         <searchable-selection class="flex-4" options="[[structure.traveler]]" label="Partner"  value="{{item.partner}}"></searchable-selection>
@@ -92,11 +98,11 @@
                 </div>
             </template>
 
-        </repeatable-field-set>
+        </etools-repetable-field-set>
 
-        <repeatable-field-set title="Itinerary" model="{{data.itinerary}}" id-attribute="id" show-counter>
+        <etools-repetable-field-set title="Itinerary" model="{{data.itinerary}}" id-attribute="id" show-counter>
             <template is="dom-repeat" items="{{data.itinerary}}">
-                <div class$="wide field-{{item.id}}">
+                <div class$="wide data-row-{{index}}">
                     <div class="layout horizontal">
                         <searchable-selection class="flex-4" options="[[structure.traveler]]" label="From" value="{{item.from}}"></searchable-selection>
                         <searchable-selection class="flex-4" options="[[structure.traveler]]" label="To" value="{{item.to}}"></searchable-selection>
@@ -111,18 +117,18 @@
                     </div>
                 </div>
             </template>
-        </repeatable-field-set>
+        </etools-repetable-field-set>
 
 
-        <repeatable-field-set title="Deductions" model="[1]" hide-plus>
+        <etools-repetable-field-set title="Deductions" model="[1]" hide-plus>
             <div class="field-1">
             Deductions placeholder
             </div>
-        </repeatable-field-set>
+        </etools-repetable-field-set>
 
-        <repeatable-field-set title="Expenses" model="{{data.expenses}}" id-attribute="id" show-counter>
+        <etools-repetable-field-set title="Expenses" model="{{data.expenses}}" id-attribute="id" show-counter>
             <template is="dom-repeat" items="{{data.expenses}}">
-                <div class$="wide field-{{item.id}}">
+                <div class$="wide data-row-{{index}}">
                     <div class="layout horizontal">
                         <searchable-selection class="flex-3" options="[[structure.traveler]]" label="Travel expense type" value="{{item.expenseType}}"></searchable-selection>
                         <paper-input class="flex-3 custom-margin"  label="Amount" type="number"  value="{{item.amount}}"></paper-input>
@@ -131,11 +137,11 @@
                     </div>
                 </div>
             </template>
-        </repeatable-field-set>
+        </etools-repetable-field-set>
 
-        <repeatable-field-set title="Cost Assignment" model="{{data.costAssignment}}" id-attribute="id" show-counter>
+        <etools-repetable-field-set title="Cost Assignment" model="{{data.costAssignment}}" id-attribute="id" show-counter>
             <template is="dom-repeat" items="{{data.costAssignment}}">
-                <div class$="wide field-{{item.id}}">
+                <div class$="wide data-row-{{index}}">
                     <div class="layout horizontal">
                         <searchable-selection class="flex-6" options="[[structure.traveler]]" label="WBS" value="{{item.wbs}}"></searchable-selection>
                         <paper-input class="flex-2 custom-margin"  label="Share(%)" type="number"  value="{{item.share}}"></paper-input>
@@ -144,13 +150,13 @@
                     </div>
                 </div>
             </template>
-        </repeatable-field-set>
+        </etools-repetable-field-set>
 
-        <repeatable-field-set class="orange-header" title="Cost summary" model="[1]" hide-plus>
+        <etools-repetable-field-set class="orange-header" title="Cost summary" model="[1]" hide-plus>
             <div class="field-1">
                 Cost summary placeholder
             </div>
-        </repeatable-field-set>
+        </etools-repetable-field-set>
 
 
     </template>
@@ -159,6 +165,9 @@
         Polymer({
             is: 'travel-details',
             properties: {
+                trueValue: {
+                    value: function() {return true}
+                },
                 data: {
                     type: Object,
                     notify: true,
