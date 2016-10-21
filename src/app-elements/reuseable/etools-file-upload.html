@@ -1,19 +1,81 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
 
 <dom-module id="etools-file-upload">
 
-  <style include="">
+  <style include="iron-flex">
     :host {
       display: block;
 
       /* Dev helper styles */
-      border: 1px solid black;
+      border: 1px solid rgba(0,0,0,0.05);
       margin: 20px 20px;
+    }
+    .file-name {
+      padding-right: 10px;
+      border-bottom: 1px solid rgba(0,0,0,0.30);
+    }
+    iron-icon {
+      color: rgba(0,0,0,0.54);
+      margin-right: 10px;
+    }
+    span.label {
+      font-size: 16px;
+      color: rgba(0,0,0,0.54);
+    }
+    span.label.filename {
+      color: rgba(0,0,0,0.87);
+    }
+
+    .buttons paper-button {
+      text-transform: none;
+      font-weight: 500;
+      font-size: 14px;
+      color: rgba(0,0,0,0.54);
+      height: 36px;
+    }
+    .buttons paper-button.del {
+      color: #EA4022;
+    }
+    .buttons paper-button.load {
+      color: #00AEEF;
+    }
+    .buttons paper-button.load iron-icon {
+      color: #00AEEF;
     }
   </style>
 
   <template>
-    <span>The etools-file-upload component is here</span>
+
+    <div class="horizontal layout">
+
+      <div class="file-name flex horizontal center layout" on-click="_selectFile">
+        <iron-icon icon="attachment"></iron-icon>
+        <span class$="label [[_hasFileNameClass()]]">[[_labelToShow()]]</span>
+      </div>
+
+      <div class="buttons flex horizontal layout">
+
+        <paper-button on-click="_btnChange">Change</paper-button>
+
+        <paper-button class="del" on-click="_btnDel">Delete</paper-button>
+
+        <paper-button class="load" on-click="_btnUpload">
+          <iron-icon icon="file-upload"></iron-icon>
+          Upload file
+        </paper-button>
+
+        <paper-button class="load" on-click="_btnDownload">
+          <iron-icon icon="file-download"></iron-icon>
+          Download file
+        </paper-button>
+
+      </div>
+
+    </div>
     <input
       hidden
       type="file"
@@ -25,7 +87,58 @@
 
   <script>
     Polymer({
-      is: 'etools-file-upload'
+
+      is: 'etools-file-upload',
+
+      properties: {
+        label: {
+          type: String,
+
+        }
+      },
+
+      // Starts the browsers file selection
+      _selectFile: function() {
+        var elem = this.$.fileInput;
+        if (elem && document.createEvent) {
+          var evt = document.createEvent('MouseEvents');
+          evt.initEvent('click', true, false);
+          elem.dispatchEvent(evt);
+        }
+      },
+
+      // Returns the filename || passed placeholder label || default placeholder label
+      _labelToShow: function() {
+        // TODO
+        return this.label || 'Click to upload a file';
+      },
+
+      // Returns the class 'filename', if there is a known filename to the file
+      _hasFileNameClass: function() {
+        // TODO
+        // return 'filename';
+        return '';
+      },
+
+      // Changes the file to upload locally
+      _btnChange: function() {
+        console.log('TODO: Change file to upload locally');
+      },
+
+      // Deletes file from server, reset state
+      _btnDel: function() {
+        console.log('TODO: Delete file from server, reset state');
+      },
+
+      // Uploads the selected file
+      _btnUpload: function() {
+        console.log('TODO: Upload the selected file');
+      },
+
+      // Downloads the linked file
+      _btnDownload: function() {
+        console.log('TODO: Download the linked file');
+      }
     });
   </script>
 </dom-module>
