@@ -1,22 +1,37 @@
+<!-- ETOOLS FILE UPLOADER COMPONENT
+
+Missing/todo: deletion, uploading, downloading, waiting for missing <etools-ajax> feature
+
+For existing files:
+===================
+<etools-file-upload
+  label="Click to upload TEST file"
+  download-path="https://www.some_path-to-the-file_in_question6.com"
+  file-name="somefile.jpg"></etools-file-upload>
+
+
+For upload:
+===========
+<etools-file-upload label="" upload-path="//some-path.to6?upload_stuff/"></etools-file-upload>
+
+-->
+
+
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-
 
 <dom-module id="etools-file-upload">
 
   <style include="iron-flex">
     :host {
       display: block;
-
-      /* Dev helper styles */
-      border: 1px solid rgba(0,0,0,0.05);
-      margin: 20px 20px;
     }
     .file-name {
       padding-right: 10px;
       border-bottom: 1px solid rgba(0,0,0,0.30);
+      height: 36px;
     }
     iron-icon {
       color: rgba(0,0,0,0.54);
@@ -54,21 +69,25 @@
 
       <div class="file-name flex horizontal center layout" on-click="_selectFile">
         <iron-icon icon="attachment"></iron-icon>
-        <span class$="label [[_hasFileNameClass()]]">[[_labelToShow()]]</span>
+        <span class$="label [[_hasFileNameClass(localFile.name)]]">[[_labelText(label, localFile.name)]]</span>
       </div>
 
       <div class="buttons flex horizontal layout">
 
-        <paper-button on-click="_btnChange">Change</paper-button>
+        <paper-button on-click="_openFileChooser" hidden$="[[_hideBtns(localFile)]]">
+          Change
+        </paper-button>
 
-        <paper-button class="del" on-click="_btnDel">Delete</paper-button>
+        <paper-button class="del" on-click="_btnDel" hidden$="[[_hideDelBtn(localFile)]]">
+          Delete
+        </paper-button>
 
-        <paper-button class="load" on-click="_btnUpload">
+        <paper-button class="load" on-click="_btnUpload" hidden$="[[_hideBtns(localFile)]]">
           <iron-icon icon="file-upload"></iron-icon>
           Upload file
         </paper-button>
 
-        <paper-button class="load" on-click="_btnDownload">
+        <paper-button class="load" on-click="_btnDownload" hidden$="[[_hideDownloadBtn(downloadPath)]]">
           <iron-icon icon="file-download"></iron-icon>
           Download file
         </paper-button>
@@ -80,7 +99,7 @@
       hidden
       type="file"
       id="fileInput"
-      on-change="_fileChange"
+      on-change="_fileSelected"
       multiple="false"
       accept="{{accept}}">
   </template>
@@ -91,14 +110,71 @@
       is: 'etools-file-upload',
 
       properties: {
+
+        // Given by parent
         label: {
           type: String,
+          value: ''
+        },
+        downloadPath: {
+          type: String,
+          value: 'placeholder'
+        },
+        uploadPath: {
+          type: String,
+          value: ''
+        },
+        fileName: {
+          type: String,
+          value: 'placeholder'
+        },
 
+        // Filled for internal use
+        localFile: {
+          type: Object,
+          value: {
+            name: '',
+            placeholder: true
+          }
         }
       },
 
       // Starts the browsers file selection
       _selectFile: function() {
+        if (
+          this.fileName !== 'placeholder' ||
+          !this.localFile.hasOwnProperty('placeholder')
+        ) {
+          return;
+        }
+        this._openFileChooser();
+      },
+
+      // Runs when the browser gives back the selected file
+      _fileSelected: function(e) {
+
+        var file = e.target.files[0];
+        this.set('localFile', file);
+      },
+
+      // Returns the filename || passed placeholder label || default placeholder label
+      _labelText: function(label, newFileName) {
+
+        return this.fileName !== 'placeholder' ? this.fileName : 0 ||
+          newFileName ||
+          label ||
+          'Click to upload a file';
+      },
+
+      // Returns the class 'filename', if there is a filename
+      _hasFileNameClass: function(fileName) {
+
+        return fileName ? 'filename' : '';
+      },
+
+      // Changes the file to upload locally
+      _openFileChooser: function() {
+
         var elem = this.$.fileInput;
         if (elem && document.createEvent) {
           var evt = document.createEvent('MouseEvents');
@@ -107,37 +183,44 @@
         }
       },
 
-      // Returns the filename || passed placeholder label || default placeholder label
-      _labelToShow: function() {
-        // TODO
-        return this.label || 'Click to upload a file';
+      // Tells if should hide the change button
+      _hideBtns: function(localFile) {
+
+        return localFile.hasOwnProperty('placeholder');
       },
 
-      // Returns the class 'filename', if there is a known filename to the file
-      _hasFileNameClass: function() {
-        // TODO
-        // return 'filename';
-        return '';
+      _hideDelBtn: function(localFile) {
+
+        return !(this.fileName !== 'placeholder' || !this._hideBtns(localFile));
       },
 
-      // Changes the file to upload locally
-      _btnChange: function() {
-        console.log('TODO: Change file to upload locally');
+      // Tells if the download button should be hidden
+      _hideDownloadBtn: function(downloadPath) {
+
+        return downloadPath === 'placeholder';
       },
 
       // Deletes file from server, reset state
       _btnDel: function() {
+
         console.log('TODO: Delete file from server, reset state');
+        this.set('localFile', {
+          name: '',
+          placeholder: true
+        });
       },
 
       // Uploads the selected file
       _btnUpload: function() {
-        console.log('TODO: Upload the selected file');
+
+        console.log('TODO: Upload this file with the <etools-ajax>:', this.localFile);
+        console.log('TODO: To given path:', this.uploadPath);
       },
 
       // Downloads the linked file
       _btnDownload: function() {
-        console.log('TODO: Download the linked file');
+
+        console.log('TODO: Download the file with <etools-ajax> from:', this.downloadPath);
       }
     });
   </script>
