@@ -18,7 +18,7 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 
-<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/shared-styles.html">
 <link rel="import" href="../form-actions-button/form-actions-button-travel.html">
 
 <dom-module id="travel-status">
@@ -27,8 +27,10 @@
 
     :host {
       display: block;
+      /*margin: 30px;*/
     }
     paper-card {
+      background-color: white;
       --paper-card-header-color: white;
       --paper-card-header-text: {
         font-size: 20px;
@@ -40,9 +42,11 @@
       --paper-card-content: {
         min-width: 200px;
         padding: 0;
+        background-color: white;
       }
       --paper-card-actions: {
         padding: 0;
+        background-color: white;
       }
     }
     .big {
@@ -136,8 +140,9 @@
 
   <template>
 
-    <paper-card heading="Travel status">
+    <paper-card heading="[[_getHeading(status)]]">
 
+      <!-- Travel statuses -->
       <template is="dom-if" if="[[_showFirst(status)]]">
 
         <div class="card-content">
@@ -192,9 +197,67 @@
         <div class="card-actions">
           <form-actions-button-travel user-type="[[userType]]" status="[[status]]" show-at-all="{{showActions}}"></form-actions-button-travel>
         </div>
-
       </template>
 
+
+      <!-- Certification statuses -->
+      <template is="dom-if" if="[[_showSecond(status)]]">
+
+        <div class="card-content">
+          <div class$="[[_isSmallClass(status)]] vertical layout">
+
+            <div class$="statuscont [[_computeStatusClass2('Certification needed', status)]]">
+              <div class="circlenr">
+                <span class$="[[_computeStatusClass2('Certification needed', status)]]">1</span>
+                <iron-icon class$="[[_computeStatusClass2('Certification needed', status)]]" icon="icons:done"></iron-icon>
+              </div>
+              <span class="status">Needed</span>
+            </div>
+
+            <div class="vertline flex"></div>
+
+            <div class$="statuscont [[_computeStatusClass2('Certification submitted', status)]]">
+              <div class="circlenr">
+                <span class$="[[_computeStatusClass2('Certification submitted', status)]]">2</span>
+                <iron-icon class$="[[_computeStatusClass2('Certification submitted', status)]]" icon="icons:done"></iron-icon>
+              </div>
+              <span class="status">Submitted</span>
+            </div>
+
+            <div class="vertline flex"></div>
+
+            <div class$="statuscont appr [[_computeStatusClass2('Certification approved', status)]]">
+              <div class="circlenr">
+                <span class$="[[_computeStatusClass2('Certification approved', status)]]">3</span>
+                <iron-icon class$="[[_computeStatusClass2('Certification approved', status)]]" icon="icons:done"></iron-icon>
+              </div>
+              <span class="status">Approved</span>
+            </div>
+
+            <div class$="statuscont reject [[_computeStatusClass2('Certification rejected', status)]]">
+              <iron-icon class="red" icon="icons:report-problem"></iron-icon>
+              <span class="status red">Rejected</span>
+            </div>
+
+            <div class="vertline flex"></div>
+
+            <div class="statuscont">
+              <div class="circlenr">
+                <span>4</span>
+              </div>
+              <span class="status">Completed</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="card-actions">
+          <form-actions-button-travel user-type="[[userType]]" status="[[status]]" show-at-all="{{showActions}}"></form-actions-button-travel>
+        </div>
+      </template>
+
+
+      <!-- Completed status -->
       <template is="dom-if" if="{{_showCompleted(status)}}">
         <div class="card-content">
           <div class$="[[_isSmallClass(status)]]">
@@ -211,6 +274,8 @@
         </div>
       </template>
 
+
+      <!-- Cancelled status -->
       <template is="dom-if" if='{{_showCancelled(status)}}'>
         <div class="card-content">
           <div class$="[[_isSmallClass(status)]]">
@@ -238,11 +303,15 @@
         completedDate: String,
         userType: String
       },
+      firstStatuses: ['Planned', 'Submitted', 'Approved', 'Rejected', 'Sent for payment'],
+      secondStatuses: ['Certification needed', 'Certification submitted', 'Certification rejected', 'Certification approved'],
+      _getHeading: function(status) {
+        return this.secondStatuses.indexOf(status) >= 0 ? 'Certification' : 'Travel status';
+      },
       _computeStatusClass: function(label, status) {
 
         var statClass = label == status ? 'blue' : '';
-        var statLib = ['Planned', 'Submitted', 'Approved', 'Rejected', 'Sent for payment'];
-        if (statLib.indexOf(label) < statLib.indexOf(status)) {
+        if (this.firstStatuses.indexOf(label) < this.firstStatuses.indexOf(status)) {
           statClass = 'green';
         }
         if (status === 'Rejected') {
@@ -250,8 +319,28 @@
         }
         return statClass;
       },
+      _computeStatusClass2: function(label, status) {
+
+        // Make it dry!!!!
+
+        var statClass = label == status ? 'blue' : '';
+        if (this.secondStatuses.indexOf(label) < this.secondStatuses.indexOf(status)) {
+          statClass = 'green';
+        }
+        if (status === 'Certification rejected') {
+          statClass += ' rejected';
+        }
+        return statClass;
+      },
       _showFirst: function(status) {
-        return ['Cancelled', 'Completed'].indexOf(status) < 0;
+        return this.firstStatuses.indexOf(status) >= 0;
+      },
+      _showSecond: function(status) {
+        console.log('Show second status set?', this.secondStatuses.indexOf(status) >= 0);
+        return this.secondStatuses.indexOf(status) >= 0;
+      },
+      _isSmallClass: function(status) {
+        return ['Cancelled', 'Completed'].indexOf(status) >= 0 ? 'small' : 'big';
       },
       _showCancelled: function(status) {
         return status === 'Cancelled';
@@ -259,9 +348,6 @@
       _showCompleted: function(status) {
         return status === 'Completed';
       },
-      _isSmallClass: function(status) {
-        return ['Cancelled', 'Completed'].indexOf(status) >= 0 ? 'small' : 'big';
-      }
     });
   </script>
 

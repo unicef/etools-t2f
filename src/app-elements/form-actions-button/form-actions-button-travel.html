@@ -6,8 +6,8 @@
     status: required, String, Capital, eg: 'Submitted'
 
   Files:
-    "./structure/actions-list.json"
-    "./structure/form-actions-permissions-travel.json"
+    "../../structure/actions-list.json"
+    "../../structure/form-actions-permissions-travel.json"
 -->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
@@ -18,7 +18,7 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 
-<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/shared-styles.html">
 
 <dom-module id="form-actions-button-travel">
 
@@ -44,18 +44,22 @@
     }
     .main-btn-part {
       text-align: center;
+      font-weight: 500;
+    }
+    .dropdown-content, .dropdown-content paper-item {
+      background-color: white;
     }
   </style>
 
   <template>
 
     <etools-ajax
-       url="./structure/actions-list.json"
+       url="../../structure/actions-list.json"
        on-success="_setActList">
     </etools-ajax>
 
     <etools-ajax
-       url="./structure/form-actions-permissions-travel.json"
+       url="../../structure/form-actions-permissions-travel.json"
        on-success="_setPermissions">
     </etools-ajax>
 
@@ -65,18 +69,19 @@
         <div on-click="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
 
         <template is="dom-if" if="[[showDropdown]]">
-        <paper-menu-button horizontal-align="right">
-          <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
-          <paper-menu class="dropdown-content">
-            <template is="dom-repeat" items="[[actions.secondary]]">
+          <paper-menu-button horizontal-align="right">
 
-              <paper-item on-click="_clickSecondary">[[item.name]]</paper-item>
+            <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
+            <paper-menu class="dropdown-content">
+              <template is="dom-repeat" items="[[actions.secondary]]">
 
-            </template>
-          </paper-menu>
-        </paper-menu-button>
-      </template>
+                <paper-item on-click="_clickSecondary">[[item.name]]</paper-item>
 
+              </template>
+            </paper-menu>
+
+          </paper-menu-button>
+        </template>
       </paper-button>
     </template>
 
