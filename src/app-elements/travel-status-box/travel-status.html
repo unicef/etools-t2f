@@ -27,7 +27,6 @@
 
     :host {
       display: block;
-      /*margin: 30px;*/
     }
     paper-card {
       background-color: white;
@@ -195,7 +194,8 @@
         </div>
 
         <div class="card-actions">
-          <form-actions-button-travel user-type="[[userType]]" status="[[status]]" show-at-all="{{showActions}}"></form-actions-button-travel>
+          <form-actions-button-travel user-type="[[userType]]" status="[[status]]">
+          </form-actions-button-travel>
         </div>
       </template>
 
@@ -252,13 +252,15 @@
         </div>
 
         <div class="card-actions">
-          <form-actions-button-travel user-type="[[userType]]" status="[[status]]" show-at-all="{{showActions}}"></form-actions-button-travel>
+          <form-actions-button-travel user-type="[[userType]]" status="[[status]]">
+          </form-actions-button-travel>
         </div>
       </template>
 
 
       <!-- Completed status -->
       <template is="dom-if" if="{{_showCompleted(status)}}">
+
         <div class="card-content">
           <div class$="[[_isSmallClass(status)]]">
             <div class="statuscont horizontal layout center green">
@@ -272,11 +274,17 @@
             </div>
           </div>
         </div>
+
+        <div class="card-actions">
+          <form-actions-button-travel user-type="[[userType]]" status="[[status]]">
+          </form-actions-button-travel>
+        </div>
       </template>
 
 
       <!-- Cancelled status -->
       <template is="dom-if" if='{{_showCancelled(status)}}'>
+
         <div class="card-content">
           <div class$="[[_isSmallClass(status)]]">
             <div class="statuscont horizontal layout center">
@@ -287,6 +295,11 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <div class="card-actions">
+          <form-actions-button-travel user-type="[[userType]]" status="[[status]]">
+          </form-actions-button-travel>
         </div>
       </template>
 
