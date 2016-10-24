@@ -7,7 +7,7 @@
 
   Files:
     "../../structure/actions-list.json"
-    "../../structure/form-actions-permissions-travel.json"
+    "../../structure/form-actions-permissions.json"
 -->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
@@ -20,7 +20,7 @@
 
 <link rel="import" href="../../../styles/shared-styles.html">
 
-<dom-module id="form-actions-button-travel">
+<dom-module id="form-actions-button">
 
   <style include="shared-styles iron-flex iron-flex-alignment" is="custom-style">
     :host {
@@ -59,7 +59,7 @@
     </etools-ajax>
 
     <etools-ajax
-       url="../../structure/form-actions-permissions-travel.json"
+       url="../../structure/form-actions-permissions.json"
        on-success="_setPermissions">
     </etools-ajax>
 
@@ -89,7 +89,7 @@
 
   <script>
     Polymer({
-      is: 'form-actions-button-travel',
+      is: 'form-actions-button',
       properties: {
         userType: String,
         status: String,
