@@ -19,7 +19,6 @@
   <style include="iron-flex shared-styles">
     :host {
       display: block;
-      margin-top: 56px;
       --paper-card:  {
         background-color: white;
         width: 100%;
@@ -42,7 +41,15 @@
         height: 80px;
       }
     }
-    .side-heading paper-button {
+    .side-heading .grey-buttons {
+      color: rgba(0,0,0,0.54);
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .side-heading .grey-buttons iron-icon {
+      margin-right: 8px;
+    }
+    .side-heading a paper-button {
       background-color: #00AEEF;
       color: white;
       height: 36px;
@@ -51,7 +58,7 @@
       padding-right: 15px;
       margin-right: 48px;
     }
-    .side-heading paper-button span {
+    .side-heading a paper-button span {
       margin-left: 25px;
       font-size: 14px;
       text-transform: none;
@@ -91,6 +98,20 @@
 
   <template>
 
+    <!-- This comes from the template
+      not DRY like this, but without it, it isn't showing correctly -->
+    <app-header-layout>
+
+      <app-header fixed shadow>
+
+        <app-toolbar>
+          <paper-icon-button class="light" icon="menu" on-tap="openDrawer"></paper-icon-button>
+          <div main-title>404</div>
+        </app-toolbar>
+
+      </app-header>
+    </app-header-layout>
+
     <div class="background">
 
       <etools-ajax
@@ -102,13 +123,30 @@
 
       <paper-card class="side-heading">
         <div class="card-content horizontal layout center">
+
           <span class="flex title">Field monitoring</span>
-          <a href="/plan-travel" tabindex="-1">
-            <paper-button class="addnbtn" raised>
-              <iron-icon icon="add"></iron-icon>
-              <span>Add New Travel</span>
+
+          <div class="side-heading-button-holder">
+            <paper-button
+              class="grey-buttons"
+              on-click="export">
+              <iron-icon icon="file-download"></iron-icon>
+              Export
             </paper-button>
-          </a>
+            <paper-button 
+              class="grey-buttons"
+              on-click="print">
+              <iron-icon icon="print"></iron-icon>
+              Print
+            </paper-button>
+
+            <a href="/plan-travel">
+              <paper-button class="addnbtn" raised>
+                <iron-icon icon="add"></iron-icon>
+                <span>Add New Travel</span>
+              </paper-button>
+            </a>
+          </div>
         </div>
       </paper-card>
 
@@ -238,6 +276,12 @@
           travel.end_date = travel.end_date.split('T')[0];
         });
         this.set('data', data.data);
+      },
+      export: function() {
+        console.log('Todo: EXPORT!');
+      },
+      print: function() {
+        console.log('Todo: PRINT!');
       }
     });
   </script>
