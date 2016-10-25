@@ -28,19 +28,19 @@
       background-color: white;
       width: 100%;
     }
-    paper-card.sideheading {
+    paper-card.side-heading {
       margin: 0 0 12px 0;
       height: 80px;
     }
-    .sideheading span.title {
+    .side-heading span.title {
       font-size: 24px;
       padding-left: 48px;
     }
-    .sideheading .card-content {
+    .side-heading .card-content {
       padding: 0 !important;
       height: 80px;
     }
-    .sideheading paper-button {
+    .side-heading paper-button {
       background-color: #00AEEF;
       color: white;
       height: 36px;
@@ -49,16 +49,16 @@
       padding-right: 15px;
       margin-right: 48px;
     }
-    .sideheading paper-button span {
+    .side-heading paper-button span {
       margin-left: 25px;
       font-size: 14px;
       text-transform: none;
     }
-    paper-card.datatable {
+    paper-card.data-table {
       margin: 0 24px;
       width: calc(100% - 48px);
     }
-    .cardheading {
+    .card-heading {
       display: block;
       font-size: 20px;
       margin-left: 20px;
@@ -94,7 +94,7 @@
         on-success="handleListResponse">
       </etools-ajax>
 
-      <paper-card class="sideheading">
+      <paper-card class="side-heading">
         <div class="card-content horizontal layout center">
           <span class="flex title">Field monitoring</span>
           <a href="/plan-travel" tabindex="-1">
@@ -108,9 +108,9 @@
 
       <!-- Filtering -->
 
-      <paper-card class="datatable">
+      <paper-card class="data-table">
 
-        <span class="textprim cardheading">{{showingResults}} results to show</span>
+        <span class="textprim card-heading">{{showingResults}} results to show</span>
 
         <list-header id="list-header" data="[[headings]]" order-obj="{{orderObj}}">
         </list-header>

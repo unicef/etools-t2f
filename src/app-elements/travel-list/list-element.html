@@ -15,10 +15,10 @@
       border-bottom: 1px solid rgba(0,0,0,0.3);
       box-sizing: border-box;
     }
-    .headingrow {
+    .heading-row {
       width: 100%;
     }
-    .headingrow2 {
+    .heading-row2 {
       background-color: #EEEEEE;
       height: 64px;
     }
@@ -29,13 +29,13 @@
       line-height: 47px;
       box-sizing: border-box;
     }
-    .detailheadings {
+    .detail-headings {
       color: rgba(0,0,0,0.54);
       font-size: 12px;
       font-weight: 500;
       line-height: 32px;
     }
-    .detailtext {
+    .detail-text {
       color: rgba(0,0,0,0.87);
       font-weight: normal;
       line-height: 32px;
@@ -116,7 +116,7 @@
 
   <template>
 
-      <div class="headingrow clearfix layout horizontal">
+      <div class="heading-row clearfix layout horizontal">
 
         <div class$="headings textprim bold w60 [[_statusClass(data)]]">
           <iron-icon
@@ -154,43 +154,43 @@
         </div>
       </div>
 
-      <div hidden$="[[!_isDetailed(expanded)]]" class="headingrow headingrow2 clearfix layout horizontal">
+      <div hidden$="[[!_isDetailed(expanded)]]" class="heading-row heading-row2 clearfix layout horizontal">
         <div class$="headings textprim bold w60 [[_statusClass(data)]]"></div>
         <div class="flex vertical around-justified layout">
-          <span class="flex detailheadings">Section</span>
-          <span class="flex detailtext">NA.</span>
+          <span class="flex detail-headings">Section</span>
+          <span class="flex detail-text">NA.</span>
         </div>
         <div class="flex vertical around-justified layout">
-          <span class="flex detailheadings">Office</span>
-          <span class="flex detailtext">NA.</span>
+          <span class="flex detail-headings">Office</span>
+          <span class="flex detail-text">NA.</span>
         </div>
         <div class="flex vertical around-justified layout">
-          <span class="flex detailheadings">Supervisor</span>
-          <span class="flex detailtext">NA.</span>
+          <span class="flex detail-headings">Supervisor</span>
+          <span class="flex detail-text">NA.</span>
         </div>
         <div class="flex vertical around-justified layout">
-          <span class="flex detailheadings">TA Req?</span>
-          <span class="flex detailtext">NA.</span>
+          <span class="flex detail-headings">TA Req?</span>
+          <span class="flex detail-text">NA.</span>
         </div>
         <div class="flex vertical around-justified layout">
-          <span class="flex detailheadings">TA ref. num?</span>
-          <span class="flex detailtext">NA.</span>
+          <span class="flex detail-headings">TA ref. num?</span>
+          <span class="flex detail-text">NA.</span>
         </div>
         <div class="flex vertical around-justified layout">
-          <span class="flex detailheadings">Approved date</span>
-          <span class="flex detailtext">NA.</span>
+          <span class="flex detail-headings">Approved date</span>
+          <span class="flex detail-text">NA.</span>
         </div>
         <div class="flex vertical around-justified layout">
-          <span class="flex detailheadings">Attachments</span>
-          <span class="flex detailtext">NA.</span>
+          <span class="flex detail-headings">Attachments</span>
+          <span class="flex detail-text">NA.</span>
         </div>
         <div class="flex vertical around-justified layout">
-          <span class="flex detailheadings">Actions</span>
-          <span class="flex detailtext">NA.</span>
+          <span class="flex detail-headings">Actions</span>
+          <span class="flex detail-text">NA.</span>
         </div>
         <div class="flex vertical around-justified layout">
-          <span class="flex detailheadings">Driver trip</span>
-          <span class="flex detailtext">NA.</span>
+          <span class="flex detail-headings">Driver trip</span>
+          <span class="flex detail-text">NA.</span>
         </div>
         <div class="headings textsec w5"></div>
       </div>
