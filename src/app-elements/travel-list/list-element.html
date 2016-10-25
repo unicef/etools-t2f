@@ -18,7 +18,7 @@
     .heading-row {
       width: 100%;
     }
-    .heading-row2 {
+    .heading-row-detailed {
       background-color: #EEEEEE;
       height: 64px;
     }
@@ -75,7 +75,6 @@
     .w60.completed {
       border-left-color: rgba(141,198,63,1);
     }
-    /* Waiting for all the colors from designer */
     .w60 iron-icon {
       margin-left: 10px;
       color: rgba(0,0,0,0.54);
@@ -154,7 +153,7 @@
         </div>
       </div>
 
-      <div hidden$="[[!_isDetailed(expanded)]]" class="heading-row heading-row2 clearfix layout horizontal">
+      <div hidden$="[[!_isDetailed(expanded)]]" class="heading-row heading-row-detailed clearfix layout horizontal">
         <div class$="headings textprim bold w60 [[_statusClass(data)]]"></div>
         <div class="flex vertical around-justified layout">
           <span class="flex detail-headings">Section</span>
