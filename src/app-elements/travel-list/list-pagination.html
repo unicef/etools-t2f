@@ -74,37 +74,25 @@
         <iron-icon
           icon="pagination:first-page"
           on-click="goToFirst"
-          class$="flex chev [[_hollowFirst(hidefirst)]]">
+          class$="flex chev [[_hollowFirst(onFirst)]]">
         </iron-icon>
 
         <iron-icon
           icon="icons:chevron-left"
-          hidden="{{hidefirst}}"
-          class="flex chev"
-          on-click="goleft">
-        </iron-icon>
-        <iron-icon
-          hidden="{{!hidefirst}}"
-          icon="icons:chevron-left"
-          class="flex chev textsec">
+          class$="flex chev [[_hollowFirst(onFirst)]]"
+          on-click="goToLeft">
         </iron-icon>
 
         <iron-icon
           icon="icons:chevron-right"
-          hidden="{{hidelast}}"
-          class="flex chev"
-          on-click="goright">
-        </iron-icon>
-        <iron-icon
-          hidden="{{!hidelast}}"
-          icon="icons:chevron-right"
-          class="flex chev textsec">
+          class$="flex chev [[_hollowLast(onLast)]]"
+          on-click="goToRight">
         </iron-icon>
 
         <iron-icon
           icon="pagination:last-page"
           on-click="goToLast"
-          class$="flex chev [[_hollowLast(hidelast)]]">
+          class$="flex chev [[_hollowLast(onLast)]]">
         </iron-icon>
       </div>
 
@@ -120,13 +108,13 @@
           type: Object,
           notify: true
         },
-        hidefirst: {
+        onFirst: {
           type: Boolean,
-          computed: '_hideFirst(pages.page, pages.itemsPerPage, maxnr)'
+          computed: '_onFirst(pages.page, pages.itemsPerPage, maxnr)'
         },
-        hidelast: {
+        onLast: {
           type: Boolean,
-          computed: '_hideLast(pages.page, pages.itemsPerPage, maxnr)'
+          computed: '_onLast(pages.page, pages.itemsPerPage, maxnr)'
         },
         rowSelection: {
           type: Array,
@@ -136,20 +124,29 @@
           type: String
         }
       },
-      _hideFirst: function(page, itemsPerPage, maxnr) {
+      _onFirst: function(page, itemsPerPage, maxnr) {
 
         return page === 1;
       },
-      _hideLast: function(page, itemsPerPage, maxnr) {
+      _onLast: function(page, itemsPerPage, maxnr) {
 
         return page === Math.ceil(maxnr / itemsPerPage);
       },
-      goleft: function() {
-
-        this.set('pages', {
-          page: this.pages.page - 1,
-          itemsPerPage: this.pages.itemsPerPage
-        });
+      goToLeft: function() {
+        if (!this.onFirst) {
+          this.set('pages', {
+            page: this.pages.page - 1,
+            itemsPerPage: this.pages.itemsPerPage
+          });
+        }
+      },
+      goToRight: function() {
+        if (!this.onLast) {
+          this.set('pages', {
+            page: this.pages.page + 1,
+            itemsPerPage: this.pages.itemsPerPage
+          });
+        }
       },
       goToFirst: function() {
         if (this.pages.page !== 1) {
@@ -159,9 +156,6 @@
           });
         }
       },
-      _hollowFirst: function(hidefirst) {
-        return hidefirst ? 'textsec' : '';
-      },
       goToLast: function() {
         if (this.pages.page !== Math.ceil(this.maxnr / this.pages.itemsPerPage)) {
           this.set('pages', {
@@ -170,15 +164,11 @@
           });
         }
       },
-      _hollowLast: function(hidelast) {
-        return hidelast ? 'textsec' : '';
+      _hollowFirst: function(onFirst) {
+        return onFirst ? 'textsec' : '';
       },
-      goright: function() {
-
-        this.set('pages', {
-          page: this.pages.page + 1,
-          itemsPerPage: this.pages.itemsPerPage
-        });
+      _hollowLast: function(onLast) {
+        return onLast ? 'textsec' : '';
       },
       itemsNrChanged: function(event, item) {
 
