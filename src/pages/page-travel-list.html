@@ -4,9 +4,9 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
-
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
 
 <link rel="import" href="../app-elements/travel-list/list-element.html">
 <link rel="import" href="../app-elements/travel-list/list-header.html">
@@ -21,7 +21,8 @@
       display: block;
       --paper-card:  {
         background-color: white;
-        width: 100%;
+        margin: 0 24px;
+        width: calc(100% - 48px);
       }
     }
     .background {
@@ -36,12 +37,6 @@
     .side-heading span.title {
       font-size: 24px;
       padding-left: 48px;
-    }
-    .side-heading {
-      --paper-card-content: {
-        padding: 0 !important;
-        height: 80px;
-      }
     }
     .side-heading .grey-buttons {
       color: rgba(0,0,0,0.54);
@@ -65,15 +60,33 @@
       font-size: 14px;
       text-transform: none;
     }
-    .data-table {
-      --paper-card: {
-        background-color: white;
-        width: 100%;
-        margin: 0 24px;
-        width: calc(100% - 48px);
-      }
+
+
+    .second-header {
+      height: 84px;
+      margin-bottom: 8px;
     }
-    .card-heading {
+    .second-header paper-input {
+      --paper-input-container: {
+        width: 240px;
+        margin-left: 26px;
+      }
+      --paper-input-container-color: rgba(0,0,0,0.38);
+    }
+    .second-header paper-input iron-icon {
+      color: rgba(0,0,0,0.54);
+    }
+    .second-header .toggle-hidden-div {
+      margin-right: 26px;
+    }
+    .second-header .toggle-hidden-div span {
+      color: rgba(0,0,0,0.87);
+      font-size: 16px;
+      margin-right: 8px;
+    }
+
+
+    .data-table .data-card-heading {
       display: block;
       font-size: 20px;
       margin-left: 20px;
@@ -150,11 +163,27 @@
         </div>
       </div>
 
-      <!-- Filtering -->
+      <paper-card class="second-header horizontal layout center">
+        <!-- Filtering -->
+
+        <paper-input inline label="search keyword(s)">
+          <!-- to query:   search="" -->
+          <iron-icon icon="search" prefix></iron-icon>
+        </paper-input>
+
+        <div class="flex"></div>
+
+        <div class="toggle-hidden-div horizontal layout center">
+          <!-- to query:   show_hidden=true/false -->
+          <span>Show hidden</span>
+          <paper-toggle-button class="right-float"></paper-toggle-button>
+        </div>
+
+      </paper-card>
 
       <paper-card class="data-table">
 
-        <span class="textprim card-heading">{{showingResults}} results to show</span>
+        <span class="textprim data-card-heading">{{showingResults}} results to show</span>
 
         <list-header id="list-header" data="[[headings]]" order-obj="{{orderObj}}">
         </list-header>
