@@ -14,16 +14,17 @@
     :host {
       display: block;
       margin-top: 0;
-    }
-    paper-dropdown-menu {
-      width: 50px;
+      --paper-dropdown-menu: {
+        width: 50px;
+        padding: 0 30px;
+      }
       --paper-input-container-input: {
         font-size: 12px;
         color: rgba(0,0,0,0.54);
       }
       --paper-input-container-underline: {
         display: none;
-      };
+      }
     }
     .dropdown-content {
       background-color: white;
@@ -45,9 +46,6 @@
     }
     span.textsec.lh {
       font-size: 12px;
-    }
-    paper-dropdown-menu {
-      padding: 0 30px;
     }
   </style>
 

@@ -20,15 +20,15 @@
     :host {
       display: block;
       margin-top: 56px;
+      --paper-card:  {
+        background-color: white;
+        width: 100%;
+      }
     }
     .background {
       background-color: #eeeeee;
     }
-    paper-card {
-      background-color: white;
-      width: 100%;
-    }
-    paper-card.side-heading {
+    .side-heading {
       margin: 0 0 12px 0;
       height: 80px;
     }
@@ -36,9 +36,11 @@
       font-size: 24px;
       padding-left: 48px;
     }
-    .side-heading .card-content {
-      padding: 0 !important;
-      height: 80px;
+    .side-heading {
+      --paper-card-content: {
+        padding: 0 !important;
+        height: 80px;
+      }
     }
     .side-heading paper-button {
       background-color: #00AEEF;
@@ -54,9 +56,13 @@
       font-size: 14px;
       text-transform: none;
     }
-    paper-card.data-table {
-      margin: 0 24px;
-      width: calc(100% - 48px);
+    .data-table {
+      --paper-card: {
+        background-color: white;
+        width: 100%;
+        margin: 0 24px;
+        width: calc(100% - 48px);
+      }
     }
     .card-heading {
       display: block;
