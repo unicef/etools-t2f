@@ -7,6 +7,7 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="./pagination-icons.html">
 
 <dom-module id="list-pagination">
 
@@ -29,10 +30,12 @@
     .dropdown-content {
       background-color: white;
     }
+    .chevron-container {
+      width: 200px;
+    }
     iron-icon {
       width: 24px;
       height: 24px;
-      margin: 0 24px;
       cursor: pointer;
     }
     iron-icon.textsec {
@@ -66,29 +69,44 @@
 
       <span class="textsec lh unselectable">{{showingResults}}</span>
 
-      <iron-icon
-        icon="icons:chevron-left"
-        hidden="{{hidefirst}}"
-        class="chev"
-        on-click="goleft">
-      </iron-icon>
-      <iron-icon
-        hidden="{{!hidefirst}}"
-        icon="icons:chevron-left"
-        class="chev textsec">
-      </iron-icon>
+      <div class="chevron-container layout around-justified horizontal">
 
-      <iron-icon
-        icon="icons:chevron-right"
-        hidden="{{hidelast}}"
-        class="chev"
-        on-click="goright">
-      </iron-icon>
-      <iron-icon
-        hidden="{{!hidelast}}"
-        icon="icons:chevron-right"
-        class="chev textsec">
-      </iron-icon>
+        <iron-icon
+          icon="pagination:first-page"
+          on-click="goToFirst"
+          class$="flex chev [[_hollowFirst(hidefirst)]]">
+        </iron-icon>
+
+        <iron-icon
+          icon="icons:chevron-left"
+          hidden="{{hidefirst}}"
+          class="flex chev"
+          on-click="goleft">
+        </iron-icon>
+        <iron-icon
+          hidden="{{!hidefirst}}"
+          icon="icons:chevron-left"
+          class="flex chev textsec">
+        </iron-icon>
+
+        <iron-icon
+          icon="icons:chevron-right"
+          hidden="{{hidelast}}"
+          class="flex chev"
+          on-click="goright">
+        </iron-icon>
+        <iron-icon
+          hidden="{{!hidelast}}"
+          icon="icons:chevron-right"
+          class="flex chev textsec">
+        </iron-icon>
+
+        <iron-icon
+          icon="pagination:last-page"
+          on-click="goToLast"
+          class$="flex chev [[_hollowLast(hidelast)]]">
+        </iron-icon>
+      </div>
 
     </div>
   </template>
@@ -132,6 +150,28 @@
           page: this.pages.page - 1,
           itemsPerPage: this.pages.itemsPerPage
         });
+      },
+      goToFirst: function() {
+        if (this.pages.page !== 1) {
+          this.set('pages', {
+            page: 1,
+            itemsPerPage: this.pages.itemsPerPage
+          });
+        }
+      },
+      _hollowFirst: function(hidefirst) {
+        return hidefirst ? 'textsec' : '';
+      },
+      goToLast: function() {
+        if (this.pages.page !== Math.ceil(this.maxnr / this.pages.itemsPerPage)) {
+          this.set('pages', {
+            page: Math.ceil(this.maxnr / this.pages.itemsPerPage),
+            itemsPerPage: this.pages.itemsPerPage
+          });
+        }
+      },
+      _hollowLast: function(hidelast) {
+        return hidelast ? 'textsec' : '';
       },
       goright: function() {
 
