@@ -48,7 +48,7 @@
         }
       } else {
         //for testing
-        console.log('setting super permissions');
+        // console.log('setting super permissions');
         permissions.superPermissions.forEach(function(perm) {
           _data.permissions[perm] = true;
         });
@@ -107,13 +107,13 @@
 
       _handleResponse: function(res) {
         // TODO: check response to make sure it contains a valid user
-        console.log('resp');
+        // console.log('resp');
         _setUserData.bind(this)(res.detail);
       },
 
       _handleError: function(rsp, err) {
-        console.log(rsp);
-        console.log(err);
+        // console.log(rsp);
+        // console.log(err);
         _setUserData.bind(this)(null);
       },
 
