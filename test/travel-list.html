@@ -49,13 +49,13 @@
       expect(el.is).to.equal('travel-list');
     });
 
-    test('has a button which leads to creating a new travel', function() {
+    test('has an <et2f-header> component', function() {
 
-      var btn = Polymer.dom(el.root).querySelector('paper-button.addnbtn');
-      expect(btn).to.exist;
+      var header = Polymer.dom(el.root).querySelector('et2f-header');
+      expect(header).to.exist;
     });
 
-    test('contains an etools-ajax, a list-header and a list-pagination component', function() {
+    test('contains an <etools-ajax>, a <list-header> and a <list-pagination> component', function() {
 
       expect(Polymer.dom(el.root).querySelector('etools-ajax')).to.exist;
       expect(Polymer.dom(el.root).querySelector('list-header')).to.exist;
@@ -78,7 +78,7 @@
       // Click purpose heading
       var headingComp = Polymer.dom(el.root).querySelector('#list-header');
       Polymer.dom(headingComp).flush();
-      var activeHeader = headingComp.querySelector('div.localheadings.act');
+      var activeHeader = headingComp.querySelector('div.local-headings.act');
       expect(el.ajaxParams.reverse).to.not.be.ok;
       activeHeader.click();
 
@@ -99,11 +99,11 @@
       el.handleListResponse(null, mockData);
       var paginationComp = Polymer.dom(el.root).querySelector('#list-pagination');
 
-      paginationComp.goright();
+      paginationComp.goToRight();
       expect(el.pages.page).to.equal(2);
       expect(el.ajaxParams.page).to.equal(2);
 
-      paginationComp.goleft();
+      paginationComp.goToLeft();
       expect(el.pages.page).to.equal(1);
       expect(el.ajaxParams.page).to.equal(1);
     });
@@ -113,13 +113,12 @@
       el.handleListResponse(null, mockData);
       Polymer.dom.flush();
       var listElement = Polymer.dom(el.root).querySelectorAll('list-element')[0];
-      var hidden = listElement.querySelector('.headingrow2').hasAttribute('hidden');
-      // alert('' + listElement.expanded);
+      var hidden = listElement.querySelector('.heading-row-detailed').hasAttribute('hidden');
       expect(hidden).to.equal(true);
 
       listElement._toggleExpanded();
       Polymer.dom(listElement).flush();
-      hidden = listElement.querySelector('.headingrow2').hasAttribute('hidden');
+      hidden = listElement.querySelector('.heading-row-detailed').hasAttribute('hidden');
       expect(hidden).to.equal(false);
     });
   });
