@@ -8,7 +8,7 @@
     "app-route": "PolymerElements/app-route#^0.9.0",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.0",
     "iron-icon": "^1.0.10",
-    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.0.0",
+    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.1.0",
     "iron-localstorage": "PolymerElements/iron-localstorage#^1.0.0",
     "iron-media-query": "PolymerElements/iron-media-query#^1.0.0",
     "iron-pages": "PolymerElements/iron-pages#^1.0.0",
@@ -47,7 +47,8 @@
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
     "etools-loading": "^1.0.3",
     "etools-repeatable-field-set": "#lightdom-asynch-handling",
-    "etools-searchable-multiselection-menu": "^1.0.0"
+    "etools-searchable-multiselection-menu": "^1.0.0",
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

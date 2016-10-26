@@ -2,27 +2,55 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+
 <link rel="import" href="../../../styles/shared-styles.html">
 
 <dom-module id="list-element">
 
-  <style include="shared-styles travel-list">
+  <style include="shared-styles travel-list iron-flex">
     :host {
       display: block;
       padding: 0;
       margin: 0;
-      box-shadow: inset 0 -1px 0 0 rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(0,0,0,0.3);
+      box-sizing: border-box;
     }
-    .headingrow {
+    .heading-row {
       width: 100%;
+    }
+    .heading-row.grey-heading {
+      background-color: rgba(0,0,0,0.06);
+    }
+    .heading-row-detailed {
+      background-color: #EEEEEE;
+      height: 64px;
     }
     .headings {
       display: block;
       float: left;
       font-size: 13px;
       line-height: 47px;
-      padding-left: 20px;
       box-sizing: border-box;
+    }
+    .detail-headings {
+      color: rgba(0,0,0,0.54);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 32px;
+    }
+    .detail-text {
+      color: rgba(0,0,0,0.87);
+      font-weight: normal;
+      line-height: 32px;
+    }
+    .blue {
+      color: #00AEEF;
+      cursor: pointer;
     }
     .bold {
       font-weight: 500;
@@ -30,21 +58,182 @@
     .capital {
       text-transform: capitalize;
     }
+    .w60 {
+      border-left-width: 3px;
+      border-left-style: solid;
+    }
+    .w60.planned {
+      border-left-color: rgba(250,237,119,0.6);
+    }
+    .w60.approved {
+      border-left-color: rgba(141,198,63,0.45);
+    }
+    .w60.submitted {
+      border-left-color: rgba(206,188,6,0.6);
+    }
+    .w60.sent {
+      border-left-color: rgba(30,134,191,1);
+    }
+    .w60.rejected {
+      border-left-color: rgba(234,64,34,1);
+    }
+    .w60.cancelled {
+      border-left-color: rgba(0,0,0,0.38);
+    }
+    .w60.completed {
+      border-left-color: rgba(141,198,63,1);
+    }
+    .w60 iron-icon {
+      margin-left: 10px;
+      color: rgba(0,0,0,0.54);
+    }
+    .statusdiv {
+      height: 32px;
+      border-radius: 2px;
+      margin: 8px 16px 8px 0;
+      font-size: 13px;
+      line-height: 32px;
+      text-align: center;
+      -moz-box-shadow: inset 0 -1px 0 rgba(0,0,0,0.87);
+      -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,0.87);
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.39);
+    }
+    #more-button {
+      --paper-menu-button: {
+        padding: 0;
+      }
+    }
+    #more-button .dropdown-content {
+      background-color: white;
+    }
+    #more-button paper-item {
+      --paper-item: {
+        color: rgba(0,0,0,0.87);
+      }
+    }
+    #more-button iron-icon {
+      margin-right: 16px;
+      color: rgba(0,0,0,0.54);
+    }
+    .statusdiv.planned {
+      background-color: rgba(250,237,119,0.6);
+    }
+    .statusdiv.approved {
+      background-color: rgba(141,198,63,0.45);
+    }
+    .statusdiv.submitted {
+      background-color: rgba(206,188,6,0.6);
+    }
+    .statusdiv.sent {
+      background-color: rgba(30,134,191,1);
+    }
+    .statusdiv.rejected {
+      background-color: rgba(234,64,34,1);
+    }
+    .statusdiv.cancelled {
+      background-color: rgba(0,0,0,0.38);
+    }
+    .statusdiv.completed {
+      background-color: rgba(141,198,63,1);
+    }
+    .statusdiv.rejected .statusdivtext, .statusdiv.cancelled .statusdivtext, .statusdiv.completed .statusdivtext {
+      color: white;
+    }
   </style>
 
   <template>
 
-      <div class="headingrow clearfix">
-        <div class="headings textprim bold w15">[[data.reference_number]]</div>
-        <div class="headings textprim w20 truncate">[[data.purpose]]</div>
-        <div class="headings textprim w15">[[data.traveller]]</div>
-        <div class="headings textprim w10">[[data.start_date]]</div>
-        <div class="headings textprim w10">[[data.end_date]]</div>
-        <div class="headings textprim bold capital w15">[[data.status]]</div>
-        <div class="headings textsec w15">
-          <paper-icon-button icon="social:person-add"></paper-icon-button>
-          <paper-icon-button icon="maps:directions-car"></paper-icon-button>
+      <div class$="heading-row clearfix layout horizontal [[_isGreyClass(data)]]">
+
+        <div class$="headings textprim bold w60 [[_statusClass(data)]]">
+          <iron-icon
+            icon="icons:expand-more"
+            on-click="_toggleExpanded"
+            hidden$="[[_isDetailed(expanded)]]">
+          </iron-icon>
+          <iron-icon
+            icon="icons:expand-less"
+            on-click="_toggleExpanded"
+            hidden$="[[!_isDetailed(expanded)]]">
+          </iron-icon>
         </div>
+        <div class="headings blue bold w13">
+          <!-- Link here! -->
+          <a href="">[[data.reference_number]]</a>
+        </div>
+        <div class="headings textprim w11">N.A.</div>
+        <div class="headings textprim w13">[[data.traveller]]</div>
+        <div class="headings textprim w23 truncate">[[data.purpose]]</div>
+        <div class="headings textprim w11">[[data.start_date]]</div>
+        <div class="headings textprim w11">[[data.end_date]]</div>
+        <div class="headings textprim bold capital w13">
+          <div class$="statusdiv [[_statusClass(data)]]">
+            <span class="statusdivtext">[[data.status]]</span>
+          </div>
+        </div>
+        <div class="headings textsec w5">
+
+          <paper-menu-button horizontal-align="right" id="more-button">
+
+            <paper-icon-button icon="more-vert" class="dropdown-trigger">
+            </paper-icon-button>
+
+            <paper-menu class="dropdown-content">
+
+              <paper-item on-click="duplicate">
+                <iron-icon icon="social:person-add"></iron-icon>
+                <paper-item-body>Duplicate trip</paper-item-body>
+              </paper-item>
+
+              <paper-item on-click="addDriver">
+                <iron-icon icon="maps:directions-car"></iron-icon>
+                <paper-item-body>Add driver</paper-item-body>
+              </paper-item>
+
+            </paper-menu>
+          </paper-menu-button>
+        </div>
+      </div>
+
+      <div hidden$="[[!_isDetailed(expanded)]]" class="heading-row heading-row-detailed clearfix layout horizontal">
+        <div class$="headings textprim bold w60 [[_statusClass(data)]]"></div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Section</span>
+          <span class="flex detail-text">[[data.section]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Office</span>
+          <span class="flex detail-text">[[data.office]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Supervisor</span>
+          <span class="flex detail-text">#[[data.supervisor]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">TA Req?</span>
+          <span class="flex detail-text">[[data.ta_required]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">TA ref. num?</span>
+          <span class="flex detail-text">[[data.ta_reference_nr]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Approved date</span>
+          <span class="flex detail-text">[[data.approval_date]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Attachments</span>
+          <span class="flex detail-text">[[data.attachment_count]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Actions</span>
+          <span class="flex detail-text">NA.</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Driver trip</span>
+          <span class="flex detail-text">[[data.is_driver]]</span>
+        </div>
+        <div class="headings textsec w5"></div>
       </div>
 
   </template>
@@ -54,8 +243,48 @@
       is: 'list-element',
       properties: {
         data: {
-          type: Object
+          type: Object,
+          observer: '_resetExpanded'
+        },
+        expanded: {
+          type: Boolean,
+          value: false
         }
+      },
+      _statusClass: function(data) {
+        var status = data.status;
+        return {
+          planned: 'planned',
+          approved: 'approved',
+          approved: 'approved',
+          rejected: 'rejected',
+          submitted: 'submitted',
+          cancelled: 'cancelled',
+          completed: 'completed',
+          // For statuses, that are not wired in yet
+          'sent_for_payment': 'sent',
+          'cert_needed': 'planned',
+          'cert-approved': 'approved',
+          'cert_submitted': 'submitted',
+        }[status];
+      },
+      _toggleExpanded: function(event) {
+        this.set('expanded', !this.expanded);
+      },
+      _isDetailed: function(expanded) {
+        return this.expanded;
+      },
+      _resetExpanded: function() {
+        this.set('expanded', false);
+      },
+      duplicate: function() {
+        console.log('TODO: duplicating feature!');
+      },
+      addDriver: function() {
+        console.log('TODO: add driver feature!');
+      },
+      _isGreyClass: function(data) {
+        return data.status === 'cancelled' ? 'grey-heading' : '';
       }
     });
   </script>

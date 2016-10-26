@@ -6,4 +6,5 @@ dist/
 .idea
 *.sublime-project
 *.sublime-workspace
-
+diff.txt
+npm-debug.log

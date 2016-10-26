@@ -1,4 +1,4 @@
- 
+
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
@@ -7,18 +7,36 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="./pagination-icons.html">
 
 <dom-module id="list-pagination">
 
   <style include="iron-flex shared-styles travel-list">
     :host {
       display: block;
-      padding: 0;
+      margin-top: 0;
+      --paper-dropdown-menu: {
+        width: 50px;
+        padding: 0 30px;
+      }
+      --paper-input-container-input: {
+        font-size: 12px;
+        color: rgba(0,0,0,0.54);
+      }
+      --paper-input-container-underline: {
+        display: none;
+      }
+    }
+    .dropdown-content {
+      background-color: white;
+    }
+    .chevron-container {
+      width: 200px;
+      margin: 0 10px;
     }
     iron-icon {
       width: 24px;
       height: 24px;
-      margin: 0 24px;
       cursor: pointer;
     }
     iron-icon.textsec {
@@ -33,13 +51,10 @@
     span.textsec.lh {
       font-size: 12px;
     }
-    paper-dropdown-menu {
-      padding: 0 30px;
-    }
   </style>
 
   <template>
-    <div class="layout horizontal clearfix rightfloat">
+    <div class="clearfix rightfloat horizontal layout center">
 
       <span class="textsec lh">Rows per page:</span>
 
@@ -55,29 +70,32 @@
 
       <span class="textsec lh unselectable">{{showingResults}}</span>
 
-      <iron-icon
-        icon="icons:chevron-left"
-        hidden="{{hidefirst}}"
-        class="chev"
-        on-click="goleft">
-      </iron-icon>
-      <iron-icon
-        hidden="{{!hidefirst}}"
-        icon="icons:chevron-left"
-        class="chev textsec">
-      </iron-icon>
+      <div class="chevron-container layout around-justified horizontal">
 
-      <iron-icon
-        icon="icons:chevron-right"
-        hidden="{{hidelast}}"
-        class="chev"
-        on-click="goright">
-      </iron-icon>
-      <iron-icon
-        hidden="{{!hidelast}}"
-        icon="icons:chevron-right"
-        class="chev textsec">
-      </iron-icon>
+        <iron-icon
+          icon="pagination:first-page"
+          on-click="goToFirst"
+          class$="flex chev [[_hollowFirst(onFirst)]]">
+        </iron-icon>
+
+        <iron-icon
+          icon="icons:chevron-left"
+          class$="flex chev [[_hollowFirst(onFirst)]]"
+          on-click="goToLeft">
+        </iron-icon>
+
+        <iron-icon
+          icon="icons:chevron-right"
+          class$="flex chev [[_hollowLast(onLast)]]"
+          on-click="goToRight">
+        </iron-icon>
+
+        <iron-icon
+          icon="pagination:last-page"
+          on-click="goToLast"
+          class$="flex chev [[_hollowLast(onLast)]]">
+        </iron-icon>
+      </div>
 
     </div>
   </template>
@@ -91,13 +109,13 @@
           type: Object,
           notify: true
         },
-        hidefirst: {
+        onFirst: {
           type: Boolean,
-          computed: '_hideFirst(pages.page, pages.itemsPerPage, maxnr)'
+          computed: '_onFirst(pages.page, pages.itemsPerPage, maxnr)'
         },
-        hidelast: {
+        onLast: {
           type: Boolean,
-          computed: '_hideLast(pages.page, pages.itemsPerPage, maxnr)'
+          computed: '_onLast(pages.page, pages.itemsPerPage, maxnr)'
         },
         rowSelection: {
           type: Array,
@@ -107,27 +125,51 @@
           type: String
         }
       },
-      _hideFirst: function(page, itemsPerPage, maxnr) {
+      _onFirst: function(page, itemsPerPage, maxnr) {
 
         return page === 1;
       },
-      _hideLast: function(page, itemsPerPage, maxnr) {
+      _onLast: function(page, itemsPerPage, maxnr) {
 
         return page === Math.ceil(maxnr / itemsPerPage);
       },
-      goleft: function() {
-
-        this.set('pages', {
-          page: this.pages.page - 1,
-          itemsPerPage: this.pages.itemsPerPage
-        });
+      goToLeft: function() {
+        if (!this.onFirst) {
+          this.set('pages', {
+            page: this.pages.page - 1,
+            itemsPerPage: this.pages.itemsPerPage
+          });
+        }
       },
-      goright: function() {
-
-        this.set('pages', {
-          page: this.pages.page + 1,
-          itemsPerPage: this.pages.itemsPerPage
-        });
+      goToRight: function() {
+        if (!this.onLast) {
+          this.set('pages', {
+            page: this.pages.page + 1,
+            itemsPerPage: this.pages.itemsPerPage
+          });
+        }
+      },
+      goToFirst: function() {
+        if (this.pages.page !== 1) {
+          this.set('pages', {
+            page: 1,
+            itemsPerPage: this.pages.itemsPerPage
+          });
+        }
+      },
+      goToLast: function() {
+        if (this.pages.page !== Math.ceil(this.maxnr / this.pages.itemsPerPage)) {
+          this.set('pages', {
+            page: Math.ceil(this.maxnr / this.pages.itemsPerPage),
+            itemsPerPage: this.pages.itemsPerPage
+          });
+        }
+      },
+      _hollowFirst: function(onFirst) {
+        return onFirst ? 'textsec' : '';
+      },
+      _hollowLast: function(onLast) {
+        return onLast ? 'textsec' : '';
       },
       itemsNrChanged: function(event, item) {
 
