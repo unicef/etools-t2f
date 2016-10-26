@@ -53,7 +53,9 @@
       font-size: 16px;
       margin-right: 8px;
     }
-
+    .second-header .toggle-hidden-div paper-toggle-button {
+      --paper-toggle-button-checked-button-color: #00AEEF;
+    }
 
     .data-table .data-card-heading {
       display: block;
@@ -110,17 +112,23 @@
       <paper-card class="second-header horizontal layout center">
         <!-- Filtering -->
 
-        <paper-input inline label="search keyword(s)">
-          <!-- to query:   search="" -->
+        <paper-input
+          inline
+          id="search-input"
+          label="search keyword(s)"
+          on-keydown="searchKeyDown">
           <iron-icon icon="search" prefix></iron-icon>
         </paper-input>
 
         <div class="flex"></div>
 
         <div class="toggle-hidden-div horizontal layout center">
-          <!-- to query:   show_hidden=true/false -->
           <span>Show hidden</span>
-          <paper-toggle-button class="right-float"></paper-toggle-button>
+          <paper-toggle-button
+            id="show-hidden-toggle"
+            on-change="_changeShowHidden"
+            class="right-float">
+          </paper-toggle-button>
         </div>
       </paper-card>
 
@@ -191,13 +199,25 @@
           },
           observer: '_changeParamsOrder'
         },
+        searchString: {
+          type: String,
+          value: '',
+          observer: '_searchStringChanged'
+        },
+        showHidden: {
+          type: Boolean,
+          value: false,
+          observer: '_showHiddenChanged'
+        },
         ajaxParams: {
           type: Object,
           value: {
             sort_by: 'purpose',
             reverse: false,
             page: 1,
-            page_size: 10
+            page_size: 10,
+            search: '',
+            show_hidden: false
           }
         }
       },
@@ -210,7 +230,9 @@
           sort_by: this.labelLib[orderObj.orderedBy],
           reverse: orderObj.reverse,
           page: 1,
-          page_size: this.ajaxParams.page_size
+          page_size: this.ajaxParams.page_size,
+          search: this.ajaxParams.search,
+          show_hidden: this.ajaxParams.show_hidden
         });
       },
       _changeParamsPages: function(pages, old) {
@@ -221,7 +243,9 @@
           sort_by: this.ajaxParams.sort_by,
           reverse: this.ajaxParams.reverse,
           page: pages.page,
-          page_size: pages.itemsPerPage
+          page_size: pages.itemsPerPage,
+          search: this.ajaxParams.search,
+          show_hidden: this.ajaxParams.show_hidden
         });
       },
       _computeResultsToShow: function(pages, datalength) {
@@ -249,11 +273,44 @@
         });
         this.set('data', data.data);
       },
-      export: function() {
-        console.log('Todo: EXPORT!');
+      searchKeyDown: function(e) {
+
+        if (e.keyCode === 13) {     // Enter was hit
+
+          var input = this.$['search-input'];
+
+          this.set('searchString', input.value);
+          input.focus();
+        }
       },
-      print: function() {
-        console.log('Todo: PRINT!');
+      _searchStringChanged: function(searchStr, old) {
+        if (typeof old === 'undefined' ) {
+          return;
+        }
+        this.set('ajaxParams', {
+          sort_by: this.ajaxParams.sort_by,
+          reverse: this.ajaxParams.reverse,
+          page: this.ajaxParams.page,
+          page_size: this.ajaxParams.page_size,
+          search: searchStr,
+          show_hidden: this.ajaxParams.show_hidden
+        });
+      },
+      _changeShowHidden: function(e, detail) {
+        this.set('showHidden', !this.showHidden);
+      },
+      _showHiddenChanged: function(show, old) {
+        if (typeof old === 'undefined') {
+          return;
+        }
+        this.set('ajaxParams', {
+          sort_by: this.ajaxParams.sort_by,
+          reverse: this.ajaxParams.reverse,
+          page: this.ajaxParams.page,
+          page_size: this.ajaxParams.page_size,
+          search: this.ajaxParams.search,
+          show_hidden: show
+        });
       }
     });
   </script>
