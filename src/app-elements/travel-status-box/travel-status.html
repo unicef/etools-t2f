@@ -1,8 +1,4 @@
 <!--
-  Status indicator for the statuses: [
-    'Planned',          'Submitted', 'Approved', 'Rejected',
-    'Sent for payment', 'Cancelled', 'Completed']
-
   Properties:
     user-type: required, String, lowercase, eg: 'administrator'
     status: required, String, Capital, eg: 'Submitted'
@@ -34,9 +30,13 @@
       --paper-card-header-text: {
         font-size: 20px;
         text-align: center;
+        padding-top: 9px;
+        padding-bottom: 9px;
       }
       --paper-card-header: {
         background-color: #1E86BF;
+        height: 48px;
+        padding: 0;
       }
       --paper-card-content: {
         min-width: 200px;
