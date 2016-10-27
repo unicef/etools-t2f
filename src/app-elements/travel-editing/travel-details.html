@@ -54,10 +54,10 @@
                     <div class="flex-3"></div>
                 </div>
                 <div class="layout horizontal">
-                    <etools-searchable-multiselection-menu class="flex-3" options="[[structure.traveler]]" label="Traveler" value="{{baseDetails.traveler}}"></etools-searchable-multiselection-menu>
+                    <etools-searchable-multiselection-menu class="flex-3" options="[[structure.supervisor]]" label="Traveler" value="{{baseDetails.traveler}}"></etools-searchable-multiselection-menu>
                     <etools-searchable-multiselection-menu class="flex-3" options="[[structure.supervisor]]" label="Supervisor" value="{{baseDetails.supervisor}}"></etools-searchable-multiselection-menu>
-                    <etools-searchable-multiselection-menu class="flex-3" options="[[structure.office]]" label="Office" value="{{baseDetails.office}}"></etools-searchable-multiselection-menu>
-                    <etools-searchable-multiselection-menu class="flex-3" options="[[structure.section]]" label="Section" value="{{baseDetails.section}}"></etools-searchable-multiselection-menu>
+                    <etools-searchable-multiselection-menu class="flex-3" options="[[structure.partner]]" label="Office" value="{{baseDetails.office}}"></etools-searchable-multiselection-menu>
+                    <etools-searchable-multiselection-menu class="flex-3" options="[[structure.partner]]" label="Section" value="{{baseDetails.section}}"></etools-searchable-multiselection-menu>
                 </div>
                 <div class="layout horizontal">
                     <datepicker-input class="flex-3" label="Start Date" value="{{baseDetails.startDate}}"></datepicker-input>
@@ -80,12 +80,12 @@
             <template is="dom-repeat" items="{{data.activities}}">
                 <div class="layout vertical flex">
                     <div class="layout horizontal">
-                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.traveler]]" label="Travel Type" value="{{item.travelerType}}"></etools-searchable-multiselection-menu>
-                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.traveler]]" label="Partner"  value="{{item.partner}}"></etools-searchable-multiselection-menu>
-                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.traveler]]" label="Partnership"  value="{{item.partnership}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="Travel Type" value="{{item.travelerType}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="Partner"  value="{{item.partner}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="Partnership"  value="{{item.partnership}}"></etools-searchable-multiselection-menu>
                     </div>
                     <div class="layout horizontal">
-                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.traveler]]" label="Result/Activities to be monitored"  value="{{item.activitiesToBeMonitored}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="Result/Activities to be monitored"  value="{{item.activitiesToBeMonitored}}"></etools-searchable-multiselection-menu>
                         <etools-searchable-multiselection-menu class="flex-8" options="[[structure.supervisor]]" label="Travel locations" multi  value="{{item.travelLocations}}"></etools-searchable-multiselection-menu>
                     </div>
                     <div class="layout horizontal">
@@ -101,15 +101,15 @@
             <template is="dom-repeat" items="{{data.itinerary}}">
                 <div class="layout vertical flex">
                     <div class="layout horizontal">
-                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.traveler]]" label="From" value="{{item.from}}"></etools-searchable-multiselection-menu>
-                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.traveler]]" label="To" value="{{item.to}}"></etools-searchable-multiselection-menu>
-                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.traveler]]" label="DSA Region" value="{{item.dsaRegion}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="From" value="{{item.from}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="To" value="{{item.to}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="DSA Region" value="{{item.dsaRegion}}"></etools-searchable-multiselection-menu>
                     </div>
 
                     <div class="layout horizontal">
                         <datepicker-input class="flex-4" label="Departing"  value="{{item.departing}}"></datepicker-input>
                         <datepicker-input class="flex-4" label="Arriving"  value="{{item.arriving}}"></datepicker-input>
-                        <etools-searchable-multiselection-menu class="flex-2" options="[[structure.traveler]]" label="Mode of  travel" value="{{item.modeOfTravel}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-2" options="[[structure.supervisor]]" label="Mode of  travel" value="{{item.modeOfTravel}}"></etools-searchable-multiselection-menu>
                         <paper-checkbox class="flex-2 custom-margin self-end">Overnight travel? </paper-checkbox>
                     </div>
                 </div>
@@ -127,10 +127,10 @@
             <template is="dom-repeat" items="{{data.expenses}}">
                 <div class="layout vertical flex">
                     <div class="layout horizontal">
-                        <etools-searchable-multiselection-menu class="flex-3" options="[[structure.traveler]]" label="Travel expense type" value="{{item.expenseType}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-3" options="[[structure.supervisor]]" label="Travel expense type" value="{{item.expenseType}}"></etools-searchable-multiselection-menu>
                         <paper-input class="flex-3 custom-margin"  label="Amount" type="number"  value="{{item.amount}}"></paper-input>
-                        <etools-searchable-multiselection-menu class="flex-3" options="[[structure.traveler]]" label="Document currency" value="{{item.documentCurrency}}"></etools-searchable-multiselection-menu>
-                        <etools-searchable-multiselection-menu class="flex-3" options="[[structure.traveler]]" label="Accounting currency" value="{{item.accountingCurrency}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-3" options="[[structure.supervisor]]" label="Document currency" value="{{item.documentCurrency}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-3" options="[[structure.supervisor]]" label="Accounting currency" value="{{item.accountingCurrency}}"></etools-searchable-multiselection-menu>
                     </div>
                 </div>
             </template>
@@ -140,10 +140,10 @@
             <template is="dom-repeat" items="{{data.costAssignment}}">
                 <div class="layout vertical flex">
                     <div class="layout horizontal">
-                        <etools-searchable-multiselection-menu class="flex-6" options="[[structure.traveler]]" label="WBS" value="{{item.wbs}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-6" options="[[structure.supervisor]]" label="WBS" value="{{item.wbs}}"></etools-searchable-multiselection-menu>
                         <paper-input class="flex-2 custom-margin"  label="Share(%)" type="number"  value="{{item.share}}"></paper-input>
                         <paper-input class="flex-2 custom-margin"  label="Grant(%)" type="number"  value="{{item.grant}}"></paper-input>
-                        <etools-searchable-multiselection-menu class="flex-2" options="[[structure.traveler]]" label="Fund" value="{{item.fund}}"></etools-searchable-multiselection-menu>
+                        <etools-searchable-multiselection-menu class="flex-2" options="[[structure.supervisor]]" label="Fund" value="{{item.fund}}"></etools-searchable-multiselection-menu>
                     </div>
                 </div>
             </template>
