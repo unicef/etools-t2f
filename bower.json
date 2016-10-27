@@ -40,12 +40,13 @@
     "paper-date-picker": "polymer-paper-date-picker#^1.2.0",
     "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
     "etools-datepicker": "^1.0.0",
-    "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.1",
+    "paper-checkbox": "PolymerElements/paper-checkbox#^x1.4.1",
     "paper-badge": "PolymerElements/paper-badge#^1.1.4",
     "paper-card": "PolymerElements/paper-card#^1.1.4",
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
-    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1"
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1",
+    "polymer-pdf-make-wrapper": "git@github.com:lordfuoco/polymer-pdf-make.git#^0.0.2"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

@@ -101,22 +101,22 @@
     <div class="background">
 
       <etools-ajax
-        url="http://localhost:8000/api/et2f/travels/"
-        params='{{ajaxParams}}'
-        auto=true
-        on-success="handleListResponse">
+              url="http://localhost:8000/api/et2f/travels/"
+              params='{{ajaxParams}}'
+              auto=true
+              on-success="handleListResponse">
       </etools-ajax>
 
-      <et2f-header title="Field monitoring" show-new-travel-button></et2f-header>
+      <et2f-header title="Field monitoring" show-new-travel-button data-to-export="[[dataToExport]]"></et2f-header>
 
       <paper-card class="second-header horizontal layout center">
         <!-- Filtering -->
 
         <paper-input
-          inline
-          id="search-input"
-          label="search keyword(s)"
-          on-keydown="searchKeyDown">
+                inline
+                id="search-input"
+                label="search keyword(s)"
+                on-keydown="searchKeyDown">
           <iron-icon icon="search" prefix></iron-icon>
         </paper-input>
 
@@ -125,9 +125,9 @@
         <div class="toggle-hidden-div horizontal layout center">
           <span>Show hidden</span>
           <paper-toggle-button
-            id="show-hidden-toggle"
-            on-change="_changeShowHidden"
-            class="right-float">
+                  id="show-hidden-toggle"
+                  on-change="_changeShowHidden"
+                  class="right-float">
           </paper-toggle-button>
         </div>
       </paper-card>
@@ -144,10 +144,10 @@
         </template>
 
         <list-pagination
-          id="list-pagination"
-          maxnr="{{datalength}}"
-          pages="{{pages}}"
-          showing-results="{{showingResults}}">
+                id="list-pagination"
+                maxnr="{{datalength}}"
+                pages="{{pages}}"
+                showing-results="{{showingResults}}">
         </list-pagination>
       </paper-card>
     </div>
@@ -272,6 +272,27 @@
           travel.end_date = travel.end_date.split('T')[0];
         });
         this.set('data', data.data);
+        this._prepareExportData(data.data);
+      },
+      _prepareExportData: function(data) {
+        var self = this;
+        this.dataToExport = {
+          margin: [0, 10],
+          table: {
+            widths: [101, 101, 101, 101, 101, 101, 101],
+            headerRows: 1,
+            body: []
+          }
+        };
+        var tableHeader =  Object.keys(data[0]).map(function(item) {
+          return item.replace(/_/g, ' ');
+        });
+        this.dataToExport.table.body = data.map(function(item) {
+          return _.values(item).map(function(value) {
+            return '' + value;
+          });
+        });
+        this.dataToExport.table.body = [tableHeader].concat(this.dataToExport.table.body);
       },
       searchKeyDown: function(e) {
 
