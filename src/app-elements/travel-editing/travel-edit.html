@@ -8,6 +8,7 @@
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 
 <link   rel="import" href="travel-details.html">
@@ -21,7 +22,7 @@
 
 <dom-module id="travel-edit">
     <template>
-        <style include="shared-styles">
+        <style include="shared-styles iron-flex iron-flex-alignment iron-flex-factors">
             :host {
                 display: block;
                 width: 100%;
@@ -45,10 +46,10 @@
 
 
         <et2f-header title="Edit travel pan">
-            <paper-tabs  selected="{{selected}}">
-                <paper-tab>Travel details</paper-tab>
-                <paper-tab>Attachments</paper-tab>
-                <paper-tab>Report</paper-tab>
+            <paper-tabs  scrollable selected="{{selected}}" >
+                <paper-tab >Travel details</paper-tab>
+                <paper-tab >Attachments</paper-tab>
+                <paper-tab >Report</paper-tab>
             </paper-tabs>
         </et2f-header>
 
