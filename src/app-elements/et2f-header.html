@@ -45,7 +45,7 @@
   </style>
 
   <template>
-  <pdf-make print="{{openPDF}}" content="[[dataToExport]]" page-orientation="landscape"></pdf-make>
+    <pdf-make print="{{openPDF}}" content="[[dataToExport]]" page-orientation="landscape"></pdf-make>
     <!-- <div class="side-heading horizontal layout center"> -->
     <div class="side-heading horizontal layout center">
 
@@ -53,14 +53,14 @@
 
       <div class="side-heading-button-holder">
         <paper-button
-          class="grey-buttons"
-          on-click="export">
+            class="grey-buttons"
+            on-click="export">
           <iron-icon icon="file-download"></iron-icon>
           Export
         </paper-button>
         <paper-button
-          class="grey-buttons"
-          on-click="print">
+            class="grey-buttons"
+            on-click="print">
           <iron-icon icon="print"></iron-icon>
           Print
         </paper-button>

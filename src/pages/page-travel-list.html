@@ -101,10 +101,10 @@
     <div class="background">
 
       <etools-ajax
-              url="http://localhost:8000/api/et2f/travels/"
-              params='{{ajaxParams}}'
-              auto=true
-              on-success="handleListResponse">
+          url="http://localhost:8000/api/et2f/travels/"
+          params='{{ajaxParams}}'
+          auto=true
+          on-success="handleListResponse">
       </etools-ajax>
 
       <et2f-header title="Field monitoring" show-new-travel-button data-to-export="[[dataToExport]]"></et2f-header>
@@ -113,10 +113,10 @@
         <!-- Filtering -->
 
         <paper-input
-                inline
-                id="search-input"
-                label="search keyword(s)"
-                on-keydown="searchKeyDown">
+            inline
+            id="search-input"
+            label="search keyword(s)"
+            on-keydown="searchKeyDown">
           <iron-icon icon="search" prefix></iron-icon>
         </paper-input>
 
@@ -125,9 +125,9 @@
         <div class="toggle-hidden-div horizontal layout center">
           <span>Show hidden</span>
           <paper-toggle-button
-                  id="show-hidden-toggle"
-                  on-change="_changeShowHidden"
-                  class="right-float">
+              id="show-hidden-toggle"
+              on-change="_changeShowHidden"
+              class="right-float">
           </paper-toggle-button>
         </div>
       </paper-card>
@@ -144,10 +144,10 @@
         </template>
 
         <list-pagination
-                id="list-pagination"
-                maxnr="{{datalength}}"
-                pages="{{pages}}"
-                showing-results="{{showingResults}}">
+            id="list-pagination"
+            maxnr="{{datalength}}"
+            pages="{{pages}}"
+            showing-results="{{showingResults}}">
         </list-pagination>
       </paper-card>
     </div>
