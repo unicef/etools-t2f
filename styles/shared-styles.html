@@ -37,8 +37,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         outline: inherit;
       }
 
-      app-header {
-        background-color: var(--primary-background-color);
+      app-header-layout {
+        z-index: 1000 !important;
       }
 
       app-header div[main-title] {
@@ -51,6 +51,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       app-header paper-icon-button[icon="menu"] {
         display: block;
+      }
+
+      app-header app-toolbar {
+        background: #233944;
+        z-index: 1000;
       }
 
       #pageContent {

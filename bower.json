@@ -45,6 +45,9 @@
     "paper-card": "PolymerElements/paper-card#^1.1.4",
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
+    "etools-loading": "^1.0.3",
+    "etools-repeatable-field-set": "#lightdom-asynch-handling",
+    "etools-searchable-multiselection-menu": "^1.0.0",
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1",
     "polymer-pdf-make-wrapper": "git@github.com:lordfuoco/polymer-pdf-make.git#^0.0.2"
   },

@@ -96,6 +96,7 @@
         position: fixed;
         top: 9px;
         right: 20px;
+        z-index:1001;
       }
 
     </style>
@@ -213,7 +214,7 @@
 
       attached: function() {
         if (this.route.path === '/') {
-          this.set('route.path', '/section1/tab1');
+          this.set('route.path', '/travel-list');
         }
       },
 
