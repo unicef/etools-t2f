@@ -40,7 +40,7 @@
     "paper-date-picker": "polymer-paper-date-picker#^1.2.0",
     "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
     "etools-datepicker": "^1.0.0",
-    "paper-checkbox": "PolymerElements/paper-checkbox#^x1.4.1",
+    "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.1",
     "paper-badge": "PolymerElements/paper-badge#^1.1.4",
     "paper-card": "PolymerElements/paper-card#^1.1.4",
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
