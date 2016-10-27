@@ -1,8 +1,9 @@
-<link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/polymer-pdf-make-wrapper/pdf-make.html">
 
-<link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="../../styles/shared-styles.html">
 
 <dom-module id="et2f-header">
   <style include="iron-flex shared-styles">
@@ -48,24 +49,27 @@
 
   <template>
 
-    <div class="header-wrapper">
-      <div class="side-heading horizontal layout center">
+
+    <pdf-make print="{{openPDF}}" content="[[dataToExport]]" page-orientation="landscape"></pdf-make>
+
+   <div class="header-wrapper">
+    <div class="side-heading horizontal layout center">
 
         <span class="flex title">[[title]]</span>
 
-        <div class="side-heading-button-holder">
-          <paper-button
-                  class="grey-buttons"
-                  on-click="export">
-            <iron-icon icon="file-download"></iron-icon>
-            Export
-          </paper-button>
-          <paper-button
-                  class="grey-buttons"
-                  on-click="print">
-            <iron-icon icon="print"></iron-icon>
-            Print
-          </paper-button>
+      <div class="side-heading-button-holder">
+        <paper-button
+          class="grey-buttons"
+          on-click="export">
+          <iron-icon icon="file-download"></iron-icon>
+          Export
+        </paper-button>
+        <paper-button
+          class="grey-buttons"
+          on-click="print">
+          <iron-icon icon="print"></iron-icon>
+          Print
+        </paper-button>
 
           <a href="/plan-travel" hidden$="[[_hideNewTravelButton(showNewTravelButton)]]">
             <paper-button class="addnbtn" raised>
@@ -87,10 +91,18 @@
         showNewTravelButton: {
           type: Boolean,
           value: false
+        },
+        dataToExport: {
+          type: Object,
+        },
+        openPDF: {
+          type: Boolean,
+          value: false
         }
       },
       print: function() {
-        console.log('Print should happen here!');
+        this.openPDF = true;
+        this.openPDF = false;
       },
       export: function() {
         console.log('Print should happen here!');
