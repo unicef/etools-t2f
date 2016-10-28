@@ -360,8 +360,8 @@
       },
       attached: function() {
         var self = this;
-
-        window.onscroll = function(e) {
+        self._previousOnScroll = window.onscroll;
+        window.onscroll = function() {
           if(self.getBoundingClientRect().top < 61) {
             self.$['main-card'].style.position= 'fixed';
             self.$['main-card'].style.top = "61px";
@@ -370,7 +370,13 @@
             self.$['main-card'].style.position= 'absolute';
             self.$['main-card'].style.top = "0";
           }
+          if(self._previousOnScroll) {
+            self._previousOnScroll();
+          }
         }
+      },
+      detached: function() {
+       window.onscroll = this._previousOnScroll;
       }
     });
   </script>
