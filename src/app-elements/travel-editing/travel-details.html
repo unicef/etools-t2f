@@ -9,16 +9,14 @@
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
-
-
-
 <link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/et2f-styles.html">
 
 <link rel="import" href="datepicker-input.html">
 
 <dom-module id="travel-details">
     <template>
-        <style include="shared-styles iron-flex iron-flex-alignment iron-flex-factors">
+        <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
             :host {
                 display: block;
                 width: 100%;
@@ -38,10 +36,9 @@
                     margin-left: 12px;
                     margin-bottom: 12px;
                 };
-                --paper-checkbox-margin: 12px;
             }
             .orange-header {
-                --repeatable-items-header-bg: #FF9640;
+                --repeatable-items-header-bg: var(--et2f-orange);
             }
         </style>
 
