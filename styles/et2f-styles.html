@@ -1,0 +1,56 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<!-- Styles for the et"f application -->
+
+<dom-module id="et2f-styles">
+  <template>
+    <style>
+
+      :host {
+        --gray-dark: rgba(0,0,0,.87);
+        --gray-mid: rgba(0,0,0,.54);
+        --gray-light: rgba(0,0,0,.38);
+        --gray-lighter: rgba(0,0,0,.06);
+
+        --et2f-blue: rgba(30,134,191,1);
+        --et2f-green: rgba(141,198,63,1);
+
+        --et2f-light-blue: rgba(0,174,329,1);
+        --et2f-red: rgba(234,64,34);
+        --et2f-orange: rgba(255,150,64,1);
+        --et2f-light-yellow: rgba(250,237,119);
+
+        --et2f-planned: rgba(250,237,119,.6);
+        --et2f-approved: rgba(141,198,63,.45);
+        --et2f-submitted: rgba(206,188,6,.6);
+        --et2f-sent: rgba(30,134,191,.45);
+        --et2f-completed: rgba(141,198,63,1);
+      }
+
+      *[hidden] {
+        display: none;
+      }
+
+      /* TABS */
+      paper-tabs {
+        --paper-tabs-selection-bar-color: var(--et2f-light-blue);
+      }
+      paper-tab {
+        --paper-tab-content: {
+          color: var(--et2f-light-blue);
+          text-transform: none;
+          font-size: 14px;
+          font-weight: 500;
+          width: 140px;
+        };
+        --paper-tab-content-unselected: {
+          color: var(--gray-mid);
+        };
+      }
+
+      /* BACKGROUND */
+
+      /* ELEMENTS */
+    </style>
+  </template>
+</dom-module>
