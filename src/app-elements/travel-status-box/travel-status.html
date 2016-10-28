@@ -325,7 +325,11 @@
         status: String,
         cancelledDate: String,
         completedDate: String,
-        userType: String
+        userType: String,
+        scrollTopMargin: {
+          type: Number,
+          value: 0
+        }
       },
       firstStatuses: ['Planned', 'Submitted', 'Approved', 'Rejected', 'Sent for payment'],
       secondStatuses: ['Certification needed', 'Certification submitted', 'Certification rejected', 'Certification approved'],
@@ -360,11 +364,14 @@
       },
       attached: function() {
         var self = this;
+        if(!self.scrollTopMargin) {
+          return;
+        }
         self._previousOnScroll = window.onscroll;
         window.onscroll = function() {
-          if(self.getBoundingClientRect().top < 61) {
+          if(self.getBoundingClientRect().top < self.scrollTopMargin) {
             self.$['main-card'].style.position= 'fixed';
-            self.$['main-card'].style.top = "61px";
+            self.$['main-card'].style.top = self.scrollTopMargin + "px";
           }
           else {
             self.$['main-card'].style.position= 'absolute';
@@ -376,7 +383,9 @@
         }
       },
       detached: function() {
-       window.onscroll = this._previousOnScroll;
+        if(this._previousOnScroll) {
+          window.onscroll = this._previousOnScroll;
+        }
       }
     });
   </script>
