@@ -1,0 +1,15 @@
+{
+  "baseDetails": {
+    "taRequired": {
+      "readOnly": false,
+      "disabled:": false,
+      "hidden": false
+    },
+    "traveler": {
+      "readOnly": false,
+      "disabled": true,
+      "hidden": false
+    }
+  },
+  "activities": {}
+}

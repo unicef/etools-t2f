@@ -1,0 +1,145 @@
+<link rel="import"
+  href="../../../../bower_components/polymer/polymer.html">
+<link rel="import"
+  href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import"
+  href="../../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import"
+  href="../../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import"
+  href="../../../../bower_components/paper-input/paper-input.html">
+<link rel="import"
+  href="../../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import"
+  href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import"
+  href="../../../../styles/shared-styles.html">
+
+
+<link rel="import"
+  href="../datepicker-input.html">
+
+<dom-module id="travel-plan">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+      .custom-margin {
+        --paper-input-container: {
+          height: auto;
+          margin-left: 12px;
+          margin-right: 12px;
+          margin-bottom: 12px;
+        };
+        --paper-checkbox-margin: 12px;
+      }
+    </style>
+
+    <div class="layout vertical flex">
+      <div class="layout horizontal">
+        <paper-checkbox class$="flex-3 custom-margin [[et2fPermission.taRequired.readOnly]]"
+          disabled="[[et2fPermissions.taRequired.disabled]]"
+          hidden$="[[et2fPermissions.taRequired.hidden]]">TA required?
+        </paper-checkbox>
+        <paper-checkbox class$="flex-3 custom-margin [[et2fPermission.taRequired.readOnly]]"
+          disabled="[[et2fPermissions.taRequired.disabled]]"
+          hidden$="[[et2fPermissions.taRequired.hidden]]">International travel?</paper-checkbox>
+        <span class="flex-3 [[et2fPermission.taRequired.readOnly]]"
+          disabled="[[et2fPermissions.taRequired.disabled]]"
+          hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: </span>
+        <div class="flex-3"></div>
+      </div>
+      <div class="layout horizontal">
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.traveler.readOnly]]"
+          disabled="[[et2fPermissions.traveler.disabled]]"
+          hidden$="[[et2fPermissions.traveler.hidden]]"
+          options="[[structure.supervisor]]"
+          label="Traveler"
+          value="{{baseDetails.traveler}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.supervisor.readOnly]]"
+          disabled="[[et2fPermissions.supervisor.disabled]]"
+          hidden$="[[et2fPermissions.supervisor.hidden]]"
+          options="[[structure.supervisor]]"
+          label="Supervisor"
+          value="{{baseDetails.supervisor}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.office.readOnly]]"
+          disabled="[[et2fPermissions.office.disabled]]"
+          hidden$="[[et2fPermissions.office.hidden]]"
+          options="[[structure.partner]]"
+          label="Office"
+          value="{{baseDetails.office}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.section.readOnly]]"
+          disabled="[[et2fPermissions.section.disabled]]"
+          hidden$="[[et2fPermissions.section.hidden]]"
+          options="[[structure.partner]]"
+          label="Section"
+          value="{{baseDetails.section}}"></etools-searchable-multiselection-menu>
+      </div>
+      <div class="layout horizontal">
+        <datepicker-input class$="flex-3 [[et2fPermission.startDate.readOnly]]"
+          disabled="[[et2fPermissions.startDate.disabled]]"
+          hidden$="[[et2fPermissions.startDate.hidden]]"
+          label="Start Date"
+          value="{{baseDetails.startDate}}"></datepicker-input>
+        <datepicker-input class$="flex-3 [[et2fPermission.endDate.readOnly]]"
+          disabled="[[et2fPermissions.endDate.disabled]]"
+          hidden$="[[et2fPermissions.endDate.hidden]]"
+          label="End Date "
+          value="{{baseDetails.endDate}}"></datepicker-input>
+        <paper-input class$="flex-3 custom-margin [[et2fPermission.estimatedTravelCost.readOnly]]"
+          disabled="[[et2fPermissions.estimatedTravelCost.disabled]]"
+          hidden$="[[et2fPermissions.estimatedTravelCost.hidden]]"
+          label="Estimated travel cost"
+          value="{{baseDetails.estimatedTravelCost}}"></paper-input>
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.currency.readOnly]]"
+          disabled="[[et2fPermissions.currency.disabled]]"
+          hidden$="[[et2fPermissions.currency.hidden]]"
+          options="[[structure.currency]]"
+          label="Currency"
+          value="{{baseDetails.currency}}"></etools-searchable-multiselection-menu>
+      </div>
+      <div class="layout horizontal">
+        <etools-searchable-multiselection-menu class$="flex-6 [[et2fPermission.modeOfTravel.readOnly]]"
+          disabled="[[et2fPermissions.modeOfTravel.disabled]]"
+          hidden$="[[et2fPermissions.modeOfTravel.hidden]]"
+          options="[[structure.travel]]"
+          multi
+          label="Mode of travel"
+          value="{{baseDetails.modeOfTravel}}"></etools-searchable-multiselection-menu>
+        <div class="flex-6"></div>
+      </div>
+      <div class="layout horizontal">
+        <paper-textarea label="Purpose of travel"
+          disabled="[[et2fPermissions.purpose.disabled]]"
+          hidden$="[[et2fPermissions.purpose.hidden]]"
+          class$="flex-12 custom-margin [[et2fPermission.purpose.readOnly]]"
+          required
+          char-counter
+          maxlength="500"
+          value="{{baseDetails.purpose}}"></paper-textarea>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-plan',
+      properties: {
+        baseDetails: {
+          type: Object,
+          notify: true,
+          value: {},
+        },
+        structure: {
+          type: Object,
+          value: {}
+        }
+      },
+      behaviors: [et2fBehaviors.PermissionLayer],
+    });
+  </script>
+</dom-module>
