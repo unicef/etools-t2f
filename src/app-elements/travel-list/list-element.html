@@ -9,10 +9,11 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/et2f-styles.html">
 
 <dom-module id="list-element">
 
-  <style include="shared-styles travel-list iron-flex">
+  <style include="shared-styles et2f-styles travel-list iron-flex">
     :host {
       display: block;
       padding: 0;
@@ -24,7 +25,7 @@
       width: 100%;
     }
     .heading-row.grey-heading {
-      background-color: rgba(0,0,0,0.06);
+      background-color: var(--gray-lighter);
     }
     .heading-row-detailed {
       background-color: #EEEEEE;
@@ -38,13 +39,13 @@
       box-sizing: border-box;
     }
     .detail-headings {
-      color: rgba(0,0,0,0.54);
+      color: var(--gray-mid);
       font-size: 12px;
       font-weight: 500;
       line-height: 32px;
     }
     .detail-text {
-      color: rgba(0,0,0,0.87);
+      color: var(--gray-dark);
       font-weight: normal;
       line-height: 32px;
     }
@@ -63,29 +64,29 @@
       border-left-style: solid;
     }
     .w60.planned {
-      border-left-color: rgba(250,237,119,0.6);
+      border-left-color: var(--et2f-planned);
     }
     .w60.approved {
-      border-left-color: rgba(141,198,63,0.45);
+      border-left-color: var(--et2f-approved);
     }
     .w60.submitted {
-      border-left-color: rgba(206,188,6,0.6);
+      border-left-color: var(--et2f-submitted);
     }
     .w60.sent {
-      border-left-color: rgba(30,134,191,1);
+      border-left-color: var(--et2f-sent);
     }
     .w60.rejected {
-      border-left-color: rgba(234,64,34,1);
+      border-left-color: var(--et2f-error);
     }
     .w60.cancelled {
-      border-left-color: rgba(0,0,0,0.38);
+      border-left-color: var(--gray-light);
     }
     .w60.completed {
-      border-left-color: rgba(141,198,63,1);
+      border-left-color: var(--et2f-completed);
     }
     .w60 iron-icon {
       margin-left: 10px;
-      color: rgba(0,0,0,0.54);
+      color: var(--gray-mid);
     }
     .statusdiv {
       height: 32px;
@@ -94,9 +95,9 @@
       font-size: 13px;
       line-height: 32px;
       text-align: center;
-      -moz-box-shadow: inset 0 -1px 0 rgba(0,0,0,0.87);
-      -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,0.87);
-      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.39);
+      -moz-box-shadow: inset 0 -1px 0 var(--gray-light);
+      -webkit-box-shadow: inset 0 -1px 0 var(--gray-light);
+      box-shadow: inset 0 -1px 0 var(--gray-light);
     }
     #more-button {
       --paper-menu-button: {
@@ -108,33 +109,33 @@
     }
     #more-button paper-item {
       --paper-item: {
-        color: rgba(0,0,0,0.87);
+        color: var(--gray-dark);
       }
     }
     #more-button iron-icon {
       margin-right: 16px;
-      color: rgba(0,0,0,0.54);
+      color: var(--gray-mid);
     }
     .statusdiv.planned {
-      background-color: rgba(250,237,119,0.6);
+      background-color: var(--et2f-planned);
     }
     .statusdiv.approved {
-      background-color: rgba(141,198,63,0.45);
+      background-color: var(--et2f-approved);
     }
     .statusdiv.submitted {
-      background-color: rgba(206,188,6,0.6);
+      background-color: var(--et2f-submitted);
     }
     .statusdiv.sent {
-      background-color: rgba(30,134,191,1);
+      background-color: var(--et2f-sent);
     }
     .statusdiv.rejected {
-      background-color: rgba(234,64,34,1);
+      background-color: var(--et2f-error);
     }
     .statusdiv.cancelled {
-      background-color: rgba(0,0,0,0.38);
+      background-color: var(--gray-light);
     }
     .statusdiv.completed {
-      background-color: rgba(141,198,63,1);
+      background-color: var(--et2f-completed);
     }
     .statusdiv.rejected .statusdivtext, .statusdiv.cancelled .statusdivtext, .statusdiv.completed .statusdivtext {
       color: white;
