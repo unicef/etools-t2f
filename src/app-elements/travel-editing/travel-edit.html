@@ -43,6 +43,8 @@
         </style>
 
         <etools-ajax url="/mock-data/structure.json" on-success="_handleStructure"></etools-ajax>
+        <etools-ajax url="/mock-data/permissions.json" on-success="_handlePermissions"></etools-ajax>
+        <etools-ajax url="/mock-data/data.json" on-success="_handleData"></etools-ajax>
 
 
         <et2f-header title="Edit travel pan">
@@ -56,7 +58,7 @@
 
 
         <iron-pages selected="{{selected}}">
-            <travel-details structure="[[structure]]"></travel-details>
+            <travel-details structure="[[structure]]" permissions="[[permissions]]" data ="{{data}}"></travel-details>
             <travel-attachments></travel-attachments>
             <travel-report></travel-report>
         </iron-pages>
@@ -87,6 +89,14 @@
             _handleStructure: function(event, data) {
                 Object.freeze(data);
                 this.set('structure', data);
+            },
+            _handlePermissions: function(e, data) {
+                Object.freeze(data);
+                this.permissions = data;
+            },
+            _handleData: function(e, data) {
+                Object.freeze(data);
+                this.data = data;
             }
         });
     </script>

@@ -1,0 +1,92 @@
+<link rel="import"
+  href="../../../../bower_components/polymer/polymer.html">
+<link rel="import"
+  href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import"
+  href="../../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import"
+  href="../../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import"
+  href="../../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import"
+  href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+<link rel="import"
+  href="../../../../styles/shared-styles.html">
+<link rel="import"
+  href="../../travel-status-box/travel-status.html">
+<link rel="import"
+  href="../datepicker-input.html">
+
+<dom-module id="travel-activities">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+      .custom-margin {
+        --paper-input-container: {
+          height: auto;
+          margin-left: 12px;
+          margin-right: 12px;
+          margin-bottom: 12px;
+        };
+        --paper-checkbox-margin: 12px;
+      }
+    </style>
+
+   
+      <div class="layout vertical flex">
+        <div class="layout horizontal">
+          <etools-searchable-multiselection-menu
+            class="flex-4"
+            options="[[structure.supervisor]]"
+            label="Travel Type"
+            value="{{activity.travelerType}}"></etools-searchable-multiselection-menu>
+          <etools-searchable-multiselection-menu class="flex-4"
+            options="[[structure.supervisor]]"
+            label="Partner"
+            value="{{activity.partner}}"></etools-searchable-multiselection-menu>
+          <etools-searchable-multiselection-menu class="flex-4"
+            options="[[structure.supervisor]]"
+            label="Partnership"
+            value="{{activity.partnership}}"></etools-searchable-multiselection-menu>
+        </div>
+        <div class="layout horizontal">
+          <etools-searchable-multiselection-menu class="flex-4"
+            options="[[structure.supervisor]]"
+            label="Result/Activities to be monitored"
+            value="{{activity.activitiesToBeMonitored}}"></etools-searchable-multiselection-menu>
+          <etools-searchable-multiselection-menu class="flex-8"
+            options="[[structure.supervisor]]"
+            label="Travel locations"
+            multi
+            value="{{activity.travelLocations}}"></etools-searchable-multiselection-menu>
+        </div>
+        <div class="layout horizontal">
+          <datepicker-input class="flex-4"
+            label="When?"
+            value="{{activity.when}}"></datepicker-input>
+          <paper-checkbox class="flex-8 custom-margin self-end">I am a Primary Traveler</paper-checkbox>
+        </div>
+      </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-activities',
+      properties: {
+        activity: {
+          type: Object,
+          notify: true,
+        },
+        structure: {
+          type: Object,
+          value: {}
+        }
+      },
+      behaviors: [et2fBehaviors.PermissionLayer],
+    });
+  </script>
+</dom-module>
