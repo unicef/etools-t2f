@@ -82,6 +82,7 @@
         <etools-repeatable-field-set title="Travel Activities"
           model="{{data.activities}}"
           allow-copy
+          show-counter
           elevation="1">
           <template is="dom-repeat"
             items="{{data.activities}}">
@@ -178,7 +179,13 @@
       },
       observers: ['_showForm(structure, permissions, data)'],
       _showForm: function (structure, permissions, data) {
-        console.log('show', data)
+        var keys = Object.keys(data);
+        keys.forEach(function(label){
+          if(data[label] instanceof Array && data[label].length === 0) {
+            data[label].push({});
+          }
+        });
+        this.data = data;
         this.showForm = true;
 
       }
