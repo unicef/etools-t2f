@@ -1,0 +1,77 @@
+<link rel="import"
+  href="../../../../bower_components/polymer/polymer.html">
+<link rel="import"
+  href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import"
+  href="../../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import"
+  href="../../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import"
+  href="../../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import"
+  href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+<link rel="import"
+  href="../../../../styles/shared-styles.html">
+<link rel="import"
+  href="../../travel-status-box/travel-status.html">
+<link rel="import"
+  href="../datepicker-input.html">
+
+<dom-module id="travel-cost-assignment">
+  <template>
+    <style include="shared-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+
+      .custom-margin {
+        --paper-input-container: {
+          height: auto;
+          margin-left: 12px;
+          margin-right: 12px;
+          margin-bottom: 12px;
+        };
+        --paper-checkbox-margin: 12px;
+      }
+    </style>
+
+    <div class="layout vertical flex">
+      <div class="layout horizontal">
+        <etools-searchable-multiselection-menu class="flex-6"
+          options="[[structure.supervisor]]"
+          label="WBS"
+          value="{{costAssignment.wbs}}"></etools-searchable-multiselection-menu>
+        <paper-input class="flex-2 custom-margin"
+          label="Share(%)"
+          type="number"
+          value="{{costAssignment.share}}"></paper-input>
+        <paper-input class="flex-2 custom-margin"
+          label="Grant(%)"
+          type="number"
+          value="{{costAssignment.grant}}"></paper-input>
+        <etools-searchable-multiselection-menu class="flex-2"
+          options="[[structure.supervisor]]"
+          label="Fund"
+          value="{{costAssignment.fund}}"></etools-searchable-multiselection-menu>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-cost-assignment',
+      properties: {
+        costAssignment: {
+          type: Object,
+          notify: true,
+        },
+        structure: {
+          type: Object,
+          value: {}
+        }
+      },
+      behaviors: [et2fBehaviors.PermissionLayer],
+    });
+  </script>
+</dom-module>

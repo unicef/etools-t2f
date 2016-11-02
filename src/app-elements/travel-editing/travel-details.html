@@ -1,19 +1,47 @@
+<link rel="import"
+  href="../../../bower_components/polymer/polymer.html">
+<link rel="import"
+  href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import"
+  href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import"
+  href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import"
+  href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import"
+  href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import"
+  href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import"
+  href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
-<link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
-<link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
-<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+<link rel="import"
+  href="../../../styles/shared-styles.html">
+<link rel="import"
+  href="../travel-status-box/travel-status.html">
+<link rel="import"
+  href="../permission-layer.html">
+<link rel="import"
+  href="form-fieldsets/travel-plan.html">
+
+<link rel="import"
+  href="form-fieldsets/travel-activity.html">
+<link rel="import"
+  href="form-fieldsets/travel-itinerary.html">
+<link rel="import"
+  href="form-fieldsets/travel-expense.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
 <link rel="import" href="../../../styles/et2f-styles.html">
 
 <link rel="import" href="../travel-status-box/travel-status.html">
+<link rel="import"
+  href="form-fieldsets/travel-costs-assignment.html">
 
-<link rel="import" href="datepicker-input.html">
+<link rel="import"
+  href="datepicker-input.html">
+<link rel="import"
+  href="../permission-layer.html">
 
 <dom-module id="travel-details">
     <template>
@@ -25,18 +53,8 @@
             etools-repeatable-field-set {
                 width: calc( 100% - 48px);
                 margin: 24px;
-                box-shadow: 0px 0px 2px rgba(0,0,0,.12), 0px 2px 2px rgba(0,0,0,.24);
-
                 --repeatable-items-collapse-container: {
                     background: #FFF;
-                };
-            }
-            .custom-margin {
-                --paper-input-container: {
-                    /*width: calc(100% - 24px);*/
-                    height: auto;
-                    margin-left: 12px;
-                    margin-bottom: 12px;
                 };
             }
             .orange-header {
@@ -48,152 +66,123 @@
             }
         </style>
 
-        <div class="horizontal layout">
-            <div class="flex">
-                <etools-repeatable-field-set hide-plus="{{trueValue}}" title="Travel Plan" model="[1]" hide-vertical-divider>
-                    <div class="layout vertical flex" >
-                        <div class="layout horizontal">
-                            <paper-checkbox class="flex-3 custom-margin">TA required? </paper-checkbox>
-                            <paper-checkbox class="flex-3 custom-margin">International travel? </paper-checkbox>
-                            <span class="flex-3">Reference #: </span>
-                            <div class="flex-3"></div>
-                        </div>
-                        <div class="layout horizontal">
-                            <etools-searchable-multiselection-menu class="flex-3" options="[[structure.supervisor]]" label="Traveler" value="{{baseDetails.traveler}}"></etools-searchable-multiselection-menu>
-                            <etools-searchable-multiselection-menu class="flex-3" options="[[structure.supervisor]]" label="Supervisor" value="{{baseDetails.supervisor}}"></etools-searchable-multiselection-menu>
-                            <etools-searchable-multiselection-menu class="flex-3" options="[[structure.partner]]" label="Office" value="{{baseDetails.office}}"></etools-searchable-multiselection-menu>
-                            <etools-searchable-multiselection-menu class="flex-3" options="[[structure.partner]]" label="Section" value="{{baseDetails.section}}"></etools-searchable-multiselection-menu>
-                        </div>
-                        <div class="layout horizontal">
-                            <datepicker-input class="flex-3" label="Start Date" value="{{baseDetails.startDate}}"></datepicker-input>
-                            <datepicker-input class="flex-3" label="End Date " value="{{baseDetails.endDate}}"></datepicker-input>
-                            <paper-input class="flex-3 custom-margin" label="Estimated travel cost" value="{{baseDetails.estimatedTravelCost}}"></paper-input>
-                            <etools-searchable-multiselection-menu class="flex-3" options="[[structure.currency]]"  label="Currency" value="{{baseDetails.currency}}"></etools-searchable-multiselection-menu>
-                        </div>
-                        <div class="layout horizontal">
-                            <etools-searchable-multiselection-menu class="flex-6" options="[[structure.travel]]" multi label="Mode of travel" value="{{baseDetails.modeOfTravel}}"></etools-searchable-multiselection-menu>
-                            <div class="flex-6"></div>
-                        </div>
-                        <div class="layout horizontal">
-                            <paper-textarea  label="Purpose of travel" class="flex-12 custom-margin" required char-counter maxlength="500" value="{{baseDetails.purpose}}"></paper-textarea>
-                        </div>
-                    </div>
-                </etools-repeatable-field-set>
+    <div class="horizontal layout"
+      hidden$="[[!showForm]]">
+      <div class="flex">
+        <etools-repeatable-field-set hide-plus
+          title="Travel Plan"
+          model="[1]"
+          hide-vertical-divider
+          elevation="1">
+          <travel-plan base-details="{{data.baseDetails}}"
+            permissions-matrix="[[permissions.baseDetails]]"
+            structure="[[structure]]"></travel-plan>
+        </etools-repeatable-field-set>
 
-                <etools-repeatable-field-set title="Travel Activities" model="{{data.activities}}" allow-copy>
+        <etools-repeatable-field-set title="Travel Activities"
+          model="{{data.activities}}"
+          allow-copy
+          elevation="1">
+          <template is="dom-repeat"
+            items="{{data.activities}}">
+            <travel-activities activity="{{item}}"
+              permissions-matrix="[[permissions.activities]]"
+              structure="[[structure]]"></travel-activities>
+          </template>
 
-                    <template is="dom-repeat" items="{{data.activities}}">
-                        <div class="layout vertical flex">
-                            <div class="layout horizontal">
-                                <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="Travel Type" value="{{item.travelerType}}"></etools-searchable-multiselection-menu>
-                                <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="Partner"  value="{{item.partner}}"></etools-searchable-multiselection-menu>
-                                <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="Partnership"  value="{{item.partnership}}"></etools-searchable-multiselection-menu>
-                            </div>
-                            <div class="layout horizontal">
-                                <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="Result/Activities to be monitored"  value="{{item.activitiesToBeMonitored}}"></etools-searchable-multiselection-menu>
-                                <etools-searchable-multiselection-menu class="flex-8" options="[[structure.supervisor]]" label="Travel locations" multi  value="{{item.travelLocations}}"></etools-searchable-multiselection-menu>
-                            </div>
-                            <div class="layout horizontal">
-                                <datepicker-input class="flex-4" label="When?"  value="{{item.when}}"></datepicker-input>
-                                <paper-checkbox class="flex-8 custom-margin self-end">I am a Primary Traveler </paper-checkbox>
-                            </div>
-                        </div>
-                    </template>
+        </etools-repeatable-field-set>
 
-                </etools-repeatable-field-set>
+        <etools-repeatable-field-set title="Itinerary"
+          model="{{data.itinerary}}"
+          show-counter
+          elevation="1">
+          <template is="dom-repeat"
+            items="{{data.itinerary}}">
+            <travel-itinerary permissions-matrix="[[permissions.itinerary]]"
+              itinerary="{{item}}"
+              structure="[[structure]]"></travel-itinerary>
+          </template>
+        </etools-repeatable-field-set>
 
-                <etools-repeatable-field-set title="Itinerary" model="{{data.itinerary}}" show-counter>
-                    <template is="dom-repeat" items="{{data.itinerary}}">
-                        <div class="layout vertical flex">
-                            <div class="layout horizontal">
-                                <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="From" value="{{item.from}}"></etools-searchable-multiselection-menu>
-                                <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="To" value="{{item.to}}"></etools-searchable-multiselection-menu>
-                                <etools-searchable-multiselection-menu class="flex-4" options="[[structure.supervisor]]" label="DSA Region" value="{{item.dsaRegion}}"></etools-searchable-multiselection-menu>
-                            </div>
+        <etools-repeatable-field-set title="Deductions"
+          model="[1]"
+          hide-plus
+          elevation="1">
+          <div class="layout vertical flex">
+            Deductions placeholder
+          </div>
+        </etools-repeatable-field-set>
 
-                            <div class="layout horizontal">
-                                <datepicker-input class="flex-4" label="Departing"  value="{{item.departing}}"></datepicker-input>
-                                <datepicker-input class="flex-4" label="Arriving"  value="{{item.arriving}}"></datepicker-input>
-                                <etools-searchable-multiselection-menu class="flex-2" options="[[structure.supervisor]]" label="Mode of  travel" value="{{item.modeOfTravel}}"></etools-searchable-multiselection-menu>
-                                <paper-checkbox class="flex-2 custom-margin self-end">Overnight travel? </paper-checkbox>
-                            </div>
-                        </div>
-                    </template>
-                </etools-repeatable-field-set>
+        <etools-repeatable-field-set title="Expenses"
+          model="{{data.expenses}}"
+          show-counter>
+          <template is="dom-repeat"
+            items="{{data.expenses}}">
+            <travel-expense permissions-matrix="[[permissions.expenses]]"
+              expense="{{item}}"
+              structure="[[structure]]"></travel-expense>
+          </template>
+        </etools-repeatable-field-set>
 
+        <etools-repeatable-field-set title="Cost Assignment"
+          model="{{data.costAssignment}}"
+          show-counter
+          elevation="1">
+          <template is="dom-repeat"
+            items="{{data.costAssignment}}">
+            <travel-cost-assignment permissions-matrix="[[permissions.costAssignment]]"
+              cost-assignment="{{item}}"
+              structure="[[structure]]"></travel-cost-assignment>
+          </template>
+        </etools-repeatable-field-set>
 
-                <etools-repeatable-field-set title="Deductions" model="[1]" hide-plus>
-                    <div class="layout vertical flex">
-                    Deductions placeholder
-                    </div>
-                </etools-repeatable-field-set>
+        <etools-repeatable-field-set class="orange-header"
+          title="Cost summary"
+          model="[1]"
+          hide-plus
+          elevation="1">
+          <div>
+            Cost summary placeholder
+          </div>
+        </etools-repeatable-field-set>
+      </div>
 
-                <etools-repeatable-field-set title="Expenses" model="{{data.expenses}}" show-counter>
-                    <template is="dom-repeat" items="{{data.expenses}}">
-                        <div class="layout vertical flex">
-                            <div class="layout horizontal">
-                                <etools-searchable-multiselection-menu class="flex-3" options="[[structure.supervisor]]" label="Travel expense type" value="{{item.expenseType}}"></etools-searchable-multiselection-menu>
-                                <paper-input class="flex-3 custom-margin"  label="Amount" type="number"  value="{{item.amount}}"></paper-input>
-                                <etools-searchable-multiselection-menu class="flex-3" options="[[structure.supervisor]]" label="Document currency" value="{{item.documentCurrency}}"></etools-searchable-multiselection-menu>
-                                <etools-searchable-multiselection-menu class="flex-3" options="[[structure.supervisor]]" label="Accounting currency" value="{{item.accountingCurrency}}"></etools-searchable-multiselection-menu>
-                            </div>
-                        </div>
-                    </template>
-                </etools-repeatable-field-set>
+      <travel-status
+        user-type="traveler"
+        status="Planned"
+        scroll-top-margin="60">
+      </travel-status>
+    </div>
 
-                <etools-repeatable-field-set title="Cost Assignment" model="{{data.costAssignment}}" show-counter>
-                    <template is="dom-repeat" items="{{data.costAssignment}}">
-                        <div class="layout vertical flex">
-                            <div class="layout horizontal">
-                                <etools-searchable-multiselection-menu class="flex-6" options="[[structure.supervisor]]" label="WBS" value="{{item.wbs}}"></etools-searchable-multiselection-menu>
-                                <paper-input class="flex-2 custom-margin"  label="Share(%)" type="number"  value="{{item.share}}"></paper-input>
-                                <paper-input class="flex-2 custom-margin"  label="Grant(%)" type="number"  value="{{item.grant}}"></paper-input>
-                                <etools-searchable-multiselection-menu class="flex-2" options="[[structure.supervisor]]" label="Fund" value="{{item.fund}}"></etools-searchable-multiselection-menu>
-                            </div>
-                        </div>
-                    </template>
-                </etools-repeatable-field-set>
+  </template>
 
-                <etools-repeatable-field-set class="orange-header" title="Cost summary" model="[1]" hide-plus>
-                    <div>
-                        Cost summary placeholder
-                    </div>
-                </etools-repeatable-field-set>
-            </div>
+  <script>
+    Polymer({
+      is: 'travel-details',
+      properties: {
+        data: {
+          type: Object,
+          notify: true,
+        },
+        structure: {
+          type: Object,
+          value: {}
+        },
+        permissions: {
+          type: Object
+        },
+        showForm: {
+          type: Boolean,
+          value: false
+        }
+      },
+      observers: ['_showForm(structure, permissions, data)'],
+      _showForm: function (structure, permissions, data) {
+        console.log('show', data)
+        this.showForm = true;
 
-            <travel-status
-                user-type="traveler"
-                status="Planned"
-                scroll-top-margin="60">
-            </travel-status>
-        </div>
+      }
 
-
-    </template>
-
-    <script>
-        Polymer({
-            is: 'travel-details',
-            properties: {
-                trueValue: {
-                    value: function() {return true}
-                },
-                data: {
-                    type: Object,
-                    notify: true,
-                    value: {
-                        baseDetails: {},
-                        activities: [{}],
-                        itinerary: [{id: 1}],
-                        expenses: [{id: 1}],
-                        costAssignment: [{id: 1}]
-                    }
-                },
-                structure: {
-                    type: Object,
-                    value: {}
-                }
-            },
-        });
-    </script>
+    });
+  </script>
 </dom-module>
