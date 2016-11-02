@@ -1,8 +1,4 @@
 <!--
-  Status indicator for the statuses: [
-    'Planned',          'Submitted', 'Approved', 'Rejected',
-    'Sent for payment', 'Cancelled', 'Completed']
-
   Properties:
     user-type: required, String, lowercase, eg: 'administrator'
     status: required, String, Capital, eg: 'Submitted'
@@ -18,8 +14,8 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 
-<link rel="import" href="../../styles/shared-styles.html">
-<link rel="import" href="../form-actions-button/form-actions-button-travel.html">
+<link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="../form-actions-button/form-actions-button.html">
 
 <dom-module id="travel-status">
 
@@ -28,21 +24,38 @@
     :host {
       display: block;
     }
+    .float-container {
+      position: relative;
+      top:0;
+      width: 200px;
+      height:100%;
+    }
+
     paper-card {
+      position: absolute;
+      top:0;
+
+      background-color: white;
       --paper-card-header-color: white;
       --paper-card-header-text: {
         font-size: 20px;
         text-align: center;
+        padding-top: 9px;
+        padding-bottom: 9px;
       }
       --paper-card-header: {
         background-color: #1E86BF;
+        height: 48px;
+        padding: 0;
       }
       --paper-card-content: {
         min-width: 200px;
         padding: 0;
+        background-color: white;
       }
       --paper-card-actions: {
         padding: 0;
+        background-color: white;
       }
     }
     .big {
@@ -135,98 +148,174 @@
   </style>
 
   <template>
+    <div class="float-container">
+      <paper-card id="main-card" heading="[[_getHeading(status)]]">
 
-    <paper-card heading="Travel status">
+        <!-- Travel statuses -->
+        <template is="dom-if" if="[[_showFirst(status)]]">
 
-      <template is="dom-if" if="[[_showFirst(status)]]">
+          <div class="card-content">
+            <div class$="[[_isSmallClass(status)]] vertical layout">
 
-        <div class="card-content">
-          <div class$="[[_isSmallClass(status)]] vertical layout">
-
-            <div class$="statuscont [[_computeStatusClass('Planned', status)]]">
-              <div class="circlenr">
-                <span class$="[[_computeStatusClass('Planned', status)]]">1</span>
-                <iron-icon class$="[[_computeStatusClass('Planned', status)]]" icon="icons:done"></iron-icon>
+              <div class$="statuscont [[_computeStatusClass('Planned', status, 1)]]">
+                <div class="circlenr">
+                  <span class$="[[_computeStatusClass('Planned', status, 1)]]">1</span>
+                  <iron-icon class$="[[_computeStatusClass('Planned', status, 1)]]" icon="icons:done"></iron-icon>
+                </div>
+                <span class="status">Planned</span>
               </div>
-              <span class="status">Planned</span>
+
+              <div class="vertline flex"></div>
+
+              <div class$="statuscont [[_computeStatusClass('Submitted', status, 1)]]">
+                <div class="circlenr">
+                  <span class$="[[_computeStatusClass('Submitted', status, 1)]]">2</span>
+                  <iron-icon class$="[[_computeStatusClass('Submitted', status, 1)]]" icon="icons:done"></iron-icon>
+                </div>
+                <span class="status">Submitted</span>
+              </div>
+
+              <div class="vertline flex"></div>
+
+              <div class$="statuscont appr [[_computeStatusClass('Approved', status, 1)]]">
+                <div class="circlenr">
+                  <span class$="[[_computeStatusClass('Approved', status, 1)]]">3</span>
+                  <iron-icon class$="[[_computeStatusClass('Approved', status, 1)]]" icon="icons:done"></iron-icon>
+                </div>
+                <span class="status">Approved</span>
+              </div>
+
+              <div class$="statuscont reject [[_computeStatusClass('Rejected', status, 1)]]">
+                <iron-icon class="red" icon="icons:report-problem"></iron-icon>
+                <span class="status red">Rejected</span>
+              </div>
+
+              <div class="vertline flex"></div>
+
+              <div class$="statuscont [[_computeStatusClass('Sent for payment', status, 1)]]">
+                <div class="circlenr">
+                  <span class$="[[_computeStatusClass('Sent for payment', status, 1)]]">4</span>
+                  <iron-icon class$="[[_computeStatusClass('Sent for payment', status, 1)]]" icon="icons:done"></iron-icon>
+                </div>
+                <span class="status">Sent for payment</span>
+              </div>
             </div>
 
-            <div class="vertline flex"></div>
+          </div>
 
-            <div class$="statuscont [[_computeStatusClass('Submitted', status)]]">
-              <div class="circlenr">
-                <span class$="[[_computeStatusClass('Submitted', status)]]">2</span>
-                <iron-icon class$="[[_computeStatusClass('Submitted', status)]]" icon="icons:done"></iron-icon>
+          <div class="card-actions">
+            <form-actions-button user-type="[[userType]]" status="[[status]]">
+            </form-actions-button>
+          </div>
+        </template>
+
+
+        <!-- Certification statuses -->
+        <template is="dom-if" if="[[_showSecond(status)]]">
+
+          <div class="card-content">
+            <div class$="[[_isSmallClass(status)]] vertical layout">
+
+              <div class$="statuscont [[_computeStatusClass('Certification needed', status, 2)]]">
+                <div class="circlenr">
+                  <span class$="[[_computeStatusClass('Certification needed', status, 2)]]">1</span>
+                  <iron-icon class$="[[_computeStatusClass('Certification needed', status, 2)]]" icon="icons:done"></iron-icon>
+                </div>
+                <span class="status">Needed</span>
               </div>
-              <span class="status">Submitted</span>
+
+              <div class="vertline flex"></div>
+
+              <div class$="statuscont [[_computeStatusClass('Certification submitted', status, 2)]]">
+                <div class="circlenr">
+                  <span class$="[[_computeStatusClass('Certification submitted', status, 2)]]">2</span>
+                  <iron-icon class$="[[_computeStatusClass('Certification submitted', status, 2)]]" icon="icons:done"></iron-icon>
+                </div>
+                <span class="status">Submitted</span>
+              </div>
+
+              <div class="vertline flex"></div>
+
+              <div class$="statuscont appr [[_computeStatusClass('Certification approved', status, 2)]]">
+                <div class="circlenr">
+                  <span class$="[[_computeStatusClass('Certification approved', status, 2)]]">3</span>
+                  <iron-icon class$="[[_computeStatusClass('Certification approved', status, 2)]]" icon="icons:done"></iron-icon>
+                </div>
+                <span class="status">Approved</span>
+              </div>
+
+              <div class$="statuscont reject [[_computeStatusClass('Certification rejected', status, 2)]]">
+                <iron-icon class="red" icon="icons:report-problem"></iron-icon>
+                <span class="status red">Rejected</span>
+              </div>
+
+              <div class="vertline flex"></div>
+
+              <div class="statuscont">
+                <div class="circlenr">
+                  <span>4</span>
+                </div>
+                <span class="status">Completed</span>
+              </div>
             </div>
 
-            <div class="vertline flex"></div>
+          </div>
 
-            <div class$="statuscont appr [[_computeStatusClass('Approved', status)]]">
-              <div class="circlenr">
-                <span class$="[[_computeStatusClass('Approved', status)]]">3</span>
-                <iron-icon class$="[[_computeStatusClass('Approved', status)]]" icon="icons:done"></iron-icon>
+          <div class="card-actions">
+            <form-actions-button user-type="[[userType]]" status="[[status]]">
+            </form-actions-button>
+          </div>
+        </template>
+
+
+        <!-- Completed status -->
+        <template is="dom-if" if="{{_showCompleted(status)}}">
+
+          <div class="card-content">
+            <div class$="[[_isSmallClass(status)]]">
+              <div class="statuscont horizontal layout center green">
+                <div class="circlenr">
+                  <iron-icon class="green thumbs" icon="icons:thumb-up"></iron-icon>
+                </div>
+                <div class="flex vertical layout">
+                  <span class="status black">Completed</span>
+                  <span class="statusdate">on [[completedDate]]</span>
+                </div>
               </div>
-              <span class="status">Approved</span>
-            </div>
-
-            <div class$="statuscont reject [[_computeStatusClass('Rejected', status)]]">
-              <iron-icon class="red" icon="icons:report-problem"></iron-icon>
-              <span class="status red">Rejected</span>
-            </div>
-
-            <div class="vertline flex"></div>
-
-            <div class$="statuscont [[_computeStatusClass('Sent for payment', status)]]">
-              <div class="circlenr">
-                <span class$="[[_computeStatusClass('Sent for payment', status)]]">4</span>
-                <iron-icon class$="[[_computeStatusClass('Sent for payment', status)]]" icon="icons:done"></iron-icon>
-              </div>
-              <span class="status">Sent for payment</span>
             </div>
           </div>
 
-        </div>
+          <div class="card-actions">
+            <form-actions-button user-type="[[userType]]" status="[[status]]">
+            </form-actions-button>
+          </div>
+        </template>
 
-        <div class="card-actions">
-          <form-actions-button-travel user-type="[[userType]]" status="[[status]]" show-at-all="{{showActions}}"></form-actions-button-travel>
-        </div>
 
-      </template>
+        <!-- Cancelled status -->
+        <template is="dom-if" if='{{_showCancelled(status)}}'>
 
-      <template is="dom-if" if="{{_showCompleted(status)}}">
-        <div class="card-content">
-          <div class$="[[_isSmallClass(status)]]">
-            <div class="statuscont horizontal layout center green">
-              <div class="circlenr">
-                <iron-icon class="green thumbs" icon="icons:thumb-up"></iron-icon>
-              </div>
-              <div class="flex vertical layout">
-                <span class="status black">Completed</span>
-                <span class="statusdate">on [[completedDate]]</span>
+          <div class="card-content">
+            <div class$="[[_isSmallClass(status)]]">
+              <div class="statuscont horizontal layout center">
+                <iron-icon icon="icons:cancel"></iron-icon>
+                <div class="flex vertical layout">
+                  <span class="status black">Cancelled</span>
+                  <span class="statusdate">on [[cancelledDate]]</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </template>
 
-      <template is="dom-if" if='{{_showCancelled(status)}}'>
-        <div class="card-content">
-          <div class$="[[_isSmallClass(status)]]">
-            <div class="statuscont horizontal layout center">
-              <iron-icon icon="icons:cancel"></iron-icon>
-              <div class="flex vertical layout">
-                <span class="status black">Cancelled</span>
-                <span class="statusdate">on [[cancelledDate]]</span>
-              </div>
-            </div>
+          <div class="card-actions">
+            <form-actions-button user-type="[[userType]]" status="[[status]]">
+            </form-actions-button>
           </div>
-        </div>
-      </template>
+        </template>
 
 
-    </paper-card>
+      </paper-card>
+    </div>
   </template>
 
   <script>
@@ -236,22 +325,36 @@
         status: String,
         cancelledDate: String,
         completedDate: String,
-        userType: String
+        userType: String,
+        scrollTopMargin: {
+          type: Number,
+          value: 0
+        }
       },
-      _computeStatusClass: function(label, status) {
-
+      firstStatuses: ['Planned', 'Submitted', 'Approved', 'Rejected', 'Sent for payment'],
+      secondStatuses: ['Certification needed', 'Certification submitted', 'Certification rejected', 'Certification approved'],
+      _getHeading: function(status) {
+        return this.secondStatuses.indexOf(status) >= 0 ? 'Certification' : 'Travel status';
+      },
+      _computeStatusClass: function(label, status, set) {
+        var statusesToParse = set === 1 ? this.firstStatuses : this.secondStatuses;
         var statClass = label == status ? 'blue' : '';
-        var statLib = ['Planned', 'Submitted', 'Approved', 'Rejected', 'Sent for payment'];
-        if (statLib.indexOf(label) < statLib.indexOf(status)) {
+        if (statusesToParse.indexOf(label) < statusesToParse.indexOf(status)) {
           statClass = 'green';
         }
-        if (status === 'Rejected') {
+        if (['Rejected', 'Certification rejected'].indexOf(status) >= 0 ) {
           statClass += ' rejected';
         }
         return statClass;
       },
       _showFirst: function(status) {
-        return ['Cancelled', 'Completed'].indexOf(status) < 0;
+        return this.firstStatuses.indexOf(status) >= 0;
+      },
+      _showSecond: function(status) {
+        return this.secondStatuses.indexOf(status) >= 0;
+      },
+      _isSmallClass: function(status) {
+        return ['Cancelled', 'Completed'].indexOf(status) >= 0 ? 'small' : 'big';
       },
       _showCancelled: function(status) {
         return status === 'Cancelled';
@@ -259,8 +362,30 @@
       _showCompleted: function(status) {
         return status === 'Completed';
       },
-      _isSmallClass: function(status) {
-        return ['Cancelled', 'Completed'].indexOf(status) >= 0 ? 'small' : 'big';
+      attached: function() {
+        var self = this;
+        if(!self.scrollTopMargin) {
+          return;
+        }
+        self._previousOnScroll = window.onscroll;
+        window.onscroll = function() {
+          if(self.getBoundingClientRect().top < self.scrollTopMargin) {
+            self.$['main-card'].style.position= 'fixed';
+            self.$['main-card'].style.top = self.scrollTopMargin + "px";
+          }
+          else {
+            self.$['main-card'].style.position= 'absolute';
+            self.$['main-card'].style.top = "0";
+          }
+          if(self._previousOnScroll) {
+            self._previousOnScroll();
+          }
+        }
+      },
+      detached: function() {
+        if(this._previousOnScroll) {
+          window.onscroll = this._previousOnScroll;
+        }
       }
     });
   </script>
