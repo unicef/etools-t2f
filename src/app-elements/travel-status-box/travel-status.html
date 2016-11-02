@@ -15,25 +15,26 @@
 <link rel="import" href="../../../bower_components/paper-card/paper-card.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/et2f-styles.html">
 <link rel="import" href="../form-actions-button/form-actions-button.html">
 
 <dom-module id="travel-status">
 
-  <style include="shared-styles iron-flex iron-flex-alignment" is="custom-style">
+  <style include="shared-styles et2f-styles iron-flex iron-flex-alignment" is="custom-style">
 
     :host {
       display: block;
     }
     .float-container {
       position: relative;
-      top:0;
+      top: 0;
       width: 200px;
-      height:100%;
+      height: 100%;
     }
 
     paper-card {
       position: absolute;
-      top:0;
+      top: 0;
 
       background-color: white;
       --paper-card-header-color: white;
@@ -44,7 +45,7 @@
         padding-bottom: 9px;
       }
       --paper-card-header: {
-        background-color: #1E86BF;
+        background-color: var(--et2f-sec-blue);
         height: 48px;
         padding: 0;
       }
@@ -59,7 +60,6 @@
       }
     }
     .big {
-      /* Set the height of this with mediaquery, the inner ones are flexing! */
       height: 300px;
     }
     .small {
@@ -80,7 +80,7 @@
       float: left;
       width: 24px;
       height: 24px;
-      background-color: rgba(0,0,0,0.38);
+      background-color: var(--gray-light);
       color: white;
       font-size: 12px;
       line-height: 24px;
@@ -106,19 +106,19 @@
       padding-left: 4px;
     }
     .red, .statuscont span.status.red {
-      color: #EA4022;
+      color: var(--et2f-error);
     }
     .status {
-      color: rgba(0,0,0,0.54);
+      color: var(--gray-mid);
       font-size: 14px;
       padding-left: 6px;
     }
     .status.black {
-      color: rgba(0,0,0,0.87);
+      color: var(--gray-dark);
       font-weight: 500;
     }
     .statusdate {
-      color: rgba(0,0,0,0.54);
+      color: var(--gray-mid);
       font-size: 12px;
       line-height: 20px;
       padding-left: 6px;
@@ -127,19 +127,19 @@
       display: none;
     }
     .statuscont.green .status {
-      color: rgba(0,0,0,0.87);
+      color: var(--gray-dark);
       font-weight: 500;
     }
     .statuscont.green .circlenr {
-      background-color: #8DC63F;
+      background-color: var(--et2f-sec-lightgreen);
     }
 
     .statuscont.blue .status {
-      color: rgba(0,0,0,0.87);
+      color: var(--gray-dark);
       font-weight: 500;
     }
     .statuscont.blue .circlenr {
-      background-color: #00AEEF;
+      background-color: var(--et2f-primary);
     }
     .vertline {
       margin: 7px 12px;
