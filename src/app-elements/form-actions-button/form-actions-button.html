@@ -19,10 +19,11 @@
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/et2f-styles.html">
 
 <dom-module id="form-actions-button">
 
-  <style include="shared-styles iron-flex iron-flex-alignment" is="custom-style">
+  <style include="shared-styles et2f-styles iron-flex iron-flex-alignment" is="custom-style">
     :host {
       display: block;
     }
@@ -30,11 +31,11 @@
       margin: 24px;
       padding: 0;
       height: 36px;
-      background-color: #00AEEF;
+      background-color: var(--et2f-primary);
       color: white;
     }
     paper-button.grey {
-      background-color: rgba(0,0,0,0.54);
+      background-color: var(--gray-mid);
     }
     paper-menu-button {
       padding: 0 4px;

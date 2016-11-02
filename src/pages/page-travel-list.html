@@ -13,12 +13,13 @@
 <link rel="import" href="../app-elements/travel-list/list-pagination.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
 <link rel="import" href="../app-elements/et2f-header.html">
 
 
 <dom-module id="travel-list">
 
-  <style include="iron-flex shared-styles">
+  <style include="iron-flex shared-styles et2f-styles">
     :host {
       display: block;
       --paper-card:  {
@@ -28,7 +29,11 @@
       }
     }
     .background {
-      background-color: #eeeeee;
+      background-color: var(--gray-lighter);
+    }
+
+    et2f-header {
+      margin-bottom: 12px;
     }
 
     .second-header {
@@ -40,21 +45,18 @@
         width: 240px;
         margin-left: 26px;
       };
-      --paper-input-container-color: rgba(0,0,0,0.38);
+      --paper-input-container-color: var(--gray-light);
     }
     .second-header paper-input iron-icon {
-      color: rgba(0,0,0,0.54);
+      color: var(--gray-mid);
     }
     .second-header .toggle-hidden-div {
       margin-right: 26px;
     }
     .second-header .toggle-hidden-div span {
-      color: rgba(0,0,0,0.87);
+      color: var(--gray-dark);
       font-size: 16px;
       margin-right: 8px;
-    }
-    .second-header .toggle-hidden-div paper-toggle-button {
-      --paper-toggle-button-checked-button-color: #00AEEF;
     }
 
     .data-table .data-card-heading {

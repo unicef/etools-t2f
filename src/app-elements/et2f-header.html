@@ -4,9 +4,10 @@
 <link rel="import" href="../../bower_components/polymer-pdf-make-wrapper/pdf-make.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
 
 <dom-module id="et2f-header">
-  <style include="iron-flex shared-styles">
+  <style include="iron-flex shared-styles et2f-styles">
     :host {
       display: block;
     }
@@ -15,16 +16,16 @@
       background-color: white;
     }
     .side-heading {
-      margin: 0 0 12px 0;
+      margin: 0;
       height: 80px;
-      background-color: white;
+      margin-right: 48px;
     }
     .side-heading span.title {
       font-size: 24px;
       padding-left: 48px;
     }
     .side-heading .grey-buttons {
-      color: rgba(0,0,0,0.54);
+      color: var(--gray-mid);
       font-weight: 500;
       font-size: 14px;
     }
@@ -32,13 +33,12 @@
       margin-right: 8px;
     }
     .side-heading a paper-button {
-      background-color: #00AEEF;
+      background-color: var(--et2f-primary);
       color: white;
       height: 36px;
       font-weight: 500;
       padding-left: 10px;
       padding-right: 15px;
-      margin-right: 48px;
     }
     .side-heading a paper-button span {
       margin-left: 25px;
@@ -49,27 +49,28 @@
 
   <template>
 
-
     <pdf-make print="{{openPDF}}" content="[[dataToExport]]" page-orientation="landscape"></pdf-make>
 
-   <div class="header-wrapper">
-    <div class="side-heading horizontal layout center">
+    <div class="header-wrapper">
+      <div class="side-heading horizontal layout center">
 
         <span class="flex title">[[title]]</span>
 
-      <div class="side-heading-button-holder">
-        <paper-button
-          class="grey-buttons"
-          on-click="export">
-          <iron-icon icon="file-download"></iron-icon>
-          Export
-        </paper-button>
-        <paper-button
-          class="grey-buttons"
-          on-click="print">
-          <iron-icon icon="print"></iron-icon>
-          Print
-        </paper-button>
+        <div class="side-heading-button-holder">
+          <paper-button
+            class="grey-buttons"
+            on-click="export">
+
+            <iron-icon icon="file-download"></iron-icon>
+            Export
+          </paper-button>
+          <paper-button
+            class="grey-buttons"
+            on-click="print">
+
+            <iron-icon icon="print"></iron-icon>
+            Print
+          </paper-button>
 
           <a href="/plan-travel" hidden$="[[_hideNewTravelButton(showNewTravelButton)]]">
             <paper-button class="addnbtn" raised>

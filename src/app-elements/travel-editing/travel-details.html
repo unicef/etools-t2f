@@ -31,6 +31,10 @@
 <link rel="import"
   href="form-fieldsets/travel-expense.html">
 
+<link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/et2f-styles.html">
+
+<link rel="import" href="../travel-status-box/travel-status.html">
 <link rel="import"
   href="form-fieldsets/travel-costs-assignment.html">
 
@@ -40,31 +44,27 @@
   href="../permission-layer.html">
 
 <dom-module id="travel-details">
-  <template>
-    <style include="shared-styles iron-flex iron-flex-alignment iron-flex-factors">
-      :host {
-        display: block;
-        width: 100%;
-      }
-
-      etools-repeatable-field-set {
-        width: calc(100% - 48px);
-        margin: 24px;
-
-        --repeatable-items-collapse-container: {
-          background: #FFF;
-        }
-      }
-
-      .orange-header {
-        --repeatable-items-header-bg: #FF9640;
-      }
-
-      travel-status {
-        margin-top: 24px;
-        margin-right: 24px;
-      }
-    </style>
+    <template>
+        <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+            :host {
+                display: block;
+                width: 100%;
+            }
+            etools-repeatable-field-set {
+                width: calc( 100% - 48px);
+                margin: 24px;
+                --repeatable-items-collapse-container: {
+                    background: #FFF;
+                };
+            }
+            .orange-header {
+                --repeatable-items-header-bg: var(--et2f-warning);
+            }
+            travel-status {
+                margin-top: 24px;
+                margin-right: 24px;
+            }
+        </style>
 
     <div class="horizontal layout"
       hidden$="[[!showForm]]">
@@ -81,7 +81,8 @@
 
         <etools-repeatable-field-set title="Travel Activities"
           model="{{data.activities}}"
-          allow-copy>
+          allow-copy
+          elevation="1">
           <template is="dom-repeat"
             items="{{data.activities}}">
             <travel-activities activity="{{item}}"
@@ -93,7 +94,8 @@
 
         <etools-repeatable-field-set title="Itinerary"
           model="{{data.itinerary}}"
-          show-counter>
+          show-counter
+          elevation="1">
           <template is="dom-repeat"
             items="{{data.itinerary}}">
             <travel-itinerary permissions-matrix="[[permissions.itinerary]]"
@@ -104,7 +106,8 @@
 
         <etools-repeatable-field-set title="Deductions"
           model="[1]"
-          hide-plus>
+          hide-plus
+          elevation="1">
           <div class="layout vertical flex">
             Deductions placeholder
           </div>
@@ -123,7 +126,8 @@
 
         <etools-repeatable-field-set title="Cost Assignment"
           model="{{data.costAssignment}}"
-          show-counter>
+          show-counter
+          elevation="1">
           <template is="dom-repeat"
             items="{{data.costAssignment}}">
             <travel-cost-assignment permissions-matrix="[[permissions.costAssignment]]"
@@ -135,7 +139,8 @@
         <etools-repeatable-field-set class="orange-header"
           title="Cost summary"
           model="[1]"
-          hide-plus>
+          hide-plus
+          elevation="1">
           <div>
             Cost summary placeholder
           </div>
