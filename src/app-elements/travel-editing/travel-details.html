@@ -1,5 +1,4 @@
 
-
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -24,10 +23,11 @@
             etools-repeatable-field-set {
                 width: calc( 100% - 48px);
                 margin: 24px;
+                box-shadow: 0px 0px 2px rgba(0,0,0,.12), 0px 2px 2px rgba(0,0,0,.24);
 
                 --repeatable-items-collapse-container: {
                     background: #FFF;
-                }
+                };
             }
             .custom-margin {
                 --paper-input-container: {
@@ -67,7 +67,15 @@
                     <div class="flex-6"></div>
                 </div>
                 <div class="layout horizontal">
-                    <paper-textarea label="Purpose of travel" class="flex-12 custom-margin" required char-counter maxlength="500" value="{{baseDetails.purpose}}"></paper-textarea>
+                    <paper-textarea
+                        label="Purpose of travel*"
+                        placeholder="placeholder text"
+                        class="flex-12 custom-margin"
+                        required
+                        char-counter
+                        maxlength="500"
+                        value="{{baseDetails.purpose}}">
+                    </paper-textarea>
                 </div>
             </div>
         </etools-repeatable-field-set>
