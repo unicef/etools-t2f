@@ -9,21 +9,83 @@
   <style include="shared-styles et2f-styles iron-flex" is="custom-style">
     :host {
       display: block;
+      margin: 0 35px;
+    }
+    .header {
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,.3);
+    }
+    .fix-width {
+      width: 230px;
+    }
+    .header paper-button {
+      color: var(--et2f-primary);
+      font-weight: 500;
+      font-size: 14px;
+      text-transform: none;
+      height: 36px;
+      margin: 10px 14px;
+    }
+    .headingtext {
+      color: var(--gray-mid);
+      text-align: center;
+      font-weight: 500;
+      font-size: 12px;
+    }
+    .checkbox-mid {
+      text-align: center;
+    }
+
+    .rows {
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,.12);
+    }
+
+    .weekday {
+      font-size: 16px;
+      color: var(--gray-dark);
+      margin-left: 24px;
+      margin-right: 18px;
+    }
+
+    .full-date {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--gray-dark);
     }
 
   </style>
 
   <template>
 
+    <div class="layout horizontal center header">
+
+      <div class="fix-width">
+        <paper-button>
+          <iron-icon icon="refresh"></iron-icon>
+          Populate list
+        </paper-button>
+      </div>
+
+      <span class="flex headingtext">Breakfast</span>
+      <span class="flex headingtext">Lunch</span>
+      <span class="flex headingtext">Dinner</span>
+      <span class="flex headingtext">Accomodation</span>
+      <span class="flex headingtext">Not Applicable</span>
+    </div>
+
     <template is="dom-repeat" items="{{deductions}}">
-      <div class="flex layout horizontal">
-        <p>Weekday</p>
-        <p>,  {{item.date}}  ,</p>
-        <paper-checkbox checked="{{item.breakfast}}"></paper-checkbox>
-        <paper-checkbox checked="{{item.lunch}}"></paper-checkbox>
-        <paper-checkbox checked="{{item.dinner}}"></paper-checkbox>
-        <paper-checkbox checked="{{item.accomodation}}"></paper-checkbox>
-        <paper-checkbox checked="{{item.not_applicable}}"></paper-checkbox>
+
+      <div class="layout horizontal center rows">
+
+        <div class="fix-width layout horizontal center">
+          <span class="weekday">Weekday</span>
+          <span class="full-date">{{item.date}}</span>
+        </div>
+
+        <paper-checkbox class="flex checkbox-mid" checked="{{item.breakfast}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" checked="{{item.lunch}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" checked="{{item.dinner}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" checked="{{item.accomodation}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" checked="{{item.not_applicable}}"></paper-checkbox>
       </div>
     </template>
 
@@ -42,10 +104,6 @@
       observers: [
         'dateChanged(data.startDate, data.endDate)'
       ],
-      // _deductions: function(deductions) {
-      //   console.log(deductions.length);
-      //   return deductions;
-      // },
       dateChanged: function(startDateStr, endDateStr) {
         console.info('DATE CHANGED!');
         console.info(startDateStr, endDateStr);
