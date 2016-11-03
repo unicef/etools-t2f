@@ -1,0 +1,100 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../../../../styles/shared-styles.html">
+<link rel="import" href="../../../../styles/et2f-styles.html">
+
+<dom-module id="travel-deductions">
+
+  <style include="shared-styles et2f-styles iron-flex" is="custom-style">
+    :host {
+      display: block;
+    }
+
+  </style>
+
+  <template>
+
+    <template is="dom-repeat" items="{{deductions}}">
+      <div class="flex layout horizontal">
+        <p>Weekday</p>
+        <p>,  {{item.date}}  ,</p>
+        <paper-checkbox checked="{{item.breakfast}}"></paper-checkbox>
+        <paper-checkbox checked="{{item.lunch}}"></paper-checkbox>
+        <paper-checkbox checked="{{item.dinner}}"></paper-checkbox>
+        <paper-checkbox checked="{{item.accomodation}}"></paper-checkbox>
+        <paper-checkbox checked="{{item.not_applicable}}"></paper-checkbox>
+      </div>
+    </template>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-deductions',
+      properties: {
+        data: Object,
+        deductions: {
+          type: Array,
+          value: []
+        }
+      },
+      observers: [
+        'dateChanged(data.startDate, data.endDate)'
+      ],
+      // _deductions: function(deductions) {
+      //   console.log(deductions.length);
+      //   return deductions;
+      // },
+      dateChanged: function(startDateStr, endDateStr) {
+        console.info('DATE CHANGED!');
+        console.info(startDateStr, endDateStr);
+
+        var startDate = new Date(startDateStr);
+        var endDate = new Date(endDateStr);
+
+        var daysToCalculate = Math.floor(( endDate - startDate ) / 86400000);
+
+        var deductions = this.deductions;
+        var keyLib = [];
+
+        for (var actDate = startDate; actDate <= endDate; actDate.setDate(actDate.getDate() + 1)) {
+
+          var key = [
+            actDate.getFullYear(),
+            ('0' + actDate.getMonth()).slice(-2),
+            ('0' + actDate.getDate()).slice(-2)
+          ].join('-');
+
+          keyLib.push(key);
+
+          // Fill in new empty ones
+          if (!deductions.some(function(day) {
+            return day.date === key;
+          })) {
+            deductions.push({
+              date: key,
+              breakfast: false,
+              lunch: false,
+              dinner: false,
+              accomodation: false,
+              not_applicable: false
+            });
+          }
+        }
+
+        // Erase days no longer needed & resort the array
+        deductions = deductions
+          .filter(function(day) {
+            return keyLib.indexOf(day.date) > -1;
+          })
+          .sort(function(a, b) {
+            return a.date > b.date;
+          });
+
+        this.set('deductions', deductions);
+      }
+    });
+  </script>
+
+</dom-module>
