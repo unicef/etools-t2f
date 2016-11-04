@@ -33,5 +33,10 @@
     "name": "Submit certificate",
     "icon": "",
     "endPoint": "submit_certificate"
+  },
+  "save": {
+    "name": "Save",
+    "icon": "",
+    "endPoint": "save"
   }
 }
