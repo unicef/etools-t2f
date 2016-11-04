@@ -1,7 +1,7 @@
 
 
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/etools-datepicker/etools-datepicker.html">
+<link rel="import" href="../../../bower_components/etools-datepicker/etools-datepicker-button.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 
 
@@ -26,7 +26,7 @@
         </style>
 
         <paper-input id="date-input" readonly label="[[label]]" on-tap="_openCalendar" value="{{prettyDate}}" disabled$="[[disabled]]">
-            <etools-datepicker open="{{opened}}" suffix pretty-date="{{prettyDate}}" json-date="{{date}}"></etools-datepicker>
+            <etools-datepicker-button no-init open="{{opened}}" suffix pretty-date="{{prettyDate}}" json-date="{{date}}"></etools-datepicker-button>
         </paper-input>
 
     </template>

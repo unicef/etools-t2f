@@ -37,7 +37,7 @@
         width: calc( 100% - 48px);
         margin: 24px;
         --repeatable-items-collapse-container: {
-            background: #FFF;
+          background: #FFF;
         };
       }
       .orange-header {
@@ -49,111 +49,113 @@
       }
     </style>
 
-    <div class="horizontal layout" hidden$="[[!showForm]]">
+    <template is="dom-if" if="[[showForm]]" >
+      <div class="horizontal layout">
 
-      <div class="flex">
+        <div class="flex">
 
-        <etools-repeatable-field-set title="Travel Plan"
-          hide-plus
-          model="[1]"
-          hide-vertical-divider
-          elevation="1">
+          <etools-repeatable-field-set title="Travel Plan"
+            hide-plus
+            model="[1]"
+            hide-vertical-divider
+            elevation="1">
 
-          <travel-plan base-details="{{data.baseDetails}}"
-            permissions-matrix="[[permissions.baseDetails]]"
-            structure="[[structure]]">
-          </travel-plan>
-        </etools-repeatable-field-set>
-
-        <etools-repeatable-field-set title="Travel Activities"
-          model="{{data.activities}}"
-          allow-copy
-          show-counter
-          elevation="1">
-
-          <template is="dom-repeat"
-            items="{{data.activities}}">
-
-            <travel-activities
-              activity="{{item}}"
-              permissions-matrix="[[permissions.activities]]"
+            <travel-plan base-details="{{data.baseDetails}}"
+              permissions-matrix="[[permissions.baseDetails]]"
               structure="[[structure]]">
-            </travel-activities>
-          </template>
-        </etools-repeatable-field-set>
+            </travel-plan>
+          </etools-repeatable-field-set>
 
-        <etools-repeatable-field-set title="Itinerary"
-          model="{{data.itinerary}}"
-          show-counter
-          elevation="1">
+          <etools-repeatable-field-set title="Travel Activities"
+            model="{{data.activities}}"
+            allow-copy
+            show-counter
+            elevation="1">
 
-          <template
-            is="dom-repeat"
-            items="{{data.itinerary}}">
+            <template is="dom-repeat"
+              items="{{data.activities}}">
 
-            <travel-itinerary permissions-matrix="[[permissions.itinerary]]"
-              itinerary="{{item}}"
-              structure="[[structure]]">
-            </travel-itinerary>
-          </template>
-        </etools-repeatable-field-set>
+              <travel-activities
+                activity="{{item}}"
+                permissions-matrix="[[permissions.activities]]"
+                structure="[[structure]]">
+              </travel-activities>
+            </template>
+          </etools-repeatable-field-set>
 
-        <etools-repeatable-field-set title="Deductions"
-          hide-vertical-divider
-          model="[1]"
-          hide-plus
-          elevation="1">
+          <etools-repeatable-field-set title="Itinerary"
+            model="{{data.itinerary}}"
+            show-counter
+            elevation="1">
 
-          <div class="layout vertical flex">
+            <template
+              is="dom-repeat"
+              items="{{data.itinerary}}">
 
-            <travel-deductions disabled$="false" data="{{data.baseDetails}}"></travel-deductions>
-            <!-- SET DISABLED -->
-          </div>
-        </etools-repeatable-field-set>
+              <travel-itinerary permissions-matrix="[[permissions.itinerary]]"
+                itinerary="{{item}}"
+                structure="[[structure]]">
+              </travel-itinerary>
+            </template>
+          </etools-repeatable-field-set>
 
-        <etools-repeatable-field-set title="Expenses"
-          model="{{data.expenses}}"
-          show-counter>
+          <etools-repeatable-field-set title="Deductions"
+            hide-vertical-divider
+            model="[1]"
+            hide-plus
+            elevation="1">
 
-          <template is="dom-repeat" items="{{data.expenses}}">
-            <travel-expense permissions-matrix="[[permissions.expenses]]"
-              expense="{{item}}"
-              structure="[[structure]]">
-            </travel-expense>
-          </template>
-        </etools-repeatable-field-set>
+            <div class="layout vertical flex">
 
-        <etools-repeatable-field-set title="Cost Assignment"
-          model="{{data.costAssignment}}"
-          show-counter
-          elevation="1">
+              <travel-deductions disabled$="false" data="{{data.baseDetails}}"></travel-deductions>
+              <!-- SET DISABLED -->
+            </div>
+          </etools-repeatable-field-set>
 
-          <template is="dom-repeat" items="{{data.costAssignment}}">
+          <etools-repeatable-field-set title="Expenses"
+            model="{{data.expenses}}"
+            show-counter>
 
-            <travel-cost-assignment permissions-matrix="[[permissions.costAssignment]]"
-              cost-assignment="{{item}}"
-              structure="[[structure]]">
-            </travel-cost-assignment>
-          </template>
-        </etools-repeatable-field-set>
+            <template is="dom-repeat" items="{{data.expenses}}">
+              <travel-expense permissions-matrix="[[permissions.expenses]]"
+                expense="{{item}}"
+                structure="[[structure]]">
+              </travel-expense>
+            </template>
+          </etools-repeatable-field-set>
 
-        <etools-repeatable-field-set title="Cost summary"
-          class="orange-header"
-          model="[1]"
-          hide-plus
-          elevation="1">
+          <etools-repeatable-field-set title="Cost Assignment"
+            model="{{data.costAssignment}}"
+            show-counter
+            elevation="1">
 
-          <div>Cost summary placeholder</div>
-        </etools-repeatable-field-set>
+            <template is="dom-repeat" items="{{data.costAssignment}}">
+
+              <travel-cost-assignment permissions-matrix="[[permissions.costAssignment]]"
+                cost-assignment="{{item}}"
+                structure="[[structure]]">
+              </travel-cost-assignment>
+            </template>
+          </etools-repeatable-field-set>
+
+          <etools-repeatable-field-set title="Cost summary"
+            class="orange-header"
+            model="[1]"
+            hide-plus
+            elevation="1">
+
+            <div>Cost summary placeholder</div>
+          </etools-repeatable-field-set>
+        </div>
+
+        <travel-status
+          user-type="godmode"
+          status="Planned"
+          scroll-top-margin="60">
+        <!-- TODO: Wire in STATUS -->
+        </travel-status>
       </div>
-
-      <travel-status
-        user-type="traveler"
-        status="Planned"
-        scroll-top-margin="60">
-      </travel-status>
-    </div>
-
+    </template>
   </template>
 
   <script>
@@ -166,7 +168,6 @@
         },
         structure: {
           type: Object,
-          value: {}
         },
         permissions: {
           type: Object
@@ -178,14 +179,21 @@
       },
       observers: ['_showForm(structure, permissions, data)'],
       _showForm: function (structure, permissions, data) {
-        var dataKeys = Object.keys(data);
-        dataKeys.forEach(function(label){
-          if(data[label] instanceof Array && data[label].length === 0) {
-            data[label].push({});
-          }
-        });
-        this.data = data;
-        this.showForm = true;
+        if(permissions && data && Object.keys(data).length > 0 && structure && Object.keys(structure).length > 0) {
+          var dataKeys = Object.keys(data);
+          dataKeys.forEach(function (label) {
+            if (data[label] instanceof Array && data[label].length === 0) {
+              data[label].push({});
+            }
+          });
+          data.baseDetails.traveller = structure.users.find(function(item) {
+            return item.value === data.baseDetails.traveller
+          });
+          console.log(data);
+          console.log(structure)
+          this.showForm = true;
+          this.set('data', data);
+        }
       }
     });
   </script>
