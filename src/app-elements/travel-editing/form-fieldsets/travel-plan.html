@@ -27,21 +27,28 @@
         };
         --paper-checkbox-margin: 12px;
       }
+      span.standalone {
+        color: var(--gray-dark);
+        font-size: 16px;
+        padding-left: 12px;
+      }
     </style>
 
     <div class="layout vertical flex">
       <div class="layout horizontal">
-        <paper-checkbox class$="flex-3 custom-margin [[et2fPermission.taRequired.readOnly]]"
+        <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
           disabled="[[et2fPermissions.taRequired.disabled]]"
           hidden$="[[et2fPermissions.taRequired.hidden]]">TA required?
         </paper-checkbox>
-        <paper-checkbox class$="flex-3 custom-margin [[et2fPermission.taRequired.readOnly]]"
+        <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
           disabled="[[et2fPermissions.taRequired.disabled]]"
           hidden$="[[et2fPermissions.taRequired.hidden]]">International travel?</paper-checkbox>
-        <span class="flex-3 [[et2fPermission.taRequired.readOnly]]"
-          disabled="[[et2fPermissions.taRequired.disabled]]"
-          hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: </span>
-        <div class="flex-3"></div>
+        <div class="flex layout horizontal center">
+          <span class$="standalone [[et2fPermission.taRequired.readOnly]]"
+            disabled="[[et2fPermissions.taRequired.disabled]]"
+            hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: </span>
+        </div>
+        <div class="flex"></div>
       </div>
       <div class="layout horizontal">
         <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.traveller.readOnly]]"
