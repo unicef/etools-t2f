@@ -208,8 +208,7 @@
       },
 
       observers: [
-        '_routePageChanged(routeData.page)',
-        '_globalRoute(route.*)'
+        '_routePageChanged(routeData.page)'
       ],
 
       listeners: {
@@ -248,10 +247,6 @@
         if (this._toastQueue.length) {
           this._toast.show(this._toastQueue[0]);
         }
-      },
-
-      _globalRoute: function(route){
-        console.log(route);
       },
 
       _routePageChanged: function(page) {

@@ -187,7 +187,11 @@
         }
 
         if (details.endPoint === 'cancel') {
-          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/cancel/';
+          if(!this.newTravel) {
+            this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/cancel/';
+          } else {
+            this._handlePostSuccess();
+          }
         }
 
         if (details.endPoint === 'reopen') {

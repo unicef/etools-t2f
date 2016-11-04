@@ -294,15 +294,19 @@
           }
         };
         if(data.length > 0) {
-          var tableHeader = Object.keys(data[0]).map(function (item) {
+          var tableHeader = Object.keys(data[0]).slice(0, 7).map(function (item) {
             return item.replace(/_/g, ' ');
           });
           this.dataToExport.table.body = data.map(function (item) {
-            return _.values(item).map(function (value) {
+            return _.values(item).slice(0, 7).map(function (value) {
+              if(!value) {
+                return ' ';
+              }
               return '' + value;
             });
           });
           this.dataToExport.table.body = [tableHeader].concat(this.dataToExport.table.body);
+          console.log(JSON.parse(JSON.stringify(this.dataToExport.table)));
         }
       },
       searchKeyDown: function(e) {
