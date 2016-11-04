@@ -189,6 +189,17 @@
           data.baseDetails.traveller = structure.users.find(function(item) {
             return item.value === data.baseDetails.traveller
           });
+          data.baseDetails.supervisor = structure.users.find(function(item) {
+            return item.value === data.baseDetails.supervisor
+          });
+          data.baseDetails.office = structure.offices.find(function(item) {
+            return item.value === data.baseDetails.office
+          });
+          data.baseDetails.section = structure.sections.find(function(item) {
+            return item.value === data.baseDetails.section
+          });
+          data.baseDetails.start_date = new Date(data.baseDetails.start_date);
+          data.baseDetails.end_date = new Date(data.baseDetails.end_date);
           console.log(data);
           console.log(structure)
           this.showForm = true;
