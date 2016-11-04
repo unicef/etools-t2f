@@ -48,15 +48,15 @@
 
     <template is="dom-if"
       if="{{!newTravel}}">
-      <etools-ajax url="/mock-data/data.json"
+      <etools-ajax url="http://localhost:8000/api/et2f/travels{{travelId}}/"
         on-success="_handleData"></etools-ajax>
     </template>
 
     <template is="dom-if"
       if="[[postData]]">
-      <etools-ajax url="http://localhost:8000/api/et2f/travels/"
+      <etools-ajax url="[[url]]"
         body="[[serverData]]"
-        method="POST"
+        method="[[method]]"
         on-success="_handlePostSuccess"
         on-fail="_handlePostFail"></etools-ajax>
     </template>
@@ -87,7 +87,8 @@
       properties: {
         data: {
           type: Object,
-          value: {}
+          value: {},
+          notify: true
         },
         selected: {
           type: Number,
@@ -101,6 +102,9 @@
           type: Boolean,
           value: false
         },
+        travelId: {
+          type: String
+        },
         postData: {
           type: Boolean,
           value: false
@@ -113,12 +117,13 @@
         }
       },
       _handleStructure: function (event, data) {
-        data.users = data.users.map(function (obj) {
-          return {label: obj.full_name, value: obj.id};
+        var dataKeys = Object.keys(data);
+        dataKeys.forEach(function(key) {
+          data[key] = data[key].map(function (obj) {
+            return {label: obj.name || obj.full_name, value: obj.id};
+          });
         });
-        data.currencies = data.currencies.map(function (obj) {
-          return {label: obj.name, value: obj.id};
-        });
+
         Object.freeze(data);
         this.set('structure', data);
       },
@@ -132,7 +137,15 @@
         this.permissions = data;
       },
       _handleData: function (e, data) {
-        Object.freeze(data);
+        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances'];
+        var dataKeys = Object.keys(data).filter(function(key){
+          return nonBaseKeys.indexOf(key) === -1;
+        });
+        data.baseDetails = {};
+        dataKeys.forEach(function(key) {
+          data.baseDetails[key] = data[key];
+          delete data[key];
+        });
         this.data = data;
       },
       _processOutboundData: function (data) {
@@ -146,13 +159,23 @@
         };
         var baseDetailsKeys = Object.keys(data.baseDetails);
         baseDetailsKeys.forEach(function(key) {
-          self.serverData[key] = typeof data.baseDetails[key] === 'object' ? data.baseDetails[key].value : data.baseDetails[key]
+          if(data.baseDetails[key]) {
+            self.serverData[key] = typeof data.baseDetails[key] === 'object' ? data.baseDetails[key].value : data.baseDetails[key]
+          }
         });
       },
       _handlePrimaryAction: function (e, details) {
         if (details.endPoint === 'submit') {
           console.log(this.data);
           this._processOutboundData(this.data);
+          this.url = 'http://localhost:8000/api/et2f/travels';
+          if(this.newTravel) {
+            this.method = 'POST';
+            this.url += '/';
+          } else {
+            this.method = "PUT";
+            this.url += this.travelId + '/';
+          }
           this.postData = true;
         }
       },

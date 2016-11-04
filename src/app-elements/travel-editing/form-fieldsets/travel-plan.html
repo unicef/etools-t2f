@@ -49,7 +49,7 @@
           hidden$="[[et2fPermissions.taRequired.hidden]]">International travel?</paper-checkbox>
         <span class="flex-3 [[et2fPermission.taRequired.readOnly]]"
           disabled="[[et2fPermissions.taRequired.disabled]]"
-          hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: </span>
+          hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: {{baseDetails.reference_number}}</span>
         <div class="flex-3"></div>
       </div>
       <div class="layout horizontal">
@@ -65,16 +65,16 @@
           options="[[structure.users]]"
           label="Supervisor"
           value="{{baseDetails.supervisor}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.users.readOnly]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.office.readOnly]]"
           disabled="[[et2fPermissions.office.disabled]]"
           hidden$="[[et2fPermissions.office.hidden]]"
-          options="[[structure.users]]"
+          options="[[structure.offices]]"
           label="Office"
           value="{{baseDetails.office}}"></etools-searchable-multiselection-menu>
         <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.section.readOnly]]"
           disabled="[[et2fPermissions.section.disabled]]"
           hidden$="[[et2fPermissions.section.hidden]]"
-          options="[[structure.users]]"
+          options="[[structure.sections]]"
           label="Section"
           value="{{baseDetails.section}}"></etools-searchable-multiselection-menu>
       </div>
@@ -132,6 +132,7 @@
         baseDetails: {
           type: Object,
           value: {},
+//          observer: '_log'
         },
         structure: {
           type: Object,
@@ -139,6 +140,9 @@
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
+      _log: function(data) {
+        console.log(data)
+      }
     });
   </script>
 </dom-module>
