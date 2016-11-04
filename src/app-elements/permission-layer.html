@@ -11,6 +11,7 @@
     },
     observers: ['_calculatePermissions(permissionsMatrix)'],
     _calculatePermissions: function (matrix) {
+      console.log(matrix);
       //provisonal function
       var elements = Object.keys(matrix);
       elements.forEach(function(label) {

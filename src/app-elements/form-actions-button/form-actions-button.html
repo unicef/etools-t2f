@@ -142,11 +142,13 @@
       },
       _clickPrimary: function() {
 
-        console.info('Primary action:', this.actions.primary, 'clicked, backend...');
+//        console.info('Primary action:', this.actions.primary, 'clicked, backend...');
+        this.fire('form-primary-action', this.actions.primary)
       },
       _clickSecondary: function(event) {
 
         console.info('Secondary action:', event.model.item, 'clicked, backend...');
+        this.fire('form-secondary-action', event.model.item)
       }
     });
   </script>

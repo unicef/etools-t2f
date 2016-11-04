@@ -44,51 +44,50 @@
           disabled="[[et2fPermissions.taRequired.disabled]]"
           hidden$="[[et2fPermissions.taRequired.hidden]]">TA required?
         </paper-checkbox>
-        <paper-checkbox class$="flex-3 custom-margin [[et2fPermission.taRequired.readOnly]]"
-          disabled="[[et2fPermissions.taRequired.disabled]]"
-          hidden$="[[et2fPermissions.taRequired.hidden]]">International travel?</paper-checkbox>
-        <span class="flex-3 [[et2fPermission.taRequired.readOnly]]"
-          disabled="[[et2fPermissions.taRequired.disabled]]"
-          hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: </span>
+        <paper-checkbox class$="flex-3 custom-margin [[et2fPermission.internationaltraveller.readOnly]]"
+          disabled="[[et2fPermissions.internationaltraveller.disabled]]"
+          hidden$="[[et2fPermissions.internationaltraveller.hidden]]">International travel?</paper-checkbox>
+        <span class="flex-3"
+          hidden$="[[et2fPermissions.referenceNumber.hidden]]">Reference #: {{baseDetails.referenceNumber}} </span>
         <div class="flex-3"></div>
       </div>
       <div class="layout horizontal">
-        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.traveler.readOnly]]"
-          disabled="[[et2fPermissions.traveler.disabled]]"
-          hidden$="[[et2fPermissions.traveler.hidden]]"
-          options="[[structure.supervisor]]"
-          label="Traveler"
-          value="{{baseDetails.traveler}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.traveller.readOnly]]"
+          disabled="[[et2fPermissions.traveller.disabled]]"
+          hidden$="[[et2fPermissions.traveller.hidden]]"
+          options="[[structure.users]]"
+          label="Traveller"
+          value="{{baseDetails.traveller}}"></etools-searchable-multiselection-menu>
         <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.supervisor.readOnly]]"
           disabled="[[et2fPermissions.supervisor.disabled]]"
           hidden$="[[et2fPermissions.supervisor.hidden]]"
-          options="[[structure.supervisor]]"
+          options="[[structure.users]]"
           label="Supervisor"
           value="{{baseDetails.supervisor}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.office.readOnly]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.users.readOnly]]"
           disabled="[[et2fPermissions.office.disabled]]"
           hidden$="[[et2fPermissions.office.hidden]]"
-          options="[[structure.partner]]"
+          options="[[structure.users]]"
           label="Office"
           value="{{baseDetails.office}}"></etools-searchable-multiselection-menu>
         <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.section.readOnly]]"
           disabled="[[et2fPermissions.section.disabled]]"
           hidden$="[[et2fPermissions.section.hidden]]"
-          options="[[structure.partner]]"
+          options="[[structure.users]]"
           label="Section"
           value="{{baseDetails.section}}"></etools-searchable-multiselection-menu>
       </div>
       <div class="layout horizontal">
-        <datepicker-input class$="flex-3 [[et2fPermission.startDate.readOnly]]"
-          disabled="[[et2fPermissions.startDate.disabled]]"
-          hidden$="[[et2fPermissions.startDate.hidden]]"
+        <datepicker-input class$="flex-3 [[et2fPermission.start_date.readOnly]]"
+          disabled="[[et2fPermissions.start_date.disabled]]"
+          hidden$="[[et2fPermissions.start_date.hidden]]"
           label="Start Date"
-          value="{{baseDetails.startDate}}"></datepicker-input>
-        <datepicker-input class$="flex-3 [[et2fPermission.endDate.readOnly]]"
-          disabled="[[et2fPermissions.endDate.disabled]]"
-          hidden$="[[et2fPermissions.endDate.hidden]]"
+          date="{{baseDetails.start_date}}"></datepicker-input>
+        <datepicker-input class$="flex-3 [[et2fPermission.end_date.readOnly]]"
+          disabled="[[et2fPermissions.end_date.disabled]]"
+          hidden$="[[et2fPermissions.end_date.hidden]]"
           label="End Date "
-          value="{{baseDetails.endDate}}"></datepicker-input>
+          date="{{baseDetails.end_date}}"></datepicker-input>
         <paper-input class$="flex-3 custom-margin [[et2fPermission.estimatedTravelCost.readOnly]]"
           disabled="[[et2fPermissions.estimatedTravelCost.disabled]]"
           hidden$="[[et2fPermissions.estimatedTravelCost.hidden]]"
@@ -97,7 +96,7 @@
         <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.currency.readOnly]]"
           disabled="[[et2fPermissions.currency.disabled]]"
           hidden$="[[et2fPermissions.currency.hidden]]"
-          options="[[structure.currency]]"
+          options="[[structure.currencies]]"
           label="Currency"
           value="{{baseDetails.currency}}"></etools-searchable-multiselection-menu>
       </div>
@@ -105,7 +104,7 @@
         <etools-searchable-multiselection-menu class$="flex-6 [[et2fPermission.modeOfTravel.readOnly]]"
           disabled="[[et2fPermissions.modeOfTravel.disabled]]"
           hidden$="[[et2fPermissions.modeOfTravel.hidden]]"
-          options="[[structure.travel]]"
+          options="[[structure.users]]"
           multi
           label="Mode of travel"
           value="{{baseDetails.modeOfTravel}}"></etools-searchable-multiselection-menu>
@@ -131,7 +130,6 @@
       properties: {
         baseDetails: {
           type: Object,
-          notify: true,
           value: {},
         },
         structure: {

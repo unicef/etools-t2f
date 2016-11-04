@@ -9,7 +9,12 @@
       "readOnly": false,
       "disabled": true,
       "hidden": false
-    }
+    },
+    "referenceNumber": {
+      "readOnly": false,
+      "disabled": true,
+      "hidden": true
+    },
   },
   "activities": {}
 }

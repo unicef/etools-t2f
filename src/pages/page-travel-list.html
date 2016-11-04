@@ -105,7 +105,6 @@
       <etools-ajax
           url="http://localhost:8000/api/et2f/travels/"
           params='{{ajaxParams}}'
-          auto=true
           on-success="handleListResponse">
       </etools-ajax>
 
@@ -196,8 +195,8 @@
         orderObj: {
           type: Object,
           value: {
-            orderedBy: 'Purpose of travel',
-            reverse: false
+            orderedBy: 'Create date',
+            reverse: true
           },
           observer: '_changeParamsOrder'
         },
@@ -214,13 +213,19 @@
         ajaxParams: {
           type: Object,
           value: {
-            sort_by: 'purpose',
-            reverse: false,
+            sort_by: 'created',
+            reverse: true,
             page: 1,
             page_size: 10,
             search: '',
             show_hidden: false
           }
+        },
+        refreshData: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          observer: '_doRefreshData'
         }
       },
       _changeParamsOrder: function(orderObj, old) {
@@ -261,8 +266,8 @@
         'Traveler(s)': 'traveller',
         'From date': 'start_date',
         'End date': 'start_date',
-        'Status': 'status'
-        // 'Create date' backend name here!!
+        'Status': 'status',
+         'Create date': 'created'
       },
       handleListResponse: function(event, data) {
 
@@ -270,14 +275,16 @@
 
         this.set('datalength', data.total_count);
         data.data.forEach(function(travel) {
-          travel.start_date = travel.start_date.split('T')[0];
-          travel.end_date = travel.end_date.split('T')[0];
+          if(travel.start_date && travel.end_date) {
+            travel.start_date = travel.start_date.split('T')[0];
+            travel.end_date = travel.end_date.split('T')[0];
+          }
+          travel.created = travel.created.split('T')[0];
         });
         this.set('data', data.data);
         this._prepareExportData(data.data);
       },
       _prepareExportData: function(data) {
-        var self = this;
         this.dataToExport = {
           margin: [0, 10],
           table: {
@@ -286,15 +293,17 @@
             body: []
           }
         };
-        var tableHeader =  Object.keys(data[0]).map(function(item) {
-          return item.replace(/_/g, ' ');
-        });
-        this.dataToExport.table.body = data.map(function(item) {
-          return _.values(item).map(function(value) {
-            return '' + value;
+        if(data.length > 0) {
+          var tableHeader = Object.keys(data[0]).map(function (item) {
+            return item.replace(/_/g, ' ');
           });
-        });
-        this.dataToExport.table.body = [tableHeader].concat(this.dataToExport.table.body);
+          this.dataToExport.table.body = data.map(function (item) {
+            return _.values(item).map(function (value) {
+              return '' + value;
+            });
+          });
+          this.dataToExport.table.body = [tableHeader].concat(this.dataToExport.table.body);
+        }
       },
       searchKeyDown: function(e) {
 
@@ -334,6 +343,15 @@
           search: this.ajaxParams.search,
           show_hidden: show
         });
+      },
+      _doRefreshData: function(status) {
+        console.log('refresh?',status);
+        if(status) {
+          var backup = this.ajaxParams;
+          this.set('ajaxParams', {});
+          this.set('ajaxParams', backup);
+          this.refreshData = false;
+        }
       }
     });
   </script>

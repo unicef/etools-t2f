@@ -39,7 +39,7 @@
     <div class="layout vertical flex">
       <div class="layout horizontal">
         <etools-searchable-multiselection-menu class="flex-3"
-          options="[[structure.supervisor]]"
+          options="[[structure.users]]"
           label="Travel expense type"
           value="{{expense.expenseType}}"></etools-searchable-multiselection-menu>
         <paper-input class="flex-3 custom-margin"
@@ -47,11 +47,11 @@
           type="number"
           value="{{expense.amount}}"></paper-input>
         <etools-searchable-multiselection-menu class="flex-3"
-          options="[[structure.supervisor]]"
+          options="[[structure.users]]"
           label="Document currency"
           value="{{expense.documentCurrency}}"></etools-searchable-multiselection-menu>
         <etools-searchable-multiselection-menu class="flex-3"
-          options="[[structure.supervisor]]"
+          options="[[structure.users]]"
           label="Accounting currency"
           value="{{expense.accountingCurrency}}"></etools-searchable-multiselection-menu>
       </div>

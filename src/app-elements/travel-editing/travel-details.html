@@ -44,27 +44,27 @@
   href="../permission-layer.html">
 
 <dom-module id="travel-details">
-    <template>
-        <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
-            :host {
-                display: block;
-                width: 100%;
-            }
-            etools-repeatable-field-set {
-                width: calc( 100% - 48px);
-                margin: 24px;
-                --repeatable-items-collapse-container: {
-                    background: #FFF;
-                };
-            }
-            .orange-header {
-                --repeatable-items-header-bg: var(--et2f-warning);
-            }
-            travel-status {
-                margin-top: 24px;
-                margin-right: 24px;
-            }
-        </style>
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+      etools-repeatable-field-set {
+        width: calc( 100% - 48px);
+        margin: 24px;
+        --repeatable-items-collapse-container: {
+          background: #FFF;
+        };
+      }
+      .orange-header {
+        --repeatable-items-header-bg: var(--et2f-warning);
+      }
+      travel-status {
+        margin-top: 24px;
+        margin-right: 24px;
+      }
+    </style>
 
     <div class="horizontal layout"
       hidden$="[[!showForm]]">
@@ -170,7 +170,7 @@
           value: {}
         },
         permissions: {
-          type: Object
+          type: Object,
         },
         showForm: {
           type: Boolean,
@@ -179,8 +179,8 @@
       },
       observers: ['_showForm(structure, permissions, data)'],
       _showForm: function (structure, permissions, data) {
-        var keys = Object.keys(data);
-        keys.forEach(function(label){
+        var dataKeys = Object.keys(data);
+        dataKeys.forEach(function(label){
           if(data[label] instanceof Array && data[label].length === 0) {
             data[label].push({});
           }
@@ -188,7 +188,7 @@
         this.data = data;
         this.showForm = true;
 
-      }
+      },
 
     });
   </script>

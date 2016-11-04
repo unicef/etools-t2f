@@ -1,89 +1,185 @@
+<link rel="import"
+  href="../../../bower_components/polymer/polymer.html">
+<link rel="import"
+  href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import"
+  href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import"
+  href="../../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import"
+  href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import"
+  href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import"
+  href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import"
+  href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import"
+  href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
+<link rel="import"
+  href="travel-details.html">
+<link rel="import"
+  href="travel-attachments.html">
+<link rel="import"
+  href="travel-report.html">
+<link rel="import"
+  href="../et2f-header.html">
 
-<link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
-<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
-<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-
-<link rel="import" href="travel-details.html">
-<link rel="import" href="travel-attachments.html">
-<link rel="import" href="travel-report.html">
-<link rel="import" href="../et2f-header.html">
-
-<link rel="import" href="../../../styles/shared-styles.html">
-<link rel="import" href="../../../styles/et2f-styles.html">
+<link rel="import"
+  href="../../../styles/shared-styles.html">
+<link rel="import"
+  href="../../../styles/et2f-styles.html">
 
 <dom-module id="travel-edit">
-    <template>
-        <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
-            :host {
-                display: block;
-                width: 100%;
-                background-color: var(--gray-lighter);
-            }
-        </style>
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+        background-color: var(--gray-lighter);
+      }
+    </style>
 
-        <etools-ajax url="/mock-data/structure.json" on-success="_handleStructure"></etools-ajax>
-        <etools-ajax url="/mock-data/permissions.json" on-success="_handlePermissions"></etools-ajax>
-        <etools-ajax url="/mock-data/data.json" on-success="_handleData"></etools-ajax>
+    <etools-ajax url="http://localhost:8000/api/et2f/static_data/"
+      on-success="_handleStructure"></etools-ajax>
+    <etools-ajax url="/mock-data/permissions.json"
+      on-success="_handlePermissions"></etools-ajax>
 
-
-        <et2f-header title="Edit travel pan">
-            <paper-tabs  scrollable selected="{{selected}}">
-                <paper-tab>Travel details</paper-tab>
-                <paper-tab>Attachments</paper-tab>
-                <paper-tab>Report</paper-tab>
-            </paper-tabs>
-        </et2f-header>
-
-
-
-        <iron-pages selected="{{selected}}">
-            <travel-details structure="[[structure]]" permissions="[[permissions]]" data ="{{data}}"></travel-details>
-            <travel-attachments></travel-attachments>
-            <travel-report></travel-report>
-        </iron-pages>
-
-
+    <template is="dom-if"
+      if="{{!newTravel}}">
+      <etools-ajax url="/mock-data/data.json"
+        on-success="_handleData"></etools-ajax>
     </template>
 
-    <script>
-        Polymer({
-            is: 'travel-edit',
-            properties: {
-                data: {
-                    type: Object,
-                    notify: true,
-                    reflectToAttribute: true
-                },
-                selected: {
-                    type: Number,
-                    value: 0
-                },
-                structure: {
-                    type: Object,
-                    value: {},
-                    notify: true,
-                    reflectToAttribute: false
-                }
-            },
-            _handleStructure: function(event, data) {
-                Object.freeze(data);
-                this.set('structure', data);
-            },
-            _handlePermissions: function(e, data) {
-                Object.freeze(data);
-                this.permissions = data;
-            },
-            _handleData: function(e, data) {
-                Object.freeze(data);
-                this.data = data;
-            }
+    <template is="dom-if"
+      if="[[postData]]">
+      <etools-ajax url="http://localhost:8000/api/et2f/travels/"
+        body="[[serverData]]"
+        method="POST"
+        on-success="_handlePostSuccess"
+        on-fail="_handlePostFail"></etools-ajax>
+    </template>
+
+    <et2f-header title="Edit travel pan">
+      <paper-tabs scrollable
+        selected="{{selected}}">
+        <paper-tab>Travel details</paper-tab>
+        <paper-tab>Attachments</paper-tab>
+        <paper-tab>Report</paper-tab>
+      </paper-tabs>
+    </et2f-header>
+
+    <iron-pages selected="{{selected}}">
+      <travel-details structure="[[structure]]"
+        permissions="[[permissions]]"
+        data="{{data}}"
+        on-form-primary-action="_handlePrimaryAction"></travel-details>
+      <travel-attachments></travel-attachments>
+      <travel-report></travel-report>
+    </iron-pages>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-edit',
+      properties: {
+        data: {
+          type: Object,
+          value: {}
+        },
+        selected: {
+          type: Number,
+          value: 0
+        },
+        structure: {
+          type: Object,
+          value: {},
+        },
+        newTravel: {
+          type: Boolean,
+          value: false
+        },
+        postData: {
+          type: Boolean,
+          value: false
+        },
+        serverData: {
+          type: Object,
+          value: function () {
+            return {}
+          }
+        }
+      },
+      _handleStructure: function (event, data) {
+        data.users = data.users.map(function (obj) {
+          return {label: obj.full_name, value: obj.id};
         });
-    </script>
+        data.currencies = data.currencies.map(function (obj) {
+          return {label: obj.name, value: obj.id};
+        });
+        Object.freeze(data);
+        this.set('structure', data);
+      },
+      _handlePermissions: function (e, data) {
+        if(!data.baseDetails) {
+          data.baseDetails = {};
+        }
+        data.baseDetails.status = this.newTravel ? 'pristine' :  data.baseDetails.status;
+        Object.freeze(data);
+
+        this.permissions = data;
+      },
+      _handleData: function (e, data) {
+        Object.freeze(data);
+        this.data = data;
+      },
+      _processOutboundData: function (data) {
+        var self = this;
+        this.serverData = {
+          deductions: [],
+          itinerary: [],
+          activities: [],
+          cost_assignments: [],
+          expenses: []
+        };
+        var baseDetailsKeys = Object.keys(data.baseDetails);
+        baseDetailsKeys.forEach(function(key) {
+          self.serverData[key] = typeof data.baseDetails[key] === 'object' ? data.baseDetails[key].value : data.baseDetails[key]
+        });
+      },
+      _handlePrimaryAction: function (e, details) {
+        if (details.endPoint === 'submit') {
+          console.log(this.data);
+          this._processOutboundData(this.data);
+          this.postData = true;
+        }
+      },
+      _handlePostFail: function(e, i) {
+        console.log("post fail");
+        console.log(e,i);
+        this.postData = false;
+      },
+      _handlePostSuccess: function() {
+        this.postData = false;
+        this.fire('travel-post-success');
+        this._resetData();
+      },
+      _resetData: function() {
+        this.data = {
+          baseDetails: {},
+          activities: [{}],
+          itinerary: [{}],
+          expenses: [{}],
+          costAssignment: [{}]
+        }
+      },
+      ready: function () {
+        if (this.newTravel) {
+          this._resetData();
+        }
+      }
+    });
+  </script>
 </dom-module>
