@@ -15,6 +15,9 @@
       //provisonal function
       var elements = Object.keys(matrix);
       elements.forEach(function(label) {
+        if(!matrix[label]) {
+          return;
+        }
         matrix[label].readOnly = matrix[label].readOnly ? 'readonly' : false;
       });
       this.et2fPermissions = matrix;
