@@ -150,9 +150,10 @@
 
         <travel-status
           user-type="godmode"
-          status="Planned"
-          scroll-top-margin="60">
-        <!-- TODO: Wire in STATUS -->
+          status="[[data.status]]"
+          scroll-top-margin="60"
+        >
+          <!-- TODO: Wire in STATUS -->
         </travel-status>
       </div>
     </template>
@@ -179,7 +180,8 @@
       },
       observers: ['_showForm(structure, permissions, data)'],
       _showForm: function (structure, permissions, data) {
-        if(permissions && data && Object.keys(data).length > 0 && structure && Object.keys(structure).length > 0) {
+        console.log('show form', data);
+        if(permissions && data && Object.keys(data).length > 0 && structure && Object.keys(structure).length > 0 ) {
           var dataKeys = Object.keys(data);
           dataKeys.forEach(function (label) {
             if (data[label] instanceof Array && data[label].length === 0) {
@@ -200,12 +202,33 @@
           });
           data.baseDetails.start_date = new Date(data.baseDetails.start_date);
           data.baseDetails.end_date = new Date(data.baseDetails.end_date);
-          console.log(data);
-          console.log(structure)
-          this.showForm = true;
+
+          var statusLib = {
+            "planned": "Planned",
+            "submitted": "Submitted",
+            "approved": "Approved",
+            "rejected": "Rejected",
+            "sent_for_payment": "Sent for payment",
+            "cancelled": "Cancelled",
+            "done": "Certification needed",
+            "certification_approved": "Certification approved",
+            "certification_rejected": "Certification rejected",
+            "certification_submitted": "Certification submitted",
+            "certified": "Completed",
+          };
+
+          if(data.baseDetails.status) {
+            data.status = statusLib[data.baseDetails.status];
+          } else {
+            data.status = statusLib['planned'];
+          }
           this.set('data', data);
+          this.showForm = true;
         }
-      }
+        if (!data.itinerary) {
+          this.showForm = false;
+        }
+      },
     });
   </script>
 </dom-module>

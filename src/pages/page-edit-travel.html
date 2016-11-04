@@ -1,0 +1,50 @@
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+
+
+<link rel="import" href="../app-elements/travel-editing/travel-edit.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+
+
+
+<dom-module id="page-edit-travel">
+
+  <style include="shared-styles">
+    :host {
+      display: block;
+    }
+
+  </style>
+
+  <template>
+    <app-header-layout>
+
+      <app-header fixed shadow>
+
+        <app-toolbar>
+          <paper-icon-button class="light" icon="menu" on-tap="openDrawer"></paper-icon-button>
+          <div main-title>eTools template</div>
+        </app-toolbar>
+
+      </app-header>
+    </app-header-layout>
+    <travel-edit travel-id="[[travelId]]" ></travel-edit>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'page-edit-travel',
+      properties: {
+        travelId: {
+          type: Number,
+        }
+      }
+
+    });
+  </script>
+</dom-module>

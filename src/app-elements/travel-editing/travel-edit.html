@@ -163,21 +163,46 @@
             self.serverData[key] = typeof data.baseDetails[key] === 'object' ? data.baseDetails[key].value : data.baseDetails[key]
           }
         });
+        delete self.serverData.status;
       },
       _handlePrimaryAction: function (e, details) {
-        if (details.endPoint === 'submit') {
-          console.log(this.data);
-          this._processOutboundData(this.data);
-          this.url = 'http://localhost:8000/api/et2f/travels';
-          if(this.newTravel) {
-            this.method = 'POST';
-            this.url += '/';
-          } else {
+        this._processOutboundData(this.data);
+        this.method = "POST";
+        if (details.endPoint === 'save') {
+
+          this.url = 'http://localhost:8000/api/et2f/travels/';
+
+          if(!this.newTravel) {
             this.method = "PUT";
             this.url += this.travelId + '/';
           }
-          this.postData = true;
         }
+
+        if (details.endPoint === 'approve') {
+          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/approve/';
+        }
+
+        if (details.endPoint === 'reject') {
+          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/reject/';
+        }
+
+        if (details.endPoint === 'cancel') {
+          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/cancel/';
+        }
+
+        if (details.endPoint === 'reopen') {
+          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/restore/';
+        }
+
+        if (details.endPoint === 'send_for_payment') {
+          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/send_for_payment/';
+        }
+
+        if (details.endPoint === 'submit') {
+          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/submit_for_approval/';
+
+        }
+        this.postData = true;
       },
       _handlePostFail: function(e, i) {
         console.log("post fail");
@@ -195,7 +220,8 @@
           activities: [{}],
           itinerary: [{}],
           expenses: [{}],
-          costAssignment: [{}]
+          costAssignment: [{}],
+          status: 'Planned'
         }
       },
       ready: function () {

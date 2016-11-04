@@ -322,7 +322,10 @@
     Polymer({
       is: 'travel-status',
       properties: {
-        status: String,
+        status: {
+          type: String,
+          reflectToAttribute: true
+        },
         cancelledDate: String,
         completedDate: String,
         userType: String,
