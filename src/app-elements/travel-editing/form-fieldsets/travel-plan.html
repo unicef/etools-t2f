@@ -1,28 +1,19 @@
-<link rel="import"
-  href="../../../../bower_components/polymer/polymer.html">
-<link rel="import"
-  href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import"
-  href="../../../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import"
-  href="../../../../bower_components/paper-input/paper-textarea.html">
-<link rel="import"
-  href="../../../../bower_components/paper-input/paper-input.html">
-<link rel="import"
-  href="../../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
-<link rel="import"
-  href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
-<link rel="import"
-  href="../../../../styles/shared-styles.html">
+<link rel="import" href="../datepicker-input.html">
 
-
-<link rel="import"
-  href="../datepicker-input.html">
+<link rel="import" href="../../../../styles/shared-styles.html">
+<link rel="import" href="../../../../styles/et2f-styles.html">
 
 <dom-module id="travel-plan">
   <template>
-    <style include="shared-styles iron-flex iron-flex-alignment iron-flex-factors">
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
       :host {
         display: block;
         width: 100%;
@@ -36,21 +27,27 @@
         };
         --paper-checkbox-margin: 12px;
       }
+      span.standalone {
+        color: var(--gray-dark);
+        font-size: 16px;
+        padding-left: 12px;
+      }
     </style>
 
     <div class="layout vertical flex">
       <div class="layout horizontal">
-        <paper-checkbox class$="flex-3 custom-margin [[et2fPermission.taRequired.readOnly]]"
+        <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
           disabled="[[et2fPermissions.taRequired.disabled]]"
           hidden$="[[et2fPermissions.taRequired.hidden]]">TA required?
         </paper-checkbox>
-        <paper-checkbox class$="flex-3 custom-margin [[et2fPermission.taRequired.readOnly]]"
+        <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
           disabled="[[et2fPermissions.taRequired.disabled]]"
           hidden$="[[et2fPermissions.taRequired.hidden]]">International travel?</paper-checkbox>
-        <span class="flex-3 [[et2fPermission.taRequired.readOnly]]"
-          disabled="[[et2fPermissions.taRequired.disabled]]"
-          hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: {{baseDetails.reference_number}}</span>
-        <div class="flex-3"></div>
+        <div class="flex layout horizontal center">
+          <span class$="standalone [[et2fPermission.taRequired.readOnly]]"
+            hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: [[baseDetails.reference_number]]</span>
+        </div>
+        <div class="flex"></div>
       </div>
       <div class="layout horizontal">
         <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.traveller.readOnly]]"
