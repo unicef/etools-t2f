@@ -44,11 +44,12 @@
           disabled="[[et2fPermissions.taRequired.disabled]]"
           hidden$="[[et2fPermissions.taRequired.hidden]]">TA required?
         </paper-checkbox>
-        <paper-checkbox class$="flex-3 custom-margin [[et2fPermission.internationaltraveller.readOnly]]"
-          disabled="[[et2fPermissions.internationaltraveller.disabled]]"
-          hidden$="[[et2fPermissions.internationaltraveller.hidden]]">International travel?</paper-checkbox>
-        <span class="flex-3"
-          hidden$="[[et2fPermissions.referenceNumber.hidden]]">Reference #: {{baseDetails.referenceNumber}} </span>
+        <paper-checkbox class$="flex-3 custom-margin [[et2fPermission.taRequired.readOnly]]"
+          disabled="[[et2fPermissions.taRequired.disabled]]"
+          hidden$="[[et2fPermissions.taRequired.hidden]]">International travel?</paper-checkbox>
+        <span class="flex-3 [[et2fPermission.taRequired.readOnly]]"
+          disabled="[[et2fPermissions.taRequired.disabled]]"
+          hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: </span>
         <div class="flex-3"></div>
       </div>
       <div class="layout horizontal">
