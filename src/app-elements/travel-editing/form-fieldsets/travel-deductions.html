@@ -84,11 +84,11 @@
           <span class="full-date">[[_calcFullDate(item.date)]]</span>
         </div>
 
-        <paper-checkbox class="flex checkbox-mid" checked="{{item.breakfast}}"></paper-checkbox>
-        <paper-checkbox class="flex checkbox-mid" checked="{{item.lunch}}"></paper-checkbox>
-        <paper-checkbox class="flex checkbox-mid" checked="{{item.dinner}}"></paper-checkbox>
-        <paper-checkbox class="flex checkbox-mid" checked="{{item.accomodation}}"></paper-checkbox>
-        <paper-checkbox class="flex checkbox-mid" checked="{{item.not_applicable}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" disabled$="{{_disabled(disabled)}}" checked="{{item.breakfast}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" disabled$="{{_disabled(disabled)}}" checked="{{item.lunch}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" disabled$="{{_disabled(disabled)}}" checked="{{item.dinner}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" disabled$="{{_disabled(disabled)}}" checked="{{item.accomodation}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" disabled$="{{_disabled(disabled)}}" checked="{{item.not_applicable}}"></paper-checkbox>
       </div>
     </template>
 
@@ -102,11 +102,18 @@
         deductions: {
           type: Array,
           value: []
+        },
+        disabled: {
+          type: Boolean,
+          reflectToAttribute: true
         }
       },
       observers: [
         'dateChanged(data.startDate, data.endDate)'
       ],
+      _disabled: function(disabled) {
+        return disabled;
+      },
       dateChanged: function(startDateStr, endDateStr) {
 
         var startDate = new Date(startDateStr);
