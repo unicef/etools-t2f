@@ -98,7 +98,9 @@
     Polymer({
       is: 'travel-deductions',
       properties: {
-        data: Object,
+        data: {
+          type: Object,
+        },
         deductions: {
           type: Array,
           value: []
@@ -109,7 +111,7 @@
         }
       },
       observers: [
-        'dateChanged(data.startDate, data.endDate)'
+        'dateChanged(data.start_date, data.end_date)'
       ],
       _disabled: function(disabled) {
         return disabled;
