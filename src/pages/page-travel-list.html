@@ -267,11 +267,11 @@
         'From date': 'start_date',
         'End date': 'start_date',
         'Status': 'status',
-         'Create date': 'created'
+        'Create date': 'created'
       },
       handleListResponse: function(event, data) {
 
-        // console.info('Got payload, first id:', data.data[0].reference_number);
+        console.info('Got payload, first id:', data.data[0].reference_number);
 
         this.set('datalength', data.total_count);
         data.data.forEach(function(travel) {
