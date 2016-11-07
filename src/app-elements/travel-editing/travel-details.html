@@ -49,114 +49,111 @@
       }
     </style>
 
-    <template is="dom-if" if="[[showForm]]" >
-      <div class="horizontal layout">
+    <div class="horizontal layout">
 
-        <div class="flex">
+      <div class="flex">
 
-          <etools-repeatable-field-set title="Travel Plan"
-            hide-plus
-            model="[1]"
-            hide-vertical-divider
-            elevation="1">
+        <etools-repeatable-field-set title="Travel Plan"
+          hide-plus
+          model="[1]"
+          hide-vertical-divider
+          elevation="1">
 
-            <travel-plan base-details="{{data.baseDetails}}"
-              permissions-matrix="[[permissions.baseDetails]]"
+          <travel-plan base-details="{{data.baseDetails}}"
+            permissions-matrix="[[permissions.baseDetails]]"
+            structure="[[structure]]">
+          </travel-plan>
+        </etools-repeatable-field-set>
+
+        <etools-repeatable-field-set title="Travel Activities"
+          model="{{data.activities}}"
+          allow-copy
+          show-counter
+          elevation="1">
+
+          <template is="dom-repeat"
+            items="{{data.activities}}">
+
+            <travel-activities
+              activity="{{item}}"
+              permissions-matrix="[[permissions.activities]]"
               structure="[[structure]]">
-            </travel-plan>
-          </etools-repeatable-field-set>
+            </travel-activities>
+          </template>
+        </etools-repeatable-field-set>
 
-          <etools-repeatable-field-set title="Travel Activities"
-            model="{{data.activities}}"
-            allow-copy
-            show-counter
-            elevation="1">
+        <etools-repeatable-field-set title="Itinerary"
+          model="{{data.itinerary}}"
+          show-counter
+          elevation="1">
 
-            <template is="dom-repeat"
-              items="{{data.activities}}">
+          <template
+            is="dom-repeat"
+            items="{{data.itinerary}}">
 
-              <travel-activities
-                activity="{{item}}"
-                permissions-matrix="[[permissions.activities]]"
-                structure="[[structure]]">
-              </travel-activities>
-            </template>
-          </etools-repeatable-field-set>
+            <travel-itinerary permissions-matrix="[[permissions.itinerary]]"
+              itinerary="{{item}}"
+              structure="[[structure]]">
+            </travel-itinerary>
+          </template>
+        </etools-repeatable-field-set>
 
-          <etools-repeatable-field-set title="Itinerary"
-            model="{{data.itinerary}}"
-            show-counter
-            elevation="1">
+        <etools-repeatable-field-set title="Deductions"
+          hide-vertical-divider
+          model="[1]"
+          hide-plus
+          elevation="1">
 
-            <template
-              is="dom-repeat"
-              items="{{data.itinerary}}">
+          <div class="layout vertical flex">
 
-              <travel-itinerary permissions-matrix="[[permissions.itinerary]]"
-                itinerary="{{item}}"
-                structure="[[structure]]">
-              </travel-itinerary>
-            </template>
-          </etools-repeatable-field-set>
+            <travel-deductions disabled$="false" data="{{data.baseDetails}}"></travel-deductions>
+            <!-- SET DISABLED -->
+          </div>
+        </etools-repeatable-field-set>
 
-          <etools-repeatable-field-set title="Deductions"
-            hide-vertical-divider
-            model="[1]"
-            hide-plus
-            elevation="1">
+        <etools-repeatable-field-set title="Expenses"
+          model="{{data.expenses}}"
+          show-counter>
 
-            <div class="layout vertical flex">
+          <template is="dom-repeat" items="{{data.expenses}}">
+            <travel-expense permissions-matrix="[[permissions.expenses]]"
+              expense="{{item}}"
+              structure="[[structure]]">
+            </travel-expense>
+          </template>
+        </etools-repeatable-field-set>
 
-              <travel-deductions disabled$="false" data="{{data.baseDetails}}"></travel-deductions>
-              <!-- SET DISABLED -->
-            </div>
-          </etools-repeatable-field-set>
+        <etools-repeatable-field-set title="Cost Assignment"
+          model="{{data.costAssignment}}"
+          show-counter
+          elevation="1">
 
-          <etools-repeatable-field-set title="Expenses"
-            model="{{data.expenses}}"
-            show-counter>
+          <template is="dom-repeat" items="{{data.costAssignment}}">
 
-            <template is="dom-repeat" items="{{data.expenses}}">
-              <travel-expense permissions-matrix="[[permissions.expenses]]"
-                expense="{{item}}"
-                structure="[[structure]]">
-              </travel-expense>
-            </template>
-          </etools-repeatable-field-set>
+            <travel-cost-assignment permissions-matrix="[[permissions.costAssignment]]"
+              cost-assignment="{{item}}"
+              structure="[[structure]]">
+            </travel-cost-assignment>
+          </template>
+        </etools-repeatable-field-set>
 
-          <etools-repeatable-field-set title="Cost Assignment"
-            model="{{data.costAssignment}}"
-            show-counter
-            elevation="1">
+        <etools-repeatable-field-set title="Cost summary"
+          class="orange-header"
+          model="[1]"
+          hide-plus
+          elevation="1">
 
-            <template is="dom-repeat" items="{{data.costAssignment}}">
-
-              <travel-cost-assignment permissions-matrix="[[permissions.costAssignment]]"
-                cost-assignment="{{item}}"
-                structure="[[structure]]">
-              </travel-cost-assignment>
-            </template>
-          </etools-repeatable-field-set>
-
-          <etools-repeatable-field-set title="Cost summary"
-            class="orange-header"
-            model="[1]"
-            hide-plus
-            elevation="1">
-
-            <div>Cost summary placeholder</div>
-          </etools-repeatable-field-set>
-        </div>
-
-        <travel-status
-          user-type="godmode"
-          status="[[data.status]]"
-          scroll-top-margin="60"
-        >
-          <!-- TODO: Wire in STATUS -->
-        </travel-status>
+          <div>Cost summary placeholder</div>
+        </etools-repeatable-field-set>
       </div>
-    </template>
+
+      <travel-status
+        user-type="godmode"
+        status="[[data.status]]"
+        scroll-top-margin="60"
+      >
+      </travel-status>
+    </div>
   </template>
 
   <script>
@@ -173,62 +170,8 @@
         permissions: {
           type: Object
         },
-        showForm: {
-          type: Boolean,
-          value: false
-        }
-      },
-      observers: ['_showForm(structure, permissions, data)'],
-      _showForm: function (structure, permissions, data) {
-        console.log('show form', data);
-        if(permissions && data && Object.keys(data).length > 0 && structure && Object.keys(structure).length > 0 ) {
-          var dataKeys = Object.keys(data);
-          dataKeys.forEach(function (label) {
-            if (data[label] instanceof Array && data[label].length === 0) {
-              data[label].push({});
-            }
-          });
-          data.baseDetails.traveller = structure.users.find(function(item) {
-            return item.value === data.baseDetails.traveller
-          });
-          data.baseDetails.supervisor = structure.users.find(function(item) {
-            return item.value === data.baseDetails.supervisor
-          });
-          data.baseDetails.office = structure.offices.find(function(item) {
-            return item.value === data.baseDetails.office
-          });
-          data.baseDetails.section = structure.sections.find(function(item) {
-            return item.value === data.baseDetails.section
-          });
-          data.baseDetails.start_date = new Date(data.baseDetails.start_date);
-          data.baseDetails.end_date = new Date(data.baseDetails.end_date);
 
-          var statusLib = {
-            "planned": "Planned",
-            "submitted": "Submitted",
-            "approved": "Approved",
-            "rejected": "Rejected",
-            "sent_for_payment": "Sent for payment",
-            "cancelled": "Cancelled",
-            "done": "Certification needed",
-            "certification_approved": "Certification approved",
-            "certification_rejected": "Certification rejected",
-            "certification_submitted": "Certification submitted",
-            "certified": "Completed",
-          };
-
-          if(data.baseDetails.status) {
-            data.status = statusLib[data.baseDetails.status];
-          } else {
-            data.status = statusLib['planned'];
-          }
-          this.set('data', data);
-          this.showForm = true;
-        }
-        if (!data.itinerary) {
-          this.showForm = false;
-        }
-      },
+      }
     });
   </script>
 </dom-module>

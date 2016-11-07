@@ -113,6 +113,11 @@
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
 
+    <etools-ajax url="http://localhost:8000/api/et2f/static_data/"
+      on-success="_handleStructure"></etools-ajax>
+    <etools-ajax url="/mock-data/permissions.json"
+      on-success="_handlePermissions"></etools-ajax>
+
     <app-drawer-layout id="layout" responsive-width="850px" narrow="{{narrow}}" fullbleed>
 
       <!-- Drawer content -->
@@ -203,12 +208,18 @@
         refreshData: {
           type: Boolean,
           value: false
+        },
+        structure: Object,
+        permissions: Object,
+        loading: {
+          type: Boolean,
+          value: true
         }
 
       },
-
       observers: [
-        '_routePageChanged(routeData.page)'
+        '_routePageChanged(routeData.page)',
+        '_commonDataLoaded(structure, permissions)'
       ],
 
       listeners: {
@@ -265,6 +276,29 @@
       _navigateToList: function() {
         this.refreshData = true;
         this.set('route.path', '/travel-list');
+      },
+      _handleStructure: function (event, data) {
+        var dataKeys = Object.keys(data);
+        dataKeys.forEach(function(key) {
+          data[key] = data[key].map(function (obj) {
+            return {label: obj.name || obj.full_name, value: obj.id};
+          });
+        });
+
+        Object.freeze(data);
+        this.set('structure', data);
+      },
+      _handlePermissions: function (e, data) {
+        if(!data.baseDetails) {
+          data.baseDetails = {};
+        }
+        data.baseDetails.status = this.newTravel ? 'pristine' :  data.baseDetails.status;
+        Object.freeze(data);
+
+        this.permissions = data;
+      },
+      _commonDataLoaded: function(structure, permissions) {
+
       }
 
     });

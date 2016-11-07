@@ -41,14 +41,11 @@
       }
     </style>
 
-    <etools-ajax url="http://localhost:8000/api/et2f/static_data/"
-      on-success="_handleStructure"></etools-ajax>
-    <etools-ajax url="/mock-data/permissions.json"
-      on-success="_handlePermissions"></etools-ajax>
+
 
     <template is="dom-if"
       if="{{!newTravel}}">
-      <etools-ajax url="http://localhost:8000/api/et2f/travels{{travelId}}/"
+      <etools-ajax url="[[travelUrl]]"
         on-success="_handleData"></etools-ajax>
     </template>
 
@@ -61,7 +58,7 @@
         on-fail="_handlePostFail"></etools-ajax>
     </template>
 
-    <et2f-header title="Edit travel pan">
+    <et2f-header title="Edit travel plan ">
       <paper-tabs scrollable
         selected="{{selected}}">
         <paper-tab>Travel details</paper-tab>
@@ -70,14 +67,17 @@
       </paper-tabs>
     </et2f-header>
 
-    <iron-pages selected="{{selected}}">
-      <travel-details structure="[[structure]]"
-        permissions="[[permissions]]"
-        data="{{data}}"
-        on-form-primary-action="_handlePrimaryAction"></travel-details>
-      <travel-attachments></travel-attachments>
-      <travel-report></travel-report>
-    </iron-pages>
+    <template is="dom-if" if="[[showForm]]">
+      [[data.baseDetails.traveller.label]] asdasdsa
+      <iron-pages selected="{{selected}}"  >
+        <travel-details structure="[[structure]]"
+          permissions="[[permissions]]"
+          data="{{data}}"
+          on-form-primary-action="_handlePrimaryAction"></travel-details>
+        <travel-attachments></travel-attachments>
+        <travel-report></travel-report>
+      </iron-pages>
+    </template>
 
   </template>
 
@@ -87,16 +87,17 @@
       properties: {
         data: {
           type: Object,
-          value: {},
           notify: true
+        },
+        structure: {
+          type: Object,
+        },
+        permissions: {
+          type: Object
         },
         selected: {
           type: Number,
           value: 0
-        },
-        structure: {
-          type: Object,
-          value: {},
         },
         newTravel: {
           type: Boolean,
@@ -104,6 +105,10 @@
         },
         travelId: {
           type: String
+        },
+        travelUrl: {
+          type: String,
+          computed: '_computeUrl(travelId)'
         },
         postData: {
           type: Boolean,
@@ -114,29 +119,71 @@
           value: function () {
             return {}
           }
+        },
+        showForm: {
+          type: Boolean,
+          value: false
         }
       },
-      _handleStructure: function (event, data) {
+      observers: ['_showForm(structure, permissions, data)'],
+      _computeUrl: function(travelId) {
+        this.showForm = false;
+        this.set('data', {});
+        console.log('computed', this.data)
+        return 'http://localhost:8000/api/et2f/travels'+ travelId + '/';
+      },
+      _showForm: function (structure, permissions, data) {
+        this.showForm = false;
+        console.log('rf', data)
+        if (Object.keys(data).length === 0) {
+          console.log('returning')
+          return
+        }
         var dataKeys = Object.keys(data);
-        dataKeys.forEach(function(key) {
-          data[key] = data[key].map(function (obj) {
-            return {label: obj.name || obj.full_name, value: obj.id};
-          });
+        dataKeys.forEach(function (label) {
+          if (data[label] instanceof Array && data[label].length === 0) {
+            data[label].push({});
+          }
         });
+        data.baseDetails.traveller = structure.users.find(function(item) {
+          return item.value === data.baseDetails.traveller
+        });
+        data.baseDetails.supervisor = structure.users.find(function(item) {
+          return item.value === data.baseDetails.supervisor
+        });
+        data.baseDetails.office = structure.offices.find(function(item) {
+          return item.value === data.baseDetails.office
+        });
+        data.baseDetails.section = structure.sections.find(function(item) {
+          return item.value === data.baseDetails.section
+        });
+        data.baseDetails.start_date = new Date(data.baseDetails.start_date);
+        data.baseDetails.end_date = new Date(data.baseDetails.end_date);
 
-        Object.freeze(data);
-        this.set('structure', data);
-      },
-      _handlePermissions: function (e, data) {
-        if(!data.baseDetails) {
-          data.baseDetails = {};
+        var statusLib = {
+          "planned": "Planned",
+          "submitted": "Submitted",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "sent_for_payment": "Sent for payment",
+          "cancelled": "Cancelled",
+          "done": "Certification needed",
+          "certification_approved": "Certification approved",
+          "certification_rejected": "Certification rejected",
+          "certification_submitted": "Certification submitted",
+          "certified": "Completed",
+        };
+
+        if(data.baseDetails.status) {
+          data.status = statusLib[data.baseDetails.status];
+        } else {
+          data.status = statusLib['planned'];
         }
-        data.baseDetails.status = this.newTravel ? 'pristine' :  data.baseDetails.status;
-        Object.freeze(data);
-
-        this.permissions = data;
+        this.set('data', data);
+        this.showForm = true;
       },
       _handleData: function (e, data) {
+        this.showForm = false;
         var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances'];
         var dataKeys = Object.keys(data).filter(function(key){
           return nonBaseKeys.indexOf(key) === -1;
