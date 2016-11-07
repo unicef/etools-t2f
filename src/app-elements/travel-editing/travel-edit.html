@@ -44,7 +44,7 @@
 
 
     <template is="dom-if"
-      if="{{!newTravel}}">
+      if="{{travelId}}">
       <etools-ajax url="[[travelUrl]]"
         on-success="_handleData"></etools-ajax>
     </template>
@@ -67,14 +67,14 @@
       </paper-tabs>
     </et2f-header>
 
-      <iron-pages selected="{{selected}}"  >
-        <travel-details structure="[[structure]]"
-          permissions="[[permissions]]"
-          data="{{data}}"
-          on-form-primary-action="_handlePrimaryAction"></travel-details>
-        <travel-attachments></travel-attachments>
-        <travel-report></travel-report>
-      </iron-pages>
+    <iron-pages selected="{{selected}}"  >
+      <travel-details structure="[[structure]]"
+        permissions="[[permissions]]"
+        data="{{data}}"
+        on-form-primary-action="_handlePrimaryAction"></travel-details>
+      <travel-attachments></travel-attachments>
+      <travel-report></travel-report>
+    </iron-pages>
 
   </template>
 
@@ -139,7 +139,7 @@
           data.baseDetails[key] = data[key];
           delete data[key];
         });
-        dataKeys.forEach(function (label) {
+        Object.keys(data).forEach(function (label) {
           if (data[label] instanceof Array && data[label].length === 0) {
             data[label].push({});
           }
@@ -156,9 +156,15 @@
         data.baseDetails.section = structure.sections.find(function(item) {
           return item.value === data.baseDetails.section
         });
-        data.baseDetails.start_date = new Date(data.baseDetails.start_date);
-        data.baseDetails.end_date = new Date(data.baseDetails.end_date);
 
+        if (data.baseDetails.start_date){
+          data.baseDetails.start_date = new Date(data.baseDetails.start_date);
+        }
+
+        if(data.baseDetails.end_date) {
+          data.baseDetails.end_date = new Date(data.baseDetails.end_date);
+        }
+        console.log(data.baseDetails)
         var statusLib = {
           "planned": "Planned",
           "submitted": "Submitted",
@@ -206,9 +212,9 @@
         this.method = "POST";
         if (details.endPoint === 'save') {
           this.url = 'http://localhost:8000/api/et2f/travels/';
-          if(!this.newTravel) {
+          if(this.travelId) {
             this.method = "PUT";
-            this.url += this.travelId + '/';
+            this.url += this.travelId.replace('/', '') + '/';
           }
         }
         if (details.endPoint === 'approve') {

@@ -275,8 +275,10 @@
 
         this.set('datalength', data.total_count);
         data.data.forEach(function(travel) {
-          if(travel.start_date && travel.end_date) {
+          if(travel.start_date ) {
             travel.start_date = travel.start_date.split('T')[0];
+          }
+          if(travel.end_date) {
             travel.end_date = travel.end_date.split('T')[0];
           }
           travel.created = travel.created.split('T')[0];

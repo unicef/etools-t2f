@@ -26,7 +26,7 @@
         </style>
 
         <paper-input id="date-input" readonly label="[[label]]" on-tap="_openCalendar" value="{{prettyDate}}" disabled$="[[disabled]]">
-            <etools-datepicker-button no-init open="{{opened}}" suffix pretty-date="{{prettyDate}}" json-date="{{date}}"></etools-datepicker-button>
+            <etools-datepicker-button no-init open="{{opened}}" suffix pretty-date="{{prettyDate}}" json-date="{{date}}" date="[[date]]"></etools-datepicker-button>
         </paper-input>
 
     </template>
@@ -41,8 +41,8 @@
                 date: {
                     type: Date,
                     notify: true,
-                    observer: '_log'
                 },
+                prettyDate: String,
                 opened: {
                     type: Boolean,
                     value: false
@@ -51,9 +51,6 @@
                     type: Boolean,
                     value: false
                 }
-            },
-            _log: function(date) {
-//                console.log(date)
             },
             _openCalendar: function() {
                 if(this.disabled) {
