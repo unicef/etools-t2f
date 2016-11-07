@@ -306,7 +306,6 @@
             });
           });
           this.dataToExport.table.body = [tableHeader].concat(this.dataToExport.table.body);
-          console.log(JSON.parse(JSON.stringify(this.dataToExport.table)));
         }
       },
       searchKeyDown: function(e) {
@@ -349,7 +348,6 @@
         });
       },
       _doRefreshData: function(status) {
-        console.log('refresh?',status);
         if(status) {
           var backup = this.ajaxParams;
           this.set('ajaxParams', {});

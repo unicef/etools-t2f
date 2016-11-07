@@ -33,13 +33,15 @@
 
       </app-header>
     </app-header-layout>
-    <travel-edit new-travel ></travel-edit>
+    <travel-edit new-travel permissions="[[permissions]]" structure="[[structure]]"></travel-edit>
   </template>
 
   <script>
     Polymer({
       is: 'plan-travel',
       properties: {
+        permissions: Object,
+        structure: Object
       }
 
     });

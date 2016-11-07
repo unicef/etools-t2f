@@ -33,16 +33,16 @@
 
       </app-header>
     </app-header-layout>
-    <travel-edit travel-id="[[travelId]]" ></travel-edit>
+    <travel-edit travel-id="[[travelId]]" permissions="[[permissions]]" structure="[[structure]]" ></travel-edit>
   </template>
 
   <script>
     Polymer({
       is: 'page-edit-travel',
       properties: {
-        travelId: {
-          type: Number,
-        }
+        travelId: String,
+        permissions: Object,
+        structure: Object
       }
 
     });

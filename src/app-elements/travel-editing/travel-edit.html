@@ -122,21 +122,23 @@
           value: false
         }
       },
-      observers: ['_showForm(structure, permissions, data)'],
       _computeUrl: function(travelId) {
         this.showForm = false;
         this.set('data', {});
-        console.log('computed', this.data)
         return 'http://localhost:8000/api/et2f/travels'+ travelId + '/';
       },
-      _showForm: function (structure, permissions, data) {
+      _handleData: function (e, data) {
         this.showForm = false;
-        console.log('rf', data)
-        if (Object.keys(data).length === 0) {
-          console.log('returning')
-          return
-        }
-        var dataKeys = Object.keys(data);
+        var structure = this.structure;
+        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances'];
+        var dataKeys = Object.keys(data).filter(function(key){
+          return nonBaseKeys.indexOf(key) === -1;
+        });
+        data.baseDetails = {};
+        dataKeys.forEach(function(key) {
+          data.baseDetails[key] = data[key];
+          delete data[key];
+        });
         dataKeys.forEach(function (label) {
           if (data[label] instanceof Array && data[label].length === 0) {
             data[label].push({});
@@ -178,19 +180,9 @@
         }
         this.set('data', data);
         this.showForm = true;
-      },
-      _handleData: function (e, data) {
-        this.showForm = false;
-        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances'];
-        var dataKeys = Object.keys(data).filter(function(key){
-          return nonBaseKeys.indexOf(key) === -1;
-        });
-        data.baseDetails = {};
-        dataKeys.forEach(function(key) {
-          data.baseDetails[key] = data[key];
-          delete data[key];
-        });
-        this.data = data;
+
+
+
       },
       _processOutboundData: function (data) {
         var self = this;
@@ -213,19 +205,15 @@
         this._processOutboundData(this.data);
         this.method = "POST";
         if (details.endPoint === 'save') {
-
           this.url = 'http://localhost:8000/api/et2f/travels/';
-
           if(!this.newTravel) {
             this.method = "PUT";
             this.url += this.travelId + '/';
           }
         }
-
         if (details.endPoint === 'approve') {
           this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/approve/';
         }
-
         if (details.endPoint === 'reject') {
           this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/reject/';
         }
@@ -237,18 +225,14 @@
             this._handlePostSuccess();
           }
         }
-
         if (details.endPoint === 'reopen') {
           this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/restore/';
         }
-
         if (details.endPoint === 'send_for_payment') {
           this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/send_for_payment/';
         }
-
         if (details.endPoint === 'submit') {
           this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/submit_for_approval/';
-
         }
         this.postData = true;
       },

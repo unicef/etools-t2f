@@ -14,6 +14,7 @@
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/etools-loading/etools-loading.html">
 
 <link rel="import" href="app-config/etools-app-config.html">
 <link rel="import" href="app-elements/user-data/user-data.html">
@@ -113,9 +114,9 @@
             data="{{routeData}}"
             tail="{{subroute}}"></app-route>
 
-    <etools-ajax url="http://localhost:8000/api/et2f/static_data/"
+    <etools-ajax endpoint="[[structureEndpoint]]"
       on-success="_handleStructure"></etools-ajax>
-    <etools-ajax url="/mock-data/permissions.json"
+    <etools-ajax endpoint="[[permissionsEndpoint]]"
       on-success="_handlePermissions"></etools-ajax>
 
     <app-drawer-layout id="layout" responsive-width="850px" narrow="{{narrow}}" fullbleed>
@@ -156,20 +157,30 @@
 
       <!-- Main content -->
       <div id="mainContent">
-
+        <etools-loading active="[[loading]]"></etools-loading>
         <iron-pages id="pages"
-                    selected="[[page]]"
-                    attr-for-selected="name"
-                    fallback-selection="not-found"
-                    role="main">
-          <travel-list name="travel-list" refresh-data="{{refreshData}}"></travel-list>
-          <plan-travel fullbleed name="plan-travel" on-travel-post-success="_navigateToList"></plan-travel>
-          <page-edit-travel fullbleed name="edit-travel" on-travel-post-success="_navigateToList"  travel-id="[[subroute.path]]"></page-edit-travel>
+          selected="[[page]]"
+          attr-for-selected="name"
+          fallback-selection="not-found"
+          role="main">
+          <travel-list name="travel-list"
+            refresh-data="{{refreshData}}"></travel-list>
+          <plan-travel fullbleed
+            name="plan-travel"
+            on-travel-post-success="_navigateToList"
+            permissions="[[permissions]]"
+            structure="[[structure]]"></plan-travel>
+          <page-edit-travel fullbleed
+            name="edit-travel"
+            on-travel-post-success="_navigateToList"
+            travel-id="[[subroute.path]]"
+            permissions="[[permissions]]"
+            structure="[[structure]]"></page-edit-travel>
           <page-not-found name="not-found"></page-not-found>
         </iron-pages>
 
-        <countries-dropdown id="countries" countries="[[countries]]"></countries-dropdown>
-
+        <countries-dropdown id="countries"
+          countries="[[countries]]"></countries-dropdown>
 
       </div>
 
@@ -214,6 +225,14 @@
         loading: {
           type: Boolean,
           value: true
+        },
+        structureEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fStaticData
+        },
+        permissionsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
         }
 
       },
@@ -227,7 +246,6 @@
         'drawer': 'toggleDrawer',
         '404': '_pageNotFound',
       },
-
       attached: function() {
         if (this.route.path === '/') {
           this.set('route.path', '/travel-list');
@@ -298,7 +316,7 @@
         this.permissions = data;
       },
       _commonDataLoaded: function(structure, permissions) {
-
+        this.loading = false;
       }
 
     });
