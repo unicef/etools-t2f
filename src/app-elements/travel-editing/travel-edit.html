@@ -67,8 +67,6 @@
       </paper-tabs>
     </et2f-header>
 
-    <template is="dom-if" if="[[showForm]]">
-      [[data.baseDetails.traveller.label]] asdasdsa
       <iron-pages selected="{{selected}}"  >
         <travel-details structure="[[structure]]"
           permissions="[[permissions]]"
@@ -77,7 +75,6 @@
         <travel-attachments></travel-attachments>
         <travel-report></travel-report>
       </iron-pages>
-    </template>
 
   </template>
 
