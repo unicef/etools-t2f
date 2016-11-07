@@ -130,7 +130,7 @@
 
           var key = [
             actDate.getFullYear(),
-            ('0' + actDate.getMonth()).slice(-2),
+            ('0' + (actDate.getMonth() + 1)).slice(-2),
             ('0' + actDate.getDate()).slice(-2)
           ].join('-');
 
@@ -157,19 +157,19 @@
             return keyLib.indexOf(day.date) > -1;
           })
           .sort(function(a, b) {
-            return a.date > b.date;
+            return new Date(a.date) - new Date (b.date);
           });
 
         this.set('deductions', deductions);
       },
       _calcWeekday: function(dateStr) {
-        return ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'][new Date(dateStr).getDay()];
+        return ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][new Date(dateStr).getDay()];
       },
       _calcFullDate: function(dateStr) {
         var date = dateStr.split('-');
         return [
           date[2],
-          ['Jan', 'Feb', 'Mar', 'May', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+date[1]],
+          ['Jan', 'Feb', 'Mar', 'May', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][date[1] - 1],
           date[0]
         ].join(' ');
       }
