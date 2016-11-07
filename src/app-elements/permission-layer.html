@@ -12,6 +12,9 @@
     observers: ['_calculatePermissions(permissionsMatrix)'],
     _calculatePermissions: function (matrix) {
       //provisonal function
+      if(!matrix) {
+        matrix = {};
+      }
       var elements = Object.keys(matrix);
       elements.forEach(function(label) {
         if(!matrix[label]) {

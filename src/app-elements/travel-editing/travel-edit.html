@@ -129,42 +129,15 @@
       },
       _handleData: function (e, data) {
         this.showForm = false;
-        var structure = this.structure;
-        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances'];
-        var dataKeys = Object.keys(data).filter(function(key){
-          return nonBaseKeys.indexOf(key) === -1;
-        });
-        data.baseDetails = {};
-        dataKeys.forEach(function(key) {
-          data.baseDetails[key] = data[key];
-          delete data[key];
-        });
-        Object.keys(data).forEach(function (label) {
-          if (data[label] instanceof Array && data[label].length === 0) {
-            data[label].push({});
-          }
-        });
-        data.baseDetails.traveller = structure.users.find(function(item) {
-          return item.value === data.baseDetails.traveller
-        });
-        data.baseDetails.supervisor = structure.users.find(function(item) {
-          return item.value === data.baseDetails.supervisor
-        });
-        data.baseDetails.office = structure.offices.find(function(item) {
-          return item.value === data.baseDetails.office
-        });
-        data.baseDetails.section = structure.sections.find(function(item) {
-          return item.value === data.baseDetails.section
-        });
+        var self = this;
 
-        if (data.baseDetails.start_date){
-          data.baseDetails.start_date = new Date(data.baseDetails.start_date);
-        }
+        var structureLib = {
+          traveller: 'users',
+          supervisor: 'users',
+          office: 'offices',
+          section: 'sections'
+        };
 
-        if(data.baseDetails.end_date) {
-          data.baseDetails.end_date = new Date(data.baseDetails.end_date);
-        }
-        console.log(data.baseDetails)
         var statusLib = {
           "planned": "Planned",
           "submitted": "Submitted",
@@ -178,6 +151,57 @@
           "certification_submitted": "Certification submitted",
           "certified": "Completed",
         };
+
+
+        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances'];
+        var dataKeys = Object.keys(data).filter(function(key){
+          return nonBaseKeys.indexOf(key) === -1;
+        });
+        data.baseDetails = {};
+        dataKeys.forEach(function(key) {
+          data.baseDetails[key] = data[key];
+          delete data[key];
+        });
+
+        function handleArray(fieldSet) {
+          if(fieldSet.length === 0) {
+            fieldSet.push({});
+          } else {
+            fieldSet.forEach(function(innerFieldset) {
+              handleObject(innerFieldset)
+            })
+          }
+        }
+
+        function handleObject(fieldSet) {
+          var localKeys = Object.keys(fieldSet);
+          localKeys.forEach(function(label) {
+            var structureData = structureLib[label];
+            if(structureData) {
+              fieldSet[label] = self.structure[structureData].find(function(item) {
+                return item.value === fieldSet[label];
+              })
+            }
+          })
+        }
+
+        var newKeys = Object.keys(data);
+        newKeys.forEach(function (fieldSet) {
+          if (data[fieldSet] instanceof Array) {
+            handleArray(data[fieldSet]);
+          }
+          else if(typeof data[fieldSet] === 'object'){
+            handleObject(data[fieldSet]);
+          }
+        });
+
+        if (data.baseDetails.start_date){
+          data.baseDetails.start_date = new Date(data.baseDetails.start_date);
+        }
+
+        if(data.baseDetails.end_date) {
+          data.baseDetails.end_date = new Date(data.baseDetails.end_date);
+        }
 
         if(data.baseDetails.status) {
           data.status = statusLib[data.baseDetails.status];
