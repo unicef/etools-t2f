@@ -2,27 +2,56 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+
 <link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/et2f-styles.html">
 
 <dom-module id="list-element">
 
-  <style include="shared-styles travel-list">
+  <style include="shared-styles et2f-styles travel-list iron-flex">
     :host {
       display: block;
       padding: 0;
       margin: 0;
-      box-shadow: inset 0 -1px 0 0 rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(0,0,0,0.3);
+      box-sizing: border-box;
     }
-    .headingrow {
+    .heading-row {
       width: 100%;
+    }
+    .heading-row.grey-heading {
+      background-color: var(--gray-lighter);
+    }
+    .heading-row-detailed {
+      background-color: #EEEEEE;
+      height: 64px;
     }
     .headings {
       display: block;
       float: left;
       font-size: 13px;
       line-height: 47px;
-      padding-left: 20px;
       box-sizing: border-box;
+    }
+    .detail-headings {
+      color: var(--gray-mid);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 32px;
+    }
+    .detail-text {
+      color: var(--gray-dark);
+      font-weight: normal;
+      line-height: 32px;
+    }
+    .blue {
+      color: #00AEEF;
+      cursor: pointer;
     }
     .bold {
       font-weight: 500;
@@ -30,21 +59,182 @@
     .capital {
       text-transform: capitalize;
     }
+    .w60 {
+      border-left-width: 3px;
+      border-left-style: solid;
+    }
+    .w60.planned {
+      border-left-color: var(--et2f-planned);
+    }
+    .w60.approved {
+      border-left-color: var(--et2f-approved);
+    }
+    .w60.submitted {
+      border-left-color: var(--et2f-submitted);
+    }
+    .w60.sent {
+      border-left-color: var(--et2f-sent);
+    }
+    .w60.rejected {
+      border-left-color: var(--et2f-error);
+    }
+    .w60.cancelled {
+      border-left-color: var(--gray-light);
+    }
+    .w60.completed {
+      border-left-color: var(--et2f-completed);
+    }
+    .w60 iron-icon {
+      margin-left: 10px;
+      color: var(--gray-mid);
+    }
+    .statusdiv {
+      height: 32px;
+      border-radius: 2px;
+      margin: 8px 16px 8px 0;
+      font-size: 13px;
+      line-height: 32px;
+      text-align: center;
+      -moz-box-shadow: inset 0 -1px 0 var(--gray-light);
+      -webkit-box-shadow: inset 0 -1px 0 var(--gray-light);
+      box-shadow: inset 0 -1px 0 var(--gray-light);
+    }
+    #more-button {
+      --paper-menu-button: {
+        padding: 0;
+      }
+    }
+    #more-button .dropdown-content {
+      background-color: white;
+    }
+    #more-button paper-item {
+      --paper-item: {
+        color: var(--gray-dark);
+      }
+    }
+    #more-button iron-icon {
+      margin-right: 16px;
+      color: var(--gray-mid);
+    }
+    .statusdiv.planned {
+      background-color: var(--et2f-planned);
+    }
+    .statusdiv.approved {
+      background-color: var(--et2f-approved);
+    }
+    .statusdiv.submitted {
+      background-color: var(--et2f-submitted);
+    }
+    .statusdiv.sent {
+      background-color: var(--et2f-sent);
+    }
+    .statusdiv.rejected {
+      background-color: var(--et2f-error);
+    }
+    .statusdiv.cancelled {
+      background-color: var(--gray-light);
+    }
+    .statusdiv.completed {
+      background-color: var(--et2f-completed);
+    }
+    .statusdiv.rejected .statusdivtext, .statusdiv.cancelled .statusdivtext, .statusdiv.completed .statusdivtext {
+      color: white;
+    }
   </style>
 
   <template>
 
-      <div class="headingrow clearfix">
-        <div class="headings textprim bold w15">[[data.reference_number]]</div>
-        <div class="headings textprim w20 truncate">[[data.purpose]]</div>
-        <div class="headings textprim w15">[[data.traveller]]</div>
-        <div class="headings textprim w10">[[data.start_date]]</div>
-        <div class="headings textprim w10">[[data.end_date]]</div>
-        <div class="headings textprim bold capital w15">[[data.status]]</div>
-        <div class="headings textsec w15">
-          <paper-icon-button icon="social:person-add"></paper-icon-button>
-          <paper-icon-button icon="maps:directions-car"></paper-icon-button>
+      <div class$="heading-row clearfix layout horizontal [[_isGreyClass(data)]]">
+
+        <div class$="headings textprim bold w60 [[_statusClass(data)]]">
+          <iron-icon
+            icon="icons:expand-more"
+            on-click="_toggleExpanded"
+            hidden$="[[_isDetailed(expanded)]]">
+          </iron-icon>
+          <iron-icon
+            icon="icons:expand-less"
+            on-click="_toggleExpanded"
+            hidden$="[[!_isDetailed(expanded)]]">
+          </iron-icon>
         </div>
+        <div class="headings blue bold w13">
+          <!-- Link here! -->
+          <a href="/edit-travel/{{data.id}}">[[data.reference_number]]</a>
+        </div>
+        <div class="headings textprim w11">[[data.created]]</div>
+        <div class="headings textprim w13">[[data.traveller]]</div>
+        <div class="headings textprim w23 truncate">[[data.purpose]]</div>
+        <div class="headings textprim w11">[[data.start_date]]</div>
+        <div class="headings textprim w11">[[data.end_date]]</div>
+        <div class="headings textprim bold capital w13">
+          <div class$="statusdiv [[_statusClass(data)]]">
+            <span class="statusdivtext">[[_statusMapping(data.status)]]</span>
+          </div>
+        </div>
+        <div class="headings textsec w5">
+
+          <paper-menu-button horizontal-align="right" id="more-button">
+
+            <paper-icon-button icon="more-vert" class="dropdown-trigger">
+            </paper-icon-button>
+
+            <paper-menu class="dropdown-content">
+
+              <paper-item on-click="duplicate">
+                <iron-icon icon="social:person-add"></iron-icon>
+                <paper-item-body>Duplicate trip</paper-item-body>
+              </paper-item>
+
+              <paper-item on-click="addDriver">
+                <iron-icon icon="maps:directions-car"></iron-icon>
+                <paper-item-body>Add driver</paper-item-body>
+              </paper-item>
+
+            </paper-menu>
+          </paper-menu-button>
+        </div>
+      </div>
+
+      <div hidden$="[[!_isDetailed(expanded)]]" class="heading-row heading-row-detailed clearfix layout horizontal">
+        <div class$="headings textprim bold w60 [[_statusClass(data)]]"></div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Section</span>
+          <span class="flex detail-text">[[data.section]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Office</span>
+          <span class="flex detail-text">[[data.office]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Supervisor</span>
+          <span class="flex detail-text">#[[data.supervisor]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">TA Req?</span>
+          <span class="flex detail-text">[[data.ta_required]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">TA ref. num?</span>
+          <span class="flex detail-text">[[data.ta_reference_nr]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Approved date</span>
+          <span class="flex detail-text">[[data.approval_date]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Attachments</span>
+          <span class="flex detail-text">[[data.attachment_count]]</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Actions</span>
+          <span class="flex detail-text">NA.</span>
+        </div>
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Driver trip</span>
+          <span class="flex detail-text">[[data.is_driver]]</span>
+        </div>
+        <div class="headings textsec w5"></div>
       </div>
 
   </template>
@@ -54,8 +244,64 @@
       is: 'list-element',
       properties: {
         data: {
-          type: Object
+          type: Object,
+          observer: '_resetExpanded'
+        },
+        expanded: {
+          type: Boolean,
+          value: false
         }
+      },
+      _statusClass: function(data) {
+        var status = data.status;
+        return {
+          planned: 'planned',
+          approved: 'approved',
+          approved: 'approved',
+          rejected: 'rejected',
+          submitted: 'submitted',
+          cancelled: 'cancelled',
+          completed: 'completed',
+          // For statuses, that are not wired in yet
+          'sent_for_payment': 'sent',
+          'cert_needed': 'planned',
+          'cert-approved': 'approved',
+          'cert_submitted': 'submitted',
+        }[status];
+      },
+      _statusMapping: function(status) {
+        var statusLib = {
+          "planned": "Planned",
+          "submitted": "Submitted",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "sent_for_payment": "Sent for payment",
+          "cancelled": "Cancelled",
+          "done": "Certification needed",
+          "certification_approved": "Certification approved",
+          "certification_rejected": "Certification rejected",
+          "certification_submitted": "Certification submitted",
+          "certified": "Completed",
+        };
+        return statusLib[status];
+      },
+      _toggleExpanded: function(event) {
+        this.set('expanded', !this.expanded);
+      },
+      _isDetailed: function(expanded) {
+        return this.expanded;
+      },
+      _resetExpanded: function() {
+        this.set('expanded', false);
+      },
+      duplicate: function() {
+        console.log('TODO: duplicating feature!');
+      },
+      addDriver: function() {
+        console.log('TODO: add driver feature!');
+      },
+      _isGreyClass: function(data) {
+        return data.status === 'cancelled' ? 'grey-heading' : '';
       }
     });
   </script>

@@ -30,6 +30,19 @@ App global configuration
           template: '/api/country/<%=id%>',
           exp: 30 * 60 * 1000, // 30min
           cachingKey: 'countries'
+        },
+        et2fStaticData: {
+          url: 'http://localhost:8000/api/et2f/static_data/',
+          exp: 7 * 24 * 60 * 60 * 1000, // 1 week
+          cachingKey: 'et2f_static_data'
+        },
+        et2fPermissionsMatrix: {
+          url: '/mock-data/permissions.json',
+          exp: 60 * 1000, // 1 min
+          cachingKey: 'et2f_permissions'
+        },
+        et2fStateChange: {
+          template: 'http://localhost:8000/api/et2f/travels/<%=id%>/'
         }
       },
 
@@ -44,6 +57,13 @@ App global configuration
             endpoint.url = this.baseSite + _.template(endpoint.template)(data);
           }
           return endpoint;
+        },
+
+        computeTemplate: function(endpointName, data) {
+          var endpoint = etoolsAppConfig.endpoints[endpointName];
+          if (endpoint && endpoint.hasOwnProperty('template') && endpoint.template !== '') {
+            endpoint.url = _.template(endpoint.template)(data);
+          }
         },
 
         getAllPermissions: function() {

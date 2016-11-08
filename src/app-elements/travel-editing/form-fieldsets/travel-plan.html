@@ -1,0 +1,145 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import" href="../datepicker-input.html">
+
+<link rel="import" href="../../../../styles/shared-styles.html">
+<link rel="import" href="../../../../styles/et2f-styles.html">
+
+<dom-module id="travel-plan">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+      .custom-margin {
+        --paper-input-container: {
+          height: auto;
+          margin-left: 12px;
+          margin-right: 12px;
+          margin-bottom: 12px;
+        };
+        --paper-checkbox-margin: 12px;
+      }
+      span.standalone {
+        color: var(--gray-dark);
+        font-size: 16px;
+        padding-left: 12px;
+      }
+    </style>
+
+    <div class="layout vertical flex">
+      <div class="layout horizontal">
+        <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
+          disabled="[[et2fPermissions.taRequired.disabled]]"
+          hidden$="[[et2fPermissions.taRequired.hidden]]">TA required?
+        </paper-checkbox>
+        <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
+          disabled="[[et2fPermissions.taRequired.disabled]]"
+          hidden$="[[et2fPermissions.taRequired.hidden]]">International travel?</paper-checkbox>
+        <div class="flex layout horizontal center">
+          <span class$="standalone [[et2fPermission.taRequired.readOnly]]"
+            hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: [[baseDetails.reference_number]]</span>
+        </div>
+        <div class="flex"></div>
+      </div>
+      <div class="layout horizontal">
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.traveller.readOnly]]"
+          disabled="[[et2fPermissions.traveller.disabled]]"
+          hidden$="[[et2fPermissions.traveller.hidden]]"
+          options="[[structure.users]]"
+          label="Traveller"
+          value="{{baseDetails.traveller}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.supervisor.readOnly]]"
+          disabled="[[et2fPermissions.supervisor.disabled]]"
+          hidden$="[[et2fPermissions.supervisor.hidden]]"
+          options="[[structure.users]]"
+          label="Supervisor"
+          value="{{baseDetails.supervisor}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.office.readOnly]]"
+          disabled="[[et2fPermissions.office.disabled]]"
+          hidden$="[[et2fPermissions.office.hidden]]"
+          options="[[structure.offices]]"
+          label="Office"
+          value="{{baseDetails.office}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.section.readOnly]]"
+          disabled="[[et2fPermissions.section.disabled]]"
+          hidden$="[[et2fPermissions.section.hidden]]"
+          options="[[structure.sections]]"
+          label="Section"
+          value="{{baseDetails.section}}"></etools-searchable-multiselection-menu>
+      </div>
+      <div class="layout horizontal">
+        <datepicker-input class$="flex-3 [[et2fPermission.start_date.readOnly]]"
+          disabled="[[et2fPermissions.start_date.disabled]]"
+          hidden$="[[et2fPermissions.start_date.hidden]]"
+          label="Start Date"
+          date="{{baseDetails.start_date}}"></datepicker-input>
+        <datepicker-input class$="flex-3 [[et2fPermission.end_date.readOnly]]"
+          disabled="[[et2fPermissions.end_date.disabled]]"
+          hidden$="[[et2fPermissions.end_date.hidden]]"
+          label="End Date "
+          date="{{baseDetails.end_date}}"></datepicker-input>
+        <paper-input class$="flex-3 custom-margin [[et2fPermission.estimatedTravelCost.readOnly]]"
+          disabled="[[et2fPermissions.estimatedTravelCost.disabled]]"
+          hidden$="[[et2fPermissions.estimatedTravelCost.hidden]]"
+          label="Estimated travel cost"
+          value="{{baseDetails.estimatedTravelCost}}"></paper-input>
+        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.currency.readOnly]]"
+          disabled="[[et2fPermissions.currency.disabled]]"
+          hidden$="[[et2fPermissions.currency.hidden]]"
+          options="[[structure.currencies]]"
+          label="Currency"
+          value="{{baseDetails.currency}}"></etools-searchable-multiselection-menu>
+      </div>
+      <div class="layout horizontal">
+        <etools-searchable-multiselection-menu class$="flex-6 [[et2fPermission.modeOfTravel.readOnly]]"
+          disabled="[[et2fPermissions.modeOfTravel.disabled]]"
+          hidden$="[[et2fPermissions.modeOfTravel.hidden]]"
+          options="[[structure.users]]"
+          multi
+          label="Mode of travel"
+          value="{{baseDetails.modeOfTravel}}"></etools-searchable-multiselection-menu>
+        <div class="flex-6"></div>
+      </div>
+      <div class="layout horizontal">
+        <paper-textarea label="Purpose of travel"
+          disabled="[[et2fPermissions.purpose.disabled]]"
+          hidden$="[[et2fPermissions.purpose.hidden]]"
+          class$="flex-12 custom-margin [[et2fPermission.purpose.readOnly]]"
+          required
+          char-counter
+          maxlength="500"
+          value="{{baseDetails.purpose}}"></paper-textarea>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-plan',
+      properties: {
+        baseDetails: {
+          type: Object,
+          value: {},
+//          observer: '_log'
+        },
+        structure: {
+          type: Object,
+          value: {}
+        }
+      },
+      behaviors: [et2fBehaviors.PermissionLayer],
+      _log: function(data) {
+        console.log(data)
+      }
+    });
+  </script>
+</dom-module>

@@ -6,8 +6,8 @@
     status: required, String, Capital, eg: 'Submitted'
 
   Files:
-    "./structure/actions-list.json"
-    "./structure/form-actions-permissions-travel.json"
+    "../../structure/actions-list.json"
+    "../../structure/form-actions-permissions.json"
 -->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
@@ -18,11 +18,12 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 
-<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/et2f-styles.html">
 
-<dom-module id="form-actions-button-travel">
+<dom-module id="form-actions-button">
 
-  <style include="shared-styles iron-flex iron-flex-alignment" is="custom-style">
+  <style include="shared-styles et2f-styles iron-flex iron-flex-alignment" is="custom-style">
     :host {
       display: block;
     }
@@ -30,11 +31,11 @@
       margin: 24px;
       padding: 0;
       height: 36px;
-      background-color: #00AEEF;
+      background-color: var(--et2f-primary);
       color: white;
     }
     paper-button.grey {
-      background-color: rgba(0,0,0,0.54);
+      background-color: var(--gray-mid);
     }
     paper-menu-button {
       padding: 0 4px;
@@ -44,18 +45,22 @@
     }
     .main-btn-part {
       text-align: center;
+      font-weight: 500;
+    }
+    .dropdown-content, .dropdown-content paper-item {
+      background-color: white;
     }
   </style>
 
   <template>
 
     <etools-ajax
-       url="./structure/actions-list.json"
+       url="../../structure/actions-list.json"
        on-success="_setActList">
     </etools-ajax>
 
     <etools-ajax
-       url="./structure/form-actions-permissions-travel.json"
+       url="../../structure/form-actions-permissions.json"
        on-success="_setPermissions">
     </etools-ajax>
 
@@ -65,18 +70,19 @@
         <div on-click="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
 
         <template is="dom-if" if="[[showDropdown]]">
-        <paper-menu-button horizontal-align="right">
-          <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
-          <paper-menu class="dropdown-content">
-            <template is="dom-repeat" items="[[actions.secondary]]">
+          <paper-menu-button horizontal-align="right">
 
-              <paper-item on-click="_clickSecondary">[[item.name]]</paper-item>
+            <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
+            <paper-menu class="dropdown-content">
+              <template is="dom-repeat" items="[[actions.secondary]]">
 
-            </template>
-          </paper-menu>
-        </paper-menu-button>
-      </template>
+                <paper-item on-click="_clickSecondary">[[item.name]]</paper-item>
 
+              </template>
+            </paper-menu>
+
+          </paper-menu-button>
+        </template>
       </paper-button>
     </template>
 
@@ -84,7 +90,7 @@
 
   <script>
     Polymer({
-      is: 'form-actions-button-travel',
+      is: 'form-actions-button',
       properties: {
         userType: String,
         status: String,
@@ -132,15 +138,17 @@
       },
       _showSecondary: function(actions) {
 
-        return  Array.isArray(actions.secondary) && actions.secondary.length != 0;
+        return Array.isArray(actions.secondary) && actions.secondary.length != 0;
       },
       _clickPrimary: function() {
 
-        console.info('Primary action:', this.actions.primary, 'clicked, backend...');
+        // console.info('Primary action:', this.actions.primary, 'fired');
+        this.fire('form-primary-action', this.actions.primary);
       },
       _clickSecondary: function(event) {
 
-        console.info('Secondary action:', event.model.item, 'clicked, backend...');
+        // console.info('Secondary action:', event.model.item, 'fired');
+        this.fire('form-primary-action', event.model.item);
       }
     });
   </script>

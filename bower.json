@@ -8,7 +8,7 @@
     "app-route": "PolymerElements/app-route#^0.9.0",
     "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.0",
     "iron-icon": "^1.0.10",
-    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.0.0",
+    "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^1.1.0",
     "iron-localstorage": "PolymerElements/iron-localstorage#^1.0.0",
     "iron-media-query": "PolymerElements/iron-media-query#^1.0.0",
     "iron-pages": "PolymerElements/iron-pages#^1.0.0",
@@ -44,7 +44,12 @@
     "paper-badge": "PolymerElements/paper-badge#^1.1.4",
     "paper-card": "PolymerElements/paper-card#^1.1.4",
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
-    "paper-menu": "PolymerElements/paper-menu#^1.2.2"
+    "paper-menu": "PolymerElements/paper-menu#^1.2.2",
+    "etools-loading": "^1.0.3",
+    "etools-repeatable-field-set": "^1.0.0",
+    "etools-searchable-multiselection-menu": "^1.0.0",
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1",
+    "polymer-pdf-make-wrapper": "git@github.com:lordfuoco/polymer-pdf-make.git#^0.0.2"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

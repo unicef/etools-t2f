@@ -1,0 +1,30 @@
+<script>
+  var PermissionLayer = {
+    properties: {
+      permissionsMatrix: {
+        type: Object,
+      },
+      et2fPermissions: {
+        type: Object,
+        notifies: true
+      }
+    },
+    observers: ['_calculatePermissions(permissionsMatrix)'],
+    _calculatePermissions: function (matrix) {
+      //provisonal function
+      if(!matrix) {
+        matrix = {};
+      }
+      var elements = Object.keys(matrix);
+      elements.forEach(function(label) {
+        if(!matrix[label]) {
+          return;
+        }
+        matrix[label].readOnly = matrix[label].readOnly ? 'readonly' : false;
+      });
+      this.et2fPermissions = matrix;
+    },
+  };
+  window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
+  window.et2fBehaviors['PermissionLayer'] = PermissionLayer;
+</script>

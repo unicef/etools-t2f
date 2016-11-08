@@ -12,7 +12,7 @@
 
 
 
-<dom-module id="plan-travel">
+<dom-module id="page-edit-travel">
 
   <style include="shared-styles">
     :host {
@@ -33,13 +33,14 @@
 
       </app-header>
     </app-header-layout>
-    <travel-edit new-travel permissions="[[permissions]]" structure="[[structure]]"></travel-edit>
+    <travel-edit travel-id="[[travelId]]" permissions="[[permissions]]" structure="[[structure]]" ></travel-edit>
   </template>
 
   <script>
     Polymer({
-      is: 'plan-travel',
+      is: 'page-edit-travel',
       properties: {
+        travelId: String,
         permissions: Object,
         structure: Object
       }

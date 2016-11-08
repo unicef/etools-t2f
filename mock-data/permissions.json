@@ -1,0 +1,20 @@
+{
+  "baseDetails": {
+    "taRequired": {
+      "readOnly": false,
+      "disabled:": false,
+      "hidden": false
+    },
+    "traveler": {
+      "readOnly": false,
+      "disabled": true,
+      "hidden": false
+    },
+    "referenceNumber": {
+      "readOnly": false,
+      "disabled": true,
+      "hidden": true
+    },
+  },
+  "activities": {}
+}
