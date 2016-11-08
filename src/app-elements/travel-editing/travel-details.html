@@ -37,7 +37,7 @@
         width: calc( 100% - 48px);
         margin: 24px;
         --repeatable-items-collapse-container: {
-            background: #FFF;
+          background: #FFF;
         };
       }
       .orange-header {
@@ -49,7 +49,7 @@
       }
     </style>
 
-    <div class="horizontal layout" hidden$="[[!showForm]]">
+    <div class="horizontal layout">
 
       <div class="flex">
 
@@ -106,8 +106,11 @@
 
           <div class="layout vertical flex">
 
-            <travel-deductions disabled$="false" data="{{data.baseDetails}}"></travel-deductions>
-            <!-- SET DISABLED -->
+            <travel-deductions
+              disabled$="false"
+              start-date="{{data.baseDetails.start_date}}"
+              end-date="{{data.baseDetails.end_date}}">
+            </travel-deductions>
           </div>
         </etools-repeatable-field-set>
 
@@ -148,12 +151,12 @@
       </div>
 
       <travel-status
-        user-type="traveler"
-        status="Planned"
-        scroll-top-margin="60">
+        user-type="godmode"
+        status="[[data.status]]"
+        scroll-top-margin="60"
+      >
       </travel-status>
     </div>
-
   </template>
 
   <script>
@@ -166,26 +169,11 @@
         },
         structure: {
           type: Object,
-          value: {}
         },
         permissions: {
           type: Object
         },
-        showForm: {
-          type: Boolean,
-          value: false
-        }
-      },
-      observers: ['_showForm(structure, permissions, data)'],
-      _showForm: function (structure, permissions, data) {
-        var keys = Object.keys(data);
-        keys.forEach(function(label){
-          if(data[label] instanceof Array && data[label].length === 0) {
-            data[label].push({});
-          }
-        });
-        this.data = data;
-        this.showForm = true;
+
       }
     });
   </script>

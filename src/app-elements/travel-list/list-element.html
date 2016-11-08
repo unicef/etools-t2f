@@ -160,16 +160,16 @@
         </div>
         <div class="headings blue bold w13">
           <!-- Link here! -->
-          <a href="">[[data.reference_number]]</a>
+          <a href="/edit-travel/{{data.id}}">[[data.reference_number]]</a>
         </div>
-        <div class="headings textprim w11">N.A.</div>
+        <div class="headings textprim w11">[[data.created]]</div>
         <div class="headings textprim w13">[[data.traveller]]</div>
         <div class="headings textprim w23 truncate">[[data.purpose]]</div>
         <div class="headings textprim w11">[[data.start_date]]</div>
         <div class="headings textprim w11">[[data.end_date]]</div>
         <div class="headings textprim bold capital w13">
           <div class$="statusdiv [[_statusClass(data)]]">
-            <span class="statusdivtext">[[data.status]]</span>
+            <span class="statusdivtext">[[_statusMapping(data.status)]]</span>
           </div>
         </div>
         <div class="headings textsec w5">
@@ -268,6 +268,22 @@
           'cert-approved': 'approved',
           'cert_submitted': 'submitted',
         }[status];
+      },
+      _statusMapping: function(status) {
+        var statusLib = {
+          "planned": "Planned",
+          "submitted": "Submitted",
+          "approved": "Approved",
+          "rejected": "Rejected",
+          "sent_for_payment": "Sent for payment",
+          "cancelled": "Cancelled",
+          "done": "Certification needed",
+          "certification_approved": "Certification approved",
+          "certification_rejected": "Certification rejected",
+          "certification_submitted": "Certification submitted",
+          "certified": "Completed",
+        };
+        return statusLib[status];
       },
       _toggleExpanded: function(event) {
         this.set('expanded', !this.expanded);

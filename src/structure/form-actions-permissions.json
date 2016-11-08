@@ -300,5 +300,51 @@
       "primary": "",
       "secondary": []
     }
+  },
+  "godmode": {
+    "Planned": {
+      "primary": "save",
+      "secondary": ["submit", "cancel"]
+    },
+    "Submitted": {
+      "primary": "approve",
+      "secondary": ["reject", "cancel"]
+    },
+    "Approved": {
+      "primary": "sendForPayment",
+      "secondary": ["cancel"]
+    },
+    "Rejected": {
+      "primary": "submit",
+      "secondary": ["cancel"]
+    },
+    "Sent for payment": {
+      "primary": "cancel",
+      "secondary": [""]
+    },
+    "Cancelled": {
+      "primary": "reOpen",
+      "secondary": []
+    },
+    "Completed": {
+      "primary": "cancel",
+      "secondary": []
+    },
+    "Certification needed": {
+      "primary": "",
+      "secondary": []
+    },
+    "Certification submitted": {
+      "primary": "",
+      "secondary": []
+    },
+    "Certification approved": {
+      "primary": "",
+      "secondary": []
+    },
+    "Certification rejected": {
+      "primary": "",
+      "secondary": []
+    }
   }
 }

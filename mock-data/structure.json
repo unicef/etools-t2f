@@ -2,19 +2,19 @@
   "travel": [
     {
       "value": 0,
-      "label": "plane"
+      "label": "Plane"
     },
     {
       "value": 1,
-      "label": "boat"
+      "label": "Boat"
     },
     {
       "value": 2,
-      "label": "car"
+      "label": "Car"
     },
     {
       "value": 3,
-      "label": "train"
+      "label": "Train"
     }
   ],
   "supervisor": [
