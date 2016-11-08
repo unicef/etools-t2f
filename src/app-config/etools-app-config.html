@@ -40,6 +40,9 @@ App global configuration
           url: '/mock-data/permissions.json',
           exp: 60 * 1000, // 1 min
           cachingKey: 'et2f_permissions'
+        },
+        et2fStateChange: {
+          template: 'http://localhost:8000/api/et2f/travels/<%=id%>/'
         }
       },
 
@@ -54,6 +57,13 @@ App global configuration
             endpoint.url = this.baseSite + _.template(endpoint.template)(data);
           }
           return endpoint;
+        },
+
+        computeTemplate: function(endpointName, data) {
+          var endpoint = etoolsAppConfig.endpoints[endpointName];
+          if (endpoint && endpoint.hasOwnProperty('template') && endpoint.template !== '') {
+            endpoint.url = _.template(endpoint.template)(data);
+          }
         },
 
         getAllPermissions: function() {

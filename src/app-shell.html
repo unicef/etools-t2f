@@ -296,13 +296,13 @@
         this.set('route.path', '/travel-list');
       },
       _handleStructure: function (event, data) {
+        data.mode_of_travel = ["Plane", "Boat", "Car", "Train"];
         var dataKeys = Object.keys(data);
         dataKeys.forEach(function(key) {
           data[key] = data[key].map(function (obj) {
             return {label: obj.name || obj.full_name, value: obj.id};
           });
         });
-
         Object.freeze(data);
         this.set('structure', data);
       },
