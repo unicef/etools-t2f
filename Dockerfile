@@ -5,9 +5,6 @@ RUN apk add git
 RUN npm install -g bower polymer-cli http-server
 ADD package.json /tmp
 RUN apk add autoconf gcc automake make g++ python-dev libffi-dev nasm curl wget
-RUN apk add --no-cache \
-    --repository=http://dl-4.alpinelinux.org/alpine/edge/community \
-    optipng
 RUN npm install
 RUN mkdir /code/
 RUN cp -a /tmp/node_modules /code/node_modules
