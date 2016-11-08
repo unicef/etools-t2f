@@ -4,6 +4,8 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
+<link rel="import" href="../travel-status-box/travel-status.html">
+
 <link rel="import" href="../../../styles/shared-styles.html">
 <link rel="import" href="../../../styles/et2f-styles.html">
 
@@ -75,11 +77,10 @@
       </paper-material>
 
       <travel-status
-        user-type="traveler"
-        status="Planned"
+        user-type="godmode"
+        status="[[data.status]]"
         scroll-top-margin="60">
       </travel-status>
-      <!-- BINDINGS here after Nico's merge!!! -->
     </div>
 
 
@@ -91,13 +92,18 @@
       properties: {
         reportString: {
           type: String,
-          notify: true,
-          reflectToAttribute: true
+          observer: 'setReportToData'
+        },
+        data: {
+          type: Object,
+          notify: true
         }
       },
+      setReportToData: function() {
+        this.set('data.report', this.reportString);
+      },
       saveReport: function() {
-        console.log('Should save the whole form!!!!');
-        // WIRING after Nico's merge!!!!!!
+        this.fire('form-action', 'save');
       }
     });
   </script>
