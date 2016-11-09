@@ -142,13 +142,11 @@
       },
       _clickPrimary: function() {
 
-        // console.info('Primary action:', this.actions.primary, 'fired');
-        this.fire('form-primary-action', this.actions.primary);
+        this.fire('form-action', this.actions.primary);
       },
       _clickSecondary: function(event) {
 
-        // console.info('Secondary action:', event.model.item, 'fired');
-        this.fire('form-primary-action', event.model.item);
+        this.fire('form-action', event.model.item);
       }
     });
   </script>

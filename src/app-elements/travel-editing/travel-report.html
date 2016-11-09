@@ -1,36 +1,110 @@
-
-
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
+<link rel="import" href="../travel-status-box/travel-status.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/et2f-styles.html">
 
 <dom-module id="travel-report">
-    <template>
-        <style include="shared-styles">
-            :host {
-                display: block;
-                width: 100%;
-            }
-            *[hidden] {
-                display: none;
-            }
-        </style>
-    REPORT
+  <style include="shared-styles et2f-styles iron-flex">
+    :host {
+      display: block;
+      width: 100%;
+      margin-top: 24px;
+    }
 
-    </template>
+    .container {
+      padding: 24px;
+    }
 
-    <script>
-        Polymer({
-            is: 'travel-report',
-            properties: {
-                data: {
-                    type: Object,
-                    notify: true,
-                    reflectToAttribute: true
-                }
-            }
-        });
-    </script>
+    paper-material {
+      padding: 0;
+      margin-right: 24px;
+    }
+
+    .heading {
+      display: block;
+      height: 48px;
+      line-height: 48px;
+      background-color: var(--et2f-sec-blue);
+      color: white;
+      font-size: 20px;
+      /* font-weight: 500; WTF??? */
+      font-weight: 400;
+      text-align: center;
+    }
+
+    paper-textarea {
+      margin: 48px 48px 24px 48px;
+    }
+
+    paper-button {
+      width: 130px;
+      height: 36px;
+      line-height: 36px;
+      background-color: var(--et2f-primary);
+      color: white;
+      font-weight: 500;
+      font-size: 14px;
+      margin-left: 48px;
+      margin-bottom: 48px;
+    }
+  </style>
+
+  <template>
+    <div class="container layout horizontal">
+
+      <paper-material class="flex" elevation="1">
+
+        <span class="heading">
+          Travel report
+        </span>
+
+        <paper-textarea
+          label="Add your report here*"
+          char-counter
+          maxlength="5000"
+          value="{{reportString}}">
+        </paper-textarea>
+
+        <paper-button raised on-click="saveReport">
+          Save report
+        </paper-button>
+      </paper-material>
+
+      <travel-status
+        user-type="godmode"
+        status="[[data.status]]"
+        scroll-top-margin="60">
+      </travel-status>
+    </div>
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-report',
+      properties: {
+        reportString: {
+          type: String,
+          observer: 'setReportToData'
+        },
+        data: {
+          type: Object,
+          notify: true
+        }
+      },
+      setReportToData: function() {
+        this.set('data.report', this.reportString);
+      },
+      saveReport: function() {
+        this.fire('form-action', 'save');
+      }
+    });
+  </script>
 </dom-module>
