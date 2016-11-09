@@ -1,15 +1,25 @@
-<link rel="import" href="../../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../../../bower_components/paper-input/paper-textarea.html">
-<link rel="import" href="../../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
-<link rel="import" href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+<link rel="import"
+  href="../../../../bower_components/polymer/polymer.html">
+<link rel="import"
+  href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import"
+  href="../../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import"
+  href="../../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import"
+  href="../../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import"
+  href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
-<link rel="import" href="../../travel-status-box/travel-status.html">
-<link rel="import" href="../datepicker-input.html">
+<link rel="import"
+  href="../../travel-status-box/travel-status.html">
+<link rel="import"
+  href="../datepicker-input.html">
 
-<link rel="import" href="../../../../styles/shared-styles.html">
-<link rel="import" href="../../../../styles/et2f-styles.html">
+<link rel="import"
+  href="../../../../styles/shared-styles.html">
+<link rel="import"
+  href="../../../../styles/et2f-styles.html">
 
 <dom-module id="travel-itinerary">
   <template>
@@ -32,32 +42,32 @@
 
     <div class="layout vertical flex">
       <div class="layout horizontal">
-        <etools-searchable-multiselection-menu class="flex-4"
-          options="[[structure.users]]"
+        <paper-input class="flex-4 custom-margin"
           label="From"
-          value="{{itinerary.from}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class="flex-4"
-          options="[[structure.users]]"
+          value="{{itinerary.origin}}"></paper-input>
+        <paper-input class="flex-4 custom-margin"
           label="To"
-          value="{{itinerary.to}}"></etools-searchable-multiselection-menu>
+          value="{{itinerary.destination}}"></paper-input>
         <etools-searchable-multiselection-menu class="flex-4"
-          options="[[structure.users]]"
+          options="[[structure.locations]]"
           label="DSA Region"
-          value="{{itinerary.dsaRegion}}"></etools-searchable-multiselection-menu>
+          value="{{itinerary.dsa_region}}"></etools-searchable-multiselection-menu>
       </div>
 
       <div class="layout horizontal">
         <datepicker-input class="flex-4"
           label="Departing"
-          value="{{itinerary.departing}}"></datepicker-input>
+          date="{{itinerary.departure_date}}"></datepicker-input>
         <datepicker-input class="flex-4"
           label="Arriving"
-          value="{{itinerary.arriving}}"></datepicker-input>
+          date="{{itinerary.arrival_date}}"></datepicker-input>
         <etools-searchable-multiselection-menu class="flex-2"
-          options="[[structure.users]]"
+          options="[[structure.mode_of_travel]]"
           label="Mode of  travel"
-          value="{{itinerary.modeOfTravel}}"></etools-searchable-multiselection-menu>
-        <paper-checkbox class="flex-2 custom-margin self-end">Overnight travel?</paper-checkbox>
+          value="{{itinerary.mode_of_travel}}"></etools-searchable-multiselection-menu>
+        <paper-checkbox class="flex-2 custom-margin self-end"
+          checked="{{itinerary.overnight_travel}}">Overnight travel?
+        </paper-checkbox>
       </div>
     </div>
 
@@ -77,6 +87,10 @@
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
+      observers: ['_setCheckboxes(baseDetails.*)'],
+      _setCheckboxes: function (changed) {
+        this[changed.path] = changed.value;
+      }
     });
   </script>
 </dom-module>

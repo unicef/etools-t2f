@@ -80,6 +80,10 @@
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
+      observers: ['_setCheckboxes(baseDetails.*)'],
+      _setCheckboxes: function(changed) {
+        this[changed.path] = changed.value;
+      }
     });
   </script>
 </dom-module>
