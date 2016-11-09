@@ -142,26 +142,36 @@
         }
 
         function matchByLabel (fieldName, item) {
-          console.log(fieldName, item)
           return self.structure[fieldName].find(function (struct) {
             return struct.label === item;
           })
         }
 
         var structureLib = {
-          traveller: 'users',
-          supervisor: 'users',
-          office: 'offices',
-          section: 'sections',
-          start_date: convertDate,
-          end_date: convertDate,
-          mode_of_travel: multiFieldConversion.bind(this, 'label', 'mode_of_travel'),
-          locations: multiFieldConversion.bind(this, 'value', 'locations'),
-          currency: 'currencies',
-          travel_type: matchByLabel.bind(this, 'mode_of_travel'),
-          partner: 'partners',
-          partnership: 'partnerships',
-          result: 'results',
+          baseDetails: {
+            traveller: 'users',
+            supervisor: 'users',
+            office: 'offices',
+            section: 'sections',
+            start_date: convertDate,
+            end_date: convertDate,
+            mode_of_travel: multiFieldConversion.bind(this, 'label', 'mode_of_travel'),
+            currency: 'currencies',
+          },
+          activities: {
+            locations: multiFieldConversion.bind(this, 'value', 'locations'),
+            travel_type: matchByLabel.bind(this, 'mode_of_travel'),
+            partner: 'partners',
+            partnership: 'partnerships',
+            result: 'results',
+          },
+          itinerary: {
+            airlines: multiFieldConversion.bind(this, 'value', 'airlines'),
+            mode_of_travel: matchByLabel.bind(this, 'mode_of_travel'),
+            dsa_region: 'dsa_regions'
+          },
+          clearances: {}
+
 
         };
         var statusLib = {
@@ -189,19 +199,19 @@
           delete data[key];
         });
 
-        function handleArray(fieldSet) {
+        function handleArray(fieldSet, key) {
           if(fieldSet.length === 0) {
             // add one empty object in case of empty array
             fieldSet.push({});
           } else {
             //loop on array elements and run the object handling function
-            fieldSet.forEach(function(innerFieldset) {
-              handleObject(innerFieldset)
+            fieldSet.forEach(function(innerFieldSet) {
+              handleObject(innerFieldSet, key)
             })
           }
         }
 
-        function handleObject(fieldSet) {
+        function handleObject(fieldSet, key) {
           // loop on the object inner keys
           if(!fieldSet) {
             return
@@ -209,7 +219,7 @@
           var localKeys = Object.keys(fieldSet);
           localKeys.forEach(function(label) {
             // search the structure library for a match
-            var structureData = structureLib[label];
+            var structureData = structureLib[key][label];
             if(structureData) {
               //apply the matching function or the transformation from the structure
               if(typeof structureData  === 'function') {
@@ -227,10 +237,10 @@
         var newKeys = Object.keys(data);
         newKeys.forEach(function (fieldSet) {
           if (data[fieldSet] instanceof Array) {
-            handleArray(data[fieldSet]);
+            handleArray(data[fieldSet], fieldSet);
           }
           else if(typeof data[fieldSet] === 'object'){
-            handleObject(data[fieldSet]);
+            handleObject(data[fieldSet], fieldSet);
           }
         });
 
@@ -278,7 +288,7 @@
           var keys = Object.keys(obj);
           keys.forEach(function(key) {
             if(obj[key] && !(obj[key] instanceof Array )){
-              obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' ? obj[key].label : obj[key].value : obj[key]
+              obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' || key === 'mode_of_travel' ? obj[key].label : obj[key].value : obj[key]
             }
             if(obj[key] && obj[key] instanceof Array ){
               obj[key] = obj[key].map(function(item) {
@@ -304,7 +314,6 @@
 
         var serverKeys = Object.keys(this.serverData);
 
-        console.log(JSON.parse(JSON.stringify(data)))
 
         serverKeys.forEach(function(serverKey) {
           if(data[serverKey] instanceof Array && data[serverKey][0]) {
@@ -329,7 +338,6 @@
 
       },
       _handlePrimaryAction: function (e, details) {
-        console.log(JSON.parse(JSON.stringify(this.data)))
         this._processOutboundData(this.data);
         var self = this;
         var endpointConfig = {

@@ -49,7 +49,7 @@
           label="To"
           value="{{itinerary.destination}}"></paper-input>
         <etools-searchable-multiselection-menu class="flex-4"
-          options="[[structure.locations]]"
+          options="[[structure.dsa_regions]]"
           label="DSA Region"
           value="{{itinerary.dsa_region}}"></etools-searchable-multiselection-menu>
       </div>
@@ -69,6 +69,15 @@
           checked="{{itinerary.overnight_travel}}">Overnight travel?
         </paper-checkbox>
       </div>
+      <div class="layout horizontal">
+        <etools-searchable-multiselection-menu class="flex-8"
+          options="[[structure.airlines]]"
+          label="Add airline(s)"
+          multi
+          value="{{itinerary.airlines}}"></etools-searchable-multiselection-menu>
+        <div class="flex-4"></div>
+      </div>
+
     </div>
 
   </template>
