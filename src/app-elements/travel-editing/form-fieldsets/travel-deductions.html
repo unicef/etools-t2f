@@ -102,7 +102,8 @@
         endDate: String,
         deductions: {
           type: Array,
-          value: []
+          notify: true,
+          observer: '_log'
         },
         disabled: {
           type: Boolean,
@@ -116,12 +117,10 @@
         return disabled;
       },
       dateChanged: function(startDateStr, endDateStr) {
-
         var startDate = new Date(startDateStr);
         var endDate = new Date(endDateStr);
 
         var daysToCalculate = Math.floor(( endDate - startDate ) / 86400000);
-
         var deductions = this.deductions;
         var keyLib = [];
 
@@ -165,6 +164,9 @@
         return ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][new Date(dateStr).getDay()];
       },
       _calcFullDate: function(dateStr) {
+        if(!date || date.length === 0) {
+          return
+        }
         var date = dateStr.split('-');
         return [
           date[2],

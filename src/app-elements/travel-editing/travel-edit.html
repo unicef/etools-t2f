@@ -45,7 +45,7 @@
 
     <template is="dom-if"
       if="{{travelId}}">
-      <etools-ajax endpoint="[[travelUrl]]"
+      <etools-ajax url="[[travelUrl]]"
         on-success="_handleData"></etools-ajax>
     </template>
 
@@ -105,7 +105,8 @@
         },
         travelUrl: {
           type: String,
-          computed: '_computeUrl(travelId)'
+          computed: '_computeUrl(travelId)',
+          reflectToAttribute: true
         },
         postData: {
           type: Boolean,
@@ -122,7 +123,9 @@
         this.set('data', {});
         this._resetData();
         var travelId = travelId ? travelId.replace(/\//g, '') : null;
-        return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {id: travelId})
+        if(travelId) {
+          return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {id: travelId}).url
+        }
       },
       _handleData: function (e, data) {
         var self = this;
@@ -170,7 +173,8 @@
             mode_of_travel: matchByLabel.bind(this, 'mode_of_travel'),
             dsa_region: 'dsa_regions'
           },
-          clearances: {}
+          clearances: {},
+          deductions: {}
 
 
         };
@@ -430,6 +434,7 @@
           activities: [{}],
           itinerary: [{}],
           expenses: [{}],
+          deductions: [],
           costAssignment: [{}],
           status: 'Planned'
         };
