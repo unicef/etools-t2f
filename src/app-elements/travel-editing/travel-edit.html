@@ -45,13 +45,13 @@
 
     <template is="dom-if"
       if="{{travelId}}">
-      <etools-ajax url="[[travelUrl]]"
+      <etools-ajax endpoint="[[travelUrl]]"
         on-success="_handleData"></etools-ajax>
     </template>
 
     <template is="dom-if"
       if="[[postData]]">
-      <etools-ajax url="[[url]]"
+      <etools-ajax endpoint="[[postEndpoint]]"
         body="[[serverData]]"
         method="[[method]]"
         on-success="_handlePostSuccess"
@@ -121,24 +121,34 @@
       _computeUrl: function(travelId) {
         this.set('data', {});
         this._resetData();
-        return 'http://localhost:8000/api/et2f/travels'+ travelId + '/';
+        var travelId = travelId ? travelId.replace(/\//g, '') : null;
+        return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {id: travelId})
       },
       _handleData: function (e, data) {
         var self = this;
+
+        function convertDate(item) {
+          return new Date(item);
+        }
+
+        function modeOfTravelConversion (fieldSet) {
+          return fieldSet.map(function (mode) {
+            return self.structure['mode_of_travel'].find(function (item) {
+              return item.label === mode;
+            })
+          })
+        }
 
         var structureLib = {
           traveller: 'users',
           supervisor: 'users',
           office: 'offices',
           section: 'sections',
-          start_date: function(item) {
-            return new Date(item);
-          },
-          end_date: function(item) {
-            return new Date(item);
-          }
+          start_date: convertDate,
+          end_date: convertDate,
+          mode_of_travel: modeOfTravelConversion,
+          travel_type: modeOfTravelConversion
         };
-
         var statusLib = {
           "planned": "Planned",
           "submitted": "Submitted",
@@ -218,64 +228,163 @@
       },
       _processOutboundData: function (data) {
         var self = this;
+        delete data.status;
         this.serverData = {
           deductions: [],
           itinerary: [],
           activities: [],
           cost_assignments: [],
-          expenses: []
+          expenses: [],
+          clearances: {}
         };
-        var baseDetailsKeys = Object.keys(data.baseDetails);
-        baseDetailsKeys.forEach(function(key) {
-          if(data.baseDetails[key]) {
-            self.serverData[key] = typeof data.baseDetails[key] === 'object' ? data.baseDetails[key].value : data.baseDetails[key]
-          }
-        });
-        delete self.serverData.status;
-      },
-      _handlePrimaryAction: function (e, details) {
-        this._processOutboundData(this.data);
-        this.method = "POST";
-        if (details.endPoint === 'save') {
-          this.url = 'http://localhost:8000/api/et2f/travels/';
-          if(this.travelId) {
-            this.method = "PUT";
-            this.url += this.travelId.replace('/', '') + '/';
-          }
-        }
-        if (details.endPoint === 'approve') {
-          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/approve/';
-        }
-        if (details.endPoint === 'reject') {
-          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/reject/';
+
+        function handleArray(arr) {
+          arr.forEach(function(obj) {
+            handleObject(obj);
+          });
         }
 
-        if (details.endPoint === 'cancel') {
-          if(!this.newTravel) {
-            this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/cancel/';
-          } else {
-            this._handlePostSuccess();
+
+        function handleObject(obj) {
+          var keys = Object.keys(obj);
+          keys.forEach(function(key) {
+            if(obj[key] && !(obj[key] instanceof Array )){
+              obj[key] = typeof obj[key] === 'object' ? obj[key].value : obj[key]
+            }
+            if(obj[key] && obj[key] instanceof Array ){
+              obj[key] = obj[key].map(function(item) {
+                if(key === 'mode_of_travel') {
+                  return item.label;
+                }
+                return typeof  item === 'object' ? item.value : item
+              })
+            }
+          });
+        }
+
+        var dataKeys = Object.keys(data);
+
+        dataKeys.forEach(function(fieldSet){
+          if (data[fieldSet] instanceof Array) {
+            handleArray(data[fieldSet])
           }
+          else if(typeof data[fieldSet] === 'object'){
+            handleObject(data[fieldSet]);
+          }
+        });
+
+        var serverKeys = Object.keys(this.serverData);
+
+        console.log(JSON.parse(JSON.stringify(data)))
+
+        serverKeys.forEach(function(serverKey) {
+          if(data[serverKey] instanceof Array && data[serverKey][0]) {
+            if(Object.keys(data[serverKey][0]).length === 0) {
+              delete self.serverData[serverKey];
+            }
+          }
+          if(self.serverData[serverKey]) {
+            self.serverData[serverKey] = data[serverKey];
+          }
+          delete data[serverKey];
+        });
+
+        var leftoverKeys = Object.keys(data);
+        leftoverKeys.forEach(function(key) {
+          var innerKeys = Object.keys(data[key]);
+          innerKeys.forEach(function(innerKey) {
+            self.serverData[innerKey] = data[key][innerKey];
+          })
+
+        });
+
+      },
+      _handlePrimaryAction: function (e, details) {
+        console.log(JSON.parse(JSON.stringify(this.data)))
+        this._processOutboundData(this.data);
+        var self = this;
+        var endpointConfig = {
+          id: self.travelId ? self.travelId.replace(/\//g, '') : null,
+          status: null
+        };
+        var endpointName = 'et2fStateChange';
+
+        function doSavePost() {
+          self.method = 'POST';
+          self.postEndpoint = etoolsAppConfig.endpoints.et2fNewTravel;
+          self.postData = true;
         }
-        if (details.endPoint === 'reopen') {
-          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/restore/';
+
+        function doSaveUpdate() {
+          self.method = 'PATCH';
+          self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelDetail
+          self.postData = true;
         }
-        if (details.endPoint === 'send_for_payment') {
-          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/send_for_payment/';
+
+        function doPut() {
+          self.method = 'PUT';
+          self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
+          self.postData = true;
         }
-        if (details.endPoint === 'submit') {
-          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/submit_for_approval/';
+
+        function doPost() {
+          self.method = 'POST';
+          self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
+          self.postData = true;
         }
-        this.postData = true;
+
+
+        var statusActions = {
+          save: function () {
+            if(self.travelId !== undefined) {
+              doSaveUpdate();
+            } else {
+              doSavePost()
+            }
+          },
+          approve: function() {
+            endpointConfig.stauts = 'approve';
+            doPost();
+          },
+          reject: function() {
+            endpointConfig.status = 'reject';
+            doPost();
+          },
+          cancel: function() {
+            if(self.travelId !== undefined) {
+              endpointConfig.status = 'cancel';
+              doPost();
+            } else {
+              this._handlePostSuccess();
+            }
+          },
+          reopen: function() {
+            endpointConfig.status = 'restore';
+            doPost();
+          },
+          'send_for_payment': function() {
+            endpointConfig.status = 'send_for_payment';
+            doPost();
+          },
+          submit: function() {
+            endpointConfig.status = 'submit_for_approval';
+            doPost();
+          }
+        };
+
+        statusActions[details.endPoint]();
+
       },
       _handlePostFail: function(e, i) {
         console.log("post fail");
         console.log(e,i);
         this.postData = false;
+        this.travelId = null;
       },
       _handlePostSuccess: function() {
         this.postData = false;
         this.fire('travel-post-success');
+        this.travelId = null;
         this._resetData();
       },
       _resetData: function() {
@@ -286,7 +395,8 @@
           expenses: [{}],
           costAssignment: [{}],
           status: 'Planned'
-        }
+        };
+
       },
       ready: function () {
         if (this.newTravel) {

@@ -1,15 +1,25 @@
-<link rel="import" href="../../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../../../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../../../bower_components/paper-input/paper-textarea.html">
-<link rel="import" href="../../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
-<link rel="import" href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+<link rel="import"
+  href="../../../../bower_components/polymer/polymer.html">
+<link rel="import"
+  href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import"
+  href="../../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import"
+  href="../../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import"
+  href="../../../../bower_components/paper-input/paper-input.html">
+<link rel="import"
+  href="../../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import"
+  href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
-<link rel="import" href="../datepicker-input.html">
+<link rel="import"
+  href="../datepicker-input.html">
 
-<link rel="import" href="../../../../styles/shared-styles.html">
-<link rel="import" href="../../../../styles/et2f-styles.html">
+<link rel="import"
+  href="../../../../styles/shared-styles.html">
+<link rel="import"
+  href="../../../../styles/et2f-styles.html">
 
 <dom-module id="travel-plan">
   <template>
@@ -18,6 +28,7 @@
         display: block;
         width: 100%;
       }
+
       .custom-margin {
         --paper-input-container: {
           height: auto;
@@ -27,6 +38,7 @@
         };
         --paper-checkbox-margin: 12px;
       }
+
       span.standalone {
         color: var(--gray-dark);
         font-size: 16px;
@@ -38,11 +50,16 @@
       <div class="layout horizontal">
         <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
           disabled="[[et2fPermissions.taRequired.disabled]]"
-          hidden$="[[et2fPermissions.taRequired.hidden]]">TA required?
+          hidden$="[[et2fPermissions.taRequired.hidden]]"
+          checked="{{defaultChecked}}"
+          on-checked-changed="_setTaRequired">TA required?
         </paper-checkbox>
         <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
           disabled="[[et2fPermissions.taRequired.disabled]]"
-          hidden$="[[et2fPermissions.taRequired.hidden]]">International travel?</paper-checkbox>
+          hidden$="[[et2fPermissions.taRequired.hidden]]"
+          checked="{{baseDetails.international_travel}}"
+          on-checked-changed="_setInternationalTravel">International travel?
+        </paper-checkbox>
         <div class="flex layout horizontal center">
           <span class$="standalone [[et2fPermission.taRequired.readOnly]]"
             hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: [[baseDetails.reference_number]]</span>
@@ -102,10 +119,10 @@
         <etools-searchable-multiselection-menu class$="flex-6 [[et2fPermission.modeOfTravel.readOnly]]"
           disabled="[[et2fPermissions.modeOfTravel.disabled]]"
           hidden$="[[et2fPermissions.modeOfTravel.hidden]]"
-          options="[[structure.users]]"
+          options="[[structure.mode_of_travel]]"
           multi
           label="Mode of travel"
-          value="{{baseDetails.modeOfTravel}}"></etools-searchable-multiselection-menu>
+          value="{{baseDetails.mode_of_travel}}"></etools-searchable-multiselection-menu>
         <div class="flex-6"></div>
       </div>
       <div class="layout horizontal">
@@ -129,16 +146,29 @@
         baseDetails: {
           type: Object,
           value: {},
-//          observer: '_log'
         },
         structure: {
           type: Object,
           value: {}
+        },
+        defaultChecked: {
+          type: Boolean,
+          computed: '_computeDefaultChecked(baseDetails.ta_required)'
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
-      _log: function(data) {
-        console.log(data)
+      _computeDefaultChecked: function (value) {
+        return value !== false
+      },
+      _setTaRequired: function (event, value) {
+        if (this.baseDetails) {
+          this.baseDetails.ta_required = value;
+        }
+      },
+      _setInternationalTravel: function (event, value) {
+        if (this.baseDetails) {
+          this.baseDetails.international_travel = value;
+        }
       }
     });
   </script>
