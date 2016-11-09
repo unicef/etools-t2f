@@ -54,13 +54,13 @@
             options="[[structure.locations]]"
             label="Travel locations"
             multi
-            value="{{activity.location}}"></etools-searchable-multiselection-menu>
+            value="{{activity.locations}}"></etools-searchable-multiselection-menu>
         </div>
         <div class="layout horizontal">
           <datepicker-input class="flex-4"
             label="When?"
-            value="{{activity.when}}"></datepicker-input>
-          <paper-checkbox class="flex-8 custom-margin self-end">I am a Primary Traveler</paper-checkbox>
+            date="{{activity.date}}"></datepicker-input>
+          <paper-checkbox class="flex-8 custom-margin self-end" checked="{{activity.primary_traveler}}">I am a Primary Traveler</paper-checkbox>
         </div>
       </div>
 
@@ -80,7 +80,7 @@
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
-      observers: ['_setCheckboxes(baseDetails.*)'],
+      observers: ['_setCheckboxes(activity.*)'],
       _setCheckboxes: function(changed) {
         this[changed.path] = changed.value;
       }

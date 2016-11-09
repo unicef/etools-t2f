@@ -131,11 +131,20 @@
           return new Date(item);
         }
 
-        function modeOfTravelConversion (fieldSet) {
-          return fieldSet.map(function (mode) {
-            return self.structure['mode_of_travel'].find(function (item) {
-              return item.label === mode;
+        function multiFieldConversion (subField, fieldName, fieldSet) {
+          if (fieldSet instanceof Array) {
+            return fieldSet.map(function (field) {
+              return self.structure[fieldName].find(function (item) {
+                return item[subField] === field;
+              })
             })
+          }
+        }
+
+        function matchByLabel (fieldName, item) {
+          console.log(fieldName, item)
+          return self.structure[fieldName].find(function (struct) {
+            return struct.label === item;
           })
         }
 
@@ -146,9 +155,14 @@
           section: 'sections',
           start_date: convertDate,
           end_date: convertDate,
-          mode_of_travel: modeOfTravelConversion,
-          travel_type: modeOfTravelConversion,
-          currency: 'currencies'
+          mode_of_travel: multiFieldConversion.bind(this, 'label', 'mode_of_travel'),
+          locations: multiFieldConversion.bind(this, 'value', 'locations'),
+          currency: 'currencies',
+          travel_type: matchByLabel.bind(this, 'mode_of_travel'),
+          partner: 'partners',
+          partnership: 'partnerships',
+          result: 'results',
+
         };
         var statusLib = {
           "planned": "Planned",
@@ -239,7 +253,21 @@
           clearances: {}
         };
 
+        function duplicateIdPurging(collection) {
+          if(collection.length < 2) {
+            return collection;
+          }
+          return collection.reduce(function(prev, current) {
+            if(prev.some(function(prevItem){return prevItem.id === current.id;})) {
+              delete current.id;
+            }
+            prev.push(current);
+            return prev;
+          }, [])
+        }
+
         function handleArray(arr) {
+          arr = duplicateIdPurging(arr);
           arr.forEach(function(obj) {
             handleObject(obj);
           });
@@ -250,7 +278,7 @@
           var keys = Object.keys(obj);
           keys.forEach(function(key) {
             if(obj[key] && !(obj[key] instanceof Array )){
-              obj[key] = typeof obj[key] === 'object' ? obj[key].value : obj[key]
+              obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' ? obj[key].label : obj[key].value : obj[key]
             }
             if(obj[key] && obj[key] instanceof Array ){
               obj[key] = obj[key].map(function(item) {
