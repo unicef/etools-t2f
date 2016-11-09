@@ -16,7 +16,6 @@ For upload:
 
 -->
 
-
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
@@ -27,81 +26,119 @@ For upload:
   <style include="iron-flex">
     :host {
       display: block;
+      margin-left: 12px;
+      margin-right: 12px;
     }
-    .file-name {
-      padding-right: 10px;
-      border-bottom: 1px solid rgba(0,0,0,0.30);
+    .floating-label {
+      color: var(--gray-light);
+      font-size: 12px;
+    }
+    paper-button.upload-button {
       height: 36px;
+      line-height: 36px;
+      width: 130px;
+      padding: 0;
+      color: var(--primary);
     }
-    iron-icon {
-      color: rgba(0,0,0,0.54);
+    paper-button.upload-button iron-icon {
+      --iron-icon-fill-color: var(--primary);
       margin-right: 10px;
     }
-    span.label {
-      font-size: 16px;
-      color: rgba(0,0,0,0.54);
+
+    .file-container {
+      margin-bottom: 24px;
     }
-    span.label.filename {
-      color: rgba(0,0,0,0.87);
+
+    div.file-name {
+      border-bottom: 1px solid var(--gray-light);
+    }
+    div.file-name iron-icon {
+      color: var(--gray-mid);
+      margin-right: 10px;
+    }
+    div.file-name span.label {
+      font-size: 16px;
+      padding-right: 10px;
+      color: var(--gray-dark);
+      height: 36px;
+      line-height: 36px;
+    }
+
+    .buttons {
+      margin-left: 24px;
     }
 
     .buttons paper-button {
       text-transform: none;
       font-weight: 500;
       font-size: 14px;
-      color: rgba(0,0,0,0.54);
+      color: var(--primary);
       height: 36px;
     }
     .buttons paper-button.del {
-      color: #EA4022;
+      color: var(--delete);
     }
     .buttons paper-button.load {
-      color: #00AEEF;
+      color: var(--primary);
     }
     .buttons paper-button.load iron-icon {
-      color: #00AEEF;
+      --iron-icon-fill-color: var(--primary);
+      margin-right: 10px;
+    }
+    #downloader {
+      diplay: none;
     }
   </style>
 
   <template>
 
-    <div class="horizontal layout">
+    <p>FILE UPLOAD, multiple: [[multiple]], noUpload: [[noUpload]]</p>
 
-      <div class="file-name flex horizontal center layout" on-click="_selectFile">
-        <iron-icon icon="attachment"></iron-icon>
-        <span class$="label [[_hasFileNameClass(localFile.name)]]">[[_labelText(label, localFile.name)]]</span>
+    <span hidden$="[[multiple]]" class="floating-label">File attachment</span>
+    <span hidden$="[[!multiple]]" class="floating-label">File attachments</span>
+
+    <template is="dom-repeat" items="[[files]]">
+      <div class="file-container horizontal layout center">
+
+        <div class="file-name flex horizontal center layout">
+          <iron-icon icon="attachment"></iron-icon>
+          <span class="label">[[item.file_name]]</span>
+        </div>
+
+        <div class="buttons flex horizontal layout">
+
+          <paper-button
+            class="load"
+            on-click="_btnDownload"
+            hidden$=""[[_isThereURL(item)]]>
+            <iron-icon icon="cloud-download"></iron-icon>
+            Download
+          </paper-button>
+
+          <paper-button class="del" on-click="_btnDel">
+            Delete
+          </paper-button>
+        </div>
       </div>
+    </template>
 
-      <div class="buttons flex horizontal layout">
-
-        <paper-button on-click="_openFileChooser" hidden$="[[_hideBtns(localFile)]]">
-          Change
-        </paper-button>
-
-        <paper-button class="del" on-click="_btnDel" hidden$="[[_hideDelBtn(localFile)]]">
-          Delete
-        </paper-button>
-
-        <paper-button class="load" on-click="_btnUpload" hidden$="[[_hideBtns(localFile)]]">
-          <iron-icon icon="file-upload"></iron-icon>
-          Upload file
-        </paper-button>
-
-        <paper-button class="load" on-click="_btnDownload" hidden$="[[_hideDownloadBtn(downloadPath)]]">
-          <iron-icon icon="file-download"></iron-icon>
-          Download file
-        </paper-button>
-
-      </div>
-
-    </div>
     <input
       hidden
       type="file"
       id="fileInput"
       on-change="_fileSelected"
-      multiple="false"
+      multiple="{{multiple}}"
       accept="{{accept}}">
+
+    <a id="downloader"></a>
+
+    <template is="dom-if" if="[[_showUploadButton(multiple, noUpload, files)]]">
+      <paper-button class="upload-button" on-click="_openFileChooser">
+        <iron-icon icon="file-upload"></iron-icon>
+        Upload file
+      </paper-button>
+    </template>
+
   </template>
 
   <script>
@@ -111,68 +148,27 @@ For upload:
 
       properties: {
 
-        // Given by parent
-        label: {
-          type: String,
-          value: ''
-        },
-        downloadPath: {
-          type: String,
-          value: 'placeholder'
-        },
-        uploadPath: {
-          type: String,
-          value: ''
-        },
-        fileName: {
-          type: String,
-          value: 'placeholder'
+        // Hides uploading button
+        noUpload: {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false
         },
 
-        // Filled for internal use
-        localFile: {
-          type: Object,
-          value: {
-            name: '',
-            placeholder: true
-          }
+        multiple: {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false
+        },
+
+        files: {
+          type: Array,
+          notify: true,
+          value: []
         }
+
       },
 
-      // Starts the browsers file selection
-      _selectFile: function() {
-        if (
-          this.fileName !== 'placeholder' ||
-          !this.localFile.hasOwnProperty('placeholder')
-        ) {
-          return;
-        }
-        this._openFileChooser();
-      },
-
-      // Runs when the browser gives back the selected file
-      _fileSelected: function(e) {
-
-        var file = e.target.files[0];
-        this.set('localFile', file);
-      },
-
-      // Returns the filename || passed placeholder label || default placeholder label
-      _labelText: function(label, newFileName) {
-
-        return this.fileName !== 'placeholder' ? this.fileName : 0 ||
-          newFileName ||
-          label ||
-          'Click to upload a file';
-      },
-
-      // Returns the class 'filename', if there is a filename
-      _hasFileNameClass: function(fileName) {
-
-        return fileName ? 'filename' : '';
-      },
-
-      // Changes the file to upload locally
       _openFileChooser: function() {
 
         var elem = this.$.fileInput;
@@ -183,44 +179,57 @@ For upload:
         }
       },
 
-      // Tells if should hide the change button
-      _hideBtns: function(localFile) {
+      _fileSelected: function(e) {
 
-        return localFile.hasOwnProperty('placeholder');
+        if (this.multiple) {
+          var files = e.target.files;
+          for(var i=0; i < files.length; i++) {
+            this.push('files', {
+              id: '',
+              file_name: files[i].name,
+              path: '',
+              raw: files[i]
+            });
+          }
+        } else {
+          var file = e.target.files[0];
+          this.push('files', {
+            id: '',
+            file_name: file.name,
+            path: '',
+            raw: file
+          });
+        }
+        // console.info(this.files);
       },
 
-      _hideDelBtn: function(localFile) {
-
-        return !(this.fileName !== 'placeholder' || !this._hideBtns(localFile));
-      },
-
-      // Tells if the download button should be hidden
-      _hideDownloadBtn: function(downloadPath) {
-
-        return downloadPath === 'placeholder';
-      },
-
-      // Deletes file from server, reset state
       _btnDel: function() {
 
         console.log('TODO: Delete file from server, reset state');
-        this.set('localFile', {
-          name: '',
-          placeholder: true
-        });
       },
 
-      // Uploads the selected file
-      _btnUpload: function() {
+      _btnDownload: function(e) {
 
-        console.log('TODO: Upload this file with the <etools-ajax>:', this.localFile);
-        console.log('TODO: To given path:', this.uploadPath);
+        var a = this.$.downloader;
+        a.href = e.model.item.path;
+        a.download = e.model.item.file_name;
+        a.click();
+        window.URL.revokeObjectURL(e.model.item.path);
       },
 
-      // Downloads the linked file
-      _btnDownload: function() {
+      _isThereURL: function(item) {
 
-        console.log('TODO: Download the file with <etools-ajax> from:', this.downloadPath);
+        return item.path !== '';
+      },
+
+      _showUploadButton: function(multiple, noUpload, files) {
+
+        // console.log('noUpload', noUpload);
+        // console.log('multiple', multiple);
+        // console.log('files.length', files.length);
+        var notShow = noUpload || (!multiple && files.length > 0);
+        // console.log('notShow', notShow);
+        return !notShow;
       }
     });
   </script>
