@@ -1,18 +1,36 @@
 <!-- ETOOLS FILE UPLOADER COMPONENT
 
-Missing/todo: deletion, uploading, downloading, waiting for missing <etools-ajax> feature
+The component doesn't upload the files, it just manages an array of them, which is reachable from the parent component.
 
-For existing files:
-===================
-<etools-file-upload
-  label="Click to upload TEST file"
-  download-path="https://www.some_path-to-the-file_in_question6.com"
-  file-name="somefile.jpg"></etools-file-upload>
+attributes:
+  files:     Array, containing files both uploaded, or not uploaded
+              uploaded example: {
+                id: 'pic1',
+                file_name: 'cat.pdf',
+                path: 'https://pbs.twimg.com/profile_images/616542814319415296/McCTpH_E.jpg'
+              }
+              not yet uploaded example: {
+                id: '',
+                file_name: 'actual_filename.pdf',
+                path: '',
+                raw: <fileObj>
+              }
+
+  multiple:  Boolean attribute (there, or not), defaults to false, if true:
+              doesn't allow more than one file to be added to the Array
+              still shows all the files contained in the files attribute Array
+              manages the floating labels prulal form
 
 
-For upload:
-===========
-<etools-file-upload label="" upload-path="//some-path.to6?upload_stuff/"></etools-file-upload>
+  no-upload: Boolean attribute (there, or not), defaults to false, if true:
+              hides upload and delete functionality
+
+  CSS mixins used:
+      --primary
+      --delete
+      --gray-light
+      --gray-mid
+      --gray-dark
 
 -->
 
@@ -29,10 +47,17 @@ For upload:
       margin-left: 12px;
       margin-right: 12px;
     }
+
     .floating-label {
+      display: block;
       color: var(--gray-light);
       font-size: 12px;
+      width: 100%;
     }
+    .floating-label[hidden] {
+      display: none;
+    }
+
     paper-button.upload-button {
       height: 36px;
       line-height: 36px;
@@ -43,6 +68,9 @@ For upload:
     paper-button.upload-button iron-icon {
       --iron-icon-fill-color: var(--primary);
       margin-right: 10px;
+    }
+    paper-button.upload-button[hidden] {
+      display: none;
     }
 
     .file-container {
@@ -92,10 +120,8 @@ For upload:
 
   <template>
 
-    <p>FILE UPLOAD, multiple: [[multiple]], noUpload: [[noUpload]]</p>
-
-    <span hidden$="[[multiple]]" class="floating-label">File attachment</span>
-    <span hidden$="[[!multiple]]" class="floating-label">File attachments</span>
+    <span hidden$="[[_isMultiple(multiple)]]" class="floating-label">File attachment</span>
+    <span hidden$="[[!_isMultiple(multiple)]]" class="floating-label">File attachments</span>
 
     <template is="dom-repeat" items="[[files]]">
       <div class="file-container horizontal layout center">
@@ -110,34 +136,36 @@ For upload:
           <paper-button
             class="load"
             on-click="_btnDownload"
-            hidden$=""[[_isThereURL(item)]]>
+            hidden$="[[_isThereNoURL(item)]]">
             <iron-icon icon="cloud-download"></iron-icon>
             Download
           </paper-button>
 
-          <paper-button class="del" on-click="_btnDel">
+          <paper-button class="del" on-click="_btnDel" hidden$="[[noUpload]]">
             Delete
           </paper-button>
         </div>
       </div>
     </template>
 
+    <paper-button
+      hidden$="[[_hideUploadBtn(multiple, noUpload, files.length)]]"
+      class="upload-button"
+      on-click="_openFileChooser">
+
+      <iron-icon icon="file-upload"></iron-icon>
+      Upload file
+    </paper-button>
+
     <input
       hidden
       type="file"
       id="fileInput"
       on-change="_fileSelected"
-      multiple="{{multiple}}"
+      multiple="[[multiple]]"
       accept="{{accept}}">
 
     <a id="downloader"></a>
-
-    <template is="dom-if" if="[[_showUploadButton(multiple, noUpload, files)]]">
-      <paper-button class="upload-button" on-click="_openFileChooser">
-        <iron-icon icon="file-upload"></iron-icon>
-        Upload file
-      </paper-button>
-    </template>
 
   </template>
 
@@ -148,16 +176,13 @@ For upload:
 
       properties: {
 
-        // Hides uploading button
         noUpload: {
           type: Boolean,
-          reflectToAttribute: true,
           value: false
         },
 
         multiple: {
           type: Boolean,
-          reflectToAttribute: true,
           value: false
         },
 
@@ -200,12 +225,15 @@ For upload:
             raw: file
           });
         }
-        // console.info(this.files);
+
+        this.notifyPath('files');
       },
 
-      _btnDel: function() {
+      _btnDel: function(e) {
 
-        console.log('TODO: Delete file from server, reset state');
+        this.set('files', this.files.filter(function(file) {
+          return file !== e.model.item;
+        }));
       },
 
       _btnDownload: function(e) {
@@ -217,19 +245,16 @@ For upload:
         window.URL.revokeObjectURL(e.model.item.path);
       },
 
-      _isThereURL: function(item) {
+      _isThereNoURL: function(item) {
 
-        return item.path !== '';
+        return item.path === '';
       },
 
-      _showUploadButton: function(multiple, noUpload, files) {
+      _isMultiple: function(multiple) { return multiple; },
 
-        // console.log('noUpload', noUpload);
-        // console.log('multiple', multiple);
-        // console.log('files.length', files.length);
-        var notShow = noUpload || (!multiple && files.length > 0);
-        // console.log('notShow', notShow);
-        return !notShow;
+      _hideUploadBtn: function(multiple, noUpload, length) {
+
+        return noUpload || (!multiple && length > 0);
       }
     });
   </script>
