@@ -1,5 +1,4 @@
 {
-  // Only or testing purposes, TODO: delete this!
   "godmode": {
     "Planned": {
       "primary": "save",
@@ -47,7 +46,6 @@
     }
   },
 
-  // Anyone with email
   "default": {
     "Planned": {
       "primary": "",
@@ -142,7 +140,6 @@
     }
   },
 
-  // Travel administrator
   "administrator": {
     "Planned": {
       "primary": "save",
@@ -190,7 +187,6 @@
     }
   },
 
-  // Supervisor selected
   "supervisor": {
     "Planned": {
       "primary": "",
@@ -238,7 +234,6 @@
     }
   },
 
-  // Travel focal point
   "tfp": {
     "Planned": {
       "primary": "save",
@@ -286,7 +281,6 @@
     }
   },
 
-  // Finance focal point
   "ffp": {
     "Planned": {
       "primary": "save",
