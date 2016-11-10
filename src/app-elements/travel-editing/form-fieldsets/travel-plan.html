@@ -7,6 +7,7 @@
 <link rel="import" href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="../datepicker-input.html">
+<link rel="import" href="../../reuseable/etools-file-upload.html">
 
 <link rel="import" href="../../../../styles/shared-styles.html">
 <link rel="import" href="../../../../styles/et2f-styles.html">
@@ -31,6 +32,13 @@
         color: var(--gray-dark);
         font-size: 16px;
         padding-left: 12px;
+      }
+      etools-file-upload {
+        --primary: var(--et2f-primary);
+        --delete: var(--et2f-error);
+        --gray-dark: rgba(0,0,0,.87);
+        --gray-mid: rgba(0,0,0,.54);
+        --gray-light: rgba(0,0,0,.38);
       }
     </style>
 
@@ -118,6 +126,13 @@
           maxlength="500"
           value="{{baseDetails.purpose}}"></paper-textarea>
       </div>
+
+      <etools-file-upload
+        no-upload$="{{et2fPermissions.upload.disabled}}"
+        files="[[filesMock]]"
+        multiple>
+      </etools-file-upload>
+
     </div>
 
   </template>
@@ -134,6 +149,13 @@
         structure: {
           type: Object,
           value: {}
+        },
+        filesMock: {
+          type: Array,
+          value: [
+            {id: 'pic1', file_name: 'cat.pdf', path: 'https://pbs.twimg.com/profile_images/616542814319415296/McCTpH_E.jpg'},
+            {id: 'pic2', file_name: 'dog.pdf', path: 'https://static.pexels.com/photos/7720/night-animal-dog-pet.jpg'}
+          ]
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],

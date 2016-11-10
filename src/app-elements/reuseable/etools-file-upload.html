@@ -1,0 +1,261 @@
+<!-- ETOOLS FILE UPLOADER COMPONENT
+
+The component doesn't upload the files, it just manages an array of them, which is reachable from the parent component.
+
+attributes:
+  files:     Array, containing files both uploaded, or not uploaded
+              uploaded example: {
+                id: 'pic1',
+                file_name: 'cat.pdf',
+                path: 'https://pbs.twimg.com/profile_images/616542814319415296/McCTpH_E.jpg'
+              }
+              not yet uploaded example: {
+                id: '',
+                file_name: 'actual_filename.pdf',
+                path: '',
+                raw: <fileObj>
+              }
+
+  multiple:  Boolean attribute (there, or not), defaults to false, if true:
+              doesn't allow more than one file to be added to the Array
+              still shows all the files contained in the files attribute Array
+              manages the floating labels prulal form
+
+
+  no-upload: Boolean attribute (there, or not), defaults to false, if true:
+              hides upload and delete functionality
+
+  CSS mixins used:
+      --primary
+      --delete
+      --gray-light
+      --gray-mid
+      --gray-dark
+
+-->
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<dom-module id="etools-file-upload">
+
+  <style include="iron-flex">
+    :host {
+      display: block;
+      margin-left: 12px;
+      margin-right: 12px;
+    }
+
+    .floating-label {
+      display: block;
+      color: var(--gray-light);
+      font-size: 12px;
+      width: 100%;
+    }
+    .floating-label[hidden] {
+      display: none;
+    }
+
+    paper-button.upload-button {
+      height: 36px;
+      line-height: 36px;
+      width: 130px;
+      padding: 0;
+      color: var(--primary);
+    }
+    paper-button.upload-button iron-icon {
+      --iron-icon-fill-color: var(--primary);
+      margin-right: 10px;
+    }
+    paper-button.upload-button[hidden] {
+      display: none;
+    }
+
+    .file-container {
+      margin-bottom: 24px;
+    }
+
+    div.file-name {
+      border-bottom: 1px solid var(--gray-light);
+    }
+    div.file-name iron-icon {
+      color: var(--gray-mid);
+      margin-right: 10px;
+    }
+    div.file-name span.label {
+      font-size: 16px;
+      padding-right: 10px;
+      color: var(--gray-dark);
+      height: 36px;
+      line-height: 36px;
+    }
+
+    .buttons {
+      margin-left: 24px;
+    }
+
+    .buttons paper-button {
+      text-transform: none;
+      font-weight: 500;
+      font-size: 14px;
+      color: var(--primary);
+      height: 36px;
+    }
+    .buttons paper-button.del {
+      color: var(--delete);
+    }
+    .buttons paper-button.load {
+      color: var(--primary);
+    }
+    .buttons paper-button.load iron-icon {
+      --iron-icon-fill-color: var(--primary);
+      margin-right: 10px;
+    }
+    #downloader {
+      diplay: none;
+    }
+  </style>
+
+  <template>
+
+    <span hidden$="[[_isMultiple(multiple)]]" class="floating-label">File attachment</span>
+    <span hidden$="[[!_isMultiple(multiple)]]" class="floating-label">File attachments</span>
+
+    <template is="dom-repeat" items="[[files]]">
+      <div class="file-container horizontal layout center">
+
+        <div class="file-name flex horizontal center layout">
+          <iron-icon icon="attachment"></iron-icon>
+          <span class="label">[[item.file_name]]</span>
+        </div>
+
+        <div class="buttons flex horizontal layout">
+
+          <paper-button
+            class="load"
+            on-click="_btnDownload"
+            hidden$="[[_isThereNoURL(item)]]">
+            <iron-icon icon="cloud-download"></iron-icon>
+            Download
+          </paper-button>
+
+          <paper-button class="del" on-click="_btnDel" hidden$="[[noUpload]]">
+            Delete
+          </paper-button>
+        </div>
+      </div>
+    </template>
+
+    <paper-button
+      hidden$="[[_hideUploadBtn(multiple, noUpload, files.length)]]"
+      class="upload-button"
+      on-click="_openFileChooser">
+
+      <iron-icon icon="file-upload"></iron-icon>
+      Upload file
+    </paper-button>
+
+    <input
+      hidden
+      type="file"
+      id="fileInput"
+      on-change="_fileSelected"
+      multiple="[[multiple]]"
+      accept="{{accept}}">
+
+    <a id="downloader"></a>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'etools-file-upload',
+
+      properties: {
+
+        noUpload: {
+          type: Boolean,
+          value: false
+        },
+
+        multiple: {
+          type: Boolean,
+          value: false
+        },
+
+        files: {
+          type: Array,
+          notify: true,
+          value: []
+        }
+
+      },
+
+      _openFileChooser: function() {
+
+        var elem = this.$.fileInput;
+        if (elem && document.createEvent) {
+          var evt = document.createEvent('MouseEvents');
+          evt.initEvent('click', true, false);
+          elem.dispatchEvent(evt);
+        }
+      },
+
+      _fileSelected: function(e) {
+
+        if (this.multiple) {
+          var files = e.target.files;
+          for(var i=0; i < files.length; i++) {
+            this.push('files', {
+              id: '',
+              file_name: files[i].name,
+              path: '',
+              raw: files[i]
+            });
+          }
+        } else {
+          var file = e.target.files[0];
+          this.push('files', {
+            id: '',
+            file_name: file.name,
+            path: '',
+            raw: file
+          });
+        }
+
+        this.notifyPath('files');
+      },
+
+      _btnDel: function(e) {
+
+        this.set('files', this.files.filter(function(file) {
+          return file !== e.model.item;
+        }));
+      },
+
+      _btnDownload: function(e) {
+
+        var a = this.$.downloader;
+        a.href = e.model.item.path;
+        a.download = e.model.item.file_name;
+        a.click();
+        window.URL.revokeObjectURL(e.model.item.path);
+      },
+
+      _isThereNoURL: function(item) {
+
+        return item.path === '';
+      },
+
+      _isMultiple: function(multiple) { return multiple; },
+
+      _hideUploadBtn: function(multiple, noUpload, length) {
+
+        return noUpload || (!multiple && length > 0);
+      }
+    });
+  </script>
+</dom-module>
