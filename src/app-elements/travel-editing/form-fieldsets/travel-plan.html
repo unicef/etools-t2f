@@ -46,11 +46,16 @@
       <div class="layout horizontal">
         <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
           disabled="[[et2fPermissions.taRequired.disabled]]"
-          hidden$="[[et2fPermissions.taRequired.hidden]]">TA required?
+          hidden$="[[et2fPermissions.taRequired.hidden]]"
+          checked="{{defaultChecked}}"
+          >TA required?
         </paper-checkbox>
         <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
           disabled="[[et2fPermissions.taRequired.disabled]]"
-          hidden$="[[et2fPermissions.taRequired.hidden]]">International travel?</paper-checkbox>
+          hidden$="[[et2fPermissions.taRequired.hidden]]"
+          checked="{{baseDetails.international_travel}}"
+          >International travel?
+        </paper-checkbox>
         <div class="flex layout horizontal center">
           <span class$="standalone [[et2fPermission.taRequired.readOnly]]"
             hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: [[baseDetails.reference_number]]</span>
@@ -92,13 +97,14 @@
         <datepicker-input class$="flex-3 [[et2fPermission.end_date.readOnly]]"
           disabled="[[et2fPermissions.end_date.disabled]]"
           hidden$="[[et2fPermissions.end_date.hidden]]"
-          label="End Date "
+          label="End Date"
           date="{{baseDetails.end_date}}"></datepicker-input>
         <paper-input class$="flex-3 custom-margin [[et2fPermission.estimatedTravelCost.readOnly]]"
           disabled="[[et2fPermissions.estimatedTravelCost.disabled]]"
           hidden$="[[et2fPermissions.estimatedTravelCost.hidden]]"
           label="Estimated travel cost"
-          value="{{baseDetails.estimatedTravelCost}}"></paper-input>
+          type="number"
+          value="{{baseDetails.estimated_travel_cost}}"></paper-input>
         <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.currency.readOnly]]"
           disabled="[[et2fPermissions.currency.disabled]]"
           hidden$="[[et2fPermissions.currency.hidden]]"
@@ -110,10 +116,10 @@
         <etools-searchable-multiselection-menu class$="flex-6 [[et2fPermission.modeOfTravel.readOnly]]"
           disabled="[[et2fPermissions.modeOfTravel.disabled]]"
           hidden$="[[et2fPermissions.modeOfTravel.hidden]]"
-          options="[[structure.users]]"
+          options="[[structure.mode_of_travel]]"
           multi
           label="Mode of travel"
-          value="{{baseDetails.modeOfTravel}}"></etools-searchable-multiselection-menu>
+          value="{{baseDetails.mode_of_travel}}"></etools-searchable-multiselection-menu>
         <div class="flex-6"></div>
       </div>
       <div class="layout horizontal">
@@ -144,11 +150,14 @@
         baseDetails: {
           type: Object,
           value: {},
-//          observer: '_log'
         },
         structure: {
           type: Object,
           value: {}
+        },
+        defaultChecked: {
+          type: Boolean,
+          computed: '_computeDefaultChecked(baseDetails.ta_required)'
         },
         filesMock: {
           type: Array,
@@ -159,8 +168,12 @@
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
-      _log: function(data) {
-        console.log(data)
+      observers: ['_setCheckboxes(baseDetails.*)'],
+      _computeDefaultChecked: function (value) {
+        return value !== false
+      },
+      _setCheckboxes: function(changed) {
+        this[changed.path] = changed.value;
       }
     });
   </script>

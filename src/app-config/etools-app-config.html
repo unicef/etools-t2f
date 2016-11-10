@@ -41,8 +41,16 @@ App global configuration
           exp: 60 * 1000, // 1 min
           cachingKey: 'et2f_permissions'
         },
+        et2fTravelDetail: {
+          template: 'http://localhost:8000/api/et2f/travels/<%=id%>/',
+//          cachingKeyTemplate: 'et2f_travel_detail_<%=id%>',
+//          exp: 60 * 1000
+        },
         et2fStateChange: {
-          template: 'http://localhost:8000/api/et2f/travels/<%=id%>/'
+          template: 'http://localhost:8000/api/et2f/travels/<%=id%>/<%=status%>/'
+        },
+        et2fNewTravel: {
+          url: 'http://localhost:8000/api/et2f/travels/'
         }
       },
 
@@ -64,6 +72,10 @@ App global configuration
           if (endpoint && endpoint.hasOwnProperty('template') && endpoint.template !== '') {
             endpoint.url = _.template(endpoint.template)(data);
           }
+          if (endpoint && endpoint.hasOwnProperty('cachingKeyTemplate') && endpoint.cachingKeyTemplate !== '') {
+            endpoint.cachingKey = _.template(endpoint.cachingKeyTemplate)(data);
+          }
+          return endpoint
         },
 
         getAllPermissions: function() {
