@@ -97,25 +97,34 @@
   <script>
     Polymer({
       is: 'travel-deductions',
+
       properties: {
         startDate: String,
         endDate: String,
         deductions: {
           type: Array,
-          value: []
+          value: [],
+          observer: 'gotDeductions'
         },
         disabled: {
           type: Boolean,
           reflectToAttribute: true
         }
       },
+
       observers: [
-        'dateChanged(startDate, endDate)'
+        'recalcDeductions(startDate, endDate, hasDeductions)'
       ],
+
       _disabled: function(disabled) {
         return disabled;
       },
-      dateChanged: function(startDateStr, endDateStr) {
+
+      gotDeductions: function() {
+        this.set('hasDeductions', true);
+      },
+
+      recalcDeductions: function(startDateStr, endDateStr, gotDeductions) {
 
         var startDate = new Date(startDateStr);
         var endDate = new Date(endDateStr);
@@ -161,9 +170,11 @@
 
         this.set('deductions', deductions);
       },
+
       _calcWeekday: function(dateStr) {
         return ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][new Date(dateStr).getDay()];
       },
+
       _calcFullDate: function(dateStr) {
         var date = dateStr.split('-');
         return [
