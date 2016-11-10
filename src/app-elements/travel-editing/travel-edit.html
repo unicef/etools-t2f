@@ -51,7 +51,7 @@
 
     <template is="dom-if"
       if="[[postData]]">
-      <etools-ajax url="[[url]]"
+      <etools-ajax endpoint="[[postEndpoint]]"
         body="[[serverData]]"
         method="[[method]]"
         on-success="_handlePostSuccess"
@@ -115,7 +115,8 @@
         },
         travelUrl: {
           type: String,
-          computed: '_computeUrl(travelId)'
+          computed: '_computeUrl(travelId)',
+          reflectToAttribute: true
         },
         postData: {
           type: Boolean,
@@ -131,24 +132,62 @@
       _computeUrl: function(travelId) {
         this.set('data', {});
         this._resetData();
-        return 'http://localhost:8000/api/et2f/travels'+ travelId + '/';
+        var travelId = travelId ? travelId.replace(/\//g, '') : null;
+        if(travelId) {
+          return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {id: travelId}).url
+        }
       },
       _handleData: function (e, data) {
         var self = this;
 
-        var structureLib = {
-          traveller: 'users',
-          supervisor: 'users',
-          office: 'offices',
-          section: 'sections',
-          start_date: function(item) {
-            return new Date(item);
-          },
-          end_date: function(item) {
-            return new Date(item);
-          }
-        };
+        function convertDate(item) {
+          return new Date(item);
+        }
 
+        function multiFieldConversion (subField, fieldName, fieldSet) {
+          if (fieldSet instanceof Array) {
+            return fieldSet.map(function (field) {
+              return self.structure[fieldName].find(function (item) {
+                return item[subField] === field;
+              })
+            })
+          }
+        }
+
+        function matchByLabel (fieldName, item) {
+          return self.structure[fieldName].find(function (struct) {
+            return struct.label === item;
+          })
+        }
+
+        var structureLib = {
+          baseDetails: {
+            traveller: 'users',
+            supervisor: 'users',
+            office: 'offices',
+            section: 'sections',
+            start_date: convertDate,
+            end_date: convertDate,
+            mode_of_travel: multiFieldConversion.bind(this, 'label', 'mode_of_travel'),
+            currency: 'currencies',
+          },
+          activities: {
+            locations: multiFieldConversion.bind(this, 'value', 'locations'),
+            travel_type: matchByLabel.bind(this, 'mode_of_travel'),
+            partner: 'partners',
+            partnership: 'partnerships',
+            result: 'results',
+          },
+          itinerary: {
+            airlines: multiFieldConversion.bind(this, 'value', 'airlines'),
+            mode_of_travel: matchByLabel.bind(this, 'mode_of_travel'),
+            dsa_region: 'dsa_regions'
+          },
+          clearances: {},
+          deductions: {}
+
+
+        };
         var statusLib = {
           "planned": "Planned",
           "submitted": "Submitted",
@@ -174,19 +213,19 @@
           delete data[key];
         });
 
-        function handleArray(fieldSet) {
+        function handleArray(fieldSet, key) {
           if(fieldSet.length === 0) {
             // add one empty object in case of empty array
             fieldSet.push({});
           } else {
             //loop on array elements and run the object handling function
-            fieldSet.forEach(function(innerFieldset) {
-              handleObject(innerFieldset)
+            fieldSet.forEach(function(innerFieldSet) {
+              handleObject(innerFieldSet, key)
             })
           }
         }
 
-        function handleObject(fieldSet) {
+        function handleObject(fieldSet, key) {
           // loop on the object inner keys
           if(!fieldSet) {
             return
@@ -194,7 +233,7 @@
           var localKeys = Object.keys(fieldSet);
           localKeys.forEach(function(label) {
             // search the structure library for a match
-            var structureData = structureLib[label];
+            var structureData = structureLib[key][label];
             if(structureData) {
               //apply the matching function or the transformation from the structure
               if(typeof structureData  === 'function') {
@@ -212,10 +251,10 @@
         var newKeys = Object.keys(data);
         newKeys.forEach(function (fieldSet) {
           if (data[fieldSet] instanceof Array) {
-            handleArray(data[fieldSet]);
+            handleArray(data[fieldSet], fieldSet);
           }
           else if(typeof data[fieldSet] === 'object'){
-            handleObject(data[fieldSet]);
+            handleObject(data[fieldSet], fieldSet);
           }
         });
 
@@ -228,64 +267,179 @@
       },
       _processOutboundData: function (data) {
         var self = this;
+        delete data.status;
         this.serverData = {
           deductions: [],
           itinerary: [],
           activities: [],
           cost_assignments: [],
-          expenses: []
+          expenses: [],
+          clearances: {}
         };
-        var baseDetailsKeys = Object.keys(data.baseDetails);
-        baseDetailsKeys.forEach(function(key) {
-          if(data.baseDetails[key]) {
-            self.serverData[key] = typeof data.baseDetails[key] === 'object' ? data.baseDetails[key].value : data.baseDetails[key]
+
+        function duplicateIdPurging(collection) {
+          if(collection.length < 2) {
+            return collection;
+          }
+          return collection.reduce(function(prev, current) {
+            if(prev.some(function(prevItem){return prevItem.id === current.id;})) {
+              delete current.id;
+            }
+            prev.push(current);
+            return prev;
+          }, [])
+        }
+
+        function handleArray(arr) {
+          arr = duplicateIdPurging(arr);
+          arr.forEach(function(obj) {
+            handleObject(obj);
+          });
+        }
+
+
+        function handleObject(obj) {
+          var keys = Object.keys(obj);
+          keys.forEach(function(key) {
+            if(obj[key] && !(obj[key] instanceof Array )){
+              obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' || key === 'mode_of_travel' ? obj[key].label : obj[key].value : obj[key]
+            }
+            if(obj[key] && obj[key] instanceof Array ){
+              obj[key] = obj[key].map(function(item) {
+                if(key === 'mode_of_travel') {
+                  return item.label;
+                }
+                return typeof  item === 'object' ? item.value : item
+              })
+            }
+          });
+        }
+
+        var dataKeys = Object.keys(data);
+
+        dataKeys.forEach(function(fieldSet){
+          if (data[fieldSet] instanceof Array) {
+            handleArray(data[fieldSet])
+          }
+          else if(typeof data[fieldSet] === 'object'){
+            handleObject(data[fieldSet]);
           }
         });
-        delete self.serverData.status;
+
+        var serverKeys = Object.keys(this.serverData);
+
+
+        serverKeys.forEach(function(serverKey) {
+          if(data[serverKey] instanceof Array && data[serverKey][0]) {
+            if(Object.keys(data[serverKey][0]).length === 0) {
+              delete self.serverData[serverKey];
+            }
+          }
+          if(self.serverData[serverKey]) {
+            self.serverData[serverKey] = data[serverKey];
+          }
+          delete data[serverKey];
+        });
+
+        var leftoverKeys = Object.keys(data);
+        leftoverKeys.forEach(function(key) {
+          var innerKeys = Object.keys(data[key]);
+          innerKeys.forEach(function(innerKey) {
+            self.serverData[innerKey] = data[key][innerKey];
+          })
+
+        });
+
       },
       _handleFormAction: function (e, details) {
         this._processOutboundData(this.data);
-        this.method = "POST";
-        if (details.endPoint === 'save') {
-          this.url = 'http://localhost:8000/api/et2f/travels/';
-          if(this.travelId) {
-            this.method = "PUT";
-            this.url += this.travelId.replace('/', '') + '/';
-          }
-        }
-        if (details.endPoint === 'approve') {
-          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/approve/';
-        }
-        if (details.endPoint === 'reject') {
-          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/reject/';
+        var self = this;
+        var endpointConfig = {
+          id: self.travelId ? self.travelId.replace(/\//g, '') : null,
+          status: null
+        };
+        var endpointName = 'et2fStateChange';
+
+        function doSavePost() {
+          self.method = 'POST';
+          self.postEndpoint = etoolsAppConfig.endpoints.et2fNewTravel;
+          self.postData = true;
         }
 
-        if (details.endPoint === 'cancel') {
-          if(!this.newTravel) {
-            this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/cancel/';
-          } else {
-            this._handlePostSuccess();
+        function doSaveUpdate() {
+          self.method = 'PATCH';
+          self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelDetail
+          self.postData = true;
+        }
+
+        function doPut() {
+          self.method = 'PUT';
+          self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
+          self.postData = true;
+        }
+
+        function doPost() {
+          self.method = 'POST';
+          self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
+          self.postData = true;
+        }
+
+
+        var statusActions = {
+          save: function () {
+            if(self.travelId !== undefined) {
+              doSaveUpdate();
+            } else {
+              doSavePost()
+            }
+          },
+          approve: function() {
+            endpointConfig.status = 'approve';
+            doPost();
+          },
+          reject: function() {
+            endpointConfig.status = 'reject';
+            doPost();
+          },
+          cancel: function() {
+            if(self.travelId !== undefined) {
+              endpointConfig.status = 'cancel';
+              doPost();
+            } else {
+              this._handlePostSuccess();
+            }
+          },
+          reopen: function() {
+            endpointConfig.status = 'restore';
+            doPost();
+          },
+          'send_for_payment': function() {
+            endpointConfig.status = 'send_for_payment';
+            doPost();
+          },
+          submit: function() {
+            endpointConfig.status = 'submit_for_approval';
+            doPost();
           }
-        }
-        if (details.endPoint === 'reopen') {
-          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/restore/';
-        }
-        if (details.endPoint === 'send_for_payment') {
-          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/send_for_payment/';
-        }
-        if (details.endPoint === 'submit') {
-          this.url = 'http://localhost:8000/api/et2f/travels' + this.travelId + '/submit_for_approval/';
-        }
-        this.postData = true;
+        };
+
+        statusActions[details.endPoint]();
+
       },
-      _handlePostFail: function(e, i) {
-        console.log("post fail");
-        console.log(e,i);
+      _handlePostFail: function(event, i) {
+        var self = this;
+        this.formError = i.request.detail.request.xhr.response;
+        var errorKey = Object.keys(this.formError);
+        errorKey.forEach(function(key) {
+          console.error(key + 'error: ', self.formError[key])
+        });
         this.postData = false;
+        this.travelId = null;
       },
       _handlePostSuccess: function() {
         this.postData = false;
         this.fire('travel-post-success');
+        this.travelId = null;
         this._resetData();
       },
       _resetData: function() {
@@ -294,9 +448,11 @@
           activities: [{}],
           itinerary: [{}],
           expenses: [{}],
+          deductions: [],
           costAssignment: [{}],
           status: 'Planned'
-        }
+        };
+
       },
       ready: function () {
         if (this.newTravel) {
