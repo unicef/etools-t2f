@@ -35,19 +35,19 @@
         <etools-searchable-multiselection-menu class="flex-3"
           options="[[structure.users]]"
           label="Travel expense type"
-          value="{{expense.expenseType}}"></etools-searchable-multiselection-menu>
+          value="{{expense.type}}"></etools-searchable-multiselection-menu>
         <paper-input class="flex-3 custom-margin"
           label="Amount"
           type="number"
           value="{{expense.amount}}"></paper-input>
         <etools-searchable-multiselection-menu class="flex-3"
-          options="[[structure.users]]"
+          options="[[structure.currency]]"
           label="Document currency"
-          value="{{expense.documentCurrency}}"></etools-searchable-multiselection-menu>
+          value="{{expense.document_currency}}"></etools-searchable-multiselection-menu>
         <etools-searchable-multiselection-menu class="flex-3"
-          options="[[structure.users]]"
+          options="[[structure.currency]]"
           label="Accounting currency"
-          value="{{expense.accountingCurrency}}"></etools-searchable-multiselection-menu>
+          value="{{expense.account_currency}}"></etools-searchable-multiselection-menu>
       </div>
     </div>
   </template>
