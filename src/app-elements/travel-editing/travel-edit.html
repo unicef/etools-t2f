@@ -1,35 +1,21 @@
-<link rel="import"
-  href="../../../bower_components/polymer/polymer.html">
-<link rel="import"
-  href="../../../bower_components/paper-material/paper-material.html">
-<link rel="import"
-  href="../../../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import"
-  href="../../../bower_components/paper-tabs/paper-tab.html">
-<link rel="import"
-  href="../../../bower_components/iron-pages/iron-pages.html">
-<link rel="import"
-  href="../../../bower_components/etools-ajax/etools-ajax.html">
-<link rel="import"
-  href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import"
-  href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import"
-  href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../../bower_components/etools-loading/etools-loading.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-<link rel="import"
-  href="travel-details.html">
-<link rel="import"
-  href="travel-attachments.html">
-<link rel="import"
-  href="travel-report.html">
-<link rel="import"
-  href="../et2f-header.html">
+<link rel="import" href="travel-details.html">
+<link rel="import" href="travel-attachments.html">
+<link rel="import" href="travel-report.html">
+<link rel="import" href="../et2f-header.html">
 
-<link rel="import"
-  href="../../../styles/shared-styles.html">
-<link rel="import"
-  href="../../../styles/et2f-styles.html">
+<link rel="import" href="../../../styles/shared-styles.html">
+<link rel="import" href="../../../styles/et2f-styles.html">
 
 <dom-module id="travel-edit">
   <template>
@@ -42,6 +28,7 @@
     </style>
 
 
+    <etools-loading active="[[postData]]"></etools-loading>
 
     <template is="dom-if"
       if="{{travelId}}">
@@ -434,7 +421,6 @@
           console.error(key + 'error: ', self.formError[key])
         });
         this.postData = false;
-        this.travelId = null;
       },
       _handlePostSuccess: function() {
         this.postData = false;
