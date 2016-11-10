@@ -1,18 +1,18 @@
-FROM mhart/alpine-node:6
+FROM mhart/alpine-node:7
 RUN apk update
+ADD bower.json /tmp
+ADD package.json /tmp
 WORKDIR /tmp
 RUN apk add git
 RUN npm install -g bower polymer-cli http-server
-ADD package.json /tmp
-RUN apk add autoconf gcc automake make g++ python-dev libffi-dev nasm curl wget
 RUN npm install
-RUN mkdir /code/
-RUN cp -a /tmp/node_modules /code/node_modules
-ADD bower.json /tmp
-RUN echo '{"directory" : "/code/bower_components"}' > .bowerrc
 RUN bower --allow-root install
+RUN mkdir /code/
 ADD . /code/
 WORKDIR /code
+RUN cp -a /tmp/node_modules /code/node_modules
+RUN cp -a /tmp/bower_components /code/bower_components
 RUN npm install -g gulp-cli
 RUN gulp
 CMD ["http-server", "/code/build/bundled"]
+
