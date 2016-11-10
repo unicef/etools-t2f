@@ -1,42 +1,58 @@
 {
-  "submit": {
-    "name": "Submit",
-    "icon": "",
-    "endPoint": "submit"
+  "save": {
+    "name": "Save",
+    "endPoint": "save"
+  },
+  "save_and_submit": {
+    "name": "Save & submit",
+    "endPoint": "save_and_submit"
+  },
+  "cancel": {
+    "name": "Cancel",
+    "endPoint": "cancel"
   },
   "approve": {
     "name": "Approve",
-    "icon": "",
     "endPoint": "approve"
   },
   "reject": {
     "name": "Reject",
-    "icon": "",
     "endPoint": "reject"
-  },
-  "cancel": {
-    "name": "Cancel",
-    "icon": "",
-    "endPoint": "cancel"
   },
   "reOpen": {
     "name": "Reopen",
-    "icon": "",
     "endPoint": "reopen"
   },
   "sendForPayment": {
     "name": "Send for payment",
-    "icon": "",
     "endPoint": "send_for_payment"
   },
   "submitCertificate": {
     "name": "Submit certificate",
-    "icon": "",
     "endPoint": "submit_certificate"
   },
-  "save": {
-    "name": "Save",
-    "icon": "",
-    "endPoint": "save"
+  "approveCertificate": {
+    "name": "Approve certificate",
+    "endPoint": "approve_certificate"
+  },
+  "rejectCertificate": {
+    "name": "Reject certificate",
+    "endPoint": "reject_certificate"
+  },
+  "submitCertificate": {
+    "name": "Submit certificate",
+    "endPoint": "submit_certificate"
+  },
+  "certify": {
+    "name": "Certify",
+    "endPoint": "certify"
+  },
+  "complete": {
+    "name": "Complete",
+    "endPoint": "complete"
+  },
+  "planned": {
+    "name": "To planned",
+    "endPoint": "planned"
   }
 }
