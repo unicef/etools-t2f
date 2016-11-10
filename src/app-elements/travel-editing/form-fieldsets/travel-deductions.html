@@ -88,7 +88,7 @@
         <paper-checkbox class="flex checkbox-mid" disabled$="{{_disabled(disabled)}}" checked="{{item.lunch}}"></paper-checkbox>
         <paper-checkbox class="flex checkbox-mid" disabled$="{{_disabled(disabled)}}" checked="{{item.dinner}}"></paper-checkbox>
         <paper-checkbox class="flex checkbox-mid" disabled$="{{_disabled(disabled)}}" checked="{{item.accomodation}}"></paper-checkbox>
-        <paper-checkbox class="flex checkbox-mid" disabled$="{{_disabled(disabled)}}" checked="{{item.not_applicable}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" disabled$="{{_disabled(disabled)}}" checked="{{item.no_dsa}}"></paper-checkbox>
       </div>
     </template>
 
@@ -96,16 +96,21 @@
 
   <script>
     Polymer({
+
       is: 'travel-deductions',
 
       properties: {
+
+        // TODO: rewire these to itenerary start/end dates later
         startDate: String,
         endDate: String,
+
         deductions: {
           type: Array,
           notify: true,
           observer: 'gotDeductions'
         },
+
         disabled: {
           type: Boolean,
           reflectToAttribute: true
@@ -113,6 +118,7 @@
       },
 
       observers: [
+        // Prevent double firing this, when real dates are used
         'recalcDeductions(startDate, endDate, hasDeductions)'
       ],
 
@@ -121,16 +127,22 @@
       },
 
       gotDeductions: function() {
-        this.set('hasDeductions', true);
+        if (this.deductions && this.deductions.length) {
+          this.set('hasDeductions', true);
+        }
       },
 
-      recalcDeductions: function(startDateStr, endDateStr, gotDeductions) {
+      recalcDeductions: function(startDateStr, endDateStr, hasDeductions) {
 
         var startDate = new Date(startDateStr);
         var endDate = new Date(endDateStr);
 
         var daysToCalculate = Math.floor(( endDate - startDate ) / 86400000);
+
+        // Load the one already there
         var deductions = this.deductions;
+
+        // Build a key library for the dates that should be in the new one
         var keyLib = [];
 
         for (var actDate = startDate; actDate <= endDate; actDate.setDate(actDate.getDate() + 1)) {
@@ -153,7 +165,7 @@
               lunch: false,
               dinner: false,
               accomodation: false,
-              not_applicable: false
+              no_dsa: false
             });
           }
         }
@@ -175,9 +187,11 @@
       },
 
       _calcFullDate: function(dateStr) {
+
         if(!date || date.length === 0) {
-          return
+          return;
         }
+
         var date = dateStr.split('-');
         return [
           date[2],
