@@ -54,18 +54,8 @@
 
   <template>
 
-    <etools-ajax
-       url="../../structure/actions-list.json"
-       on-success="_setActList">
-    </etools-ajax>
-
-    <etools-ajax
-       url="../../structure/form-actions-permissions.json"
-       on-success="_setPermissions">
-    </etools-ajax>
-
     <template is="dom-if" if="[[show]]">
-      <paper-button raised class$="layout horizontal [[_buttonGreyClass()]]">
+      <paper-button raised class$="layout horizontal [[_buttonGreyClass(actions)]]"">
 
         <div on-click="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
 
@@ -92,11 +82,453 @@
     Polymer({
       is: 'form-actions-button',
       properties: {
-        userType: String,
-        status: String,
-        actList: Object,
-        permissions: Object,
+        actList: {
+          type: Object,
+          value: {
+            'save': {
+              'name': 'Save',
+              'endPoint': 'save'
+            },
+            'save_and_submit': {
+              'name': 'Save & submit',
+              'endPoint': 'save_and_submit'
+            },
+            'cancel': {
+              'name': 'Cancel',
+              'endPoint': 'cancel'
+            },
+            'approve': {
+              'name': 'Approve',
+              'endPoint': 'approve'
+            },
+            'reject': {
+              'name': 'Reject',
+              'endPoint': 'reject'
+            },
+            'reOpen': {
+              'name': 'Reopen',
+              'endPoint': 'reopen'
+            },
+            'sendForPayment': {
+              'name': 'Send for payment',
+              'endPoint': 'send_for_payment'
+            },
+            'submitCertificate': {
+              'name': 'Submit certificate',
+              'endPoint': 'submit_certificate'
+            },
+            'approveCertificate': {
+              'name': 'Approve certificate',
+              'endPoint': 'approve_certificate'
+            },
+            'rejectCertificate': {
+              'name': 'Reject certificate',
+              'endPoint': 'reject_certificate'
+            },
+            'submitCertificate': {
+              'name': 'Submit certificate',
+              'endPoint': 'submit_certificate'
+            },
+            'certify': {
+              'name': 'Certify',
+              'endPoint': 'certify'
+            },
+            'complete': {
+              'name': 'Complete',
+              'endPoint': 'complete'
+            },
+            'planned': {
+              'name': 'To planned',
+              'endPoint': 'planned'
+            }
+          }
+        },
+        permissions: {
+          type: Object,
+          value: {
+            'godmode': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel']
+              },
+              'Submitted': {
+                'primary': 'approve',
+                'secondary': ['reject', 'save']
+              },
+              'Cancelled': {
+                'primary': 'planned',
+                'secondary': ['save', 'save_and_submit']
+              },
+              'Approved': {
+                'primary': 'save',
+                'secondary': ['sendForPayment']
+              },
+              'Rejected': {
+                'primary': 'planned',
+                'secondary': ['save', 'save_and_submit']
+              },
+              'Sent for payment': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certificate submitted': {
+                'primary': 'approveCertificate',
+                'secondary': ['rejectCertificate']
+              },
+              'Certificate rejected': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certificate approved': {
+                'primary': 'save',
+                'secondary': ['certify']
+              },
+              'Certified': {
+                'primary': 'complete',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
 
+            'default': {
+              'Planned': {
+                'primary': '',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': '',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'traveler': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel']
+              },
+              'Submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Sent for payment': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certificate submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate rejected': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certificate approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': 'complete',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'administrator': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel']
+              },
+              'Submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Sent for payment': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certificate submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate rejected': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certificate approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': 'complete',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'supervisor': {
+              'Planned': {
+                'primary': '',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': 'approve',
+                'secondary': ['reject']
+              },
+              'Cancelled': {
+                'primary': '',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate submitted': {
+                'primary': 'approveCertificate',
+                'secondary': ['rejectCertificate']
+              },
+              'Certificate rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'tfp': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'ffp': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': 'save',
+                'secondary': ['sendForPayment']
+              },
+              'Rejected': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate approved': {
+                'primary': 'save',
+                'secondary': ['certify']
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'representative': {
+              'Planned': {
+                'primary': '',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': '',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certificate approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            }
+          }
+        },
+        userType: {
+          type: String
+        },
+        status: {
+          type: String
+        },
         actions: {
           type: Object,
           computed: '_computeActions(actList, permissions, status, userType)'
@@ -110,23 +542,18 @@
           computed: '_showSecondary(actions)'
         }
       },
-      _buttonGreyClass: function() {
-        return (this.actions.primary.name === 'Cancel' && !this._showSecondary(this.actions)) ? 'grey' : '';
-      },
-      _setActList: function(e, data) {
-
-        this.set('actList', data);
-      },
-      _setPermissions: function(e, data) {
-
-        this.set('permissions', data);
+      _buttonGreyClass: function(actions) {
+        return (actions.primary && actions.primary.name === 'Cancel' && !this._showSecondary(actions)) ? 'grey' : '';
       },
       _computeActions: function(actList, permissions, status, userType) {
 
-        var ret = permissions[userType][status];
+        // TODO: it runs twice cause how status, and userType gets here two times...
+        // console.log('computeActions ran!');
+
+        var ret = JSON.parse(JSON.stringify(permissions[userType][status]));
 
         ret.primary = actList[ret.primary];
-        ret.secondary = ret.secondary.map(function(el, i) {
+        ret.secondary = ret.secondary.map(function(el) {
           return actList[el];
         });
 
