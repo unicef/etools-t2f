@@ -426,9 +426,13 @@
         statusActions[details.endPoint]();
 
       },
-      _handlePostFail: function(e, i) {
-        console.log("post fail");
-        console.log(e,i);
+      _handlePostFail: function(event, i) {
+        var self = this;
+        this.formError = i.request.detail.request.xhr.response;
+        var errorKey = Object.keys(this.formError);
+        errorKey.forEach(function(key) {
+          console.error(key + 'error: ', self.formError[key])
+        });
         this.postData = false;
         this.travelId = null;
       },
