@@ -69,7 +69,8 @@
           model="{{data.activities}}"
           allow-copy
           show-counter
-          elevation="1">
+          elevation="1"
+          open="[[travelPermissions.activities.view]]">
 
           <template is="dom-repeat"
             items="{{data.activities}}">
@@ -136,10 +137,11 @@
 
           <template is="dom-repeat" items="{{data.cost_assignments}}">
 
-            <travel-cost-assignment permissions-matrix="[[travelPermissions.costAssignment]]"
+            <travel-cost-assignment permissions-matrix="[[travelPermissions.cost_assignments]]"
               cost-assignment="{{item}}"
               structure="[[structure]]">
             </travel-cost-assignment>
+
           </template>
         </etools-repeatable-field-set>
 
@@ -175,7 +177,8 @@
         travelPermissions: {
           type: Object,
         },
-      }
+      },
+
     });
   </script>
 </dom-module>

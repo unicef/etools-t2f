@@ -12,12 +12,11 @@
     observers: ['_calculatePermissions(permissionsMatrix)'],
     _calculatePermissions: function (matrix) {
       if (matrix) {
-
         var elements = Object.keys(matrix);
         elements.forEach(function(label) {
           var e = matrix[label];
           if(e && e instanceof Object) {
-            e.disabled = e.edit;
+            e.disabled = !e.edit;
             e.hidden = !e.view;
             delete e.edit;
             delete e.view;
