@@ -89,13 +89,17 @@
         et2fPermissions: {
           type: Object
         },
+        status: {
+          type: String,
+          computed: '_computeStatus(data)'
+        },
         user: {
           type: Object,
           value: {id: 1}
         },
         travelPermissions: {
           type: Object,
-          computed: '_computeTravelPermission(et2fPermissions, data, user)'
+          computed: '_computeTravelPermission(et2fPermissions, status, user)'
         },
         selected: {
           type: Number,
@@ -132,12 +136,14 @@
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {id: travelId}).url
         }
       },
-      _computeTravelPermission: function(permissions, data, user) {
-        //go on godMode
+      _computeStatus: function(data) {
         if(data.status) {
-          var status = data.status.toLowerCase();
-          return permissions['God'][status];
+          return data.status.toLowerCase();
         }
+      },
+      _computeTravelPermission: function(permissions, status, user) {
+        //go on godMode
+        return permissions['God'][status];
       },
       _handleData: function (e, data) {
         var self = this;
@@ -186,7 +192,8 @@
             dsa_region: 'dsa_regions'
           },
           clearances: {},
-          deductions: {}
+          deductions: {},
+          cost_assignments: {}
 
 
         };

@@ -16,16 +16,19 @@
         var elements = Object.keys(matrix);
         elements.forEach(function(label) {
           var e = matrix[label];
-          if(e) {
+          if(e && e instanceof Object) {
             e.disabled = e.edit;
             e.hidden = !e.view;
             delete e.edit;
             delete e.view;
 //          matrix[label].readOnly = !matrix[label].edit && matrix[label].view
           }
+          else if (e instanceof Boolean) {
+            matrix.disabled = !matrix.edit;
+            matrix.hidden = !matrix.view;
+          }
 
         });
-        console.log(matrix);
         this.computedPermission = matrix;
       }
     },
