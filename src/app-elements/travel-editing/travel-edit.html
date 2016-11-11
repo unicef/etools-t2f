@@ -286,6 +286,7 @@
 
 
         function handleObject(obj) {
+          if (!obj) {return;}
           var keys = Object.keys(obj);
           keys.forEach(function(key) {
             if(obj[key] && !(obj[key] instanceof Array )){
@@ -330,6 +331,7 @@
 
         var leftoverKeys = Object.keys(data);
         leftoverKeys.forEach(function(key) {
+          if (!data[key]) { return; }
           var innerKeys = Object.keys(data[key]);
           innerKeys.forEach(function(innerKey) {
             self.serverData[innerKey] = data[key][innerKey];
@@ -373,6 +375,7 @@
 
 
         var statusActions = {
+
           save: function () {
             if(self.travelId !== undefined) {
               doSaveUpdate();
@@ -380,14 +383,18 @@
               doSavePost()
             }
           },
-          approve: function() {
-            endpointConfig.status = 'approve';
+
+          // TODO does it save ??
+          save_and_submit: function() {
+            endpointConfig.status = 'submit_for_approval';
+            self.serverData.clearances = {
+              medical_clearance: true,
+              security_clearance: true,
+              security_course: true
+            };
             doPost();
           },
-          reject: function() {
-            endpointConfig.status = 'reject';
-            doPost();
-          },
+
           cancel: function() {
             if(self.travelId !== undefined) {
               endpointConfig.status = 'cancel';
@@ -396,27 +403,78 @@
               this._handlePostSuccess();
             }
           },
+
+          approve: function() {
+            endpointConfig.status = 'approve';
+            doPost();
+          },
+
+          // TODO: Raise reject modal
+          reject: function() {
+            endpointConfig.status = 'reject';
+            doPost();
+          },
+
           reopen: function() {
             endpointConfig.status = 'restore';
             doPost();
           },
-          'send_for_payment': function() {
+
+          send_for_payment: function() {
             endpointConfig.status = 'send_for_payment';
             doPost();
           },
-          submit: function() {
-            endpointConfig.status = 'submit_for_approval';
+
+          // TEST
+          submit_certificate: function() {
+            endpointConfig.status = 'certification_submitted';
+
+            doPost();
+          },
+
+          // TEST
+          approve_certificate: function() {
+            endpointConfig.status = 'certification_approved';
+            doPost();
+          },
+
+          // TEST
+          // TODO: Raise modal
+          reject_certificate: function() {
+            console.log('TODO!!');
+            endpointConfig.status = 'certification_rejected';
+            doPost();
+          },
+
+          // TEST
+          certify: function() {
+            endpointConfig.status = 'certified';
+            doPost();
+          },
+
+          // TEST
+          complete: function() {
+            endpointConfig.status = 'done';
+            doPost();
+          },
+
+          // TEST
+          planned: function() {
+            endpointConfig.status = 'planned';
             doPost();
           }
+
         };
 
         statusActions[details.endPoint]();
 
       },
       _handlePostFail: function(event, i) {
+        var errorKey;
         var self = this;
         this.formError = i.request.detail.request.xhr.response;
-        var errorKey = Object.keys(this.formError);
+        if (!this.formError) {errorKey = []};
+        errorKey = Object.keys(this.formError);
         errorKey.forEach(function(key) {
           console.error(key + 'error: ', self.formError[key])
         });
