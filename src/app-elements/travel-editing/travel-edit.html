@@ -385,6 +385,12 @@
           self.postData = true;
         }
 
+        function doSaveAndSubmit() {
+          self.method = 'POST';
+          self.postEndpoint = etoolsAppConfig.endpoints.et2fSaveAndSubmit;
+          self.postData = true;
+        }
+
         function doSaveUpdate() {
           self.method = 'PATCH';
           self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelDetail
@@ -415,7 +421,7 @@
           },
 
           save_and_submit: function() {
-            endpointConfig.status = 'submit_for_approval';
+            endpointConfig.status = 'save_and_submit';
             self.clearancesOpened = true;
             self._clearancesOnClose = function () {
               self.serverData.clearances = {
@@ -423,7 +429,7 @@
                 security_clearance: true,
                 security_course: true
               };
-              doPost();
+              doSaveAndSubmit();
             }
           },
 
