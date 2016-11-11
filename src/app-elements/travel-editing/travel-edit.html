@@ -147,6 +147,7 @@
         },
         travelPermissions: {
           type: Object,
+          notify: true,
           computed: '_computeTravelPermission(et2fPermissions, status, user, data)'
         },
         selected: {
@@ -191,11 +192,16 @@
         }
       },
       _computeTravelPermission: function(permissions, status, user, data) {
-        var userType = 'Traveler';
+        console.log(arguments)
+        var userType = 'Anyone';
         if(data.baseDetails.id) {
           userType = data.baseDetails.traveller.value === user.id ? 'Traveler' : data.baseDetails.supervisor.value === user.id ? 'Supervisor' : 'Anyone'
+        } else
+          if(this.newTravel) {
+          userType = 'Traveler';
         }
 //        userType = 'God';
+        console.log(userType)
         return permissions[userType][status];
       },
 
@@ -598,7 +604,7 @@
       },
       _dataObserver: function(data, user) {
         var self = this;
-        if (data && data.baseDetails && !data.baseDetails.traveller) {
+        if (self.newTravel) {
           data.baseDetails.traveller = {
             label: user.full_name,
             value: user.id

@@ -16,7 +16,7 @@
         elements.forEach(function(label) {
           var e = matrix[label];
           if(e && e instanceof Object) {
-            e.disabled = label ==='traveller' ? true : !e.edit;
+            e.disabled = !e.edit;
             e.hidden = !e.view;
             delete e.edit;
             delete e.view;
