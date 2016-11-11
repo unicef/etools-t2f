@@ -58,7 +58,7 @@
 
       <travel-details
         structure="[[structure]]"
-        permissions="[[permissions]]"
+        travel-permissions="[[travelPermissions]]"
         data="{{data}}"
         on-form-action="_handleFormAction">
       </travel-details>
@@ -67,7 +67,7 @@
 
       <travel-report
         structure="[[structure]]"
-        permissions="[[permissions]]"
+        et2f-permissions="[[et2fPpermissions]]"
         data="{{data}}"
         on-form-action="_handleFormAction">
       </travel-report>
@@ -86,8 +86,16 @@
         structure: {
           type: Object,
         },
-        permissions: {
+        et2fPermissions: {
           type: Object
+        },
+        user: {
+          type: Object,
+          value: {id: 1}
+        },
+        travelPermissions: {
+          type: Object,
+          computed: '_computeTravelPermission(et2fPermissions, data, user)'
         },
         selected: {
           type: Number,
@@ -122,6 +130,13 @@
         var travelId = travelId ? travelId.replace(/\//g, '') : null;
         if(travelId) {
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {id: travelId}).url
+        }
+      },
+      _computeTravelPermission: function(permissions, data, user) {
+        //go on godMode
+        if(data.status) {
+          var status = data.status.toLowerCase();
+          return permissions['God'][status];
         }
       },
       _handleData: function (e, data) {

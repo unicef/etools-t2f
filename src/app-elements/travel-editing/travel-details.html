@@ -60,7 +60,7 @@
           elevation="1">
 
           <travel-plan base-details="{{data.baseDetails}}"
-            permissions-matrix="[[permissions.baseDetails]]"
+            permissions-matrix="[[travelPermissions.baseDetails]]"
             structure="[[structure]]">
           </travel-plan>
         </etools-repeatable-field-set>
@@ -171,10 +171,9 @@
         structure: {
           type: Object,
         },
-        permissions: {
-          type: Object
+        travelPermissions: {
+          type: Object,
         },
-
       }
     });
   </script>
