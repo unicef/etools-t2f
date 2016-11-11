@@ -8,6 +8,7 @@
 <link rel="import" href="../../../bower_components/etools-dialog/etools-dialog.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="travel-details.html">
@@ -25,6 +26,11 @@
         display: block;
         width: 100%;
         background-color: var(--gray-lighter);
+      }
+
+      #label-sec-clear, #label-med, #label-sec-course {
+        display: inline-block;
+        width: 220px;
       }
     </style>
 
@@ -48,9 +54,44 @@
 
     <etools-dialog opened="{{clearancesOpened}}"
       dialog-title="Clearances"
-      ok-btn-text="Submit"
+      ok-btn-text="Submit for approval"
       on-close="_clearancesOnClose">
-      SOME SHIT
+
+      <!-- TODO: wire in -->
+      <!-- TODO: prefill data on empty one & serialize it -->
+      <!-- TODO: hide no button -->
+      <!-- TODO: style it -->
+      <div>Before you submit this trip for approval, please answer the questions below.</div>
+
+      <div class="layout vertical">
+
+        <div>
+          <label id="label-sec-clear">Did you request Security Clearance?</label>
+          <paper-radio-group aria-labelledby="label-sec-clear">
+            <paper-radio-button name="medical_clearance"></paper-radio-button>
+            <paper-radio-button name="security_clearance"></paper-radio-button>
+            <paper-radio-button name="security_course"></paper-radio-button>
+          </paper-radio-group>
+        </div>
+
+        <div>
+          <label id="label-med">Did you request Medical Clearance?</label>
+          <paper-radio-group aria-labelledby="label-med">
+            <paper-radio-button name="medical_clearance"></paper-radio-button>
+            <paper-radio-button name="security_clearance"></paper-radio-button>
+            <paper-radio-button name="security_course"></paper-radio-button>
+          </paper-radio-group>
+        </div>
+
+        <div>
+          <label id="label-sec-course">Did you request Security Course?</label>
+          <paper-radio-group aria-labelledby="label-sec-course">
+            <paper-radio-button name="medical_clearance"></paper-radio-button>
+            <paper-radio-button name="security_clearance"></paper-radio-button>
+            <paper-radio-button name="security_course"></paper-radio-button>
+          </paper-radio-group>
+        </div>
+      </div>
     </etools-dialog>
 
     <et2f-header title="Edit travel plan">
@@ -85,7 +126,9 @@
 
   <script>
     Polymer({
+
       is: 'travel-edit',
+
       properties: {
         data: {
           type: Object,
@@ -136,6 +179,7 @@
           }
         }
       },
+
       _computeUrl: function(travelId) {
         this.set('data', {});
         this._resetData();
@@ -144,15 +188,18 @@
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {id: travelId}).url
         }
       },
+
       _computeStatus: function(data) {
         if(data.status) {
           return data.status.toLowerCase();
         }
       },
+
       _computeTravelPermission: function(permissions, status, user) {
         //go on godMode
         return permissions['God'][status];
       },
+
       _handleData: function (e, data) {
         var self = this;
 
@@ -282,6 +329,7 @@
         }
         this.set('data', data);
       },
+
       _processOutboundData: function (data) {
         var self = this;
         delete data.status;
@@ -368,8 +416,8 @@
           })
 
         });
-
       },
+
       _handleFormAction: function (e, details) {
         this._processOutboundData(this.data);
         var self = this;
@@ -421,7 +469,7 @@
           },
 
           save_and_submit: function() {
-            endpointConfig.status = 'save_and_submit';
+
             self.clearancesOpened = true;
             self._clearancesOnClose = function () {
               self.serverData.clearances = {
@@ -429,7 +477,13 @@
                 security_clearance: true,
                 security_course: true
               };
-              doSaveAndSubmit();
+              if (endpointConfig.id) {
+                endpointConfig.status = 'submit_for_approval';
+                doPost();
+              } else {
+                endpointConfig.status = 'save_and_submit';
+                doSaveAndSubmit();
+              }
             }
           },
 
@@ -518,12 +572,14 @@
         });
         this.postData = false;
       },
+
       _handlePostSuccess: function() {
         this.postData = false;
         this.fire('travel-post-success');
         this.travelId = null;
         this._resetData();
       },
+
       _resetData: function() {
         this.data = {
           baseDetails: {},
@@ -534,8 +590,8 @@
           cost_assignments: [{}],
           status: 'Planned'
         };
-
       },
+
       ready: function () {
         if (this.newTravel) {
           this._resetData();
