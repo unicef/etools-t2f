@@ -109,15 +109,16 @@
     <app-location route="{{route}}"></app-location>
 
     <app-route
-            route="{{route}}"
-            pattern="/:page"
-            data="{{routeData}}"
-            tail="{{subroute}}"></app-route>
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"
+      tail="{{subroute}}"></app-route>
 
     <etools-ajax endpoint="[[structureEndpoint]]"
       on-success="_handleStructure"></etools-ajax>
     <etools-ajax endpoint="[[permissionsEndpoint]]"
       on-success="_handlePermissions"></etools-ajax>
+
 
     <app-drawer-layout id="layout" responsive-width="850px" narrow="{{narrow}}" fullbleed>
 
@@ -168,13 +169,13 @@
           <plan-travel fullbleed
             name="plan-travel"
             on-travel-post-success="_navigateToList"
-            permissions="[[permissions]]"
+            et2f-permissions="[[et2fPermissions]]"
             structure="[[structure]]"></plan-travel>
           <page-edit-travel fullbleed
             name="edit-travel"
             on-travel-post-success="_navigateToList"
             travel-id="[[subroute.path]]"
-            permissions="[[permissions]]"
+            et2f-permissions="[[et2fPermissions]]"
             structure="[[structure]]"></page-edit-travel>
           <page-not-found name="not-found"></page-not-found>
         </iron-pages>
@@ -221,7 +222,7 @@
           value: false
         },
         structure: Object,
-        permissions: Object,
+        et2fPermissions: Object,
         loading: {
           type: Boolean,
           value: true
@@ -310,13 +311,29 @@
         this.set('structure', data);
       },
       _handlePermissions: function (e, data) {
-        if(!data.baseDetails) {
-          data.baseDetails = {};
-        }
-        data.baseDetails.status = this.newTravel ? 'pristine' :  data.baseDetails.status;
-        Object.freeze(data);
 
-        this.permissions = data;
+        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances'];
+        Object.keys(data).forEach(function(role) {
+          if(!data[role]) {
+            return;
+          }
+          Object.keys(data[role]).forEach(function(status){
+            if(!data[role][status]) {
+              return;
+            }
+            data[role][status].baseDetails = {};
+            Object.keys(data[role][status]).forEach(function(key){
+              if (nonBaseKeys.indexOf(key) === -1 ) {
+                if(key !==  'baseDetails') {
+                  data[role][status].baseDetails[key] = data[role][status][key];
+                  delete data[role][status][key];
+                }
+              }
+            });
+          });
+        });
+        Object.freeze(data);
+        this.et2fPermissions = data;
       },
       _commonDataLoaded: function(structure, permissions) {
         this.loading = false;

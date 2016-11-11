@@ -32,20 +32,28 @@
 
     <div class="layout vertical flex">
       <div class="layout horizontal">
-        <etools-searchable-multiselection-menu class="flex-3"
-          options="[[structure.users]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [computedPermission.type.readOnly]]"
+          disabled="[[computedPermission.type.disabled]]"
+          hidden$="[[computedPermission.type.hidden]]"
+          options="[[structure.expense_types]]"
           label="Travel expense type"
           value="{{expense.type}}"></etools-searchable-multiselection-menu>
-        <paper-input class="flex-3 custom-margin"
+        <paper-input class$="flex-3 custom-margin [computedPermission.amount.readOnly]]"
+          disabled="[[computedPermission.amount.disabled]]"
+          hidden$="[[computedPermission.amount.hidden]]"
           label="Amount"
           type="number"
           value="{{expense.amount}}"></paper-input>
-        <etools-searchable-multiselection-menu class="flex-3"
-          options="[[structure.currency]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [computedPermission.document_currency.readOnly]]"
+          disabled="[[computedPermission.document_currency.disabled]]"
+          hidden$="[[computedPermission.document_currency.hidden]]"
+          options="[[structure.currencies]]"
           label="Document currency"
           value="{{expense.document_currency}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class="flex-3"
-          options="[[structure.currency]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [computedPermission.account_currency.readOnly]]"
+          disabled="[[computedPermission.account_currency.disabled]]"
+          hidden$="[[computedPermission.account_currency.hidden]]"
+          options="[[structure.currencies]]"
           label="Accounting currency"
           value="{{expense.account_currency}}"></etools-searchable-multiselection-menu>
       </div>

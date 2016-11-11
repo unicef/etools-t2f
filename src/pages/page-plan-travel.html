@@ -33,14 +33,14 @@
 
       </app-header>
     </app-header-layout>
-    <travel-edit new-travel permissions="[[permissions]]" structure="[[structure]]"></travel-edit>
+    <travel-edit new-travel et2f-permissions="[[et2fPermissions]]" structure="[[structure]]"></travel-edit>
   </template>
 
   <script>
     Polymer({
       is: 'plan-travel',
       properties: {
-        permissions: Object,
+        et2fPermissions: Object,
         structure: Object
       }
 
