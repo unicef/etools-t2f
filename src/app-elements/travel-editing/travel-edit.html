@@ -191,9 +191,18 @@
             mode_of_travel: matchByLabel.bind(this, 'mode_of_travel'),
             dsa_region: 'dsa_regions'
           },
+          expenses: {
+            type: 'expense_types',
+            document_currency: 'currencies',
+            account_currency: 'currencies'
+          },
           clearances: {},
           deductions: {},
-          cost_assignments: {}
+          cost_assignments: {
+            wbs: 'wbs',
+            grant: 'grants',
+            fund: 'funds'
+          }
 
 
         };
