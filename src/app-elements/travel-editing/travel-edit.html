@@ -5,8 +5,10 @@
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../../bower_components/etools-loading/etools-loading.html">
+<link rel="import" href="../../../bower_components/etools-dialog/etools-dialog.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="travel-details.html">
@@ -24,6 +26,11 @@
         display: block;
         width: 100%;
         background-color: var(--gray-lighter);
+      }
+
+      #label-sec-clear, #label-med, #label-sec-course {
+        display: inline-block;
+        width: 220px;
       }
     </style>
 
@@ -44,6 +51,48 @@
         on-success="_handlePostSuccess"
         on-fail="_handlePostFail"></etools-ajax>
     </template>
+
+    <etools-dialog opened="{{clearancesOpened}}"
+      dialog-title="Clearances"
+      ok-btn-text="Submit for approval"
+      on-close="_clearancesOnClose">
+
+      <!-- TODO: wire in -->
+      <!-- TODO: prefill data on empty one & serialize it -->
+      <!-- TODO: hide no button -->
+      <!-- TODO: style it -->
+      <div>Before you submit this trip for approval, please answer the questions below.</div>
+
+      <div class="layout vertical">
+
+        <div>
+          <label id="label-sec-clear">Did you request Security Clearance?</label>
+          <paper-radio-group aria-labelledby="label-sec-clear">
+            <paper-radio-button name="medical_clearance"></paper-radio-button>
+            <paper-radio-button name="security_clearance"></paper-radio-button>
+            <paper-radio-button name="security_course"></paper-radio-button>
+          </paper-radio-group>
+        </div>
+
+        <div>
+          <label id="label-med">Did you request Medical Clearance?</label>
+          <paper-radio-group aria-labelledby="label-med">
+            <paper-radio-button name="medical_clearance"></paper-radio-button>
+            <paper-radio-button name="security_clearance"></paper-radio-button>
+            <paper-radio-button name="security_course"></paper-radio-button>
+          </paper-radio-group>
+        </div>
+
+        <div>
+          <label id="label-sec-course">Did you request Security Course?</label>
+          <paper-radio-group aria-labelledby="label-sec-course">
+            <paper-radio-button name="medical_clearance"></paper-radio-button>
+            <paper-radio-button name="security_clearance"></paper-radio-button>
+            <paper-radio-button name="security_course"></paper-radio-button>
+          </paper-radio-group>
+        </div>
+      </div>
+    </etools-dialog>
 
     <et2f-header title="Edit travel plan">
       <paper-tabs scrollable
@@ -149,6 +198,7 @@
 //        userType = 'God';
         return permissions[userType][status];
       },
+
       _handleData: function (e, data) {
         var self = this;
 
@@ -287,6 +337,7 @@
         }
         this.set('data', data);
       },
+
       _processOutboundData: function (data) {
         var self = this;
         delete data.status;
@@ -321,6 +372,7 @@
 
 
         function handleObject(obj) {
+          if (!obj) {return;}
           var keys = Object.keys(obj);
           keys.forEach(function(key) {
             if(obj[key] && !(obj[key] instanceof Array )){
@@ -365,14 +417,15 @@
 
         var leftoverKeys = Object.keys(data);
         leftoverKeys.forEach(function(key) {
+          if (!data[key]) { return; }
           var innerKeys = Object.keys(data[key]);
           innerKeys.forEach(function(innerKey) {
             self.serverData[innerKey] = data[key][innerKey];
           })
 
         });
-
       },
+
       _handleFormAction: function (e, details) {
         this._processOutboundData(this.data);
         var self = this;
@@ -385,6 +438,12 @@
         function doSavePost() {
           self.method = 'POST';
           self.postEndpoint = etoolsAppConfig.endpoints.et2fNewTravel;
+          self.postData = true;
+        }
+
+        function doSaveAndSubmit() {
+          self.method = 'POST';
+          self.postEndpoint = etoolsAppConfig.endpoints.et2fSaveAndSubmit;
           self.postData = true;
         }
 
@@ -408,6 +467,7 @@
 
 
         var statusActions = {
+
           save: function () {
             if(self.travelId !== undefined) {
               doSaveUpdate();
@@ -415,14 +475,26 @@
               doSavePost()
             }
           },
-          approve: function() {
-            endpointConfig.status = 'approve';
-            doPost();
+
+          save_and_submit: function() {
+
+            self.clearancesOpened = true;
+            self._clearancesOnClose = function () {
+              self.serverData.clearances = {
+                medical_clearance: true,
+                security_clearance: true,
+                security_course: true
+              };
+              if (endpointConfig.id) {
+                endpointConfig.status = 'submit_for_approval';
+                doPost();
+              } else {
+                endpointConfig.status = 'save_and_submit';
+                doSaveAndSubmit();
+              }
+            }
           },
-          reject: function() {
-            endpointConfig.status = 'reject';
-            doPost();
-          },
+
           cancel: function() {
             if(self.travelId !== undefined) {
               endpointConfig.status = 'cancel';
@@ -431,16 +503,64 @@
               this._handlePostSuccess();
             }
           },
+
+          approve: function() {
+            endpointConfig.status = 'approve';
+            doPost();
+          },
+
+          // TODO: Raise reject modal
+          reject: function() {
+            endpointConfig.status = 'reject';
+            doPost();
+          },
+
           reopen: function() {
             endpointConfig.status = 'restore';
             doPost();
           },
-          'send_for_payment': function() {
+
+          send_for_payment: function() {
             endpointConfig.status = 'send_for_payment';
             doPost();
           },
-          submit: function() {
-            endpointConfig.status = 'submit_for_approval';
+
+          // TEST
+          submit_certificate: function() {
+            endpointConfig.status = 'certification_submitted';
+
+            doPost();
+          },
+
+          // TEST
+          approve_certificate: function() {
+            endpointConfig.status = 'certification_approved';
+            doPost();
+          },
+
+          // TEST
+          // TODO: Raise modal
+          reject_certificate: function() {
+            console.log('TODO!!');
+            endpointConfig.status = 'certification_rejected';
+            doPost();
+          },
+
+          // TEST
+          certify: function() {
+            endpointConfig.status = 'certified';
+            doPost();
+          },
+
+          // TEST
+          complete: function() {
+            endpointConfig.status = 'done';
+            doPost();
+          },
+
+          // TEST
+          planned: function() {
+            endpointConfig.status = 'planned';
             doPost();
           }
         };
@@ -451,7 +571,8 @@
       _handlePostFail: function(event, i) {
         var self = this;
         this.formError = i.request.detail.request.xhr.response;
-        var errorKey = Object.keys(this.formError);
+        if (!this.formError) {errorKey = []};
+        errorKey = Object.keys(this.formError);
         errorKey.forEach(function(key) {
           console.error(key + 'error: ', self.formError[key])
         });
