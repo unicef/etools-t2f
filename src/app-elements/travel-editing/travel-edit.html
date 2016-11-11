@@ -81,7 +81,7 @@
       properties: {
         data: {
           type: Object,
-          notify: true
+          notify: true,
         },
         structure: {
           type: Object,
@@ -127,6 +127,7 @@
           }
         }
       },
+      observers: ['_dataObserver(data, user)'],
       _computeUrl: function(travelId) {
         this.set('data', {});
         this._resetData();
@@ -472,6 +473,17 @@
           cost_assignments: [{}],
           status: 'Planned'
         };
+
+      },
+      _dataObserver: function(data, user) {
+        var self = this;
+        if (data && data.baseDetails && !data.baseDetails.traveller) {
+          data.baseDetails.traveller = {
+            label: user.full_name,
+            value: user.id
+          };
+          self.notifyPath('data.baseDetails.traveller');
+        }
 
       },
       ready: function () {
