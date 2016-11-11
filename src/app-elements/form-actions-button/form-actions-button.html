@@ -109,9 +109,17 @@
               'name': 'Reopen',
               'endPoint': 'reopen'
             },
+            'done': {
+              'name': 'Travel done',
+              'endPoint': 'done'
+            },
             'sendForPayment': {
               'name': 'Send for payment',
               'endPoint': 'send_for_payment'
+            },
+            'wentAsPlanned': {
+              'name': 'Travel went as planned',
+              'endPoint': 'went_as_planned'
             },
             'submitCertificate': {
               'name': 'Submit certificate',
@@ -124,10 +132,6 @@
             'rejectCertificate': {
               'name': 'Reject certificate',
               'endPoint': 'reject_certificate'
-            },
-            'submitCertificate': {
-              'name': 'Submit certificate',
-              'endPoint': 'submit_certificate'
             },
             'certify': {
               'name': 'Certify',
@@ -168,8 +172,8 @@
                 'secondary': ['save', 'save_and_submit']
               },
               'Sent for payment': {
-                'primary': 'submitCertificate',
-                'secondary': []
+                'primary': 'wentAsPlanned',
+                'secondary': ['submitCertificate']
               },
               'Certificate submitted': {
                 'primary': 'approveCertificate',

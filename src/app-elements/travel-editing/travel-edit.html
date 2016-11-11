@@ -104,7 +104,16 @@
 
       <!-- TODO: wire in, save, display somewhere -->
       <paper-textarea label="Rejection note" char-counter maxlength="2500"></paper-textarea>
+    </etools-dialog>
 
+    <!-- Certification dialog -->
+    <etools-dialog opened="{{certificationOpened}}"
+      dialog-title="Certify"
+      ok-btn-text="Send certification"
+      on-close="_certifyOnClose">
+
+      <!-- TODO: wire in, save, display somewhere -->
+      <paper-textarea label="Certification" char-counter maxlength="2500"></paper-textarea>
     </etools-dialog>
 
     <et2f-header title="Edit travel plan">
@@ -470,7 +479,6 @@
           self.postData = true;
         }
 
-
         var statusActions = {
 
           save: function () {
@@ -510,13 +518,12 @@
             }
           },
 
-          // TODO: Cancel popup
+          // TODO: Approve popup
           approve: function() {
             endpointConfig.status = 'approve';
             doPost();
           },
 
-          // TODO: Raise reject modal
           reject: function() {
             self.rejectionOpened = true;
             self._rejectOnClose = function() {
@@ -528,26 +535,42 @@
             }
           },
 
+          // TODO: Reopen popup
           reopen: function() {
             endpointConfig.status = 'restore';
             doPost();
           },
 
+          // Send for papxment popup
           send_for_payment: function() {
             endpointConfig.status = 'send_for_payment';
             doPost();
           },
 
-          // TEST
-          submit_certificate: function() {
-            endpointConfig.status = 'certification_submitted';
-
+          went_as_planned: function() {
+            endpointConfig.status = 'mark_as_certified';
             doPost();
+          },
+
+          submit_certificate: function() {
+
+            self.certificationOpened = true;
+            self._certifyOnClose = function() {
+
+              endpointConfig.status = 'submit_certificate';
+              doPost();
+            }
+          },
+
+          done: function() {
+            console.log('Mark as done fn. ran!');
+            endpointConfig.status = 'done';
+            doMarkAsDone();
           },
 
           // TEST
           approve_certificate: function() {
-            endpointConfig.status = 'certification_approved';
+            endpointConfig.status = 'approve_certificate';
             doPost();
           },
 
@@ -555,13 +578,13 @@
           // TODO: Raise modal
           reject_certificate: function() {
             console.log('TODO!!');
-            endpointConfig.status = 'certification_rejected';
+            endpointConfig.status = 'reject_certificate';
             doPost();
           },
 
           // TEST
           certify: function() {
-            endpointConfig.status = 'certified';
+            endpointConfig.status = 'mark_as_certified';
             doPost();
           },
 
