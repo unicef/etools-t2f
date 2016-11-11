@@ -5,6 +5,7 @@
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../../bower_components/etools-loading/etools-loading.html">
+<link rel="import" href="../../../bower_components/etools-dialog/etools-dialog.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -44,6 +45,13 @@
         on-success="_handlePostSuccess"
         on-fail="_handlePostFail"></etools-ajax>
     </template>
+
+    <etools-dialog opened="{{clearancesOpened}}"
+      dialog-title="Clearances"
+      ok-btn-text="Submit"
+      on-close="_clearancesOnClose">
+      SOME SHIT
+    </etools-dialog>
 
     <et2f-header title="Edit travel plan">
       <paper-tabs scrollable
@@ -406,15 +414,17 @@
             }
           },
 
-          // TODO does it save ??
           save_and_submit: function() {
             endpointConfig.status = 'submit_for_approval';
-            self.serverData.clearances = {
-              medical_clearance: true,
-              security_clearance: true,
-              security_course: true
-            };
-            doPost();
+            self.clearancesOpened = true;
+            self._clearancesOnClose = function () {
+              self.serverData.clearances = {
+                medical_clearance: true,
+                security_clearance: true,
+                security_course: true
+              };
+              doPost();
+            }
           },
 
           cancel: function() {
