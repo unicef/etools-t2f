@@ -214,8 +214,7 @@
         }
       },
       _computeTravelPermission: function(permissions, status, user, data) {
-        console.log(arguments)
-        var userType = 'Anyone';
+        var userType = undefined;
         if(data.baseDetails.id) {
           userType = data.baseDetails.traveller.value === user.id ? 'Traveler' : data.baseDetails.supervisor.value === user.id ? 'Supervisor' : 'Anyone'
         } else
@@ -223,8 +222,9 @@
           userType = 'Traveler';
         }
 //        userType = 'God';
-        console.log(userType)
-        return permissions[userType][status];
+        if(userType) {
+          return permissions[userType][status];
+        }
       },
 
       _handleData: function (e, data) {
