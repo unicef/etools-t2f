@@ -58,7 +58,7 @@
 
       <travel-details
         structure="[[structure]]"
-        permissions="[[permissions]]"
+        travel-permissions="[[travelPermissions]]"
         data="{{data}}"
         on-form-action="_handleFormAction">
       </travel-details>
@@ -67,7 +67,7 @@
 
       <travel-report
         structure="[[structure]]"
-        permissions="[[permissions]]"
+        et2f-permissions="[[et2fPpermissions]]"
         data="{{data}}"
         on-form-action="_handleFormAction">
       </travel-report>
@@ -86,8 +86,20 @@
         structure: {
           type: Object,
         },
-        permissions: {
+        et2fPermissions: {
           type: Object
+        },
+        status: {
+          type: String,
+          computed: '_computeStatus(data)'
+        },
+        user: {
+          type: Object,
+          value: {id: 1}
+        },
+        travelPermissions: {
+          type: Object,
+          computed: '_computeTravelPermission(et2fPermissions, status, user)'
         },
         selected: {
           type: Number,
@@ -123,6 +135,15 @@
         if(travelId) {
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {id: travelId}).url
         }
+      },
+      _computeStatus: function(data) {
+        if(data.status) {
+          return data.status.toLowerCase();
+        }
+      },
+      _computeTravelPermission: function(permissions, status, user) {
+        //go on godMode
+        return permissions['God'][status];
       },
       _handleData: function (e, data) {
         var self = this;
@@ -171,7 +192,8 @@
             dsa_region: 'dsa_regions'
           },
           clearances: {},
-          deductions: {}
+          deductions: {},
+          cost_assignments: {}
 
 
         };
@@ -493,7 +515,7 @@
           itinerary: [{}],
           expenses: [{}],
           deductions: [],
-          costAssignment: [{}],
+          cost_assignments: [{}],
           status: 'Planned'
         };
 

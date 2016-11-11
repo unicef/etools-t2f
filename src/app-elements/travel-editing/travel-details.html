@@ -60,7 +60,7 @@
           elevation="1">
 
           <travel-plan base-details="{{data.baseDetails}}"
-            permissions-matrix="[[permissions.baseDetails]]"
+            permissions-matrix="[[travelPermissions.baseDetails]]"
             structure="[[structure]]">
           </travel-plan>
         </etools-repeatable-field-set>
@@ -69,14 +69,15 @@
           model="{{data.activities}}"
           allow-copy
           show-counter
-          elevation="1">
+          elevation="1"
+          open="[[travelPermissions.activities.view]]">
 
           <template is="dom-repeat"
             items="{{data.activities}}">
 
             <travel-activities
               activity="{{item}}"
-              permissions-matrix="[[permissions.activities]]"
+              permissions-matrix="[[travelPermissions.activities]]"
               structure="[[structure]]">
             </travel-activities>
           </template>
@@ -91,7 +92,7 @@
             is="dom-repeat"
             items="{{data.itinerary}}">
 
-            <travel-itinerary permissions-matrix="[[permissions.itinerary]]"
+            <travel-itinerary permissions-matrix="[[travelPermissions.itinerary]]"
               itinerary="{{item}}"
               structure="[[structure]]">
             </travel-itinerary>
@@ -111,6 +112,7 @@
               start-date="{{data.baseDetails.start_date}}"
               end-date="{{data.baseDetails.end_date}}"
               deductions="{{data.deductions}}"
+              permissions-matrix="[[travelPermissions.deductions]]"
             >
             </travel-deductions>
           </div>
@@ -121,7 +123,7 @@
           show-counter>
 
           <template is="dom-repeat" items="{{data.expenses}}">
-            <travel-expense permissions-matrix="[[permissions.expenses]]"
+            <travel-expense permissions-matrix="[[travelPermissions.expenses]]"
               expense="{{item}}"
               structure="[[structure]]">
             </travel-expense>
@@ -129,16 +131,17 @@
         </etools-repeatable-field-set>
 
         <etools-repeatable-field-set title="Cost Assignment"
-          model="{{data.costAssignment}}"
+          model="{{data.cost_assignments}}"
           show-counter
           elevation="1">
 
-          <template is="dom-repeat" items="{{data.costAssignment}}">
+          <template is="dom-repeat" items="{{data.cost_assignments}}">
 
-            <travel-cost-assignment permissions-matrix="[[permissions.costAssignment]]"
+            <travel-cost-assignment permissions-matrix="[[travelPermissions.cost_assignments]]"
               cost-assignment="{{item}}"
               structure="[[structure]]">
             </travel-cost-assignment>
+
           </template>
         </etools-repeatable-field-set>
 
@@ -171,11 +174,11 @@
         structure: {
           type: Object,
         },
-        permissions: {
-          type: Object
+        travelPermissions: {
+          type: Object,
         },
+      },
 
-      }
     });
   </script>
 </dom-module>

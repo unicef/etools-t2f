@@ -44,78 +44,78 @@
 
     <div class="layout vertical flex">
       <div class="layout horizontal">
-        <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
-          disabled="[[et2fPermissions.taRequired.disabled]]"
-          hidden$="[[et2fPermissions.taRequired.hidden]]"
+        <paper-checkbox class$="flex custom-margin [[computedPermission.ta_required.readOnly]]"
+          disabled="[[computedPermission.ta_required.disabled]]"
+          hidden$="[[computedPermission.ta_required.hidden]]"
           checked="{{defaultChecked}}"
           >TA required?
         </paper-checkbox>
-        <paper-checkbox class$="flex custom-margin [[et2fPermission.taRequired.readOnly]]"
-          disabled="[[et2fPermissions.taRequired.disabled]]"
-          hidden$="[[et2fPermissions.taRequired.hidden]]"
+        <paper-checkbox class$="flex custom-margin [[computedPermission.international_travel.readOnly]]"
+          disabled="[[computedPermission.international_travel.disabled]]"
+          hidden$="[[computedPermission.international_travel.hidden]]"
           checked="{{baseDetails.international_travel}}"
           >International travel?
         </paper-checkbox>
         <div class="flex layout horizontal center">
-          <span class$="standalone [[et2fPermission.taRequired.readOnly]]"
-            hidden$="[[et2fPermissions.taRequired.hidden]]">Reference #: [[baseDetails.reference_number]]</span>
+          <span class$="standalone [[computedPermission.reference_number.readOnly]]"
+            hidden$="[[computedPermission.reference_number.hidden]]">Reference #: [[baseDetails.reference_number]]</span>
         </div>
         <div class="flex"></div>
       </div>
       <div class="layout horizontal">
-        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.traveller.readOnly]]"
-          disabled="[[et2fPermissions.traveller.disabled]]"
-          hidden$="[[et2fPermissions.traveller.hidden]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.traveller.readOnly]]"
+          disabled="[[computedPermission.traveller.disabled]]"
+          hidden$="[[computedPermission.traveller.hidden]]"
           options="[[structure.users]]"
           label="Traveller"
           value="{{baseDetails.traveller}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.supervisor.readOnly]]"
-          disabled="[[et2fPermissions.supervisor.disabled]]"
-          hidden$="[[et2fPermissions.supervisor.hidden]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.supervisor.readOnly]]"
+          disabled="[[computedPermission.supervisor.disabled]]"
+          hidden$="[[computedPermission.supervisor.hidden]]"
           options="[[structure.users]]"
           label="Supervisor"
           value="{{baseDetails.supervisor}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.office.readOnly]]"
-          disabled="[[et2fPermissions.office.disabled]]"
-          hidden$="[[et2fPermissions.office.hidden]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.office.readOnly]]"
+          disabled="[[computedPermission.office.disabled]]"
+          hidden$="[[computedPermission.office.hidden]]"
           options="[[structure.offices]]"
           label="Office"
           value="{{baseDetails.office}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.section.readOnly]]"
-          disabled="[[et2fPermissions.section.disabled]]"
-          hidden$="[[et2fPermissions.section.hidden]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.section.readOnly]]"
+          disabled="[[computedPermission.section.disabled]]"
+          hidden$="[[computedPermission.section.hidden]]"
           options="[[structure.sections]]"
           label="Section"
           value="{{baseDetails.section}}"></etools-searchable-multiselection-menu>
       </div>
       <div class="layout horizontal">
-        <datepicker-input class$="flex-3 [[et2fPermission.start_date.readOnly]]"
-          disabled="[[et2fPermissions.start_date.disabled]]"
-          hidden$="[[et2fPermissions.start_date.hidden]]"
+        <datepicker-input class$="flex-3 [[computedPermission.start_date.readOnly]]"
+          disabled="[[computedPermission.start_date.disabled]]"
+          hidden$="[[computedPermission.start_date.hidden]]"
           label="Start Date"
           date="{{baseDetails.start_date}}"></datepicker-input>
-        <datepicker-input class$="flex-3 [[et2fPermission.end_date.readOnly]]"
-          disabled="[[et2fPermissions.end_date.disabled]]"
-          hidden$="[[et2fPermissions.end_date.hidden]]"
+        <datepicker-input class$="flex-3 [[computedPermission.end_date.readOnly]]"
+          disabled="[[computedPermission.end_date.disabled]]"
+          hidden$="[[computedPermission.end_date.hidden]]"
           label="End Date"
           date="{{baseDetails.end_date}}"></datepicker-input>
-        <paper-input class$="flex-3 custom-margin [[et2fPermission.estimatedTravelCost.readOnly]]"
-          disabled="[[et2fPermissions.estimatedTravelCost.disabled]]"
-          hidden$="[[et2fPermissions.estimatedTravelCost.hidden]]"
+        <paper-input class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
+          disabled="[[computedPermission.estimated_travel_cost.disabled]]"
+          hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
           label="Estimated travel cost"
           type="number"
           value="{{baseDetails.estimated_travel_cost}}"></paper-input>
-        <etools-searchable-multiselection-menu class$="flex-3 [[et2fPermission.currency.readOnly]]"
-          disabled="[[et2fPermissions.currency.disabled]]"
-          hidden$="[[et2fPermissions.currency.hidden]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.currency.readOnly]]"
+          disabled="[[computedPermission.currency.disabled]]"
+          hidden$="[[computedPermission.currency.hidden]]"
           options="[[structure.currencies]]"
           label="Currency"
           value="{{baseDetails.currency}}"></etools-searchable-multiselection-menu>
       </div>
       <div class="layout horizontal">
-        <etools-searchable-multiselection-menu class$="flex-6 [[et2fPermission.modeOfTravel.readOnly]]"
-          disabled="[[et2fPermissions.modeOfTravel.disabled]]"
-          hidden$="[[et2fPermissions.modeOfTravel.hidden]]"
+        <etools-searchable-multiselection-menu class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
+          disabled="[[computedPermission.mode_of_travel.disabled]]"
+          hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.mode_of_travel]]"
           multi
           label="Mode of travel"
@@ -124,9 +124,9 @@
       </div>
       <div class="layout horizontal">
         <paper-textarea label="Purpose of travel"
-          disabled="[[et2fPermissions.purpose.disabled]]"
-          hidden$="[[et2fPermissions.purpose.hidden]]"
-          class$="flex-12 custom-margin [[et2fPermission.purpose.readOnly]]"
+          disabled="[[computedPermission.purpose.disabled]]"
+          hidden$="[[computedPermission.purpose.hidden]]"
+          class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
           required
           char-counter
           maxlength="500"
@@ -134,7 +134,7 @@
       </div>
 
       <etools-file-upload
-        no-upload$="{{et2fPermissions.upload.disabled}}"
+        no-upload$="{{computedPermission.upload.disabled}}"
         files="[[filesMock]]"
         multiple>
       </etools-file-upload>
