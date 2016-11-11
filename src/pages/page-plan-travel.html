@@ -33,7 +33,7 @@
 
       </app-header>
     </app-header-layout>
-    <travel-edit new-travel et2f-permissions="[[et2fPermissions]]" structure="[[structure]]"></travel-edit>
+    <travel-edit new-travel et2f-permissions="[[et2fPermissions]]" structure="[[structure]]" user="[[user]]"></travel-edit>
   </template>
 
   <script>
@@ -41,7 +41,8 @@
       is: 'plan-travel',
       properties: {
         et2fPermissions: Object,
-        structure: Object
+        structure: Object,
+        user: Object
       }
 
     });

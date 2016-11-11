@@ -118,6 +118,8 @@
       on-success="_handleStructure"></etools-ajax>
     <etools-ajax endpoint="[[permissionsEndpoint]]"
       on-success="_handlePermissions"></etools-ajax>
+    <etools-ajax endpoint="[[meEndpoint]]"
+      on-success="_handleMe"></etools-ajax>
 
 
     <app-drawer-layout id="layout" responsive-width="850px" narrow="{{narrow}}" fullbleed>
@@ -165,14 +167,17 @@
           fallback-selection="not-found"
           role="main">
           <travel-list name="travel-list"
+            user="[[user]]"
             refresh-data="{{refreshData}}"></travel-list>
           <plan-travel fullbleed
             name="plan-travel"
+            user="[[user]]"
             on-travel-post-success="_navigateToList"
             et2f-permissions="[[et2fPermissions]]"
             structure="[[structure]]"></plan-travel>
           <page-edit-travel fullbleed
             name="edit-travel"
+            user="[[user]]"
             on-travel-post-success="_navigateToList"
             travel-id="[[subroute.path]]"
             et2f-permissions="[[et2fPermissions]]"
@@ -223,6 +228,9 @@
         },
         structure: Object,
         et2fPermissions: Object,
+        user: {
+          type: Object
+        },
         loading: {
           type: Boolean,
           value: true
@@ -234,12 +242,16 @@
         permissionsEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
+        },
+        meEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fMe
         }
 
       },
       observers: [
         '_routePageChanged(routeData.page)',
-        '_commonDataLoaded(structure, permissions)'
+        '_commonDataLoaded(structure, permissions, user)'
       ],
 
       listeners: {
@@ -321,13 +333,12 @@
             if(!data[role][status]) {
               return;
             }
+            var currentKeys =Object.keys(data[role][status]);
             data[role][status].baseDetails = {};
-            Object.keys(data[role][status]).forEach(function(key){
+            currentKeys.forEach(function(key){
               if (nonBaseKeys.indexOf(key) === -1 ) {
-                if(key !==  'baseDetails') {
-                  data[role][status].baseDetails[key] = data[role][status][key];
-                  delete data[role][status][key];
-                }
+                data[role][status].baseDetails[key] = data[role][status][key];
+                delete data[role][status][key];
               }
             });
           });
@@ -335,7 +346,10 @@
         Object.freeze(data);
         this.et2fPermissions = data;
       },
-      _commonDataLoaded: function(structure, permissions) {
+      _handleMe: function(e,data) {
+        this.user = data;
+      },
+      _commonDataLoaded: function(structure, permissions, user) {
         this.loading = false;
       }
 

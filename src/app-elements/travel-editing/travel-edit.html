@@ -95,11 +95,10 @@
         },
         user: {
           type: Object,
-          value: {id: 1}
         },
         travelPermissions: {
           type: Object,
-          computed: '_computeTravelPermission(et2fPermissions, status, user)'
+          computed: '_computeTravelPermission(et2fPermissions, status, user, data)'
         },
         selected: {
           type: Number,
@@ -141,9 +140,13 @@
           return data.status.toLowerCase();
         }
       },
-      _computeTravelPermission: function(permissions, status, user) {
-        //go on godMode
-        return permissions['God'][status];
+      _computeTravelPermission: function(permissions, status, user, data) {
+        var userType = 'Traveler';
+        if(data.baseDetails.id) {
+          userType = data.baseDetails.traveller.value === user.id ? 'Traveler' : data.baseDetails.supervisor.value === user.id ? 'Supervisor' : 'Anyone'
+        }
+//        userType = 'God';
+        return permissions[userType][status];
       },
       _handleData: function (e, data) {
         var self = this;
