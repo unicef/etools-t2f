@@ -1,145 +1,22 @@
-<link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
-<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
-<link rel="import" href="../../../bower_components/etools-loading/etools-loading.html">
-<link rel="import" href="../../../bower_components/etools-dialog/etools-dialog.html">
-<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/etools-ajax/etools-ajax.html">
 
-<link rel="import" href="travel-details.html">
-<link rel="import" href="travel-attachments.html">
-<link rel="import" href="travel-report.html">
-<link rel="import" href="./backend-connection/inbound-data.html">
-<link rel="import" href="../et2f-header.html">
-
-<link rel="import" href="../../../styles/shared-styles.html">
-<link rel="import" href="../../../styles/et2f-styles.html">
 
 <dom-module id="travel-edit">
   <template>
-    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
-      :host {
-        display: block;
-        width: 100%;
-        background-color: var(--gray-lighter);
-      }
 
-      #label-sec-clear, #label-med, #label-sec-course {
-        display: inline-block;
-        width: 220px;
-      }
-    </style>
 
 
     <etools-loading active="[[postData]]"></etools-loading>
 
-    <et2f-inbound-data data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-inbound-data>
 
-    <template is="dom-if"
-      if="[[postData]]">
+
       <etools-ajax endpoint="[[postEndpoint]]"
         body="[[serverData]]"
         method="[[method]]"
         on-success="_handlePostSuccess"
         on-fail="_handlePostFail"></etools-ajax>
-    </template>
 
-    <!-- Crearances dialog -->
-    <etools-dialog opened="{{clearancesOpened}}"
-      dialog-title="Clearances"
-      ok-btn-text="Submit for approval"
-      on-close="_clearancesOnClose">
-
-      <!-- TODO: wire in -->
-      <!-- TODO: prefill data on empty one & serialize it -->
-      <!-- TODO: hide no button -->
-      <!-- TODO: style it -->
-      <div>Before you submit this trip for approval, please answer the questions below.</div>
-
-      <div class="layout vertical">
-
-        <div>
-          <label id="label-sec-clear">Did you request Security Clearance?</label>
-          <paper-radio-group aria-labelledby="label-sec-clear">
-            <paper-radio-button name="medical_clearance"></paper-radio-button>
-            <paper-radio-button name="security_clearance"></paper-radio-button>
-            <paper-radio-button name="security_course"></paper-radio-button>
-          </paper-radio-group>
-        </div>
-
-        <div>
-          <label id="label-med">Did you request Medical Clearance?</label>
-          <paper-radio-group aria-labelledby="label-med">
-            <paper-radio-button name="medical_clearance"></paper-radio-button>
-            <paper-radio-button name="security_clearance"></paper-radio-button>
-            <paper-radio-button name="security_course"></paper-radio-button>
-          </paper-radio-group>
-        </div>
-
-        <div>
-          <label id="label-sec-course">Did you request Security Course?</label>
-          <paper-radio-group aria-labelledby="label-sec-course">
-            <paper-radio-button name="medical_clearance"></paper-radio-button>
-            <paper-radio-button name="security_clearance"></paper-radio-button>
-            <paper-radio-button name="security_course"></paper-radio-button>
-          </paper-radio-group>
-        </div>
-      </div>
-    </etools-dialog>
-
-    <!-- Rejection dialog -->
-    <etools-dialog opened="{{rejectionOpened}}"
-      dialog-title="Reject travel"
-      ok-btn-text="Send rejection"
-      on-close="_rejectOnClose">
-
-      <!-- TODO: wire in, save, display somewhere -->
-      <paper-textarea label="Rejection note" char-counter maxlength="2500"></paper-textarea>
-    </etools-dialog>
-
-    <!-- Certification dialog -->
-    <etools-dialog opened="{{certificationOpened}}"
-      dialog-title="Certify"
-      ok-btn-text="Send certification"
-      on-close="_certifyOnClose">
-
-      <!-- TODO: wire in, save, display somewhere -->
-      <paper-textarea label="Certification" char-counter maxlength="2500"></paper-textarea>
-    </etools-dialog>
-
-    <et2f-header title="Edit travel plan">
-      <paper-tabs scrollable
-        selected="{{selected}}">
-        <paper-tab>Travel details</paper-tab>
-        <paper-tab>Attachments</paper-tab>
-        <paper-tab>Report</paper-tab>
-      </paper-tabs>
-    </et2f-header>
-
-    <iron-pages selected="{{selected}}">
-
-      <travel-details
-        structure="[[structure]]"
-        travel-permissions="[[travelPermissions]]"
-        data="{{data}}"
-        on-form-action="_handleFormAction">
-      </travel-details>
-
-      <travel-attachments></travel-attachments>
-
-      <travel-report
-        structure="[[structure]]"
-        et2f-permissions="[[et2fPpermissions]]"
-        data="{{data}}"
-        on-form-action="_handleFormAction">
-      </travel-report>
-    </iron-pages>
 
   </template>
 
@@ -153,25 +30,6 @@
         },
         structure: {
           type: Object,
-        },
-        et2fPermissions: {
-          type: Object
-        },
-        status: {
-          type: String,
-          computed: '_computeStatus(data)'
-        },
-        user: {
-          type: Object,
-        },
-        travelPermissions: {
-          type: Object,
-          notify: true,
-          computed: '_computeTravelPermission(et2fPermissions, status, user, data)'
-        },
-        selected: {
-          type: Number,
-          value: 0
         },
         newTravel: {
           type: Boolean,
@@ -192,31 +50,6 @@
         }
       },
       observers: ['_dataObserver(data, user)'],
-
-      _computeStatus: function(data) {
-        if(data.status) {
-          return data.status.toLowerCase();
-        }
-      },
-      _computeTravelPermission: function(permissions, status, user, data) {
-        var userType = undefined;
-        if(data.baseDetails.id) {
-          userType = 'Anyone';
-          if(data.baseDetails.traveller &&  data.baseDetails.traveller.value === user.id) {
-            userType = 'Traveler'
-          }
-          if(data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
-            userType = 'Supervisor';
-          }
-
-        }
-        else if(this.newTravel) {
-          userType = 'Traveler';
-        }
-        if(userType) {
-          return permissions[userType][status];
-        }
-      },
 
       _processOutboundData: function (data) {
         var self = this;
@@ -486,34 +319,8 @@
         this.travelId = null;
         this._resetData();
       },
-      _resetData: function() {
-        this.data = {
-          baseDetails: {},
-          activities: [{}],
-          itinerary: [{}],
-          expenses: [{}],
-          deductions: [],
-          cost_assignments: [{}],
-          status: 'Planned'
-        };
 
-      },
-      _dataObserver: function(data, user) {
-        var self = this;
-        if (self.newTravel && data.baseDetails) {
-          data.baseDetails.traveller = {
-            label: user.full_name,
-            value: user.id
-          };
-          self.notifyPath('data.baseDetails.traveller');
-        }
 
-      },
-      ready: function () {
-        if (this.newTravel) {
-          this._resetData();
-        }
-      }
     });
   </script>
 </dom-module>
