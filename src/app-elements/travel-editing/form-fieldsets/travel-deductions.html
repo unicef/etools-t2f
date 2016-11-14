@@ -129,6 +129,8 @@
       gotDeductions: function() {
         if (this.deductions && this.deductions.length) {
           this.set('hasDeductions', true);
+        } else {
+          this.set('hasDeductions', undefined)
         }
       },
 
