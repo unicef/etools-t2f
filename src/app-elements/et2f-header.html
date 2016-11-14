@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/polymer-pdf-make-wrapper/pdf-make.html">
+<link rel="import" href="../../bower_components/etools-ajax/etools-ajax.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -49,7 +50,10 @@
 
   <template>
 
-    <pdf-make print="{{openPDF}}" content="[[dataToExport]]" page-orientation="landscape"></pdf-make>
+    <pdf-make print="{{openPDF}}" content="[[dataToPrint]]" page-orientation="landscape"></pdf-make>
+    <template is="dom-if" if="[[loadCSV]]">
+      <etools-ajax download-csv handle-as="text" url="[[csvEndpoint]]" params="[[exportParams]]" on-success="_handleCSVData"></etools-ajax>
+    </template>
 
     <div class="header-wrapper">
       <div class="side-heading horizontal layout center">
@@ -93,12 +97,23 @@
           type: Boolean,
           value: false
         },
-        dataToExport: {
+        dataToPrint: {
           type: Object,
         },
         openPDF: {
           type: Boolean,
           value: false
+        },
+        exportParams: {
+          type: Object
+        },
+        loadCSV: {
+          type: Boolean,
+          value: false
+        },
+        csvEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fCSVListExport.url
         }
       },
       print: function() {
@@ -106,10 +121,15 @@
         this.openPDF = false;
       },
       export: function() {
-        console.log('Print should happen here!');
+        this.loadCSV = true;
       },
       _hideNewTravelButton: function(show) {
         return !show;
+      },
+      _handleCSVData: function(e, data) {
+        console.dir(data);
+        this.loadCSV = false;
+
       }
     });
   </script>

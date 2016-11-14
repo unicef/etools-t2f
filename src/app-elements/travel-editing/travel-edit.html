@@ -43,78 +43,6 @@
     <et2f-inbound-data data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-inbound-data>
     <et2f-outbound-data id="outbound-data" data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-outbound-data>
 
-    <template is="dom-if"
-      if="[[postData]]">
-      <etools-ajax endpoint="[[postEndpoint]]"
-        body="[[serverData]]"
-        method="[[method]]"
-        on-success="_handlePostSuccess"
-        on-fail="_handlePostFail"></etools-ajax>
-    </template>
-
-    <!-- Crearances dialog -->
-    <etools-dialog opened="{{clearancesOpened}}"
-      dialog-title="Clearances"
-      ok-btn-text="Submit for approval"
-      on-close="_clearancesOnClose">
-
-      <!-- TODO: wire in -->
-      <!-- TODO: prefill data on empty one & serialize it -->
-      <!-- TODO: hide no button -->
-      <!-- TODO: style it -->
-      <div>Before you submit this trip for approval, please answer the questions below.</div>
-
-      <div class="layout vertical">
-
-        <div>
-          <label id="label-sec-clear">Did you request Security Clearance?</label>
-          <paper-radio-group aria-labelledby="label-sec-clear">
-            <paper-radio-button name="medical_clearance"></paper-radio-button>
-            <paper-radio-button name="security_clearance"></paper-radio-button>
-            <paper-radio-button name="security_course"></paper-radio-button>
-          </paper-radio-group>
-        </div>
-
-        <div>
-          <label id="label-med">Did you request Medical Clearance?</label>
-          <paper-radio-group aria-labelledby="label-med">
-            <paper-radio-button name="medical_clearance"></paper-radio-button>
-            <paper-radio-button name="security_clearance"></paper-radio-button>
-            <paper-radio-button name="security_course"></paper-radio-button>
-          </paper-radio-group>
-        </div>
-
-        <div>
-          <label id="label-sec-course">Did you request Security Course?</label>
-          <paper-radio-group aria-labelledby="label-sec-course">
-            <paper-radio-button name="medical_clearance"></paper-radio-button>
-            <paper-radio-button name="security_clearance"></paper-radio-button>
-            <paper-radio-button name="security_course"></paper-radio-button>
-          </paper-radio-group>
-        </div>
-      </div>
-    </etools-dialog>
-
-    <!-- Rejection dialog -->
-    <etools-dialog opened="{{rejectionOpened}}"
-      dialog-title="Reject travel"
-      ok-btn-text="Send rejection"
-      on-close="_rejectOnClose">
-
-      <!-- TODO: wire in, save, display somewhere -->
-      <paper-textarea label="Rejection note" char-counter maxlength="2500"></paper-textarea>
-    </etools-dialog>
-
-    <!-- Certification dialog -->
-    <etools-dialog opened="{{certificationOpened}}"
-      dialog-title="Certify"
-      ok-btn-text="Send certification"
-      on-close="_certifyOnClose">
-
-      <!-- TODO: wire in, save, display somewhere -->
-      <paper-textarea label="Certification" char-counter maxlength="2500"></paper-textarea>
-    </etools-dialog>
-
     <et2f-header title="Edit travel plan">
       <paper-tabs scrollable
         selected="{{selected}}">
@@ -213,7 +141,7 @@
 
       _computeStatus: function(data) {
         if(data.status) {
-          return data.status.toLowerCase();
+          return data.status.toLowerCase().replace(/ /g, '_');
         }
       },
       _computeTravelPermission: function(permissions, status, user, data) {
@@ -232,6 +160,7 @@
           userType = 'Traveler';
         }
         if(userType) {
+          console.log(userType, this.status)
           this.set('travelPermissions', {});
           this.set('travelPermissions', permissions[userType][status] );
         }
