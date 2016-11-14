@@ -2,7 +2,7 @@
 <link rel="import" href="../../../../bower_components/etools-ajax/etools-ajax.html">
 
 
-<dom-module id="travel-edit">
+<dom-module id="et2f-outbound-data">
   <template>
 
 
@@ -10,19 +10,20 @@
     <etools-loading active="[[postData]]"></etools-loading>
 
 
-
+    <template is="dom-if" if="[[postData]]">
       <etools-ajax endpoint="[[postEndpoint]]"
         body="[[serverData]]"
         method="[[method]]"
         on-success="_handlePostSuccess"
         on-fail="_handlePostFail"></etools-ajax>
+    </template>
 
 
   </template>
 
   <script>
     Polymer({
-      is: 'travel-edit',
+      is: 'et2f-outbound-data',
       properties: {
         data: {
           type: Object,
@@ -49,7 +50,6 @@
           }
         }
       },
-      observers: ['_dataObserver(data, user)'],
 
       _processOutboundData: function (data) {
         var self = this;
@@ -139,7 +139,7 @@
         });
       },
 
-      _handleFormAction: function (e, details) {
+      doRequest: function (details) {
         this._processOutboundData(this.data);
         var self = this;
         var endpointConfig = {
@@ -317,7 +317,6 @@
         this.postData = false;
         this.fire('travel-post-success');
         this.travelId = null;
-        this._resetData();
       },
 
 

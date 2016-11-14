@@ -16,6 +16,7 @@
 <link rel="import" href="travel-attachments.html">
 <link rel="import" href="travel-report.html">
 <link rel="import" href="./backend-connection/inbound-data.html">
+<link rel="import" href="./backend-connection/outbound-data.html">
 <link rel="import" href="../et2f-header.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
@@ -40,6 +41,7 @@
     <etools-loading active="[[postData]]"></etools-loading>
 
     <et2f-inbound-data data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-inbound-data>
+    <et2f-outbound-data id="outbound-data" data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-outbound-data>
 
     <template is="dom-if"
       if="[[postData]]">
@@ -167,7 +169,6 @@
         travelPermissions: {
           type: Object,
           notify: true,
-          computed: '_computeTravelPermission(et2fPermissions, status, user, data)'
         },
         selected: {
           type: Number,
@@ -175,7 +176,8 @@
         },
         newTravel: {
           type: Boolean,
-          value: false
+          value: false,
+          observer: '_newTravelObserver'
         },
         travelId: {
           type: String
@@ -191,7 +193,23 @@
           }
         }
       },
-      observers: ['_dataObserver(data, user)'],
+      observers: [
+        '_dataObserver(data, user)',
+        '_computeTravelPermission(et2fPermissions, status, user, data)'
+      ],
+      _newTravelObserver: function(isNew) {
+        if(isNew) {
+          this.set('data', {
+            baseDetails: {},
+            activities: [{}],
+            itinerary: [{}],
+            cost_assignments: [{}],
+            deductions: [],
+            expenses: [{}],
+            status: 'Planned'
+          })
+        }
+      },
 
       _computeStatus: function(data) {
         if(data.status) {
@@ -214,290 +232,16 @@
           userType = 'Traveler';
         }
         if(userType) {
-          return permissions[userType][status];
+          this.set('travelPermissions', {});
+          this.set('travelPermissions', permissions[userType][status] );
         }
       },
 
-      _processOutboundData: function (data) {
-        var self = this;
-        delete data.status;
-        this.serverData = {
-          deductions: [],
-          itinerary: [],
-          activities: [],
-          cost_assignments: [],
-          expenses: [],
-          clearances: {}
-        };
-
-        function duplicateIdPurging(collection) {
-          if(collection.length < 2) {
-            return collection;
-          }
-          return collection.reduce(function(prev, current) {
-            if(prev.some(function(prevItem){return prevItem.id === current.id;})) {
-              delete current.id;
-            }
-            prev.push(current);
-            return prev;
-          }, [])
-        }
-
-        function handleArray(arr) {
-          arr = duplicateIdPurging(arr);
-          arr.forEach(function(obj) {
-            handleObject(obj);
-          });
-        }
-
-
-        function handleObject(obj) {
-          if (!obj) {return;}
-          var keys = Object.keys(obj);
-          keys.forEach(function(key) {
-            if(obj[key] && !(obj[key] instanceof Array )){
-              obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' || key === 'mode_of_travel' ? obj[key].label : obj[key].value : obj[key]
-            }
-            if(obj[key] && obj[key] instanceof Array ){
-              obj[key] = obj[key].map(function(item) {
-                if(key === 'mode_of_travel') {
-                  return item.label;
-                }
-                return typeof  item === 'object' ? item.value : item
-              })
-            }
-          });
-        }
-
-        var dataKeys = Object.keys(data);
-
-        dataKeys.forEach(function(fieldSet){
-          if (data[fieldSet] instanceof Array) {
-            handleArray(data[fieldSet])
-          }
-          else if(typeof data[fieldSet] === 'object'){
-            handleObject(data[fieldSet]);
-          }
-        });
-
-        var serverKeys = Object.keys(this.serverData);
-
-
-        serverKeys.forEach(function(serverKey) {
-          if(data[serverKey] instanceof Array && data[serverKey][0]) {
-            if(Object.keys(data[serverKey][0]).length === 0) {
-              delete self.serverData[serverKey];
-            }
-          }
-          if(self.serverData[serverKey]) {
-            self.serverData[serverKey] = data[serverKey];
-          }
-          delete data[serverKey];
-        });
-
-        var leftoverKeys = Object.keys(data);
-        leftoverKeys.forEach(function(key) {
-          if (!data[key]) { return; }
-          var innerKeys = Object.keys(data[key]);
-          innerKeys.forEach(function(innerKey) {
-            self.serverData[innerKey] = data[key][innerKey];
-          })
-
-        });
-      },
 
       _handleFormAction: function (e, details) {
-        this._processOutboundData(this.data);
-        var self = this;
-        var endpointConfig = {
-          id: self.travelId ? self.travelId.replace(/\//g, '') : null,
-          status: null
-        };
-        var endpointName = 'et2fStateChange';
-
-        function doSavePost() {
-          self.method = 'POST';
-          self.postEndpoint = etoolsAppConfig.endpoints.et2fNewTravel;
-          self.postData = true;
-        }
-
-        function doSaveAndSubmit() {
-          self.method = 'POST';
-          self.postEndpoint = etoolsAppConfig.endpoints.et2fSaveAndSubmit;
-          self.postData = true;
-        }
-
-        function doSaveUpdate() {
-          self.method = 'PATCH';
-          self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelDetail
-          self.postData = true;
-        }
-
-        function doPut() {
-          self.method = 'PUT';
-          self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
-          self.postData = true;
-        }
-
-        function doPost() {
-          self.method = 'POST';
-          self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
-          self.postData = true;
-        }
-
-        var statusActions = {
-
-          save: function () {
-            if(self.travelId !== undefined) {
-              doSaveUpdate();
-            } else {
-              doSavePost()
-            }
-          },
-
-          save_and_submit: function() {
-
-            self.clearancesOpened = true;
-            self._clearancesOnClose = function () {
-              self.serverData.clearances = {
-                medical_clearance: true,
-                security_clearance: true,
-                security_course: true
-              };
-              if (endpointConfig.id) {
-                endpointConfig.status = 'submit_for_approval';
-                doPost();
-              } else {
-                endpointConfig.status = 'save_and_submit';
-                doSaveAndSubmit();
-              }
-            }
-          },
-
-          // TODO: Cancel popup
-          cancel: function() {
-            if(self.travelId !== undefined) {
-              endpointConfig.status = 'cancel';
-              doPost();
-            } else {
-              this._handlePostSuccess();
-            }
-          },
-
-          // TODO: Approve popup
-          approve: function() {
-            endpointConfig.status = 'approve';
-            doPost();
-          },
-
-          reject: function() {
-            self.rejectionOpened = true;
-            self._rejectOnClose = function() {
-              // TODO: wire in note from modal!!!
-              self.serverData.rejection_note = 'Some rejection note';
-
-              endpointConfig.status = 'reject';
-              doPost();
-            }
-          },
-
-          // TODO: Reopen popup
-          reopen: function() {
-            endpointConfig.status = 'restore';
-            doPost();
-          },
-
-          // Send for papxment popup
-          send_for_payment: function() {
-            endpointConfig.status = 'send_for_payment';
-            doPost();
-          },
-
-          went_as_planned: function() {
-            endpointConfig.status = 'mark_as_certified';
-            doPost();
-          },
-
-          submit_certificate: function() {
-
-            self.certificationOpened = true;
-            self._certifyOnClose = function() {
-
-              endpointConfig.status = 'submit_certificate';
-              doPost();
-            }
-          },
-
-          done: function() {
-            console.log('Mark as done fn. ran!');
-            endpointConfig.status = 'done';
-            doMarkAsDone();
-          },
-
-          // TEST
-          approve_certificate: function() {
-            endpointConfig.status = 'approve_certificate';
-            doPost();
-          },
-
-          // TEST
-          // TODO: Raise modal
-          reject_certificate: function() {
-            console.log('TODO!!');
-            endpointConfig.status = 'reject_certificate';
-            doPost();
-          },
-
-          // TEST
-          certify: function() {
-            endpointConfig.status = 'mark_as_certified';
-            doPost();
-          },
-
-          // TEST
-          complete: function() {
-            endpointConfig.status = 'done';
-            doPost();
-          },
-
-          // TEST
-          planned: function() {
-            endpointConfig.status = 'plan';
-            doPost();
-          }
-        };
-
-        statusActions[details.endPoint]();
-
+        this.$['outbound-data'].doRequest(details);
       },
-      _handlePostFail: function(event, i) {
-        var self = this;
-        this.formError = i.request.detail.request.xhr.response;
-        if (!this.formError) {errorKey = []};
-        errorKey = Object.keys(this.formError);
-        errorKey.forEach(function(key) {
-          console.error(key + 'error: ', self.formError[key])
-        });
-        this.postData = false;
-      },
-      _handlePostSuccess: function() {
-        this.postData = false;
-        this.fire('travel-post-success');
-        this.travelId = null;
-        this._resetData();
-      },
-      _resetData: function() {
-        this.data = {
-          baseDetails: {},
-          activities: [{}],
-          itinerary: [{}],
-          expenses: [{}],
-          deductions: [],
-          cost_assignments: [{}],
-          status: 'Planned'
-        };
 
-      },
       _dataObserver: function(data, user) {
         var self = this;
         if (self.newTravel && data.baseDetails) {
@@ -506,12 +250,6 @@
             value: user.id
           };
           self.notifyPath('data.baseDetails.traveller');
-        }
-
-      },
-      ready: function () {
-        if (this.newTravel) {
-          this._resetData();
         }
       }
     });
