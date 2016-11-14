@@ -216,12 +216,18 @@
       _computeTravelPermission: function(permissions, status, user, data) {
         var userType = undefined;
         if(data.baseDetails.id) {
-          userType = data.baseDetails.traveller.value === user.id ? 'Traveler' : data.baseDetails.supervisor.value === user.id ? 'Supervisor' : 'Anyone'
-        } else
-          if(this.newTravel) {
+          userType = 'Anyone';
+          if(data.baseDetails.traveller &&  data.baseDetails.traveller.value === user.id) {
+            userType = 'Traveler'
+          }
+          if(data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
+            userType = 'Supervisor';
+          }
+
+        }
+        else if(this.newTravel) {
           userType = 'Traveler';
         }
-//        userType = 'God';
         if(userType) {
           return permissions[userType][status];
         }
