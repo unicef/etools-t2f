@@ -219,7 +219,7 @@
                     table: {
                       widths: [710, 50],
                       body: [
-                        [{text: 'International Travel'}, {text: data.baseDetails.international_travel ? 'Yes': 'No', style: 'checkbox'}]
+                        [{text: 'International Travel'}, {text: data.baseDetails.international_travel ? 'YES': 'NO', style: 'checkbox'}]
                       ]
                     },
                   },
@@ -236,7 +236,7 @@
                               widths: innerTableVars.innerWidths,
                               body: [
                                 innerColumnGen('Reference Number', data.baseDetails.reference_number),
-                                innerColumnGen('Traveller', data.baseDetails.traveller.label),
+                                innerColumnGen('Traveller', data.baseDetails.traveller ? data.baseDetails.traveller.label : ''),
                                 innerColumnGen('Start Date', data.baseDetails.start_date),
                                 innerColumnGen('Est. Travel cost', data.baseDetails.estimated_travel_cost),
                               ]
@@ -249,7 +249,7 @@
                               widths: innerTableVars.innerWidths,
                               body: [
                                 innerColumnGen('Travel Status', data.baseDetails.status),
-                                innerColumnGen('Supervisor', data.baseDetails.supervisor.label),
+                                innerColumnGen('Supervisor', data.baseDetails.supervisor ? data.baseDetails.supervisor.label : ''),
                                 innerColumnGen('End date', data.baseDetails.end_date),
                                 innerColumnGen('Mode of travel', concatManyToMany(data.baseDetails.mode_of_travel)),
                               ]
@@ -272,6 +272,75 @@
                 ]
               };
             }
+          },
+          activities: {
+            name: 'Travel Activities (' + data.activities.length + ')' ,
+            generator: function() {
+              var mainStack = data.activities.map(function(activity, index) {
+                console.log(activity)
+                return {
+                  stack: [
+                    {
+                      margin: [-25, 0],
+                      table: {
+                        widths: [16, 380, 321, 50],
+                        body: [
+                          [
+                            {text: '' + (index + 1 ), style: 'checkbox'},
+                            {
+                              columns: [
+                                {text: 'Travel type: '},
+                                {text: '' + activity.travel_type, style: 'rightAlign'}
+                              ]
+                            },
+                            {text: 'Primary Traveler?'},
+
+                            {text: activity.primary_traveler ? 'YES' : 'NO' + '', style: 'checkbox'}
+                          ],
+                        ]
+                      },
+                    },
+                    {
+                      layout: innerTableVars.noTopLayout,
+                      table: {
+                        widths: innerTableVars.widths,
+                        body: [
+                          [
+                            {
+                              margin: innerTableVars.margin,
+                              layout: innerTableVars.onlyHorizontalDivider,
+                              table:{
+                                widths: innerTableVars.innerWidths,
+                                body: [
+                                  innerColumnGen('Partner', activity.partner ? activity.partner.label  : ''),
+                                  innerColumnGen('When?', activity.date),
+                                ]
+                              }
+                            },
+                            {
+                              margin: innerTableVars.margin,
+                              layout: innerTableVars.onlyHorizontalDivider,
+                              table:{
+                                widths: innerTableVars.innerWidths,
+                                body: [
+                                  innerColumnGen('Partnership', activity.partnership ? activity.partnership.label : ''),
+                                  innerColumnGen('Mode of travel', activity.mode_of_travel),
+                                ]
+                              }
+                            }
+                          ]
+
+                        ]
+                      }
+                    },
+                  ]
+                }
+              });
+              console.log(JSON.parse(JSON.stringify(mainStack)));
+              return {
+                stack: mainStack
+              }
+            }
           }
         };
 
@@ -287,18 +356,6 @@
                   {text: fieldSet.name}
                 ]
               ],
-            }
-          }
-        }
-
-
-        function mainBodyGen(fieldSet) {
-          return {
-            margin: [0, 10],
-            table: {
-              widths: [88, 88, 88, 88, 88, 88, 88, 88],
-              headerRows: 0,
-              body: fieldSet.generator()
             }
           }
         }
