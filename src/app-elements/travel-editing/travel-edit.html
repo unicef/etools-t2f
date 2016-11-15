@@ -43,7 +43,9 @@
     <et2f-inbound-data data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-inbound-data>
     <et2f-outbound-data id="outbound-data" data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-outbound-data>
 
-    <et2f-header title="Edit travel plan">
+    <et2f-header title="Edit travel plan"
+      data-to-print="[[dataToPrint]]"
+      print-styles="[[printStyles]]">
       <paper-tabs scrollable
         selected="{{selected}}">
         <paper-tab>Travel details</paper-tab>
@@ -119,12 +121,196 @@
           value: function () {
             return {}
           }
+        },
+        dataToPrint: {
+          type: Object,
+          computed: '_computeDataToPrint(data)',
+          notify: true
+        },
+        printStyles: {
+          type: Object,
+          computed: '_computeStyles(data)'
         }
       },
       observers: [
         '_dataObserver(data, user)',
         '_computeTravelPermission(et2fPermissions, status, user, data)'
       ],
+      _computeStyles: function() {
+        return {
+          mainHeader: {
+            fontSize: 16,
+            bold: true,
+            color: '#FFFFFF',
+            fillColor: '#000000'
+          },
+          checkbox: {
+            bold: true,
+            color: '#FFFFFF',
+            fillColor: '#000000'
+          },
+          rightAlign: {
+            alignment: 'right'
+          }
+        }
+      },
+      _computeDataToPrint(data){
+        if(!data.baseDetails) {
+          return
+        }
+        console.log(data);
+        var dataToPrint = [];
+        var innerTableVars = {
+          widths: [380, 380],
+          margin: [-5,0],
+          innerWidths: [187,187],
+          layout: 'lightHorizontalLines',
+          noTopLayout: {
+            hLineWidth: function(i, node) {
+              return (i === 0 ) ? 0 : 1;
+            },
+            vLineWidth: function(i, node) {
+              return 1
+            },
+            hLineColor: 'black',
+            vLineColor: 'black'
+          },
+          onlyHorizontalDivider: {
+            hLineWidth: function(i, node) {
+              return (i === 0 || i === node.table.body.length ) ? 0 : 1;
+            },
+            vLineWidth: function(i, node) {
+              return 0
+            },
+            hLineColor: 'black',
+            vLineColor: 'black'
+          },
+          noVerticalNoTop: {
+            hLineWidth: function(i, node) {
+              return (i === 0 ) ? 0 : 1;
+            },
+            vLineWidth: function(i, node) {
+              return (i === 0 || i === node.table.widths.length ) ? 1 : 0;
+            },
+            hLineColor: 'black',
+            vLineColor: 'black'
+          }
+        };
+
+        function innerColumnGen(label, value) {
+          return [{text: label + ': ', margin:[5,0]}, {text: '' + value, style: 'rightAlign', margin:[5,0]}]
+        }
+        function concatManyToMany(value) {
+          if(value instanceof Array) {
+            return value.reduce(function (prev, cur, index) {
+              var tail = index === value.length - 1 ? '' : ',';
+              return prev + cur.label + tail
+            }, '')
+          }
+          return '';
+        }
+        var titleLib = {
+          baseDetails: {
+            name: 'Travel Plan',
+            generator: function() {
+              return {
+                stack: [
+                  {
+                    table: {
+                      widths: [710, 50],
+                      body: [
+                        [{text: 'International Travel'}, {text: data.baseDetails.international_travel ? 'Yes': 'No', style: 'checkbox'}]
+                      ]
+                    },
+                  },
+                  {
+                    layout: innerTableVars.noTopLayout,
+                    table: {
+                      widths: innerTableVars.widths,
+                      body: [
+                        [
+                          {
+                            margin: innerTableVars.margin,
+                            layout: innerTableVars.onlyHorizontalDivider,
+                            table:{
+                              widths: innerTableVars.innerWidths,
+                              body: [
+                                innerColumnGen('Reference Number', data.baseDetails.reference_number),
+                                innerColumnGen('Traveller', data.baseDetails.traveller.label),
+                                innerColumnGen('Start Date', data.baseDetails.start_date),
+                                innerColumnGen('Est. Travel cost', data.baseDetails.estimated_travel_cost),
+                              ]
+                            }
+                          },
+                          {
+                            margin: innerTableVars.margin,
+                            layout: innerTableVars.onlyHorizontalDivider,
+                            table:{
+                              widths: innerTableVars.innerWidths,
+                              body: [
+                                innerColumnGen('Travel Status', data.baseDetails.status),
+                                innerColumnGen('Supervisor', data.baseDetails.supervisor.label),
+                                innerColumnGen('End date', data.baseDetails.end_date),
+                                innerColumnGen('Mode of travel', concatManyToMany(data.baseDetails.mode_of_travel)),
+                              ]
+                            }
+                          }
+                        ]
+
+                      ]
+                    }
+                  },
+                  {
+                    layout: innerTableVars.noVerticalNoTop,
+                    table: {
+                      widths: [100, 661],
+                      body: [
+                        [{text: 'Purpose of travel: '}, {text: data.baseDetails.purpose}]
+                      ]
+                    },
+                  }
+                ]
+              };
+            }
+          }
+        };
+
+        function mainHeaderGen(fieldSet) {
+          return {
+            style: 'mainHeader',
+            margin:[-40, 20],
+            table: {
+              widths: [807],
+              headerRows: 0,
+              body: [
+                [
+                  {text: fieldSet.name}
+                ]
+              ],
+            }
+          }
+        }
+
+
+        function mainBodyGen(fieldSet) {
+          return {
+            margin: [0, 10],
+            table: {
+              widths: [88, 88, 88, 88, 88, 88, 88, 88],
+              headerRows: 0,
+              body: fieldSet.generator()
+            }
+          }
+        }
+
+        var mainKeys = Object.keys(titleLib);
+        mainKeys.forEach(function(titleKey) {
+          dataToPrint.push(mainHeaderGen(titleLib[titleKey]));
+          dataToPrint.push(titleLib[titleKey].generator())
+
+        });
+        return dataToPrint;
+      },
       _newTravelObserver: function(isNew) {
         if(isNew) {
           this.set('data', {
