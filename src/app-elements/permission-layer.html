@@ -18,10 +18,10 @@
 
           if(e && e instanceof Object) {
             if(!e.view) {
-              console.log('View disabled for: ' + label)
+//              console.debug('View disabled for: ' + label)
             }
             if(!e.edut) {
-              console.log('Edit disabled for: ' + label)
+//              console.debug('Edit disabled for: ' + label)
             }
             e.disabled = !e.edit;
             e.hidden = !e.view;
