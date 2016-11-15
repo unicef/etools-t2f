@@ -14,7 +14,6 @@
     :host {
       display: block;
       width: 100%;
-      margin-top: 24px;
     }
 
     .container {
@@ -26,15 +25,14 @@
       margin-right: 24px;
     }
 
-    .heading {
-      display: block;
+    .card-heading {
+      font-size: 20px;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
       height: 48px;
       line-height: 48px;
-      background-color: var(--et2f-sec-blue);
       color: white;
-      font-size: 20px;
-      /* font-weight: 500; WTF??? */
-      font-weight: 400;
+      background-color: var(--et2f-sec-blue);
       text-align: center;
     }
 
@@ -60,9 +58,9 @@
 
       <paper-material class="flex" elevation="1">
 
-        <span class="heading">
+        <div class="card-heading">
           Travel report
-        </span>
+        </div>
 
         <paper-textarea
           label="Add your report here*"
