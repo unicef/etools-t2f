@@ -154,11 +154,11 @@
           }
         }
       },
-      _computeDataToPrint(data){
-        if(!data.baseDetails) {
+      _computeDataToPrint(incomingData){
+        if(!incomingData.baseDetails) {
           return
         }
-        console.log(data);
+        var data = JSON.parse(JSON.stringify(incomingData));
         var dataToPrint = [];
         var innerTableVars = {
           widths: [380, 380],
@@ -277,7 +277,6 @@
             name: 'Travel Activities (' + data.activities.length + ')' ,
             generator: function() {
               var mainStack = data.activities.map(function(activity, index) {
-                console.log(activity)
                 return {
                   stack: [
                     {
@@ -314,6 +313,7 @@
                                 body: [
                                   innerColumnGen('Partner', activity.partner ? activity.partner.label  : ''),
                                   innerColumnGen('When?', activity.date),
+                                  innerColumnGen('Result to be monitored', activity.result ? activity.result.label : ''),
                                 ]
                               }
                             },
@@ -325,6 +325,7 @@
                                 body: [
                                   innerColumnGen('Partnership', activity.partnership ? activity.partnership.label : ''),
                                   innerColumnGen('Mode of travel', activity.mode_of_travel),
+                                  innerColumnGen('Locations', concatManyToMany(activity.locations)),
                                 ]
                               }
                             }
@@ -336,7 +337,6 @@
                   ]
                 }
               });
-              console.log(JSON.parse(JSON.stringify(mainStack)));
               return {
                 stack: mainStack
               }
@@ -360,11 +360,26 @@
           }
         }
 
+        //clean empty collections
+
+        Object.keys(data).forEach(function(key){
+          if(data[key] instanceof Array) {
+            data[key] = data[key].filter(function(item) {
+              var itemKeys = Object.keys(item);
+              return itemKeys.length > 0;
+            });
+
+            if(data[key].length === 0) {
+              delete data[key];
+            }
+          }
+        });
         var mainKeys = Object.keys(titleLib);
         mainKeys.forEach(function(titleKey) {
-          dataToPrint.push(mainHeaderGen(titleLib[titleKey]));
-          dataToPrint.push(titleLib[titleKey].generator())
-
+          if(data[titleKey]) {
+            dataToPrint.push(mainHeaderGen(titleLib[titleKey]));
+            dataToPrint.push(titleLib[titleKey].generator())
+          }
         });
         return dataToPrint;
       },
