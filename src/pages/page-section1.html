@@ -93,7 +93,7 @@
 
       _tabChanged: function(tab) {
         var tabs = ['tab1', 'tab2'];
-        if (tabs.indexOf(tab) == -1) {
+        if (tabs.indexOf(tab) === -1) {
           this.fire('404');
         }
       }
