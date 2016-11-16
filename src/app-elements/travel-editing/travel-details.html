@@ -85,7 +85,7 @@
 
       <div class="flex">
 
-        <paper-material class="note cancel" elevation="1">
+        <paper-material class="note cancel" elevation="1" hidden$="[[_hideCancelNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
               <g id="!---UI-Style-Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                   <g id="cancel-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
@@ -99,7 +99,7 @@
           <div class="note-text">[[data.cancellation_note]]</div>
         </paper-material>
 
-        <paper-material class="note reject" elevation="1">
+        <paper-material class="note reject" elevation="1" hidden$="[[_hideRejectionNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
               <g id="!---UI-Style-Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                   <g id="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
@@ -238,6 +238,14 @@
         travelPermissions: {
           type: Object,
         },
+      },
+
+      _hideCancelNote: function(data) {
+        return data.status !== 'Cancelled' || data.cancellation_note.length === 0;
+      },
+
+      _hideRejectionNote: function(data) {
+        return data.status !== 'Rejected' || data.rejection_note.length === 0;
       },
 
     });
