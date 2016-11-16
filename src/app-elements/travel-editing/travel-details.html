@@ -47,11 +47,72 @@
         margin-top: 24px;
         margin-right: 24px;
       }
+
+      .note {
+        margin: 24px;
+        padding: 24px 24px 24px 64px;
+      }
+      .note-heading {
+        margin-bottom: 24px;
+        font-weight: 500;
+        font-size: 14px;
+      }
+      .cancel {
+        border-top: 2px solid var(--et2f-warning);
+      }
+      .cancel .note-heading { color: var(--et2f-warning); }
+      .reject {
+        border-top: 2px solid var(--et2f-error);
+      }
+      .reject .note-heading { color: var(--et2f-error); }
+      .note-text {
+        color: var(--gray-dark);
+      }
+      .flag {
+        position: absolute;
+        top: -4px;
+        left: 18px;
+      }
+      #cancel-flag {
+        fill: var(--et2f-warning);
+      }
+      #reject-flag {
+        fill: var(--et2f-error);
+      }
     </style>
 
     <div class="horizontal layout">
 
       <div class="flex">
+
+        <paper-material class="note cancel" elevation="1">
+          <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
+              <g id="!---UI-Style-Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g id="cancel-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                      <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
+                          <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
+                      </g>
+                  </g>
+              </g>
+          </svg>
+          <div class="note-heading">CANCELLATION NOTE</div>
+          <div class="note-text">[[data.cancellation_note]]</div>
+        </paper-material>
+
+        <paper-material class="note reject" elevation="1">
+          <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
+              <g id="!---UI-Style-Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g id="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                      <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
+                          <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
+                      </g>
+                  </g>
+              </g>
+          </svg>
+          <div class="note-heading">REJECTION NOTE</div>
+          <div class="note-text">[[data.rejection_note]]</div>
+        </paper-material>
+
 
         <etools-repeatable-field-set title="Travel Plan"
           hide-plus
