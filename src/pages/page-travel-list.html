@@ -168,7 +168,7 @@
 
               <paper-listbox class="dropdown-content">
                 <template is="dom-repeat" items="[[item.selection]]" as="filter">
-                  <paper-item>[[filter.label]]</paper-item>
+                  <paper-item on-click="changeFilterValue" item="[[item.filterName]]">[[filter.label]]</paper-item>
                 </template>
               </paper-listbox>
             </paper-dropdown-menu>
@@ -500,7 +500,18 @@
         this.usedFilters = this.usedFilters.filter(function(filter) {
           return filter.name !== filterName;
         });
+      },
+      changeFilterValue: function(e) {
 
+        var key = e.model.item.filterName;
+        var value = e.model.filter.value;
+        var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
+        oldParams[key] = value;
+
+        this.set('ajaxParams', oldParams);
+        // TODO: resetting filters properly
+        // TODO: divving & pointering close filter (X)
+        // TODO: properly resetting filter on X
       },
       _changeParamsOrder: function(orderObj, old) {
         if (typeof old === 'undefined' ) {
