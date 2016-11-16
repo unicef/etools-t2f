@@ -50,7 +50,7 @@
 
     <!-- Crearances dialog -->
     <!-- we're working with the outbound data here, so no older value gets shown for now, although it gets stored -->
-    <paper-dialog opened="{{clearancesOpened}}" with-backdrop>
+    <paper-dialog id="clearance-modal" opened="{{clearancesOpened}}" with-backdrop>
 
       <div class="dialog-heading">Travel authorization</div>
       <div class="dialog-intro-text">Before you submit this trip for approval, please answer the questions below.</div>
@@ -100,14 +100,36 @@
     </paper-dialog>
 
     <!-- Rejection dialog -->
-    <etools-dialog opened="{{rejectionOpened}}"
-      dialog-title="Reject travel"
-      ok-btn-text="Send rejection"
-      on-close="_rejectOnClose">
+    <paper-dialog id="rejection-modal" opened="{{rejectionOpened}}" with-backdrop>
 
-      <!-- TODO: wire in, save, display somewhere -->
-      <paper-textarea label="Rejection note" char-counter maxlength="2500"></paper-textarea>
-    </etools-dialog>
+      <div class="dialog-heading">Reject travel</div>
+      <div class="dialog-intro-text">Please specify reasons for rejecting this travel:</div>
+
+      <!-- TODO: save, display somewhere -->
+      <paper-textarea label="Rejection note" value="{{serverData.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
+
+      <paper-button
+        class="dialog-confirm-button"
+        on-click="_rejectOnConfirm">
+        Send rejection
+      </paper-button>
+    </paper-dialog>
+
+    <!-- Cancellation dialog -->
+    <paper-dialog id="cancel-modal" opened="{{cancellationOpened}}" with-backdrop>
+
+      <div class="dialog-heading">Cancel travel</div>
+      <div class="dialog-intro-text">Please specify reasons for cancelling this travel:</div>
+
+      <!-- TODO: save, display somewhere -->
+      <paper-textarea label="Cancellation note" value="{{serverData.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
+
+      <paper-button
+        class="dialog-confirm-button"
+        on-click="_cancelOnConfirm">
+        Cancel travel
+      </paper-button>
+    </paper-dialog>
 
     <!-- Certification dialog -->
     <etools-dialog opened="{{certificationOpened}}"
@@ -321,6 +343,7 @@
 
                     self._clearancesOnConfirm = function () {
 
+                      self.$['clearance-modal'].close();
                       if (endpointConfig.id) {
                           endpointConfig.status = 'submit_for_approval';
                           doPost();
@@ -334,12 +357,19 @@
 
                   // TODO: Cancel popup
                   cancel: function() {
+
+                    self._cancelOnConfirm = function() {
+
+                      self.$['cancel-modal'].close();
                       if(self.travelId !== undefined) {
-                          endpointConfig.status = 'cancel';
-                          doPost();
+                        endpointConfig.status = 'cancel';
+                        doPost();
                       } else {
-                          this._handlePostSuccess();
+                        this._handlePostSuccess();
                       }
+                    }
+
+                    self.cancellationOpened = true;
                   },
 
                   // TODO: Approve popup
@@ -349,14 +379,13 @@
                   },
 
                   reject: function() {
-                      self.rejectionOpened = true;
-                      self._rejectOnClose = function() {
-                          // TODO: wire in note from modal!!!
-                          self.serverData.rejection_note = 'Some rejection note';
+                    self._rejectOnConfirm = function() {
+                      self.$['rejection-modal'].close();
 
-                          endpointConfig.status = 'reject';
-                          doPost();
-                      }
+                      endpointConfig.status = 'reject';
+                      doPost();
+                    }
+                    self.rejectionOpened = true;
                   },
 
                   // TODO: Reopen popup
