@@ -424,6 +424,188 @@
                               stack: mainStack
                           }
                       }
+                  },
+                  deductions: {
+                      name: 'Deductions',
+                      generator: function() {
+                          var deductionRows = data.deductions.map(function(deduction) {
+                              return Object.keys(deduction).filter(function(item){
+                                  return item !== 'id' && item !== 'day_of_the_week';
+                              }).map(function(key) {
+                                  if(key === 'date') {
+                                      return deduction['day_of_the_week'] +' ' + deduction['date'];
+                                  }
+                                  else {
+                                      return deduction[key] ? 'YES' : '';
+                                  }
+                              });
+                          });
+                          deductionRows.unshift(['Date', 'Breakfast', 'Lunch', 'Dinner', 'Accommodation', 'Not applicable' ]);
+                          return {
+                              table: {
+                                  widths: [170, 110, 110, 110, 110, 110],
+                                  headerRows: 1,
+                                  body: deductionRows
+                              }
+                          }
+                      }
+                  },
+                  expenses: {
+                      name: 'Expenses (' + data.expenses.length + ')' ,
+                      generator: function() {
+                          var mainStack = data.expenses.map(function(expense, index) {
+                              return {
+                                  margin: [0, 10],
+                                  stack: [
+                                      {
+                                          margin: [-25, 0],
+                                          table: {
+                                              widths: [16, 380, 380,],
+                                              body: [
+                                                  [
+                                                      {text: '' + (index + 1 ), style: 'checkbox'},
+                                                      {
+                                                          columns: [
+                                                              {text: 'Expense type: '},
+                                                              {text: '' + expense.type ? expense.type.label : '', style: 'rightAlign'}
+                                                          ]
+                                                      },
+                                                      {
+                                                          columns: [
+                                                              {text: 'Amount: '},
+                                                              {text: '' + expense.amount, style: 'rightAlign'}
+                                                          ]
+                                                      },
+                                                  ],
+                                              ]
+                                          },
+                                      },
+                                      {
+                                          layout: innerTableVars.noTopLayout,
+                                          table: {
+                                              widths: innerTableVars.widths,
+                                              body: [
+                                                  [
+                                                      {
+                                                          margin: innerTableVars.margin,
+                                                          layout: innerTableVars.onlyHorizontalDivider,
+                                                          table:{
+                                                              widths: innerTableVars.innerWidths,
+                                                              body: [
+                                                                  innerColumnGen('Document Currency', expense.document_currency? expense.document_currency.label : ''),
+                                                              ]
+                                                          }
+                                                      },
+                                                      {
+                                                          margin: innerTableVars.margin,
+                                                          layout: innerTableVars.onlyHorizontalDivider,
+                                                          table:{
+                                                              widths: innerTableVars.innerWidths,
+                                                              body: [
+                                                                  innerColumnGen('Account currency', expense.account_currency? expense.account_currency.label : ''),
+                                                              ]
+                                                          }
+                                                      }
+                                                  ]
+
+                                              ]
+                                          }
+                                      },
+                                      {
+                                          layout: innerTableVars.noTopLayout,
+                                          table: {
+                                              widths: innerTableVars.withCheckboxWidths,
+                                              body: [
+                                                  [
+                                                      {text: 'Overnight travel ? '},
+                                                      {text: expense.overnight_travel ? 'YES' : "NO", style: 'checkbox'}
+                                                  ]
+                                              ]
+                                          }
+                                      },
+                                  ]
+                              }
+                          });
+                          return {
+                              stack: mainStack
+                          }
+                      }
+                  },
+                  cost_assignments: {
+                      name: 'Cost Assignment (' + data.cost_assignments.length + ')' ,
+                      generator: function() {
+                          var mainStack = data.expenses.map(function(cost, index) {
+                              return {
+                                  stack: [
+                                      {
+                                          margin: [-25, 5],
+                                          table: {
+                                              widths: [16, 710, 50,],
+                                              body: [
+                                                  [
+                                                      {text: '' + (index + 1 ), style: 'checkbox'},
+                                                      {
+                                                          columns: [
+                                                              {text: 'WBS: '},
+                                                              {text: '' + cost.wbs ? cost.wbs.label : '', style: 'rightAlign'}
+                                                          ]
+                                                      },
+                                                      {text: '' + cost.share + '%', style: 'checkbox'}
+
+                                                  ],
+                                              ]
+                                          },
+                                      },
+                                      {
+                                          layout: innerTableVars.noTopLayout,
+                                          table: {
+                                              widths: innerTableVars.widths,
+                                              body: [
+                                                  [
+                                                      {
+                                                          margin: innerTableVars.margin,
+                                                          layout: innerTableVars.onlyHorizontalDivider,
+                                                          table:{
+                                                              widths: innerTableVars.innerWidths,
+                                                              body: [
+                                                                  innerColumnGen('Grant', cost.grant ? cost.grant.label : ''),
+                                                              ]
+                                                          }
+                                                      },
+                                                      {
+                                                          margin: innerTableVars.margin,
+                                                          layout: innerTableVars.onlyHorizontalDivider,
+                                                          table:{
+                                                              widths: innerTableVars.innerWidths,
+                                                              body: [
+                                                                  innerColumnGen('Fund', cost.fund ? cost.fund.label : ''),
+                                                              ]
+                                                          }
+                                                      }
+                                                  ]
+
+                                              ]
+                                          }
+                                      },
+                                      {
+                                          layout: innerTableVars.noTopLayout,
+                                          table: {
+                                              widths: innerTableVars.withCheckboxWidths,
+                                              body: [
+                                                  [
+                                                      {text: 'Overnight travel ? '},
+                                                      {text: cost.overnight_travel ? 'YES' : "NO", style: 'checkbox'}
+                                                  ]
+                                              ]
+                                          }
+                                      },
+                                  ]
+                              }
+                          });
+                          return {
+                              stack: mainStack
+                          }
+                      }
                   }
               };
 
@@ -501,6 +683,7 @@
               else if(this.newTravel) {
                   userType = 'Traveler';
               }
+              userType = 'God';
               if(userType) {
                   console.log(userType, this.status)
                   this.set('travelPermissions', {});
