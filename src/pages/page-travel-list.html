@@ -7,6 +7,11 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 
 <link rel="import" href="../app-elements/travel-list/list-element.html">
 <link rel="import" href="../app-elements/travel-list/list-header.html">
@@ -37,7 +42,7 @@
     }
 
     .second-header {
-      height: 84px;
+      min-height: 84px;
       margin-bottom: 8px;
     }
     .second-header paper-input {
@@ -65,6 +70,35 @@
       margin-left: 20px;
       font-weight: 500;
       line-height: 64px;
+    }
+
+    #add-filter-container {
+      border-left: 2px solid var(--gray-lighter);
+      border-right: 2px solid var(--gray-lighter);
+      margin-left: 16px;
+      margin-right: 16px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    #add-filter-container paper-button {
+      color: var(--et2f-primary);
+    }
+    .filter-dropdown {
+      margin-left: 20px;
+      width: 200px;
+    }
+    .filter-reset-button {
+      margin: auto 12px;
+      transform: translate(0, 8px);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      line-height: 16px;
+      background-color: var(--et2f-error);
+      color: white;
+      font-weight: 500;
+      font-size: 12px;
+      text-align: center;
     }
 
     .w5 {
@@ -115,17 +149,53 @@
         export-params="[[ajaxParams]]"></et2f-header>
 
       <paper-card class="second-header horizontal layout center">
-        <!-- Filtering -->
 
-        <paper-input
-            inline
-            id="search-input"
-            label="search keyword(s)"
-            on-keydown="searchKeyDown">
-          <iron-icon icon="search" prefix></iron-icon>
-        </paper-input>
 
-        <div class="flex"></div>
+        <div class="flex horizontal layout wrap">
+
+          <paper-input
+              inline
+              id="search-input"
+              label="search keyword(s)"
+              on-keydown="searchKeyDown">
+            <iron-icon icon="search" prefix></iron-icon>
+          </paper-input>
+
+          <!-- FILTERS -->
+          <template is="dom-repeat" items="[[]]">
+
+            <paper-dropdown-menu label="Select `Traveler`" class="filter-dropdown">
+              <paper-listbox class="dropdown-content">
+                <paper-item>`1`</paper-item>
+                <paper-item>`2`</paper-item>
+                <paper-item>`3`</paper-item>
+                <paper-item>`4`</paper-item>
+                <paper-item>`5`</paper-item>
+              </paper-listbox>
+            </paper-dropdown-menu>
+
+            <div class="filter-reset-button">X</div>
+          </template>
+
+        </div>
+
+        <!-- ADD FILTERS -->
+        <div id="add-filter-container">
+
+          <paper-menu-button>
+
+            <paper-button class="dropdown-trigger">
+              <iron-icon icon="filter-list"></iron-icon>
+              ADD FILTER
+            </paper-button>
+
+            <paper-menu class="dropdown-content">
+              <template is="dom-repeat" items="[[filters]]">
+                <paper-item>[[item.name]]</paper-item>
+              </template>
+            </paper-menu>
+          </paper-menu-button>
+        </div>
 
         <div class="toggle-hidden-div horizontal layout center">
           <span>Show hidden</span>
@@ -234,6 +304,69 @@
         listEndPoint: {
           type: String,
           value: etoolsAppConfig.endpoints.et2fTravelList.url
+        },
+        filters: {
+          type: Array,
+          value: [
+            {
+              name: 'Traveler',
+              filterName: 'f_traveler',
+              staticName:'', value: undefined
+            },
+            {
+              name: 'Supervisor',
+              filterName: 'f_supervisor',
+              staticName:'', value: undefined
+            },
+            {
+              name: 'Year',
+              filterName: 'f_year',
+              staticName:'', value: undefined
+            },
+            {
+              name: 'Month',
+              filterName: 'f_month',
+              staticName:'', value: undefined
+            },
+            {
+              name: 'Office',
+              filterName: 'f_office',
+              staticName:'', value: undefined
+            },
+            {
+              name: 'Section',
+              filterName: 'f_section',
+              staticName:'', value: undefined
+            },
+            {
+              name: 'Travel type',
+              filterName: 'f_travel_type',
+              staticName:'', value: undefined
+            },
+            {
+              name: 'Status',
+              filterName: 'f_status',
+              staticName:'', value: undefined
+            },
+            {
+              name: 'Partner',
+              filterName: 'f_partner',
+              staticName:'', value: undefined
+            },
+            {
+              name: 'CPOUTPUT?',
+              filterName: 'f_cp_output',
+              staticName:'', value: undefined
+            }
+          ]
+        },
+        availableFilters: {
+          type: Array,
+          value: ['Traveler','Supervisor','Year','Month','Office','Section','Travel type','Status','Partner','CPOUTPUT?']
+        },
+        usedFilters: {
+          type: Array,
+          value: []
         }
       },
       _changeParamsOrder: function(orderObj, old) {
