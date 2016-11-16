@@ -127,10 +127,8 @@
       },
 
       gotDeductions: function() {
-        if (this.deductions && this.deductions.length) {
+        if (Array.isArray(this.deductions) && !this.hasDeductions) {
           this.set('hasDeductions', true);
-        } else {
-          this.set('hasDeductions', undefined)
         }
       },
 
