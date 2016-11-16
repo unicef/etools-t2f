@@ -99,7 +99,9 @@
             fund: 'funds'
           },
           rejection_note: 'rejection_note',
-          cancellation_note: 'rejection_note'
+          cancellation_note: 'rejection_note',
+          cancellation_date: 'cancellation_date',
+          completion_date: 'completion_date',
 
 
         };
@@ -118,7 +120,18 @@
         };
 
 
-        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances', 'rejection_note', 'cancellation_note'];
+        var nonBaseKeys = [
+          'deductions',
+          'itinerary',
+          'activities',
+          'cost_assignments',
+          'expenses',
+          'clearances',
+          'rejection_note',
+          'cancellation_note',
+          'cancellation_date',
+          'completion_date'
+        ];
         var dataKeys = Object.keys(data).filter(function(key){
           return nonBaseKeys.indexOf(key) === -1;
         });
