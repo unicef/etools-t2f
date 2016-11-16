@@ -50,7 +50,7 @@
 
   <template>
 
-    <pdf-make print="{{openPDF}}" content="[[dataToPrint]]" styles="[[printStyles]]" page-orientation="landscape"></pdf-make>
+    <pdf-make output="download" print="{{openPDF}}" content="[[dataToPrint]]" styles="[[printStyles]]" page-orientation="landscape"></pdf-make>
     <template is="dom-if" if="[[loadCSV]]">
       <etools-ajax download-csv handle-as="text" url="[[csvEndpoint]]" params="[[exportParams]]" on-success="_handleCSVData"></etools-ajax>
     </template>

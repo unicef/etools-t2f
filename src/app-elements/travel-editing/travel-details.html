@@ -57,7 +57,8 @@
           hide-plus
           model="[1]"
           hide-vertical-divider
-          elevation="1">
+          elevation="1"
+          >
 
           <travel-plan base-details="{{data.baseDetails}}"
             permissions-matrix="[[travelPermissions.baseDetails]]"
@@ -70,7 +71,8 @@
           allow-copy
           show-counter
           elevation="1"
-          open="[[travelPermissions.activities.view]]">
+          open="[[travelPermissions.activities.edit]]"
+          hidden$="[[!travelPermissions.activities.view]]">
 
           <template is="dom-repeat"
             items="{{data.activities}}">
@@ -86,7 +88,9 @@
         <etools-repeatable-field-set title="Itinerary"
           model="{{data.itinerary}}"
           show-counter
-          elevation="1">
+          elevation="1"
+          open="[[travelPermissions.itinerary.edit]]"
+          hidden$="[[!travelPermissions.itinerary.view]]">
 
           <template
             is="dom-repeat"
@@ -103,7 +107,9 @@
           hide-vertical-divider
           model="[1]"
           hide-plus
-          elevation="1">
+          elevation="1"
+          open="[[travelPermissions.deductions.edit]]"
+          hidden$="[[!travelPermissions.deductions.view]]">
 
           <div class="layout vertical flex">
 
@@ -120,7 +126,9 @@
 
         <etools-repeatable-field-set title="Expenses"
           model="{{data.expenses}}"
-          show-counter>
+          show-counter
+          open="[[travelPermissions.expenses.edit]]"
+          hidden$="[[!travelPermissions.expenses.view]]">
 
           <template is="dom-repeat" items="{{data.expenses}}">
             <travel-expense permissions-matrix="[[travelPermissions.expenses]]"
@@ -133,7 +141,9 @@
         <etools-repeatable-field-set title="Cost Assignment"
           model="{{data.cost_assignments}}"
           show-counter
-          elevation="1">
+          elevation="1"
+          open="[[travelPermissions.cost_assignments.edit]]"
+          hidden$="[[!travelPermissions.cost_assignments.view]]">
 
           <template is="dom-repeat" items="{{data.cost_assignments}}">
 
