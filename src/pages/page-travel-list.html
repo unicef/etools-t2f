@@ -150,9 +150,9 @@
 
       <paper-card class="second-header horizontal layout center">
 
-
         <div class="flex horizontal layout wrap">
 
+          <!-- OMNIBOX -->
           <paper-input
               inline
               id="search-input"
@@ -162,18 +162,18 @@
           </paper-input>
 
           <!-- FILTERS -->
-          <template is="dom-repeat" items="[[]]">
+          <template is="dom-repeat" items="[[usedFilters]]">
 
-            <paper-dropdown-menu label="Select `Traveler`" class="filter-dropdown">
+            <paper-dropdown-menu label="Select [[item.name]]" class="filter-dropdown">
+
               <paper-listbox class="dropdown-content">
-                <paper-item>`1`</paper-item>
-                <paper-item>`2`</paper-item>
-                <paper-item>`3`</paper-item>
-                <paper-item>`4`</paper-item>
-                <paper-item>`5`</paper-item>
+                <template is="dom-repeat" items="[[item.selection]]" as="filter">
+                  <paper-item>[[filter.label]]</paper-item>
+                </template>
               </paper-listbox>
             </paper-dropdown-menu>
 
+            <!-- TODO: onlclick for this button -->
             <div class="filter-reset-button">X</div>
           </template>
 
@@ -190,8 +190,8 @@
             </paper-button>
 
             <paper-menu class="dropdown-content">
-              <template is="dom-repeat" items="[[filters]]">
-                <paper-item>[[item.name]]</paper-item>
+              <template is="dom-repeat" items="[[availableFilters]]">
+                <paper-item on-click="addFilter">[[item.name]]</paper-item>
               </template>
             </paper-menu>
           </paper-menu-button>
@@ -235,6 +235,10 @@
         data: {
           type: Array,
           value: []
+        },
+        structure: {
+          type: Object,
+          // observer: '_log'
         },
         datalength: {
           type: Number,
@@ -307,67 +311,183 @@
         },
         filters: {
           type: Array,
-          value: [
-            {
-              name: 'Traveler',
-              filterName: 'f_traveler',
-              staticName:'', value: undefined
-            },
-            {
-              name: 'Supervisor',
-              filterName: 'f_supervisor',
-              staticName:'', value: undefined
-            },
-            {
-              name: 'Year',
-              filterName: 'f_year',
-              staticName:'', value: undefined
-            },
-            {
-              name: 'Month',
-              filterName: 'f_month',
-              staticName:'', value: undefined
-            },
-            {
-              name: 'Office',
-              filterName: 'f_office',
-              staticName:'', value: undefined
-            },
-            {
-              name: 'Section',
-              filterName: 'f_section',
-              staticName:'', value: undefined
-            },
-            {
-              name: 'Travel type',
-              filterName: 'f_travel_type',
-              staticName:'', value: undefined
-            },
-            {
-              name: 'Status',
-              filterName: 'f_status',
-              staticName:'', value: undefined
-            },
-            {
-              name: 'Partner',
-              filterName: 'f_partner',
-              staticName:'', value: undefined
-            },
-            {
-              name: 'CPOUTPUT?',
-              filterName: 'f_cp_output',
-              staticName:'', value: undefined
-            }
-          ]
+          computed: '_computeFilters(structure)',
+          observer: 'fillAvailableFilters'
         },
         availableFilters: {
-          type: Array,
-          value: ['Traveler','Supervisor','Year','Month','Office','Section','Travel type','Status','Partner','CPOUTPUT?']
+          type: Array
         },
         usedFilters: {
           type: Array,
           value: []
         }
+      },
+      _computeFilters: function(structure) {
+        return [
+          {
+            name: 'Traveler',
+            filterName: 'f_traveler',
+            selection: structure.users,
+            value: undefined
+          },
+          {
+            name: 'Supervisor',
+            filterName: 'f_supervisor',
+            selection: structure.users,
+            value: undefined
+          },
+          {
+            name: 'Year',
+            filterName: 'f_year',
+            selection: [
+              {
+                label: '2015',
+                value: '2015'
+              },
+              {
+                label: '2016',
+                value: '2016'
+              },
+              {
+                label: '2017',
+                value: '2017'
+              },
+              {
+                label: '2018',
+                value: '2018'
+              },
+              {
+                label: '2019',
+                value: '2019'
+              },
+              {
+                label: 'checkSHEET',
+                value: 'checkSHEET'
+              },
+            ],
+            value: undefined
+          },
+          {
+            name: 'Month',
+            filterName: 'f_month',
+            selection: [
+              {
+                label: 'January',
+                value: '0'
+              },
+              {
+                label: 'February',
+                value: '1'
+              },
+              {
+                label: 'March',
+                value: '2'
+              },
+              {
+                label: 'April',
+                value: '3'
+              },
+              {
+                label: 'May',
+                value: '4'
+              },
+              {
+                label: 'Juny',
+                value: '5'
+              },
+              {
+                label: 'July',
+                value: '6'
+              },
+              {
+                label: 'August',
+                value: '7'
+              },
+              {
+                label: 'September',
+                value: '8'
+              },
+              {
+                label: 'October',
+                value: '9'
+              },
+              {
+                label: 'November',
+                value: '10'
+              },
+              {
+                label: 'December',
+                value: '11'
+              }
+            ],
+            value: undefined
+          },
+          {
+            name: 'Office',
+            filterName: 'f_office',
+            selection: structure.offices,
+            value: undefined
+          },
+          {
+            name: 'Section',
+            filterName: 'f_section',
+            selection: structure.sections,
+            value: undefined
+          },
+          {
+            name: 'Travel type',
+            filterName: 'f_travel_type',
+            selection: structure.mode_of_travel,
+            value: undefined
+          },
+          {
+            name: 'Status',
+            filterName: 'f_status',
+            selection: [
+              {
+                label: 'planned',
+                value: 'planned'
+              },
+              {
+                label: 'cancelled',
+                value: 'cancelled'
+              },
+              {
+                label: 'fill!',
+                value: 'fill!'
+              },
+            ],
+            value: undefined
+          },
+          {
+            name: 'Partner',
+            filterName: 'f_partner',
+            selection: structure.partners,
+            value: undefined
+          },
+          {
+            name: 'Results',
+            filterName: 'f_cp_output',
+            selection: structure.results,
+            value: undefined
+          }
+        ];
+      },
+      fillAvailableFilters: function(filters) {
+        this.set('availableFilters', filters);
+      },
+      addFilter: function(e) {
+
+        var newFilter = this.filters.filter(function(filter) {
+          return filter.name === e.model.item.name;
+        })[0];
+
+        this.set('availableFilters', this.availableFilters.filter(function(filter) {
+          return filter.name !== newFilter.name;
+        }));
+
+        this.push('usedFilters', newFilter);
+
       },
       _changeParamsOrder: function(orderObj, old) {
         if (typeof old === 'undefined' ) {
