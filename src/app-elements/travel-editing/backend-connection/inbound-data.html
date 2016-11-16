@@ -97,7 +97,9 @@
             wbs: 'wbs',
             grant: 'grants',
             fund: 'funds'
-          }
+          },
+          rejection_note: 'rejection_note',
+          cancellation_note: 'rejection_note'
 
 
         };
@@ -116,7 +118,7 @@
         };
 
 
-        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances'];
+        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances', 'rejection_note', 'cancellation_note'];
         var dataKeys = Object.keys(data).filter(function(key){
           return nonBaseKeys.indexOf(key) === -1;
         });
