@@ -277,7 +277,7 @@
                                                               widths: innerTableVars.innerWidths,
                                                               body: [
                                                                   innerColumnGen('Departing', itinerary.departure_date),
-                                                                  innerColumnGen('DSA Region ', itinerary.dsa_region),
+                                                                  innerColumnGen('DSA Region ', itinerary.dsa_region? itinerary.dsa_region.label : ''),
                                                               ]
                                                           }
                                                       },

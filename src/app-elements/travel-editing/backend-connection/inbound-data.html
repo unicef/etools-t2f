@@ -17,7 +17,7 @@
     Polymer({
       is: 'et2f-inbound-data',
       properties: {
-        data: {
+        et2fData: {
           type: Object,
           notify: true,
         },
@@ -34,17 +34,18 @@
       },
 
       _computeUrl: function(travelId) {
-        this.set('data', {});
+        this.set('et2fData', {});
         var travelId = travelId ? travelId.replace(/\//g, '') : null;
         if(travelId) {
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {id: travelId}).url
         }
       },
-      _handleData: function (e, data) {
+      _handleData: function (e, incomingData) {
         var self = this;
 
         function convertDate(item) {
-          return new Date(item);
+          var date = new Date(item);
+          return date;
         }
 
         function multiFieldConversion (subField, fieldName, fieldSet) {
@@ -84,7 +85,9 @@
           itinerary: {
             airlines: multiFieldConversion.bind(this, 'value', 'airlines'),
             mode_of_travel: matchByLabel.bind(this, 'mode_of_travel'),
-            dsa_region: 'dsa_regions'
+            dsa_region: 'dsa_regions',
+            departure_date: convertDate,
+            arrival_date: convertDate,
           },
           expenses: {
             type: 'expense_types',
@@ -117,13 +120,13 @@
 
 
         var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances'];
-        var dataKeys = Object.keys(data).filter(function(key){
+        var dataKeys = Object.keys(incomingData).filter(function(key){
           return nonBaseKeys.indexOf(key) === -1;
         });
-        data.baseDetails = {};
+        incomingData.baseDetails = {};
         dataKeys.forEach(function(key) {
-          data.baseDetails[key] = data[key];
-          delete data[key];
+          incomingData.baseDetails[key] = incomingData[key];
+          delete incomingData[key];
         });
 
         function handleArray(fieldSet, key) {
@@ -161,24 +164,28 @@
           })
         }
 
-        var newKeys = Object.keys(data);
+        var newKeys = Object.keys(incomingData);
         newKeys.forEach(function (fieldSet) {
-          if (data[fieldSet] instanceof Array) {
-            handleArray(data[fieldSet], fieldSet);
+          if (incomingData[fieldSet] instanceof Array) {
+            handleArray(incomingData[fieldSet], fieldSet);
           }
-          else if(typeof data[fieldSet] === 'object'){
-            handleObject(data[fieldSet], fieldSet);
+          else if(typeof incomingData[fieldSet] === 'object' ){
+            handleObject(incomingData[fieldSet], fieldSet);
           }
         });
 
-        if(data.baseDetails.status) {
-          data.status = statusLib[data.baseDetails.status];
+        if(incomingData.baseDetails.status) {
+          incomingData.status = statusLib[incomingData.baseDetails.status];
         } else {
-          data.status = statusLib['planned'];
+          incomingData.status = statusLib['planned'];
         }
-        this.set('travelId', undefined);
-        this.set('data', data);
-//        console.log(this.data)
+
+          this.set('travelId', undefined);
+          this.set('et2fData', incomingData);
+
+
+
+//        console.log(this.incomingData)
       }
     });
   </script>
