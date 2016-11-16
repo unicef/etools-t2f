@@ -17,6 +17,7 @@
 <link rel="import" href="travel-report.html">
 <link rel="import" href="./backend-connection/inbound-data.html">
 <link rel="import" href="./backend-connection/outbound-data.html">
+<link rel="import" href="./ta-print.html">
 <link rel="import" href="../et2f-header.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
@@ -40,10 +41,14 @@
 
     <etools-loading active="[[postData]]"></etools-loading>
 
+
     <et2f-inbound-data data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-inbound-data>
     <et2f-outbound-data id="outbound-data" data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-outbound-data>
+    <ta-print data="[[data]]" data-to-print="{{dataToPrint}}" print-styles="{{printStyles}}"></ta-print>
 
-    <et2f-header title="Edit travel plan">
+    <et2f-header title="Edit travel plan"
+      data-to-print="[[dataToPrint]]"
+      print-styles="[[printStyles]]">
       <paper-tabs scrollable
         selected="{{selected}}">
         <paper-tab>Travel details</paper-tab>
@@ -65,7 +70,7 @@
 
       <travel-report
         structure="[[structure]]"
-        et2f-permissions="[[et2fPpermissions]]"
+        et2f-permissions="[[et2fPermissions]]"
         data="{{data}}"
         on-form-action="_handleFormAction">
       </travel-report>
@@ -74,113 +79,120 @@
   </template>
 
   <script>
-    Polymer({
-      is: 'travel-edit',
-      properties: {
-        data: {
-          type: Object,
-          notify: true,
-        },
-        structure: {
-          type: Object,
-        },
-        et2fPermissions: {
-          type: Object
-        },
-        status: {
-          type: String,
-          computed: '_computeStatus(data)'
-        },
-        user: {
-          type: Object,
-        },
-        travelPermissions: {
-          type: Object,
-          notify: true,
-        },
-        selected: {
-          type: Number,
-          value: 0
-        },
-        newTravel: {
-          type: Boolean,
-          value: false,
-          observer: '_newTravelObserver'
-        },
-        travelId: {
-          type: String
-        },
-        postData: {
-          type: Boolean,
-          value: false
-        },
-        serverData: {
-          type: Object,
-          value: function () {
-            return {}
+      Polymer({
+          is: 'travel-edit',
+          properties: {
+              data: {
+                  type: Object,
+                  notify: true
+              },
+              structure: {
+                  type: Object,
+              },
+              et2fPermissions: {
+                  type: Object
+              },
+              status: {
+                  type: String,
+                  computed: '_computeStatus(data)'
+              },
+              user: {
+                  type: Object,
+              },
+              travelPermissions: {
+                  type: Object,
+                  notify: true,
+              },
+              selected: {
+                  type: Number,
+                  value: 0
+              },
+              newTravel: {
+                  type: Boolean,
+                  value: false,
+                  observer: '_newTravelObserver'
+              },
+              travelId: {
+                  type: String
+              },
+              postData: {
+                  type: Boolean,
+                  value: false
+              },
+              serverData: {
+                  type: Object,
+                  value: function () {
+                      return {}
+                  }
+              },
+              dataToPrint: {
+                  type: Object,
+              },
+              printStyles: {
+                  type: Object,
+              }
+          },
+          observers: [
+              '_dataObserver(data, user)',
+              '_computeTravelPermission(et2fPermissions, status, user, data)'
+          ],
+          _newTravelObserver: function(isNew) {
+              if(isNew) {
+                  this.set('data', {
+                      baseDetails: {},
+                      activities: [{}],
+                      itinerary: [{}],
+                      cost_assignments: [{}],
+                      deductions: [],
+                      expenses: [{}],
+                      status: 'Planned'
+                  })
+              }
+          },
+
+          _computeStatus: function(data) {
+              if(data.status) {
+                  return data.status.toLowerCase().replace(/ /g, '_');
+              }
+          },
+          _computeTravelPermission: function(permissions, status, user, data) {
+              var userType = undefined;
+              if(data.baseDetails.id) {
+                  userType = 'Anyone';
+                  if(data.baseDetails.traveller &&  data.baseDetails.traveller.value === user.id) {
+                      userType = 'Traveler'
+                  }
+                  if(data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
+                      userType = 'Supervisor';
+                  }
+
+              }
+              else if(this.newTravel) {
+                  userType = 'Traveler';
+              }
+              userType = 'God';
+              if(userType) {
+                  console.log(userType, this.status)
+                  this.set('travelPermissions', {});
+                  this.set('travelPermissions', permissions[userType][status] );
+              }
+          },
+
+
+          _handleFormAction: function (e, details) {
+              this.$['outbound-data'].doRequest(details);
+          },
+
+          _dataObserver: function(data, user) {
+              var self = this;
+              if (self.newTravel && data.baseDetails) {
+                  data.baseDetails.traveller = {
+                      label: user.full_name,
+                      value: user.id
+                  };
+                  self.notifyPath('data.baseDetails.traveller');
+              }
           }
-        }
-      },
-      observers: [
-        '_dataObserver(data, user)',
-        '_computeTravelPermission(et2fPermissions, status, user, data)'
-      ],
-      _newTravelObserver: function(isNew) {
-        if(isNew) {
-          this.set('data', {
-            baseDetails: {},
-            activities: [{}],
-            itinerary: [{}],
-            cost_assignments: [{}],
-            deductions: [],
-            expenses: [{}],
-            status: 'Planned'
-          })
-        }
-      },
-
-      _computeStatus: function(data) {
-        if(data.status) {
-          return data.status.toLowerCase().replace(/ /g, '_');
-        }
-      },
-      _computeTravelPermission: function(permissions, status, user, data) {
-        var userType = undefined;
-        if(data.baseDetails.id) {
-          userType = 'Anyone';
-          if(data.baseDetails.traveller &&  data.baseDetails.traveller.value === user.id) {
-            userType = 'Traveler'
-          }
-          if(data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
-            userType = 'Supervisor';
-          }
-
-        }
-        else if(this.newTravel) {
-          userType = 'Traveler';
-        }
-        if(userType) {
-          console.log(userType, this.status)
-          this.set('travelPermissions', {});
-          this.set('travelPermissions', permissions[userType][status] );
-        }
-      },
-
-
-      _handleFormAction: function (e, details) {
-        this.$['outbound-data'].doRequest(details);
-      },
-
-      _dataObserver: function(data, user) {
-        var self = this;
-        if (self.newTravel && data.baseDetails) {
-          data.baseDetails.traveller = {
-            label: user.full_name,
-            value: user.id
-          };
-          self.notifyPath('data.baseDetails.traveller');
-        }
-      }
-    });
+      });
   </script>
 </dom-module>
