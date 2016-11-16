@@ -174,7 +174,7 @@
             </paper-dropdown-menu>
 
             <!-- TODO: onlclick for this button -->
-            <div class="filter-reset-button">X</div>
+            <div class="filter-reset-button" on-click="removeFilter">X</div>
           </template>
 
         </div>
@@ -487,6 +487,19 @@
         }));
 
         this.push('usedFilters', newFilter);
+      },
+      removeFilter: function(e) {
+
+        var filterName = e.model.item.name;
+        var pristineFilter = this.filters.filter(function(filter) {
+          return filter.name === filterName;
+        })[0];
+
+        this.push('availableFilters', pristineFilter);
+
+        this.usedFilters = this.usedFilters.filter(function(filter) {
+          return filter.name !== filterName;
+        });
 
       },
       _changeParamsOrder: function(orderObj, old) {
