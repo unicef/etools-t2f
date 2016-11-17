@@ -172,7 +172,8 @@
                   value: false
               },
               travelId: {
-                  type: String
+                  type: String,
+                  notify: true
               },
               postData: {
                   type: Boolean,
@@ -285,6 +286,7 @@
           },
 
           doRequest: function (details) {
+            console.log(JSON.parse(JSON.stringify(this.data)));
               this._processOutboundData(this.data);
               var self = this;
               var endpointConfig = {
@@ -295,7 +297,7 @@
 
               function doSavePost() {
                   self.method = 'POST';
-                  self.postEndpoint = etoolsAppConfig.endpoints.et2fNewTravel;
+                  self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelList;
                   self.postData = true;
               }
 
@@ -307,7 +309,7 @@
 
               function doSaveUpdate() {
                   self.method = 'PATCH';
-                  self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelDetail
+                  self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelDetail;
                   self.postData = true;
               }
 
@@ -460,17 +462,17 @@
           _handlePostFail: function(event, i) {
               var self = this;
               this.formError = i.request.detail.request.xhr.response;
-              if (!this.formError) {errorKey = []};
-              errorKey = Object.keys(this.formError);
-              errorKey.forEach(function(key) {
+              if (!this.formError) {return}
+              Object.keys(this.formError).forEach(function(key) {
                   console.error(key + 'error: ', self.formError[key])
               });
               this.postData = false;
           },
-          _handlePostSuccess: function() {
+          _handlePostSuccess: function(e, data) {
               this.postData = false;
-              this.fire('travel-post-success');
+              this.fire('travel-post-success', data);
               this.travelId = null;
+              this.travelId = '' + data.id
           },
 
 

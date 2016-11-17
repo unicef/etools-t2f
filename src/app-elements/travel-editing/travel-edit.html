@@ -42,7 +42,7 @@
 
 
     <et2f-inbound-data et2f-data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-inbound-data>
-    <et2f-outbound-data id="outbound-data" data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-outbound-data>
+    <et2f-outbound-data id="outbound-data" data="{{data}}" travel-id="{{travelId}}" structure="[[structure]]"></et2f-outbound-data>
     <ta-print data="[[data]]" data-to-print="{{dataToPrint}}" print-styles="{{printStyles}}"></ta-print>
 
     <et2f-header title="Edit travel plan"
@@ -62,15 +62,24 @@
         structure="[[structure]]"
         travel-permissions="[[travelPermissions]]"
         data="{{data}}"
+        user-type="[[userType]]"
         on-form-action="_handleFormAction">
       </travel-details>
 
-      <travel-attachments></travel-attachments>
+      <travel-attachments
+              structure="[[structure]]"
+              et2f-permissions="[[et2fPermissions]]"
+              attachments="{{data.attachments}}"
+              status="[[data.status]]"
+              user-type="[[userType]]"
+              on-form-action="_handleFormAction">
+      </travel-attachments>
 
       <travel-report
         structure="[[structure]]"
         et2f-permissions="[[et2fPermissions]]"
         data="{{data}}"
+        user-type="[[userType]]"
         on-form-action="_handleFormAction">
       </travel-report>
     </iron-pages>
@@ -97,6 +106,9 @@
         },
         user: {
           type: Object,
+        },
+        userType: {
+          type: String,
         },
         travelPermissions: {
           type: Object,
@@ -144,6 +156,7 @@
             cost_assignments: [{}],
             deductions: [],
             expenses: [{}],
+            attachments: [],
             status: 'Planned'
           })
         }
@@ -171,7 +184,8 @@
         }
 //        userType = 'God';
         if(userType) {
-          console.debug(userType, this.status);
+          console.debug('User type:  ' + userType + ' Status: ' + this.status);
+          this.set('userType', userType);
           this.set('travelPermissions', {});
           this.set('travelPermissions', permissions[userType][status] );
         }

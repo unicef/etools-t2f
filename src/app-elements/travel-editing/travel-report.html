@@ -75,7 +75,7 @@
       </paper-material>
 
       <travel-status
-        user-type="godmode"
+        user-type="[[userType]]"
         status="[[data.status]]">
       </travel-status>
     </div>
@@ -94,7 +94,8 @@
         data: {
           type: Object,
           notify: true
-        }
+        },
+        userType: String
       },
       setReportToData: function() {
         this.set('data.report', this.reportString);

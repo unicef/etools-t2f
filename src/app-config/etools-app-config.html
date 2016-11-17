@@ -32,37 +32,38 @@ App global configuration
           cachingKey: 'countries'
         },
         et2fStaticData: {
-          url: 'http://localhost:8000/api/et2f/static_data/',
+          url: '/api/et2f/static_data/',
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
           cachingKey: 'et2f_static_data'
         },
         et2fPermissionsMatrix: {
-          url: 'http://localhost:8000/api/et2f/permission_matrix/',
-          exp: 60 * 60 * 1000, // 1 min
+          url: '/api/et2f/permission_matrix/',
+          exp: 60 * 60 * 1000, // 1 hour
           cachingKey: 'et2f_permissions'
         },
         et2fTravelDetail: {
-          template: 'http://localhost:8000/api/et2f/travels/<%=id%>/',
+          template: '/api/et2f/travels/<%=id%>/',
 //          cachingKeyTemplate: 'et2f_travel_detail_<%=id%>',
 //          exp: 60 * 1000
         },
-        et2fStateChange: {
-          template: 'http://localhost:8000/api/et2f/travels/<%=id%>/<%=status%>/'
+        et2fTravelAttachments: {
+          template: '/api/et2f/travels/<%=id%>/attachments',
         },
-        et2fNewTravel: {
-          url: 'http://localhost:8000/api/et2f/travels/'
+        et2fStateChange: {
+          template: '/api/et2f/travels/<%=id%>/<%=status%>/'
         },
         et2fMe: {
-          url: 'http://localhost:8000/api/et2f/me/'
+          url: '/api/et2f/me/'
         },
         et2fSaveAndSubmit: {
-          url: 'http://localhost:8000/api/et2f/travels/save_and_submit/'
+          url: '/api/et2f/travels/save_and_submit/'
         },
         et2fTravelList : {
-          url: 'http://localhost:8000/api/et2f/travels/'
+          url: '/api/et2f/travels/'
         },
+
         et2fCSVListExport : {
-          url: 'http://localhost:8000/api/et2f/travels/export/'
+          url: '/api/et2f/travels/export/'
         }
       },
 
