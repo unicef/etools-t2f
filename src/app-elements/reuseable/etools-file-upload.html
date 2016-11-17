@@ -38,6 +38,7 @@ attributes:
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <dom-module id="etools-file-upload">
 
@@ -114,7 +115,11 @@ attributes:
       margin-right: 10px;
     }
     #downloader {
-      diplay: none;
+      display: none;
+    }
+    .type-container {
+      margin-top: -33px;
+      height: 37px;
     }
   </style>
 
@@ -129,6 +134,15 @@ attributes:
         <div class="file-name flex horizontal center layout">
           <iron-icon icon="attachment"></iron-icon>
           <span class="label">[[item.file_name]]</span>
+        </div>
+
+        <div class="type-container flex horizontal layout">
+          <etools-searchable-multiselection-menu
+                  hide-search
+                  label="Type"
+                  options="[[typeOptions]]"
+                  valu="{{item.type}}"
+          ></etools-searchable-multiselection-menu>
         </div>
 
         <div class="buttons flex horizontal layout">
@@ -190,8 +204,15 @@ attributes:
           type: Array,
           notify: true,
           value: []
+        },
+        typeOptions: {
+          type: Array,
+          value: [
+            {value: 0, label: 'Report'},
+            {value: 1, label: 'Document'},
+            {value: 3, label: 'Image'}
+          ]
         }
-
       },
 
       _openFileChooser: function() {
