@@ -99,6 +99,7 @@
       font-weight: 500;
       font-size: 12px;
       text-align: center;
+      cursor: pointer;
     }
 
     .w5 {
@@ -164,17 +165,25 @@
           <!-- FILTERS -->
           <template is="dom-repeat" items="[[usedFilters]]">
 
-            <paper-dropdown-menu label="Select [[item.name]]" class="filter-dropdown">
+            <div class="layout horizontal">
 
-              <paper-listbox class="dropdown-content">
-                <template is="dom-repeat" items="[[item.selection]]" as="filter">
-                  <paper-item on-click="changeFilterValue" item="[[item.filterName]]">[[filter.label]]</paper-item>
-                </template>
-              </paper-listbox>
-            </paper-dropdown-menu>
+              <paper-dropdown-menu label="Select [[item.name]]" class="filter-dropdown">
 
-            <!-- TODO: onlclick for this button -->
-            <div class="filter-reset-button" on-click="removeFilter">X</div>
+                <paper-listbox class="dropdown-content">
+                  <template is="dom-repeat" items="[[item.selection]]" as="filter">
+
+                    <paper-item
+                      on-click="changeFilterValue"
+                      item="[[item.filterName]]">
+                      [[filter.label]]
+                    </paper-item>
+
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+
+              <div class="filter-reset-button" on-click="removeFilter">X</div>
+            </div>
           </template>
 
         </div>
@@ -342,28 +351,28 @@
             selection: [
               {
                 label: '2015',
-                value: '2015'
+                value: 2015
               },
               {
                 label: '2016',
-                value: '2016'
+                value: 2016
               },
               {
                 label: '2017',
-                value: '2017'
+                value: 2017
               },
               {
                 label: '2018',
-                value: '2018'
+                value: 2018
               },
               {
                 label: '2019',
-                value: '2019'
+                value: 2019
               },
               {
-                label: 'checkSHEET',
-                value: 'checkSHEET'
-              },
+                label: '2020',
+                value: 2020
+              }
             ],
             value: undefined
           },
@@ -373,51 +382,51 @@
             selection: [
               {
                 label: 'January',
-                value: '0'
+                value: 0
               },
               {
                 label: 'February',
-                value: '1'
+                value: 1
               },
               {
                 label: 'March',
-                value: '2'
+                value: 2
               },
               {
                 label: 'April',
-                value: '3'
+                value: 3
               },
               {
                 label: 'May',
-                value: '4'
+                value: 4
               },
               {
                 label: 'Juny',
-                value: '5'
+                value: 5
               },
               {
                 label: 'July',
-                value: '6'
+                value: 6
               },
               {
                 label: 'August',
-                value: '7'
+                value: 7
               },
               {
                 label: 'September',
-                value: '8'
+                value: 8
               },
               {
                 label: 'October',
-                value: '9'
+                value: 9
               },
               {
                 label: 'November',
-                value: '10'
+                value: 10
               },
               {
                 label: 'December',
-                value: '11'
+                value: 11
               }
             ],
             value: undefined
@@ -449,13 +458,49 @@
                 value: 'planned'
               },
               {
+                label: 'submitted',
+                value: 'submitted'
+              },
+              {
+                label: 'approved',
+                value: 'approved'
+              },
+              {
+                label: 'rejected',
+                value: 'rejected'
+              },
+              {
+                label: 'sent_for_payment',
+                value: 'sent_for_payment'
+              },
+              {
+                label: 'done',
+                value: 'done'
+              },
+              {
                 label: 'cancelled',
                 value: 'cancelled'
               },
               {
-                label: 'fill!',
-                value: 'fill!'
+                label: 'certification_submitted',
+                value: 'certification_submitted'
               },
+              {
+                label: 'certification_approved',
+                value: 'certification_approved'
+              },
+              {
+                label: 'certification_rejected',
+                value: 'certification_rejected'
+              },
+              {
+                label: 'certified',
+                value: 'certified'
+              },
+              {
+                label: 'completed',
+                value: 'completed'
+              }
             ],
             value: undefined
           },
@@ -495,6 +540,8 @@
           return filter.name === filterName;
         })[0];
 
+        delete this.ajaxParams[e.model.item.filterName];
+
         this.push('availableFilters', pristineFilter);
 
         this.usedFilters = this.usedFilters.filter(function(filter) {
@@ -509,36 +556,27 @@
         oldParams[key] = value;
 
         this.set('ajaxParams', oldParams);
-        // TODO: resetting filters properly
-        // TODO: divving & pointering close filter (X)
-        // TODO: properly resetting filter on X
       },
       _changeParamsOrder: function(orderObj, old) {
+
         if (typeof old === 'undefined' ) {
           return;
         }
         this.set('pages.page', 1);
-        this.set('ajaxParams', {
-          sort_by: this.labelLib[orderObj.orderedBy],
-          reverse: orderObj.reverse,
-          page: 1,
-          page_size: this.ajaxParams.page_size,
-          search: this.ajaxParams.search,
-          show_hidden: this.ajaxParams.show_hidden
-        });
+        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+        backup.page = 1;
+        backup.reverse = orderObj.reverse;
+        this.set('ajaxParams', backup);
       },
       _changeParamsPages: function(pages, old) {
+
         if (typeof old === 'undefined') {
           return;
         }
-        this.set('ajaxParams', {
-          sort_by: this.ajaxParams.sort_by,
-          reverse: this.ajaxParams.reverse,
-          page: pages.page,
-          page_size: pages.itemsPerPage,
-          search: this.ajaxParams.search,
-          show_hidden: this.ajaxParams.show_hidden
-        });
+        var backup = Json.parse(JSON.stringify(this.ajaxParams));
+        backup.page = pages.page;
+        backup.page_size = pages.itemsPerPage;
+        this.set('ajaxParams', backup);
       },
       _computeResultsToShow: function(pages, datalength) {
         var start = (pages.page - 1) * pages.itemsPerPage;
@@ -604,33 +642,21 @@
         }
       },
       _searchStringChanged: function(searchStr, old) {
+
         if (typeof old === 'undefined' ) {
           return;
         }
-        this.set('ajaxParams', {
-          sort_by: this.ajaxParams.sort_by,
-          reverse: this.ajaxParams.reverse,
-          page: this.ajaxParams.page,
-          page_size: this.ajaxParams.page_size,
-          search: searchStr,
-          show_hidden: this.ajaxParams.show_hidden
-        });
+        this.set('ajaxParams.search', searchStr);
       },
       _changeShowHidden: function(e, detail) {
         this.set('showHidden', !this.showHidden);
       },
       _showHiddenChanged: function(show, old) {
+
         if (typeof old === 'undefined') {
           return;
         }
-        this.set('ajaxParams', {
-          sort_by: this.ajaxParams.sort_by,
-          reverse: this.ajaxParams.reverse,
-          page: this.ajaxParams.page,
-          page_size: this.ajaxParams.page_size,
-          search: this.ajaxParams.search,
-          show_hidden: show
-        });
+        this.set('ajaxParams.show_hidden', show);
       },
       _doRefreshData: function(status) {
         if(status) {
