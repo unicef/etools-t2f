@@ -159,15 +159,14 @@
           </iron-icon>
         </div>
         <div class="headings blue bold w13">
-          <!-- Link here! -->
           <a href="/edit-travel/{{data.id}}">[[data.reference_number]]</a>
         </div>
-        <div class="headings textprim w11">[[data.created]]</div>
         <div class="headings textprim w13">[[data.traveller]]</div>
-        <div class="headings textprim w23 truncate">[[data.purpose]]</div>
+        <div class="headings textprim w13">[[getOffice(data.office, offices)]]</div>
+        <div class="headings textprim w13">[[getSection(data.section, sections)]]</div>
         <div class="headings textprim w11">[[data.start_date]]</div>
         <div class="headings textprim w11">[[data.end_date]]</div>
-        <div class="headings textprim bold capital w13">
+        <div class="headings textprim bold capital w23">
           <div class$="statusdiv [[_statusClass(data)]]">
             <span class="statusdivtext">[[_statusMapping(data.status)]]</span>
           </div>
@@ -196,44 +195,16 @@
         </div>
       </div>
 
+      <!-- EXPANDED VIEW -->
       <div hidden$="[[!_isDetailed(expanded)]]" class="heading-row heading-row-detailed clearfix layout horizontal">
+
         <div class$="headings textprim bold w60 [[_statusClass(data)]]"></div>
+
         <div class="flex vertical around-justified layout">
-          <span class="flex detail-headings">Section</span>
-          <span class="flex detail-text">[[data.section]]</span>
+          <span class="flex detail-headings">Purpose of travel</span>
+          <span class="flex detail-text">[[data.purpose]]</span>
         </div>
-        <div class="flex vertical around-justified layout">
-          <span class="flex detail-headings">Office</span>
-          <span class="flex detail-text">[[data.office]]</span>
-        </div>
-        <div class="flex vertical around-justified layout">
-          <span class="flex detail-headings">Supervisor</span>
-          <span class="flex detail-text">#[[data.supervisor]]</span>
-        </div>
-        <div class="flex vertical around-justified layout">
-          <span class="flex detail-headings">TA Req?</span>
-          <span class="flex detail-text">[[data.ta_required]]</span>
-        </div>
-        <div class="flex vertical around-justified layout">
-          <span class="flex detail-headings">TA ref. num?</span>
-          <span class="flex detail-text">[[data.ta_reference_nr]]</span>
-        </div>
-        <div class="flex vertical around-justified layout">
-          <span class="flex detail-headings">Approved date</span>
-          <span class="flex detail-text">[[data.approval_date]]</span>
-        </div>
-        <div class="flex vertical around-justified layout">
-          <span class="flex detail-headings">Attachments</span>
-          <span class="flex detail-text">[[data.attachment_count]]</span>
-        </div>
-        <div class="flex vertical around-justified layout">
-          <span class="flex detail-headings">Actions</span>
-          <span class="flex detail-text">NA.</span>
-        </div>
-        <div class="flex vertical around-justified layout">
-          <span class="flex detail-headings">Driver trip</span>
-          <span class="flex detail-text">[[data.is_driver]]</span>
-        </div>
+
         <div class="headings textsec w5"></div>
       </div>
 
@@ -247,6 +218,8 @@
           type: Object,
           observer: '_resetExpanded'
         },
+        offices: Object,
+        sections: Object,
         expanded: {
           type: Boolean,
           value: false
@@ -262,7 +235,6 @@
           submitted: 'submitted',
           cancelled: 'cancelled',
           completed: 'completed',
-          // For statuses, that are not wired in yet
           'sent_for_payment': 'sent',
           'cert_needed': 'planned',
           'cert-approved': 'approved',
@@ -302,6 +274,16 @@
       },
       _isGreyClass: function(data) {
         return data.status === 'cancelled' ? 'grey-heading' : '';
+      },
+      getOffice: function(id, offices) {
+        return (offices.filter(function(office) {
+          return office.value === id;
+        })[0] || {label: 'N.A.'}).label;
+      },
+      getSection: function(id, sections) {
+        return (sections.filter(function(section) {
+          return section.value === id;
+        })[0] || {label: 'N.A.'}).label;
       }
     });
   </script>

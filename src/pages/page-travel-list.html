@@ -7,6 +7,11 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 
 <link rel="import" href="../app-elements/travel-list/list-element.html">
 <link rel="import" href="../app-elements/travel-list/list-header.html">
@@ -37,7 +42,7 @@
     }
 
     .second-header {
-      height: 84px;
+      min-height: 84px;
       margin-bottom: 8px;
     }
     .second-header paper-input {
@@ -65,6 +70,36 @@
       margin-left: 20px;
       font-weight: 500;
       line-height: 64px;
+    }
+
+    #add-filter-container {
+      border-left: 2px solid var(--gray-lighter);
+      border-right: 2px solid var(--gray-lighter);
+      margin-left: 16px;
+      margin-right: 16px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    #add-filter-container paper-button {
+      color: var(--et2f-primary);
+    }
+    .filter-dropdown {
+      margin-left: 20px;
+      width: 200px;
+    }
+    .filter-reset-button {
+      margin: auto 12px;
+      transform: translate(0, 8px);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      line-height: 16px;
+      background-color: var(--et2f-error);
+      color: white;
+      font-weight: 500;
+      font-size: 12px;
+      text-align: center;
+      cursor: pointer;
     }
 
     .w5 {
@@ -115,17 +150,61 @@
         export-params="[[ajaxParams]]"></et2f-header>
 
       <paper-card class="second-header horizontal layout center">
-        <!-- Filtering -->
 
-        <paper-input
-            inline
-            id="search-input"
-            label="search keyword(s)"
-            on-keydown="searchKeyDown">
-          <iron-icon icon="search" prefix></iron-icon>
-        </paper-input>
+        <div class="flex horizontal layout wrap">
 
-        <div class="flex"></div>
+          <!-- OMNIBOX -->
+          <paper-input
+              inline
+              id="search-input"
+              label="search keyword(s)"
+              on-keydown="searchKeyDown">
+            <iron-icon icon="search" prefix></iron-icon>
+          </paper-input>
+
+          <!-- FILTERS -->
+          <template is="dom-repeat" items="[[usedFilters]]">
+
+            <div class="layout horizontal">
+
+              <paper-dropdown-menu label="Select [[item.name]]" class="filter-dropdown">
+
+                <paper-listbox class="dropdown-content">
+                  <template is="dom-repeat" items="[[item.selection]]" as="filter">
+
+                    <paper-item
+                      on-click="changeFilterValue"
+                      item="[[item.filterName]]">
+                      [[filter.label]]
+                    </paper-item>
+
+                  </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+
+              <div class="filter-reset-button" on-click="removeFilter">X</div>
+            </div>
+          </template>
+
+        </div>
+
+        <!-- ADD FILTERS -->
+        <div id="add-filter-container">
+
+          <paper-menu-button>
+
+            <paper-button class="dropdown-trigger">
+              <iron-icon icon="filter-list"></iron-icon>
+              ADD FILTER
+            </paper-button>
+
+            <paper-menu class="dropdown-content">
+              <template is="dom-repeat" items="[[availableFilters]]">
+                <paper-item on-click="addFilter">[[item.name]]</paper-item>
+              </template>
+            </paper-menu>
+          </paper-menu-button>
+        </div>
 
         <div class="toggle-hidden-div horizontal layout center">
           <span>Show hidden</span>
@@ -145,7 +224,7 @@
         </list-header>
 
         <template is="dom-repeat" items="[[data]]">
-          <list-element data="[[item]]"></list-element>
+          <list-element data="[[item]]" offices="[[structure.offices]]" sections="[[structure.sections]]"></list-element>
         </template>
 
         <list-pagination
@@ -166,6 +245,9 @@
           type: Array,
           value: []
         },
+        structure: {
+          type: Object
+        },
         datalength: {
           type: Number,
           value: 0
@@ -176,15 +258,14 @@
         },
         headings: {
           type: Array,
-          // Should fetch these from a common structure.json !!
           value: [
             { "size": 13, "label": "Reference #" },
-            { "size": 11, "label": "Create date" },
-            { "size": 13, "label": "Traveler(s)" },
-            { "size": 23, "label": "Purpose of travel" },
-            { "size": 11, "label": "From date" },
+            { "size": 13, "label": "Traveler" },
+            { "size": 13, "label": "Office" },
+            { "size": 13, "label": "Section" },
+            { "size": 11, "label": "Start date" },
             { "size": 11, "label": "End date" },
-            { "size": 13, "label": "Status" },
+            { "size": 23, "label": "Status" },
             { "size": 5, "label": "Actions" }
           ]
         },
@@ -199,7 +280,7 @@
         orderObj: {
           type: Object,
           value: {
-            orderedBy: 'Create date',
+            orderedBy: 'Reference #',
             reverse: true
           },
           observer: '_changeParamsOrder'
@@ -217,7 +298,7 @@
         ajaxParams: {
           type: Object,
           value: {
-            sort_by: 'created',
+            sort_by: 'reference_number',
             reverse: true,
             page: 1,
             page_size: 10,
@@ -234,34 +315,258 @@
         listEndPoint: {
           type: String,
           value: etoolsAppConfig.endpoints.et2fTravelList.url
+        },
+        filters: {
+          type: Array,
+          computed: '_computeFilters(structure)',
+          observer: 'fillAvailableFilters'
+        },
+        availableFilters: {
+          type: Array
+        },
+        usedFilters: {
+          type: Array,
+          value: []
         }
       },
+      _computeFilters: function(structure) {
+        return [
+          {
+            name: 'Traveler',
+            filterName: 'f_traveler',
+            selection: structure.users
+          },
+          {
+            name: 'Supervisor',
+            filterName: 'f_supervisor',
+            selection: structure.users
+          },
+          {
+            name: 'Year',
+            filterName: 'f_year',
+            selection: [
+              {
+                label: '2015',
+                value: 2015
+              },
+              {
+                label: '2016',
+                value: 2016
+              },
+              {
+                label: '2017',
+                value: 2017
+              },
+              {
+                label: '2018',
+                value: 2018
+              },
+              {
+                label: '2019',
+                value: 2019
+              },
+              {
+                label: '2020',
+                value: 2020
+              }
+            ]
+          },
+          {
+            name: 'Month',
+            filterName: 'f_month',
+            selection: [
+              {
+                label: 'January',
+                value: 0
+              },
+              {
+                label: 'February',
+                value: 1
+              },
+              {
+                label: 'March',
+                value: 2
+              },
+              {
+                label: 'April',
+                value: 3
+              },
+              {
+                label: 'May',
+                value: 4
+              },
+              {
+                label: 'Juny',
+                value: 5
+              },
+              {
+                label: 'July',
+                value: 6
+              },
+              {
+                label: 'August',
+                value: 7
+              },
+              {
+                label: 'September',
+                value: 8
+              },
+              {
+                label: 'October',
+                value: 9
+              },
+              {
+                label: 'November',
+                value: 10
+              },
+              {
+                label: 'December',
+                value: 11
+              }
+            ]
+          },
+          {
+            name: 'Office',
+            filterName: 'f_office',
+            selection: structure.offices
+          },
+          {
+            name: 'Section',
+            filterName: 'f_section',
+            selection: structure.sections
+          },
+          {
+            name: 'Travel type',
+            filterName: 'f_travel_type',
+            selection: structure.mode_of_travel
+          },
+          {
+            name: 'Status',
+            filterName: 'f_status',
+            selection: [
+              {
+                label: 'planned',
+                value: 'planned'
+              },
+              {
+                label: 'submitted',
+                value: 'submitted'
+              },
+              {
+                label: 'approved',
+                value: 'approved'
+              },
+              {
+                label: 'rejected',
+                value: 'rejected'
+              },
+              {
+                label: 'sent_for_payment',
+                value: 'sent_for_payment'
+              },
+              {
+                label: 'done',
+                value: 'done'
+              },
+              {
+                label: 'cancelled',
+                value: 'cancelled'
+              },
+              {
+                label: 'certification_submitted',
+                value: 'certification_submitted'
+              },
+              {
+                label: 'certification_approved',
+                value: 'certification_approved'
+              },
+              {
+                label: 'certification_rejected',
+                value: 'certification_rejected'
+              },
+              {
+                label: 'certified',
+                value: 'certified'
+              },
+              {
+                label: 'completed',
+                value: 'completed'
+              }
+            ]
+          },
+          {
+            name: 'Partner',
+            filterName: 'f_partner',
+            selection: structure.partners
+          },
+          {
+            name: 'Results',
+            filterName: 'f_cp_output',
+            selection: structure.results
+          }
+        ];
+      },
+      fillAvailableFilters: function(filters) {
+        this.set('availableFilters', filters);
+      },
+      addFilter: function(e) {
+
+        var newFilter = this.filters.filter(function(filter) {
+          return filter.name === e.model.item.name;
+        })[0];
+
+        this.set('availableFilters', this.availableFilters.filter(function(filter) {
+          return filter.name !== newFilter.name;
+        }));
+
+        this.push('usedFilters', newFilter);
+      },
+      removeFilter: function(e) {
+
+        var filterName = e.model.item.name;
+        var pristineFilter = this.filters.filter(function(filter) {
+          return filter.name === filterName;
+        })[0];
+
+        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+        delete backup[e.model.item.filterName];
+        this.set('ajaxParams', backup);
+
+        this.push('availableFilters', pristineFilter);
+
+        this.set('usedFilters', this.usedFilters.filter(function(filter) {
+          return filter.name !== filterName;
+        }));
+      },
+      changeFilterValue: function(e) {
+
+        var key = e.model.item.filterName;
+        var value = e.model.filter.value;
+        var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
+        oldParams[key] = value;
+
+        this.set('ajaxParams', oldParams);
+      },
       _changeParamsOrder: function(orderObj, old) {
+
         if (typeof old === 'undefined' ) {
           return;
         }
         this.set('pages.page', 1);
-        this.set('ajaxParams', {
-          sort_by: this.labelLib[orderObj.orderedBy],
-          reverse: orderObj.reverse,
-          page: 1,
-          page_size: this.ajaxParams.page_size,
-          search: this.ajaxParams.search,
-          show_hidden: this.ajaxParams.show_hidden
-        });
+        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+        backup.page = 1;
+        backup.reverse = orderObj.reverse;
+        this.set('ajaxParams', backup);
       },
       _changeParamsPages: function(pages, old) {
+
         if (typeof old === 'undefined') {
           return;
         }
-        this.set('ajaxParams', {
-          sort_by: this.ajaxParams.sort_by,
-          reverse: this.ajaxParams.reverse,
-          page: pages.page,
-          page_size: pages.itemsPerPage,
-          search: this.ajaxParams.search,
-          show_hidden: this.ajaxParams.show_hidden
-        });
+        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+        backup.page = pages.page;
+        backup.page_size = pages.itemsPerPage;
+        this.set('ajaxParams', backup);
       },
       _computeResultsToShow: function(pages, datalength) {
         var start = (pages.page - 1) * pages.itemsPerPage;
@@ -271,11 +576,13 @@
       labelLib: {
         'Reference #': 'id',
         'Purpose of travel': 'purpose',
-        'Traveler(s)': 'traveller',
-        'From date': 'start_date',
-        'End date': 'start_date',
+        'Traveler': 'traveller',
+        'Start date': 'start_date',
+        'End date': 'end_date',
         'Status': 'status',
-        'Create date': 'created'
+        'Office': 'office',
+        'Section': 'section'
+
       },
       handleListResponse: function(event, data) {
         this.set('datalength', data.total_count);
@@ -286,7 +593,6 @@
           if(travel.end_date) {
             travel.end_date = travel.end_date.split('T')[0];
           }
-          travel.created = travel.created.split('T')[0];
         });
         this.set('data', data.data);
         this._prepareExportData(data.data);
@@ -326,33 +632,23 @@
         }
       },
       _searchStringChanged: function(searchStr, old) {
+
         if (typeof old === 'undefined' ) {
           return;
         }
-        this.set('ajaxParams', {
-          sort_by: this.ajaxParams.sort_by,
-          reverse: this.ajaxParams.reverse,
-          page: this.ajaxParams.page,
-          page_size: this.ajaxParams.page_size,
-          search: searchStr,
-          show_hidden: this.ajaxParams.show_hidden
-        });
+        this.set('ajaxParams.search', searchStr);
       },
       _changeShowHidden: function(e, detail) {
         this.set('showHidden', !this.showHidden);
       },
       _showHiddenChanged: function(show, old) {
+
         if (typeof old === 'undefined') {
           return;
         }
-        this.set('ajaxParams', {
-          sort_by: this.ajaxParams.sort_by,
-          reverse: this.ajaxParams.reverse,
-          page: this.ajaxParams.page,
-          page_size: this.ajaxParams.page_size,
-          search: this.ajaxParams.search,
-          show_hidden: show
-        });
+        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+        backup.show_hidden = show;
+        this.set('ajaxParams', backup);
       },
       _doRefreshData: function(status) {
         if(status) {
