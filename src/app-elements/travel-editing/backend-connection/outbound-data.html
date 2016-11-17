@@ -131,6 +131,19 @@
       </paper-button>
     </paper-dialog>
 
+    <!-- General dialog -->
+    <paper-dialog id="general-modal" opened="{{generalModal.opened}}" with-backdrop>
+
+      <div class="dialog-heading">[[generalModal.heading]]</div>
+      <div class="dialog-intro-text">[[generalModal.text]]</div>
+
+      <paper-button
+        class="dialog-confirm-button"
+        on-click="generalModalAction">
+        [[generalModal.buttonText]]
+      </paper-button>
+    </paper-dialog>
+
     <!-- Certification dialog -->
     <etools-dialog opened="{{certificationOpened}}"
       dialog-title="Certify"
@@ -183,7 +196,19 @@
                   value: function () {
                       return {}
                   }
-              }
+              },
+              generalModal: {
+                  type: Object,
+                  value: {
+                      opened: false,
+                      heading: '',
+                      text: '',
+                      buttonText: ''
+                  }
+              },
+          },
+          generalModalAction: function() {
+              console.log('Default fn. ran!');
           },
 
           _processOutboundData: function (data) {
@@ -355,7 +380,6 @@
                     self.clearancesOpened = true;
                   },
 
-                  // TODO: Cancel popup
                   cancel: function() {
 
                     self._cancelOnConfirm = function() {
@@ -372,10 +396,20 @@
                     self.cancellationOpened = true;
                   },
 
-                  // TODO: Approve popup
                   approve: function() {
-                      endpointConfig.status = 'approve';
-                      doPost();
+
+                      self.generalModalAction = function() {
+                          self.$['general-modal'].close();
+                          endpointConfig.status = 'approve';
+                          doPost();
+                      };
+
+                      self.set('generalModal', {
+                          opened: true,
+                          heading: 'Approval',
+                          text: 'Are you sure you want approve this travel?',
+                          buttonText: 'Approve'
+                      });
                   },
 
                   reject: function() {
@@ -390,19 +424,54 @@
 
                   // TODO: Reopen popup
                   reopen: function() {
-                      endpointConfig.status = 'restore';
-                      doPost();
+
+                      self.generalModalAction = function() {
+                          self.$['general-modal'].close();
+                          endpointConfig.status = 'restore';
+                          doPost();
+                      };
+
+                      self.set('generalModal', {
+                          opened: true,
+                          heading: 'Reopen',
+                          text: 'Are you sure you want reopen this travel?',
+                          buttonText: 'Reopen'
+                      });
+
                   },
 
-                  // Send for payment popup
                   send_for_payment: function() {
-                      endpointConfig.status = 'send_for_payment';
-                      doPost();
+
+                      self.generalModalAction = function() {
+                          self.$['general-modal'].close();
+                          endpointConfig.status = 'send_for_payment';
+                          doPost();
+                      };
+
+                      self.set('generalModal', {
+                          opened: true,
+                          heading: 'Send for payment',
+                          text: 'Are you sure you want to send this travel to payment?',
+                          buttonText: 'Reopen'
+                      });
+
                   },
 
                   went_as_planned: function() {
-                      endpointConfig.status = 'mark_as_certified';
-                      doPost();
+
+                      self.generalModalAction = function() {
+                          self.$['general-modal'].close();
+                          endpointConfig.status = 'mark_as_certified';
+                          doPost();
+                      };
+
+                      self.set('generalModal', {
+                          opened: true,
+                          heading: 'Went as planned',
+                          text: 'Are you sure this travel went as planned?',
+                          buttonText: 'Yes'
+                      });
+
                   },
 
                   submit_certificate: function() {
@@ -416,41 +485,109 @@
                   },
 
                   done: function() {
-                      console.log('Mark as done fn. ran!');
-                      endpointConfig.status = 'done';
-                      doMarkAsDone();
+
+                      self.generalModalAction = function() {
+                          self.$['general-modal'].close();
+                          endpointConfig.status = 'done';
+                          doMarkAsDone();
+                      };
+
+                      self.set('generalModal', {
+                          opened: true,
+                          heading: 'Travel done',
+                          text: 'Are you sure you want to mark this travel as done?',
+                          buttonText: 'Yes'
+                      });
+
                   },
 
                   // TEST
                   approve_certificate: function() {
-                      endpointConfig.status = 'approve_certificate';
-                      doPost();
+
+                      self.generalModalAction = function() {
+                          self.$['general-modal'].close();
+                          endpointConfig.status = 'approve_certificate';
+                          doPost();
+                      };
+
+                      self.set('generalModal', {
+                          opened: true,
+                          heading: 'Approve certificate',
+                          text: 'Are you sure you want to certify this travel?',
+                          buttonText: 'Yes'
+                      });
+
+
                   },
 
-                  // TEST
                   // TODO: Raise modal
                   reject_certificate: function() {
-                      console.log('TODO!!');
-                      endpointConfig.status = 'reject_certificate';
-                      doPost();
+
+                      self.generalModalAction = function() {
+                          self.$['general-modal'].close();
+                          endpointConfig.status = 'reject_certificate';
+                          doPost();
+                      };
+
+                      self.set('generalModal', {
+                          opened: true,
+                          heading: 'Reject certificate',
+                          text: 'Are you sure you want to reject the certification provided for this travel?',
+                          buttonText: 'Reject certificate'
+                      });
+
                   },
 
                   // TEST
                   certify: function() {
-                      endpointConfig.status = 'mark_as_certified';
-                      doPost();
+
+                      self.generalModalAction = function() {
+                          self.$['general-modal'].close();
+                          endpointConfig.status = 'mark_as_certified';
+                          doPost();
+                      };
+
+                      self.set('generalModal', {
+                          opened: true,
+                          heading: 'Certify',
+                          text: 'Are you sure you want to certify this travel?',
+                          buttonText: 'Certify'
+                      });
+
                   },
 
-                  // TEST
                   complete: function() {
-                      endpointConfig.status = 'done';
-                      doPost();
+
+                      self.generalModalAction = function() {
+                          self.$['general-modal'].close();
+                          endpointConfig.status = 'done';
+                          doPost();
+                      };
+
+                      self.set('generalModal', {
+                          opened: true,
+                          heading: 'Complete',
+                          text: 'Are you sure you want to mark this travel as completed?',
+                          buttonText: 'Complete'
+                      });
+
                   },
 
-                  // TEST
                   planned: function() {
-                      endpointConfig.status = 'plan';
-                      doPost();
+
+                      self.generalModalAction = function() {
+                          self.$['general-modal'].close();
+                          endpointConfig.status = 'plan';
+                          doPost();
+                      };
+
+                      self.set('generalModal', {
+                          opened: true,
+                          heading: 'Back to planned',
+                          text: 'Are you sure you want to make this travel editable again?',
+                          buttonText: 'Yes'
+                      });
+
                   }
               };
 
