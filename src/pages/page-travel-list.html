@@ -246,8 +246,7 @@
           value: []
         },
         structure: {
-          type: Object,
-          // observer: '_log'
+          type: Object
         },
         datalength: {
           type: Number,
@@ -336,14 +335,12 @@
           {
             name: 'Traveler',
             filterName: 'f_traveler',
-            selection: structure.users,
-            value: undefined
+            selection: structure.users
           },
           {
             name: 'Supervisor',
             filterName: 'f_supervisor',
-            selection: structure.users,
-            value: undefined
+            selection: structure.users
           },
           {
             name: 'Year',
@@ -373,8 +370,7 @@
                 label: '2020',
                 value: 2020
               }
-            ],
-            value: undefined
+            ]
           },
           {
             name: 'Month',
@@ -428,26 +424,22 @@
                 label: 'December',
                 value: 11
               }
-            ],
-            value: undefined
+            ]
           },
           {
             name: 'Office',
             filterName: 'f_office',
-            selection: structure.offices,
-            value: undefined
+            selection: structure.offices
           },
           {
             name: 'Section',
             filterName: 'f_section',
-            selection: structure.sections,
-            value: undefined
+            selection: structure.sections
           },
           {
             name: 'Travel type',
             filterName: 'f_travel_type',
-            selection: structure.mode_of_travel,
-            value: undefined
+            selection: structure.mode_of_travel
           },
           {
             name: 'Status',
@@ -501,20 +493,17 @@
                 label: 'completed',
                 value: 'completed'
               }
-            ],
-            value: undefined
+            ]
           },
           {
             name: 'Partner',
             filterName: 'f_partner',
-            selection: structure.partners,
-            value: undefined
+            selection: structure.partners
           },
           {
             name: 'Results',
             filterName: 'f_cp_output',
-            selection: structure.results,
-            value: undefined
+            selection: structure.results
           }
         ];
       },
@@ -540,13 +529,15 @@
           return filter.name === filterName;
         })[0];
 
-        delete this.ajaxParams[e.model.item.filterName];
+        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+        delete backup[e.model.item.filterName];
+        this.set('ajaxParams', backup);
 
         this.push('availableFilters', pristineFilter);
 
-        this.usedFilters = this.usedFilters.filter(function(filter) {
+        this.set('usedFilters', this.usedFilters.filter(function(filter) {
           return filter.name !== filterName;
-        });
+        }));
       },
       changeFilterValue: function(e) {
 
