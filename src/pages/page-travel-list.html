@@ -647,8 +647,9 @@
         if (typeof old === 'undefined') {
           return;
         }
-        this.set('ajaxParams.show_hidden', show);
-        // TODO: NOTIFY ????
+        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+        backup.show_hidden = show;
+        this.set('ajaxParams', backup);
       },
       _doRefreshData: function(status) {
         if(status) {
@@ -657,7 +658,6 @@
           this.set('ajaxParams', backup);
           this.refreshData = false;
         }
-        // TODO: is notify enough ?????
       }
     });
   </script>
