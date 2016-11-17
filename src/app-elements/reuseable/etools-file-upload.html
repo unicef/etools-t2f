@@ -141,7 +141,7 @@ attributes:
                   hide-search
                   label="File type"
                   options="[[typeOptions]]"
-                  valu="{{item.type}}"
+                  value="{{item.type}}"
           ></etools-searchable-multiselection-menu>
         </div>
 
@@ -227,7 +227,7 @@ attributes:
 
       _fileSelected: function(e) {
 
-        if (this.multiple) {
+
           var files = e.target.files;
           for(var i=0; i < files.length; i++) {
             this.push('files', {
@@ -237,15 +237,6 @@ attributes:
               raw: files[i]
             });
           }
-        } else {
-          var file = e.target.files[0];
-          this.push('files', {
-            id: '',
-            file_name: file.name,
-            path: '',
-            raw: file
-          });
-        }
 
         this.notifyPath('files');
       },
