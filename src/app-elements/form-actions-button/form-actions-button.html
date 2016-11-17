@@ -553,7 +553,6 @@
 
         // TODO: it runs twice cause how status, and userType gets here two times...
         // console.log('computeActions ran!');
-
         var ret = JSON.parse(JSON.stringify(permissions[userType][status]));
         ret.primary = actList[ret.primary];
         ret.secondary = ret.secondary.map(function(el) {
