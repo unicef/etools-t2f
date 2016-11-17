@@ -224,7 +224,7 @@
         </list-header>
 
         <template is="dom-repeat" items="[[data]]">
-          <list-element data="[[item]]"></list-element>
+          <list-element data="[[item]]" offices="[[structure.offices]]" sections="[[structure.sections]]"></list-element>
         </template>
 
         <list-pagination
@@ -258,15 +258,14 @@
         },
         headings: {
           type: Array,
-          // Should fetch these from a common structure.json !!
           value: [
             { "size": 13, "label": "Reference #" },
-            { "size": 11, "label": "Create date" },
-            { "size": 13, "label": "Traveler(s)" },
-            { "size": 23, "label": "Purpose of travel" },
-            { "size": 11, "label": "From date" },
+            { "size": 13, "label": "Traveler" },
+            { "size": 13, "label": "Office" },
+            { "size": 13, "label": "Section" },
+            { "size": 11, "label": "Start date" },
             { "size": 11, "label": "End date" },
-            { "size": 13, "label": "Status" },
+            { "size": 23, "label": "Status" },
             { "size": 5, "label": "Actions" }
           ]
         },
@@ -281,7 +280,7 @@
         orderObj: {
           type: Object,
           value: {
-            orderedBy: 'Create date',
+            orderedBy: 'Reference #',
             reverse: true
           },
           observer: '_changeParamsOrder'
@@ -299,7 +298,7 @@
         ajaxParams: {
           type: Object,
           value: {
-            sort_by: 'created',
+            sort_by: 'reference_number',
             reverse: true,
             page: 1,
             page_size: 10,
@@ -564,7 +563,7 @@
         if (typeof old === 'undefined') {
           return;
         }
-        var backup = Json.parse(JSON.stringify(this.ajaxParams));
+        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
         backup.page = pages.page;
         backup.page_size = pages.itemsPerPage;
         this.set('ajaxParams', backup);
@@ -577,11 +576,13 @@
       labelLib: {
         'Reference #': 'id',
         'Purpose of travel': 'purpose',
-        'Traveler(s)': 'traveller',
-        'From date': 'start_date',
-        'End date': 'start_date',
+        'Traveler': 'traveller',
+        'Start date': 'start_date',
+        'End date': 'end_date',
         'Status': 'status',
-        'Create date': 'created'
+        'Office': 'office',
+        'Section': 'section'
+
       },
       handleListResponse: function(event, data) {
 
@@ -593,7 +594,6 @@
           if(travel.end_date) {
             travel.end_date = travel.end_date.split('T')[0];
           }
-          travel.created = travel.created.split('T')[0];
         });
         this.set('data', data.data);
         this._prepareExportData(data.data);
@@ -648,6 +648,7 @@
           return;
         }
         this.set('ajaxParams.show_hidden', show);
+        // TODO: NOTIFY ????
       },
       _doRefreshData: function(status) {
         if(status) {
@@ -656,6 +657,7 @@
           this.set('ajaxParams', backup);
           this.refreshData = false;
         }
+        // TODO: is notify enough ?????
       }
     });
   </script>
