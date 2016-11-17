@@ -553,7 +553,6 @@
 
         // TODO: it runs twice cause how status, and userType gets here two times...
         // console.log('computeActions ran!');
-
         var ret = JSON.parse(JSON.stringify(permissions[userType][status]));
         ret.primary = actList[ret.primary];
         ret.secondary = ret.secondary.map(function(el) {
@@ -571,7 +570,6 @@
         return Array.isArray(actions.secondary) && actions.secondary.length != 0;
       },
       _clickPrimary: function() {
-
         this.fire('form-action', this.actions.primary);
       },
       _clickSecondary: function(event) {

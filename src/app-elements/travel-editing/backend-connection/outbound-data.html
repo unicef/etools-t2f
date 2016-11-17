@@ -8,572 +8,707 @@
 
 <dom-module id="et2f-outbound-data">
 
-  <style include="shared-styles et2f-styles iron-flex" is="custom-style">
+    <style include="shared-styles et2f-styles iron-flex" is="custom-style">
 
-    .dialog-heading {
-      font-size: 20px;
-      color: var(gray-dark);
-      font-weight: 500;
-    }
+        .dialog-heading {
+            font-size: 20px;
+            color: var(gray-dark);
+            font-weight: 500;
+        }
 
-    .dialog-intro-text {
-      color: var(--gray-mid);
-      font-size: 16px;
-      margin-bottom: 24px;
-    }
+        .dialog-intro-text {
+            color: var(--gray-mid);
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
 
-    .row-container {
-      width: 250px;
-    }
+        .row-container {
+            width: 250px;
+        }
 
-    .small-column-heading {
-      font-size: 12px;
-      font-weight: 500;
-      text-align: center;
-    }
+        .small-column-heading {
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+        }
 
-    .dialog-confirm-button {
-      color: var(--et2f-primary);
-      font-weight: 500;
-      height: 40px;
-      float: right;
-    }
+        .dialog-confirm-button {
+            color: var(--et2f-primary);
+            font-weight: 500;
+            height: 40px;
+            float: right;
+        }
 
-    paper-radio-button {
-      text-align: center;
-      margin-left: 10px;
-    }
+        paper-radio-button {
+            text-align: center;
+            margin-left: 10px;
+        }
 
-  </style>
+    </style>
 
-  <template>
+    <template>
 
-    <!-- Crearances dialog -->
-    <!-- we're working with the outbound data here, so no older value gets shown for now, although it gets stored -->
-    <paper-dialog id="clearance-modal" opened="{{clearancesOpened}}" with-backdrop>
+        <!-- Crearances dialog -->
+        <!-- we're working with the outbound data here, so no older value gets shown for now, although it gets stored -->
+        <paper-dialog id="clearance-modal" opened="{{clearancesOpened}}" with-backdrop>
 
-      <div class="dialog-heading">Travel authorization</div>
-      <div class="dialog-intro-text">Before you submit this trip for approval, please answer the questions below.</div>
+            <div class="dialog-heading">Travel authorization</div>
+            <div class="dialog-intro-text">Before you submit this trip for approval, please answer the questions below.</div>
 
-      <div class="layout vertical">
+            <div class="layout vertical">
 
-        <div class="layout horizontal center">
-          <div class="row-container"></div>
-          <div class="flex small-column-heading">Yes</div>
-          <div class="flex small-column-heading">No</div>
-          <div class="flex small-column-heading">Not Applicable</div>
-        </div>
+                <div class="layout horizontal center">
+                    <div class="row-container"></div>
+                    <div class="flex small-column-heading">Yes</div>
+                    <div class="flex small-column-heading">No</div>
+                    <div class="flex small-column-heading">Not Applicable</div>
+                </div>
 
-        <div class="layout horizontal center">
-          <div class="row-container" id="label-sec-clear">Did you request Security Clearance?</div>
-          <paper-radio-group class="flex layout horizontal" selected="{{serverData.clearances.security_clearance}}">
-            <paper-radio-button class="flex" name="requested"></paper-radio-button>
-            <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
-            <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
-          </paper-radio-group>
-        </div>
+                <div class="layout horizontal center">
+                    <div class="row-container" id="label-sec-clear">Did you request Security Clearance?</div>
+                    <paper-radio-group class="flex layout horizontal" selected="{{serverData.clearances.security_clearance}}">
+                        <paper-radio-button class="flex" name="requested"></paper-radio-button>
+                        <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
+                        <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
+                    </paper-radio-group>
+                </div>
 
-        <div class="layout horizontal center">
-          <div class="row-container" id="label-med">Did you request Medical Clearance?</div>
-          <paper-radio-group class="flex layout horizontal" selected="{{serverData.clearances.medical_clearance}}">
-            <paper-radio-button class="flex" name="requested"></paper-radio-button>
-            <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
-            <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
-          </paper-radio-group>
-        </div>
+                <div class="layout horizontal center">
+                    <div class="row-container" id="label-med">Did you request Medical Clearance?</div>
+                    <paper-radio-group class="flex layout horizontal" selected="{{serverData.clearances.medical_clearance}}">
+                        <paper-radio-button class="flex" name="requested"></paper-radio-button>
+                        <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
+                        <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
+                    </paper-radio-group>
+                </div>
 
-        <div class="layout horizontal center">
-          <div class="row-container" id="label-sec-course">Did you request Security Course?</div>
-          <paper-radio-group class="flex layout horizontal" selected="{{serverData.clearances.security_course}}">
-            <paper-radio-button class="flex" name="requested"></paper-radio-button>
-            <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
-            <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
-          </paper-radio-group>
-        </div>
-      </div>
+                <div class="layout horizontal center">
+                    <div class="row-container" id="label-sec-course">Did you request Security Course?</div>
+                    <paper-radio-group class="flex layout horizontal" selected="{{serverData.clearances.security_course}}">
+                        <paper-radio-button class="flex" name="requested"></paper-radio-button>
+                        <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
+                        <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
+                    </paper-radio-group>
+                </div>
+            </div>
 
-      <paper-button
-              class="dialog-confirm-button"
-              on-click="_clearancesOnConfirm">
-        Submit for approval
-      </paper-button>
-    </paper-dialog>
+            <paper-button
+                    class="dialog-confirm-button"
+                    on-click="_clearancesOnConfirm">
+                Submit for approval
+            </paper-button>
+        </paper-dialog>
 
-    <!-- Rejection dialog -->
-    <paper-dialog id="rejection-modal" opened="{{rejectionOpened}}" with-backdrop>
+        <!-- Rejection dialog -->
+        <paper-dialog id="rejection-modal" opened="{{rejectionOpened}}" with-backdrop>
 
-      <div class="dialog-heading">Reject travel</div>
-      <div class="dialog-intro-text">Please specify reasons for rejecting this travel:</div>
+            <div class="dialog-heading">Reject travel</div>
+            <div class="dialog-intro-text">Please specify reasons for rejecting this travel:</div>
 
-      <!-- TODO: save, display somewhere -->
-      <paper-textarea label="Rejection note" value="{{serverData.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
+            <paper-textarea label="Rejection note" value="{{serverData.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
 
-      <paper-button
-              class="dialog-confirm-button"
-              on-click="_rejectOnConfirm">
-        Send rejection
-      </paper-button>
-    </paper-dialog>
+            <paper-button
+                    class="dialog-confirm-button"
+                    on-click="_rejectOnConfirm">
+                Send rejection
+            </paper-button>
+        </paper-dialog>
 
-    <!-- Cancellation dialog -->
-    <paper-dialog id="cancel-modal" opened="{{cancellationOpened}}" with-backdrop>
+        <!-- Cancellation dialog -->
+        <paper-dialog id="cancel-modal" opened="{{cancellationOpened}}" with-backdrop>
 
-      <div class="dialog-heading">Cancel travel</div>
-      <div class="dialog-intro-text">Please specify reasons for cancelling this travel:</div>
+            <div class="dialog-heading">Cancel travel</div>
+            <div class="dialog-intro-text">Please specify reasons for cancelling this travel:</div>
 
-      <!-- TODO: save, display somewhere -->
-      <paper-textarea label="Cancellation note" value="{{serverData.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
+            <paper-textarea label="Cancellation note" value="{{serverData.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
 
-      <paper-button
-              class="dialog-confirm-button"
-              on-click="_cancelOnConfirm">
-        Cancel travel
-      </paper-button>
-    </paper-dialog>
+            <paper-button
+                    class="dialog-confirm-button"
+                    on-click="_cancelOnConfirm">
+                Cancel travel
+            </paper-button>
+        </paper-dialog>
 
-    <!-- Certification dialog -->
-    <etools-dialog opened="{{certificationOpened}}"
-                   dialog-title="Certify"
-                   ok-btn-text="Send certification"
-                   on-close="_certifyOnClose">
+        <!-- General dialog -->
+        <paper-dialog id="general-modal" opened="{{generalModal.opened}}" with-backdrop>
 
-      <!-- TODO: wire in, save, display somewhere -->
-      <paper-textarea label="Certification" char-counter maxlength="2500"></paper-textarea>
-    </etools-dialog>
+            <div class="dialog-heading">[[generalModal.heading]]</div>
+            <div class="dialog-intro-text">[[generalModal.text]]</div>
+
+            <paper-button
+                    class="dialog-confirm-button"
+                    on-click="generalModalAction">
+                [[generalModal.buttonText]]
+            </paper-button>
+        </paper-dialog>
+
+        <!-- Certification dialog -->
+        <paper-dialog id="certification-modal" opened="{{certificationOpened}}" with-backdrop>
+
+            <div class="dialog-heading">Certify travel</div>
+            <div class="dialog-intro-text">Please specify the differences between the travel plan and the actual travel:</div>
+
+            <paper-textarea label="Cancellation note" value="{{serverData.certification_note}}" char-counter maxlength="2500"></paper-textarea>
+
+            <paper-button
+                    class="dialog-confirm-button"
+                    on-click="_certifyOnConfirm">
+                Certify travel
+            </paper-button>
+        </paper-dialog>
+
+        <etools-loading active="[[loading]]"></etools-loading>
 
 
-    <etools-loading active="[[loading]]"></etools-loading>
+        <template is="dom-if" if="[[postData]]">
+            <etools-ajax url="[[postEndpoint]]"
+                         body="[[serverData]]"
+                         method="[[method]]"
+                         on-success="_handlePostSuccess"
+                         on-fail="_handlePostFail"></etools-ajax>
+        </template>
+
+        <template is="dom-if" if="[[attachmentData]]">
+            <etools-ajax url="[[attachmentsEndpoint]]"
+                         body="[[attachment]]"
+                         method="POST"
+                         multi-part
+                         on-success="_handleAttachmentPostSuccess"
+                         on-fail="_handlePostFail"></etools-ajax>
+        </template>
+
+        <template is="dom-if" if="[[deleteAttachmentEndpoint]]">
+            <etools-ajax url="[[deleteAttachmentEndpoint]]"
+                         method="DELETE"
+                         body="placeholder"
+                         on-success="_handleAttachmentPostSuccess"
+                         on-fail="_handlePostFail"></etools-ajax>
+        </template>
 
 
-    <template is="dom-if" if="[[postData]]">
-      <etools-ajax endpoint="[[postEndpoint]]"
-                   body="[[serverData]]"
-                   method="[[method]]"
-                   on-success="_handlePostSuccess"
-                   on-fail="_handlePostFail"></etools-ajax>
     </template>
 
-    <template is="dom-if" if="[[attachmentData]]">
-      <etools-ajax endpoint="[[attachmentsEndpoint]]"
-                   body="[[attachment]]"
-                   method="POST"
-                   multi-part
-                   on-success="_handleAttachmentPostSuccess"
-                   on-fail="_handlePostFail"></etools-ajax>
-    </template>
-
-    <template is="dom-if" if="[[deleteAttachmentEndpoint]]">
-      <etools-ajax endpoint="[[deleteAttachmentEndpoint]]"
-                   method="DELETE"
-                   body="placeholder"
-                   on-success="_handleAttachmentPostSuccess"
-                   on-fail="_handlePostFail"></etools-ajax>
-    </template>
-
-
-  </template>
-
-  <script>
-    Polymer({
-      is: 'et2f-outbound-data',
-      properties: {
-        data: {
-          type: Object,
-          notify: true,
-        },
-        structure: {
-          type: Object,
-        },
-        newTravel: {
-          type: Boolean,
-          value: false
-        },
-        travelId: {
-          type: String,
-          notify: true
-        },
-        loading: {
-          type: Boolean,
-          computed: '_computeLoading(postData, attachmentData)'
-        },
-        postData: {
-          type: Boolean,
-          value: false
-        },
-        attachmentData: {
-          type: Boolean,
-          value: false
-        },
-        serverData: {
-          type: Object,
-          value: function () {
-            return {}
-          }
-        },
-        attachmentsEndpoint: {
-          type: String,
-          computed: '_computeAttachmentsEndpoint(travelId)'
-        },
-        deleteAttachmentEndpoint: {
-          type: String,
-          value: false,
-          reflectToAttribute: true
-        }
-
-      },
-      _computeAttachmentsEndpoint: function(travelId) {
-        return etoolsAppConfig.globals.computeTemplate('et2fTravelAttachments', {id: travelId})
-      },
-      _computeLoading: function(post, attachment){
-        return post || attachment
-      },
-
-      _processOutboundData: function (data) {
-        var self = this;
-        delete data.status;
-        this.serverData = {
-          deductions: [],
-          itinerary: [],
-          activities: [],
-          cost_assignments: [],
-          expenses: [],
-          clearances: {}
-        };
-
-        function duplicateIdPurging(collection) {
-          if(collection.length < 2) {
-            return collection;
-          }
-          return collection.reduce(function(prev, current) {
-            if(prev.some(function(prevItem){return prevItem.id === current.id;})) {
-              delete current.id;
+    <script>
+      Polymer({
+        is: 'et2f-outbound-data',
+        properties: {
+          data: {
+            type: Object,
+            notify: true,
+          },
+          structure: {
+            type: Object,
+          },
+          newTravel: {
+            type: Boolean,
+            value: false
+          },
+          travelId: {
+            type: String,
+            notify: true,
+          },
+          loading: {
+            type: Boolean,
+            computed: '_computeLoading(postData, attachmentData)'
+          },
+          postData: {
+            type: Boolean,
+            value: false
+          },
+          attachmentData: {
+            type: Boolean,
+            value: false
+          },
+          serverData: {
+            type: Object,
+            value: function () {
+              return {}
             }
-            prev.push(current);
-            return prev;
-          }, [])
-        }
-
-        function emptyIdPurging(collection) {
-          return collection.map(function(item) {
-            if(item && item.id === '') {
-              delete item.id
-            }
-            return item;
-          })
-        }
-
-        function handleArray(arr) {
-          arr = duplicateIdPurging(arr);
-          arr = emptyIdPurging(arr);
-          arr.forEach(function(obj) {
-            handleObject(obj);
-          });
-        }
-
-
-        function handleObject(obj) {
-          if (!obj) {return;}
-          var keys = Object.keys(obj);
-          keys.forEach(function(key) {
-            if(obj[key] && !(obj[key] instanceof Array )){
-              obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' || key === 'mode_of_travel' ? obj[key].label : obj[key].value : obj[key]
-            }
-            if(obj[key] && obj[key] instanceof Array ){
-              obj[key] = obj[key].map(function(item) {
-                if(key === 'mode_of_travel') {
-                  return item.label;
-                }
-                return typeof  item === 'object' ? item.value : item
-              })
-            }
-          });
-        }
-
-        var dataKeys = Object.keys(data);
-
-        dataKeys.forEach(function(fieldSet){
-          if (data[fieldSet] instanceof Array) {
-            handleArray(data[fieldSet])
-          }
-          else if(typeof data[fieldSet] === 'object'){
-            handleObject(data[fieldSet]);
-          }
-        });
-
-        var serverKeys = Object.keys(this.serverData);
-
-
-        serverKeys.forEach(function(serverKey) {
-          if(data[serverKey] instanceof Array && data[serverKey][0]) {
-            if(Object.keys(data[serverKey][0]).length === 0) {
-              delete self.serverData[serverKey];
-            }
-          }
-          if(self.serverData[serverKey]) {
-            self.serverData[serverKey] = data[serverKey];
-          }
-          delete data[serverKey];
-        });
-
-        var leftoverKeys = Object.keys(data);
-        leftoverKeys.forEach(function(key) {
-          if (!data[key]) { return; }
-          var innerKeys = Object.keys(data[key]);
-          innerKeys.forEach(function(innerKey) {
-            self.serverData[innerKey] = data[key][innerKey];
-          })
-
-        });
-      },
-      _processAttachmentData: function(data) {
-        this.attachments = data.attachments.filter(function(item) {
-          return !item.id;
-        });
-        if(data.deletedAttachments) {
-          this.deletedAttachments = data.deletedAttachments.filter(function (item) {
-            return item === parseInt(item, 10);
-          });
-        } else {
-          this.deletedAttachments = [];
-        }
-        delete data.deletedAttachments;
-        delete data.attachments;
-
-      },
-      doRequest: function (details) {
-        this._processAttachmentData(this.data);
-        this._processOutboundData(this.data);
-        var self = this;
-        var endpointConfig = {
-          id: self.travelId ? self.travelId.replace(/\//g, '') : null,
-          status: null
-        };
-        var endpointName = 'et2fStateChange';
-
-        function doSavePost() {
-          self.method = 'POST';
-          self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelList;
-          self.postData = true;
-        }
-
-        function doSaveAndSubmit() {
-          self.method = 'POST';
-          self.postEndpoint = etoolsAppConfig.endpoints.et2fSaveAndSubmit;
-          self.postData = true;
-        }
-
-        function doSaveUpdate() {
-          self.method = 'PATCH';
-          self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelDetail;
-          self.postData = true;
-        }
-
-        function doPut() {
-          self.method = 'PUT';
-          self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
-          self.postData = true;
-        }
-
-        function doPost() {
-          self.method = 'POST';
-          self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
-          self.postData = true;
-        }
-
-        var statusActions = {
-
-          save: function () {
-            if(self.travelId !== undefined) {
-              doSaveUpdate();
-            } else {
-              doSavePost()
+          },
+          attachmentsEndpoint: {
+            type: String,
+          },
+          deleteAttachmentEndpoint: {
+            type: String,
+          },
+          generalModal: {
+            type: Object,
+            value: {
+              opened: false,
+              heading: '',
+              text: '',
+              buttonText: ''
             }
           },
 
-          save_and_submit: function() {
+        },
+        generalModalAction: function() {
+          console.log('Default fn. ran!');
+        },
+        _computeLoading: function(post, attachment){
+          return post || attachment
+        },
 
-            self.set('serverData.clearances', {
-              medical_clearance: 'not_applicable',
-              security_clearance: 'not_applicable',
-              security_course: 'not_applicable'
-            });
-
-            self._clearancesOnConfirm = function () {
-
-              self.$['clearance-modal'].close();
-              if (endpointConfig.id) {
-                endpointConfig.status = 'submit_for_approval';
-                doPost();
-              } else {
-                endpointConfig.status = 'save_and_submit';
-                doSaveAndSubmit();
-              }
-            };
-            self.clearancesOpened = true;
-          },
-
-          // TODO: Cancel popup
-          cancel: function() {
-
-            self._cancelOnConfirm = function() {
-
-              self.$['cancel-modal'].close();
-              if(self.travelId !== undefined) {
-                endpointConfig.status = 'cancel';
-                doPost();
-              } else {
-                this._handlePostSuccess();
-              }
-            };
-
-            self.cancellationOpened = true;
-          },
-
-          // TODO: Approve popup
-          approve: function() {
-            endpointConfig.status = 'approve';
-            doPost();
-          },
-
-          reject: function() {
-            self._rejectOnConfirm = function() {
-              self.$['rejection-modal'].close();
-
-              endpointConfig.status = 'reject';
-              doPost();
-            }
-            self.rejectionOpened = true;
-          },
-
-          // TODO: Reopen popup
-          reopen: function() {
-            endpointConfig.status = 'restore';
-            doPost();
-          },
-
-          // Send for payment popup
-          send_for_payment: function() {
-            endpointConfig.status = 'send_for_payment';
-            doPost();
-          },
-
-          went_as_planned: function() {
-            endpointConfig.status = 'mark_as_certified';
-            doPost();
-          },
-
-          submit_certificate: function() {
-
-            self.certificationOpened = true;
-            self._certifyOnClose = function() {
-
-              endpointConfig.status = 'submit_certificate';
-              doPost();
-            }
-          },
-
-          done: function() {
-            console.log('Mark as done fn. ran!');
-            endpointConfig.status = 'done';
-            doMarkAsDone();
-          },
-
-          // TEST
-          approve_certificate: function() {
-            endpointConfig.status = 'approve_certificate';
-            doPost();
-          },
-
-          // TEST
-          // TODO: Raise modal
-          reject_certificate: function() {
-            console.log('TODO!!');
-            endpointConfig.status = 'reject_certificate';
-            doPost();
-          },
-
-          // TEST
-          certify: function() {
-            endpointConfig.status = 'mark_as_certified';
-            doPost();
-          },
-
-          // TEST
-          complete: function() {
-            endpointConfig.status = 'done';
-            doPost();
-          },
-
-          // TEST
-          planned: function() {
-            endpointConfig.status = 'plan';
-            doPost();
-          }
-        };
-
-        statusActions[details.endPoint]();
-
-      },
-      _doAttachmentUpload: function() {
-        var current = null;
-        if(this.deletedAttachments.length > 0 ) {
-          current = this.deletedAttachments.pop();
-          this.set('deleteAttachmentEndpoint',etoolsAppConfig.globals.computeTemplate('et2fTravelAttachmentDetail', {id: this.travelId, itemId: current}));
-        }
-
-        if(this.attachments.length > 0) {
-          current = this.attachments.pop();
-
-          this.attachment = {
-            name: current.name,
-            file: current.raw,
-            type: current.type ? current.type.label : 'Report'
+        _processOutboundData: function (data) {
+          var self = this;
+          delete data.status;
+          this.serverData = {
+            deductions: [],
+            itinerary: [],
+            activities: [],
+            cost_assignments: [],
+            expenses: [],
+            clearances: {}
           };
-          this.attachmentData = true;
-        }
-      },
-      _handlePostFail: function(event, i) {
-        var self = this;
-        this.formError = i.request.detail.request.xhr.response;
-        if (!this.formError) {return}
-        Object.keys(this.formError).forEach(function(key) {
-          console.error(key + 'error: ', self.formError[key])
-        });
-        this.postData = false;
-        this.attachmentData = false;
-        this.deleteAttachmentEndpoint = undefined;
-      },
 
-      _handleAttachmentPostSuccess: function (e, data) {
-        this.deleteAttachmentEndpoint = undefined;
+          function duplicateIdPurging(collection) {
+            if(collection.length < 2) {
+              return collection;
+            }
+            return collection.reduce(function(prev, current) {
+              if(prev.some(function(prevItem){return prevItem.id === current.id;})) {
+                delete current.id;
+              }
+              prev.push(current);
+              return prev;
+            }, [])
+          }
 
-        if(this.attachments.length > 0 || this.deletedAttachments.length > 0 ) {
-          this.travelId =  this.travelId ? this.travelId : '' + data.id;
-          this._doAttachmentUpload();
-        }
-        else {
-          this.fire('travel-post-success', data);
-          var travelId = this.travelId;
+          function emptyIdPurging(collection) {
+            return collection.map(function(item) {
+              if(item && item.id === '') {
+                delete item.id
+              }
+              return item;
+            })
+          }
+
+          function handleArray(arr) {
+            arr = duplicateIdPurging(arr);
+            arr = emptyIdPurging(arr);
+            arr.forEach(function(obj) {
+              handleObject(obj);
+            });
+          }
+
+
+          function handleObject(obj) {
+            if (!obj) {return;}
+            var keys = Object.keys(obj);
+            keys.forEach(function(key) {
+              if(obj[key] && !(obj[key] instanceof Array )){
+                obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' || key === 'mode_of_travel' ? obj[key].label : obj[key].value : obj[key]
+              }
+              if(obj[key] && obj[key] instanceof Array ){
+                obj[key] = obj[key].map(function(item) {
+                  if(key === 'mode_of_travel') {
+                    return item.label;
+                  }
+                  return typeof  item === 'object' ? item.value : item
+                })
+              }
+            });
+          }
+
+          var dataKeys = Object.keys(data);
+
+          dataKeys.forEach(function(fieldSet){
+            if (data[fieldSet] instanceof Array) {
+              handleArray(data[fieldSet])
+            }
+            else if(typeof data[fieldSet] === 'object'){
+              handleObject(data[fieldSet]);
+            }
+          });
+
+          var serverKeys = Object.keys(this.serverData);
+
+
+          serverKeys.forEach(function(serverKey) {
+            if(data[serverKey] instanceof Array && data[serverKey][0]) {
+              if(Object.keys(data[serverKey][0]).length === 0) {
+                delete self.serverData[serverKey];
+              }
+            }
+            if(self.serverData[serverKey]) {
+              self.serverData[serverKey] = data[serverKey];
+            }
+            delete data[serverKey];
+          });
+
+          var leftoverKeys = Object.keys(data);
+          leftoverKeys.forEach(function(key) {
+            if (!data[key]) { return; }
+            var innerKeys = Object.keys(data[key]);
+            innerKeys.forEach(function(innerKey) {
+              self.serverData[innerKey] = data[key][innerKey];
+            })
+
+          });
+        },
+        _processAttachmentData: function(data) {
+          this.attachments = data.attachments.filter(function(item) {
+            return !item.id && item.raw;
+          });
+          if(data.deletedAttachments) {
+            this.deletedAttachments = data.deletedAttachments.filter(function (item) {
+              return item === parseInt(item, 10);
+            });
+          } else {
+            this.deletedAttachments = [];
+          }
+          delete data.deletedAttachments;
+          delete data.attachments;
+
+        },
+        doRequest: function (details) {
+          this._processAttachmentData(this.data);
+          this._processOutboundData(this.data);
+          var self = this;
+          var endpointConfig = {
+            id: self.travelId ? self.travelId.replace(/\//g, '') : null,
+            status: null
+          };
+          var endpointName = 'et2fStateChange';
+
+          function doSavePost() {
+            self.method = 'POST';
+            self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelList;
+            self.postData = true;
+          }
+
+          function doSaveAndSubmit() {
+            self.method = 'POST';
+            self.postEndpoint = etoolsAppConfig.endpoints.et2fSaveAndSubmit;
+            self.postData = true;
+          }
+
+          function doSaveUpdate() {
+            self.method = 'PATCH';
+            self.postEndpoint = etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', endpointConfig).url;
+            self.postData = true;
+          }
+
+          function doPut() {
+            self.method = 'PUT';
+            self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig).url;
+            self.postData = true;
+          }
+
+          function doPost() {
+            self.method = 'POST';
+            self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig).url;
+            self.postData = true;
+          }
+
+          var statusActions = {
+
+            save: function () {
+              if(self.travelId !== undefined) {
+                doSaveUpdate();
+              } else {
+                doSavePost()
+              }
+            },
+
+            save_and_submit: function() {
+
+              self.set('serverData.clearances', {
+                medical_clearance: 'not_applicable',
+                security_clearance: 'not_applicable',
+                security_course: 'not_applicable'
+              });
+
+              self._clearancesOnConfirm = function () {
+
+                self.$['clearance-modal'].close();
+                if (endpointConfig.id) {
+                  endpointConfig.status = 'submit_for_approval';
+                  doPost();
+                } else {
+                  endpointConfig.status = 'save_and_submit';
+                  doSaveAndSubmit();
+                }
+              };
+              self.clearancesOpened = true;
+            },
+
+            cancel: function() {
+
+              self._cancelOnConfirm = function() {
+
+                self.$['cancel-modal'].close();
+                if(self.travelId !== undefined) {
+                  endpointConfig.status = 'cancel';
+                  doPost();
+                } else {
+                  this._handlePostSuccess();
+                }
+              };
+
+              self.cancellationOpened = true;
+            },
+
+            approve: function() {
+
+              self.generalModalAction = function() {
+                self.$['general-modal'].close();
+                endpointConfig.status = 'approve';
+                doPost();
+              };
+
+              self.set('generalModal', {
+                opened: true,
+                heading: 'Approval',
+                text: 'Are you sure you want approve this travel?',
+                buttonText: 'Approve'
+              });
+            },
+
+            reject: function() {
+              self._rejectOnConfirm = function() {
+                self.$['rejection-modal'].close();
+
+                endpointConfig.status = 'reject';
+                doPost();
+              }
+              self.rejectionOpened = true;
+            },
+
+            // TODO: Reopen popup
+            reopen: function() {
+
+              self.generalModalAction = function() {
+                self.$['general-modal'].close();
+                endpointConfig.status = 'restore';
+                doPost();
+              };
+
+              self.set('generalModal', {
+                opened: true,
+                heading: 'Reopen',
+                text: 'Are you sure you want reopen this travel?',
+                buttonText: 'Reopen'
+              });
+
+            },
+
+            send_for_payment: function() {
+
+              self.generalModalAction = function() {
+                self.$['general-modal'].close();
+                endpointConfig.status = 'send_for_payment';
+                doPost();
+              };
+
+              self.set('generalModal', {
+                opened: true,
+                heading: 'Send for payment',
+                text: 'Are you sure you want to send this travel to payment?',
+                buttonText: 'Reopen'
+              });
+
+            },
+
+            went_as_planned: function() {
+
+              self.generalModalAction = function() {
+                self.$['general-modal'].close();
+                endpointConfig.status = 'mark_as_certified';
+                doPost();
+              };
+
+              self.set('generalModal', {
+                opened: true,
+                heading: 'Went as planned',
+                text: 'Are you sure this travel went as planned?',
+                buttonText: 'Yes'
+              });
+
+            },
+
+            submit_certificate: function() {
+
+              self._certifyOnConfirm = function() {
+
+                self.$['certification-modal'].close();
+                endpointConfig.status = 'submit_certificate';
+                doPost();
+              }
+              self.certificationOpened = true;
+            },
+
+            done: function() {
+
+              self.generalModalAction = function() {
+                self.$['general-modal'].close();
+                endpointConfig.status = 'done';
+                doMarkAsDone();
+              };
+
+              self.set('generalModal', {
+                opened: true,
+                heading: 'Travel done',
+                text: 'Are you sure you want to mark this travel as done?',
+                buttonText: 'Yes'
+              });
+
+            },
+
+            approve_certificate: function() {
+
+              self.generalModalAction = function() {
+                self.$['general-modal'].close();
+                endpointConfig.status = 'approve_certificate';
+                doPost();
+              };
+
+              self.set('generalModal', {
+                opened: true,
+                heading: 'Approve certificate',
+                text: 'Are you sure you want to certify this travel?',
+                buttonText: 'Yes'
+              });
+
+
+            },
+
+            reject_certificate: function() {
+
+              self.generalModalAction = function() {
+                self.$['general-modal'].close();
+                endpointConfig.status = 'reject_certificate';
+                doPost();
+              };
+
+              self.set('generalModal', {
+                opened: true,
+                heading: 'Reject certificate',
+                text: 'Are you sure you want to reject the certification provided for this travel?',
+                buttonText: 'Reject certificate'
+              });
+
+            },
+
+            certify: function() {
+
+              self.generalModalAction = function() {
+                self.$['general-modal'].close();
+                endpointConfig.status = 'mark_as_certified';
+                doPost();
+              };
+
+              self.set('generalModal', {
+                opened: true,
+                heading: 'Certify',
+                text: 'Are you sure you want to certify this travel?',
+                buttonText: 'Certify'
+              });
+
+            },
+
+            complete: function() {
+
+              self.generalModalAction = function() {
+                self.$['general-modal'].close();
+                endpointConfig.status = 'done';
+                doPost();
+              };
+
+              self.set('generalModal', {
+                opened: true,
+                heading: 'Complete',
+                text: 'Are you sure you want to mark this travel as completed?',
+                buttonText: 'Complete'
+              });
+
+            },
+
+            planned: function() {
+
+              self.generalModalAction = function() {
+                self.$['general-modal'].close();
+                endpointConfig.status = 'plan';
+                doPost();
+              };
+
+              self.set('generalModal', {
+                opened: true,
+                heading: 'Back to planned',
+                text: 'Are you sure you want to make this travel editable again?',
+                buttonText: 'Yes'
+              });
+
+            }
+          };
+
+          statusActions[details.endPoint]();
+
+        },
+        _doAttachmentUpload: function() {
+          var current = null;
+          if(this.deletedAttachments.length > 0 ) {
+            current = this.deletedAttachments.pop();
+            this.set('deleteAttachmentEndpoint', etoolsAppConfig.globals.computeTemplate('et2fTravelAttachmentDetail', {id: this.travelId, itemId: current}).url);
+          }
+
+          if(this.attachments.length > 0) {
+            this.set('attachmentsEndpoint', etoolsAppConfig.globals.computeTemplate('et2fTravelAttachments', {id: this.travelId}).url);
+            current = this.attachments.pop();
+
+            this.attachment = {
+              name: current.name,
+              file: current.raw,
+              type: current.type ? current.type.label : 'Report'
+            };
+            this.attachmentData = true;
+          }
+        },
+        _handlePostFail: function(event, i) {
+          var self = this;
+          this.formError = i.request.detail.request.xhr.response;
+          if (!this.formError) {return}
+          Object.keys(this.formError).forEach(function(key) {
+            console.error(key + 'error: ', self.formError[key])
+          });
+          this.postData = false;
           this.attachmentData = false;
-          this.travelId = null;
-          this.travelId = travelId;
-        }
-      },
+          this.deleteAttachmentEndpoint = undefined;
+          this.attachmentsEndpoint = undefined;
+        },
 
-      _handlePostSuccess: function(e, data) {
-        this.postData = false;
-        if(this.attachments.length > 0  || this.deletedAttachments.length > 0) {
-          this.travelId =  this.travelId ? this.travelId : '' + data.id;
-          this._doAttachmentUpload();
-        }
-        else {
-          this.fire('travel-post-success', data);
-          this.travelId = null;
-          this.travelId = '' + data.id
-        }
-      },
+        _handleAttachmentPostSuccess: function (e, data) {
+          this.deleteAttachmentEndpoint = undefined;
+
+          if(this.attachments.length > 0 || this.deletedAttachments.length > 0 ) {
+            this.travelId =  this.travelId ? this.travelId : '' + data.id;
+            this._doAttachmentUpload();
+          }
+          else {
+            this.fire('travel-post-success', data);
+            this.attachmentData = false;
+            var travelId = this.travelId;
+            this.attachmentsEndpoint = undefined;
+            this.travelId = null;
+            this.travelId = travelId;
+          }
+        },
+
+        _handlePostSuccess: function(e, data) {
+          this.postData = false;
+          this.travelId = this.travelId ? this.travelId : data.id;
+          if(this.attachments.length > 0  || this.deletedAttachments.length > 0) {
+            this.travelId =  this.travelId ? this.travelId : '' + data.id;
+            this._doAttachmentUpload();
+          }
+          else {
+            this.fire('travel-post-success', data);
+            this.travelId = null;
+            this.travelId = '' + data.id
+          }
+        },
 
 
-    });
-  </script>
+      });
+    </script>
 </dom-module>

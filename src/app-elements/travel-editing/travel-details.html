@@ -85,6 +85,7 @@
 
       <div class="flex">
 
+        <!-- Cancellation note -->
         <paper-material class="note cancel" elevation="1" hidden$="[[_hideCancelNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
               <g id="!---UI-Style-Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -99,6 +100,7 @@
           <div class="note-text">[[data.cancellation_note]]</div>
         </paper-material>
 
+        <!-- Rejection note -->
         <paper-material class="note reject" elevation="1" hidden$="[[_hideRejectionNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
               <g id="!---UI-Style-Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -112,6 +114,23 @@
           <div class="note-heading">REJECTION NOTE</div>
           <div class="note-text">[[data.rejection_note]]</div>
         </paper-material>
+
+        <!-- Rejection note -->
+        <paper-material class="note reject" elevation="1" hidden$="[[_hideCertificationNote(data)]]">
+          <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
+              <g id="!---UI-Style-Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                  <g id="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                      <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
+                          <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
+                      </g>
+                  </g>
+              </g>
+          </svg>
+          <div class="note-heading">CERTIFICATION NOTE</div>
+          <div class="note-text">[[data.certification_note]]</div>
+        </paper-material>
+
+
 
 
         <etools-repeatable-field-set title="Travel Plan"
@@ -229,7 +248,9 @@
       <travel-status
         user-type="God"
         status="[[data.status]]"
-        scroll-top-margin="84">
+        scroll-top-margin="84"
+        cancelled-date="[[data.canceled_at]]"
+        completed-date="[[data.completed_at]]">
       </travel-status>
     </div>
   </template>
@@ -258,6 +279,10 @@
       _hideRejectionNote: function(data) {
         return data.status !== 'Rejected' || data.rejection_note.length === 0;
       },
+
+      _hideCertificationNote: function(data) {
+        return data.status !== 'Certification Submitted';
+      }
 
     });
   </script>
