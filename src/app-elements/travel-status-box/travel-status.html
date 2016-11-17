@@ -279,7 +279,7 @@
                 </div>
                 <div class="flex vertical layout">
                   <span class="status black">Completed</span>
-                  <span class="statusdate">on [[completedDate]]</span>
+                  <span class="statusdate">on [[formatDate(completedDate)]]</span>
                 </div>
               </div>
             </div>
@@ -301,7 +301,7 @@
                 <iron-icon icon="icons:cancel"></iron-icon>
                 <div class="flex vertical layout">
                   <span class="status black">Cancelled</span>
-                  <span class="statusdate">on [[cancelledDate]]</span>
+                  <span class="statusdate">on [[formatDate(cancelledDate)]]</span>
                 </div>
               </div>
             </div>
@@ -384,6 +384,10 @@
             self._previousOnScroll();
           }
         }
+      },
+      // '2016-11-17T13:53:13.839938Z' => '2016. 11. 17.'
+      formatDate: function(dateStr) {
+        return dateStr.split('T')[0].split('-').join('. ') + '.';
       },
       detached: function() {
         if(this._previousOnScroll) {

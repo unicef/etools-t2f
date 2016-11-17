@@ -103,9 +103,8 @@
           },
           rejection_note: 'rejection_note',
           cancellation_note: 'rejection_note',
-          cancellation_date: 'cancellation_date',
-          completion_date: 'completion_date',
-
+          canceled_at: 'canceled_at',
+          completed_at: 'completed_at'
 
         };
         var statusLib = {
@@ -132,8 +131,8 @@
           'clearances',
           'rejection_note',
           'cancellation_note',
-          'cancellation_date',
-          'completion_date'
+          'canceled_at',
+          'completed_at'
         ];
         var dataKeys = Object.keys(incomingData).filter(function(key){
           return nonBaseKeys.indexOf(key) === -1;
