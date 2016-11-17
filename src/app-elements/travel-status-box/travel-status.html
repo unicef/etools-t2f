@@ -2,12 +2,8 @@
   Properties:
     user-type: required, String, lowercase, eg: 'administrator'
     status: required, String, Capital, eg: 'Submitted'
-    cancelled-date: String, formatted, eg: '2016/07/19', only needed when status=='Cancelled'
-    completed-date: String, formatted, eg: '2016/07/19', only needed when status=='Completed'
-
-  Files:
-    "./structure/actions-list.json"
-    "./structure/form-actions-permissions-travel.json"
+    cancelled-date: String, eg: '2016-11-17T13:53:13.839938Z', only needed when status=='Cancelled'
+    completed-date: String, eg: '2016-11-17T13:53:13.839938Z, only needed when status=='Completed'
 -->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
