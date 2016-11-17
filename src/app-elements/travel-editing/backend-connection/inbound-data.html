@@ -159,7 +159,7 @@
         });
 
         function handleArray(fieldSet, key) {
-          if(fieldSet.length === 0) {
+          if(fieldSet.length === 0 && key !== 'attachments') {
             // add one empty object in case of empty array
             fieldSet.push({});
           } else {
