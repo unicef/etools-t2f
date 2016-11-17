@@ -8,6 +8,12 @@
 <link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+
 <link rel="import" href="../../../styles/shared-styles.html">
 <link rel="import" href="../../../styles/et2f-styles.html">
 
@@ -140,9 +146,49 @@
     .statusdiv.rejected .statusdivtext, .statusdiv.cancelled .statusdivtext, .statusdiv.completed .statusdivtext {
       color: white;
     }
+    .dialog-confirm-button {
+        color: var(--et2f-primary);
+        font-weight: 500;
+        height: 40px;
+        float: right;
+    }
   </style>
 
   <template>
+
+      <!-- DUPLICATE MODAL -->
+      <paper-dialog id="duplicate-modal" opened="{{duplicateModalOpened}}" with-backdrop>
+        <h2>Duplicate travel</h2>
+
+        <!-- CHOSER -->
+        <paper-dropdown-menu label="Select traveler" class="filter-dropdown">
+
+          <paper-listbox class="dropdown-content">
+            <template is="dom-repeat" items="[[users]]">
+
+              <paper-item on-click="duplicationSetTraveler">
+                [[item.label]]
+              </paper-item>
+
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+
+        <paper-button class="dialog-confirm-button" on-click="duplicateConfirm">
+          DUPLICATE TRAVEL
+        </paper-button>
+      </paper-dialog>
+
+      <!-- ADD DRIVER MODAL -->
+      <paper-dialog id="driver-modal" opened="{{driverModalOpened}}" with-backdrop>
+        <h2>Add driver</h2>
+
+        <!-- CHOSER -->
+
+        <paper-button class="dialog-confirm-button" on-click="addDriverConfirm">
+          ADD DRIVER
+        </paper-button>
+      </paper-dialog>
 
       <div class$="heading-row clearfix layout horizontal [[_isGreyClass(data)]]">
 
@@ -220,6 +266,9 @@
         },
         offices: Object,
         sections: Object,
+        users: {
+          type: Object
+        },
         expanded: {
           type: Boolean,
           value: false
@@ -267,10 +316,41 @@
         this.set('expanded', false);
       },
       duplicate: function() {
-        console.log('TODO: duplicating feature!');
+        this.duplicateModalOpened = true;
       },
       addDriver: function() {
-        console.log('TODO: add driver feature!');
+        this.driverModalOpened = true;
+      },
+      duplicateConfirm: function() {
+        if (!this.duplicationTravelerId) {
+          return;
+        }
+        this.$['duplicate-modal'].close();
+
+        var traveler = this.duplicationTravelerId;
+        var travel = this.data.id;
+        console.log('confirmed duplicate for user#', traveler);
+        console.log('confirmed duplicate for travel#', travel);
+
+        // Call backend `/travels/<id>/duplicate_travel` with `{'traveler': <id>}`
+        // Will get back payload: `{"id": <id>}`, navigate to it!
+
+// /travels/<id>/add_driver
+
+
+      },
+      addDriverConfirm: function() {
+        this.$['driver-modal'].close();
+        console.log('confirmed add driver for travelid/userid');
+
+
+
+      },
+      duplicationSetTraveler: function(e) {
+        this.set('duplicationTravelerId', e.model.item.value);
+      },
+      addDriverSetTraveler: function(e) {
+        this.set('addDriverTravelerId', e.model.item.value);
       },
       _isGreyClass: function(data) {
         return data.status === 'cancelled' ? 'grey-heading' : '';

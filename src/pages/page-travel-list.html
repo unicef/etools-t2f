@@ -224,7 +224,12 @@
         </list-header>
 
         <template is="dom-repeat" items="[[data]]">
-          <list-element data="[[item]]" offices="[[structure.offices]]" sections="[[structure.sections]]"></list-element>
+          <list-element
+            data="[[item]]"
+            users="[[structure.users]]"
+            offices="[[structure.offices]]"
+            sections="[[structure.sections]]">
+          </list-element>
         </template>
 
         <list-pagination
