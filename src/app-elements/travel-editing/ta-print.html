@@ -128,10 +128,10 @@
                             table:{
                               widths: innerTableVars.innerWidths,
                               body: [
-                                innerColumnGen('Reference Number', data.baseDetails.reference_number),
+                                innerColumnGen('Reference Number', '' + data.baseDetails.reference_number),
                                 innerColumnGen('Traveller', data.baseDetails.traveller ? data.baseDetails.traveller.label : ''),
-                                innerColumnGen('Start Date', data.baseDetails.start_date),
-                                innerColumnGen('Est. Travel cost', data.baseDetails.estimated_travel_cost),
+                                innerColumnGen('Start Date', '' + data.baseDetails.start_date),
+                                innerColumnGen('Est. Travel cost', '' + data.baseDetails.estimated_travel_cost),
                               ]
                             }
                           },
@@ -141,9 +141,9 @@
                             table:{
                               widths: innerTableVars.innerWidths,
                               body: [
-                                innerColumnGen('Travel Status', data.baseDetails.status),
+                                innerColumnGen('Travel Status', '' + data.baseDetails.status),
                                 innerColumnGen('Supervisor', data.baseDetails.supervisor ? data.baseDetails.supervisor.label : ''),
-                                innerColumnGen('End date', data.baseDetails.end_date),
+                                innerColumnGen('End date', '' + data.baseDetails.end_date),
                                 innerColumnGen('Mode of travel', concatManyToMany(data.baseDetails.mode_of_travel)),
                               ]
                             }
@@ -158,7 +158,7 @@
                     table: {
                       widths: [100, 661],
                       body: [
-                        [{text: 'Purpose of travel: '}, {text: data.baseDetails.purpose}]
+                        [{text: 'Purpose of travel: '}, {text: '' + data.baseDetails.purpose}]
                       ]
                     },
                   }
@@ -205,7 +205,7 @@
                                 widths: innerTableVars.innerWidths,
                                 body: [
                                   innerColumnGen('Partner', activity.partner ? activity.partner.label  : ''),
-                                  innerColumnGen('When?', activity.date),
+                                  innerColumnGen('When?', '' + activity.date),
                                   innerColumnGen('Result to be monitored', activity.result ? activity.result.label : ''),
                                 ]
                               }
@@ -217,7 +217,7 @@
                                 widths: innerTableVars.innerWidths,
                                 body: [
                                   innerColumnGen('Partnership', activity.partnership ? activity.partnership.label : ''),
-                                  innerColumnGen('Mode of travel', activity.mode_of_travel),
+                                  innerColumnGen('Mode of travel', '' + activity.mode_of_travel),
                                   innerColumnGen('Locations', concatManyToMany(activity.locations)),
                                 ]
                               }
@@ -276,7 +276,7 @@
                               table:{
                                 widths: innerTableVars.innerWidths,
                                 body: [
-                                  innerColumnGen('Departing', itinerary.departure_date),
+                                  innerColumnGen('Departing', '' + itinerary.departure_date),
                                   innerColumnGen('DSA Region ', itinerary.dsa_region? itinerary.dsa_region.label : ''),
                                 ]
                               }
@@ -287,7 +287,7 @@
                               table:{
                                 widths: innerTableVars.innerWidths,
                                 body: [
-                                  innerColumnGen('Arriving', itinerary.arrival_date),
+                                  innerColumnGen('Arriving', '' + itinerary.arrival_date),
                                   innerColumnGen('Mode of travel', itinerary.mode_of_travel ? itinerary.mode_of_travel.label : ''),
                                 ]
                               }
