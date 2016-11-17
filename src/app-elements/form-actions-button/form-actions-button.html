@@ -150,7 +150,7 @@
         permissions: {
           type: Object,
           value: {
-            'godmode': {
+            'God': {
               'Planned': {
                 'primary': 'save',
                 'secondary': ['save_and_submit', 'cancel']
@@ -197,7 +197,7 @@
               }
             },
 
-            'default': {
+            'Anyone': {
               'Planned': {
                 'primary': '',
                 'secondary': []
@@ -244,7 +244,7 @@
               }
             },
 
-            'traveler': {
+            'Traveler': {
               'Planned': {
                 'primary': 'save',
                 'secondary': ['save_and_submit', 'cancel']
@@ -338,7 +338,7 @@
               }
             },
 
-            'supervisor': {
+            'Supervisor': {
               'Planned': {
                 'primary': '',
                 'secondary': []
@@ -528,7 +528,7 @@
           }
         },
         userType: {
-          type: String
+          type: String,
         },
         status: {
           type: String
@@ -555,7 +555,6 @@
         // console.log('computeActions ran!');
 
         var ret = JSON.parse(JSON.stringify(permissions[userType][status]));
-
         ret.primary = actList[ret.primary];
         ret.secondary = ret.secondary.map(function(el) {
           return actList[el];

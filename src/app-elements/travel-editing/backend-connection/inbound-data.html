@@ -101,6 +101,16 @@
             grant: 'grants',
             fund: 'funds'
           },
+          attachments: {
+            type: function(value) {
+              var list = [{value: 0, label: 'Report'},
+                {value: 1, label: 'Document'},
+                {value: 3, label: 'Image'}];
+              return list.find(function(item){
+                return item.label === value;
+              })
+            }
+          },
           rejection_note: 'rejection_note',
           cancellation_note: 'cancellation_note',
           certification_note: 'certification_note',
@@ -135,6 +145,9 @@
           'certification_note',
           'canceled_at',
           'completed_at'
+          'cancellation_date',
+          'completion_date',
+          'attachments',
         ];
         var dataKeys = Object.keys(incomingData).filter(function(key){
           return nonBaseKeys.indexOf(key) === -1;

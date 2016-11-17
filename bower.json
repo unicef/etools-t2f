@@ -47,7 +47,7 @@
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
     "etools-loading": "^1.0.3",
     "etools-repeatable-field-set": "^1.0.0",
-    "etools-searchable-multiselection-menu": "^1.0.0",
+    "etools-searchable-multiselection-menu": "^1.0.2",
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1",
     "polymer-pdf-make-wrapper": "git@github.com:lordfuoco/polymer-pdf-make.git#^0.0.2",
     "paper-radio-group": "PolymerElements/paper-radio-group#^1.2.1"

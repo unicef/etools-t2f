@@ -157,246 +157,303 @@
       </paper-button>
     </paper-dialog>
 
-    <etools-loading active="[[postData]]"></etools-loading>
+    <etools-loading active="[[loading]]"></etools-loading>
 
 
     <template is="dom-if" if="[[postData]]">
       <etools-ajax endpoint="[[postEndpoint]]"
-        body="[[serverData]]"
-        method="[[method]]"
-        on-success="_handlePostSuccess"
-        on-fail="_handlePostFail"></etools-ajax>
+                   body="[[serverData]]"
+                   method="[[method]]"
+                   on-success="_handlePostSuccess"
+                   on-fail="_handlePostFail"></etools-ajax>
+    </template>
+
+    <template is="dom-if" if="[[attachmentData]]">
+      <etools-ajax endpoint="[[attachmentsEndpoint]]"
+                   body="[[attachment]]"
+                   method="POST"
+                   multi-part
+                   on-success="_handleAttachmentPostSuccess"
+                   on-fail="_handlePostFail"></etools-ajax>
+    </template>
+
+    <template is="dom-if" if="[[deleteAttachmentEndpoint]]">
+      <etools-ajax endpoint="[[deleteAttachmentEndpoint]]"
+                   method="DELETE"
+                   body="placeholder"
+                   on-success="_handleAttachmentPostSuccess"
+                   on-fail="_handlePostFail"></etools-ajax>
     </template>
 
 
   </template>
 
   <script>
-      Polymer({
-          is: 'et2f-outbound-data',
-          properties: {
-              data: {
-                  type: Object,
-                  notify: true,
-              },
-              structure: {
-                  type: Object,
-              },
-              newTravel: {
-                  type: Boolean,
-                  value: false
-              },
-              travelId: {
-                  type: String
-              },
-              postData: {
-                  type: Boolean,
-                  value: false
-              },
-              serverData: {
-                  type: Object,
-                  value: function () {
-                      return {}
-                  }
-              },
-              generalModal: {
-                  type: Object,
-                  value: {
-                      opened: false,
-                      heading: '',
-                      text: '',
-                      buttonText: ''
-                  }
-              },
+    Polymer({
+      is: 'et2f-outbound-data',
+      properties: {
+        data: {
+          type: Object,
+          notify: true,
+        },
+        structure: {
+          type: Object,
+        },
+        newTravel: {
+          type: Boolean,
+          value: false
+        },
+        travelId: {
+          type: String,
+          notify: true
+        },
+        loading: {
+          type: Boolean,
+          computed: '_computeLoading(postData, attachmentData)'
+        },
+        postData: {
+          type: Boolean,
+          value: false
+        },
+        attachmentData: {
+          type: Boolean,
+          value: false
+        },
+        serverData: {
+          type: Object,
+          value: function () {
+            return {}
+          }
+        },
+        attachmentsEndpoint: {
+          type: String,
+          computed: '_computeAttachmentsEndpoint(travelId)'
+        },
+        deleteAttachmentEndpoint: {
+          type: String,
+          value: false,
+          reflectToAttribute: true
+        },
+        generalModal: {
+          type: Object,
+          value: {
+            opened: false,
+            heading: '',
+            text: '',
+            buttonText: ''
+          }
+        },
+
+      },
+      generalModalAction: function() {
+        console.log('Default fn. ran!');
+      },
+      _computeAttachmentsEndpoint: function(travelId) {
+        return etoolsAppConfig.globals.computeTemplate('et2fTravelAttachments', {id: travelId})
+      },
+      _computeLoading: function(post, attachment){
+        return post || attachment
+      },
+
+      _processOutboundData: function (data) {
+        var self = this;
+        delete data.status;
+        this.serverData = {
+          deductions: [],
+          itinerary: [],
+          activities: [],
+          cost_assignments: [],
+          expenses: [],
+          clearances: {}
+        };
+
+        function duplicateIdPurging(collection) {
+          if(collection.length < 2) {
+            return collection;
+          }
+          return collection.reduce(function(prev, current) {
+            if(prev.some(function(prevItem){return prevItem.id === current.id;})) {
+              delete current.id;
+            }
+            prev.push(current);
+            return prev;
+          }, [])
+        }
+
+        function emptyIdPurging(collection) {
+          return collection.map(function(item) {
+            if(item && item.id === '') {
+              delete item.id
+            }
+            return item;
+          })
+        }
+
+        function handleArray(arr) {
+          arr = duplicateIdPurging(arr);
+          arr = emptyIdPurging(arr);
+          arr.forEach(function(obj) {
+            handleObject(obj);
+          });
+        }
+
+
+        function handleObject(obj) {
+          if (!obj) {return;}
+          var keys = Object.keys(obj);
+          keys.forEach(function(key) {
+            if(obj[key] && !(obj[key] instanceof Array )){
+              obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' || key === 'mode_of_travel' ? obj[key].label : obj[key].value : obj[key]
+            }
+            if(obj[key] && obj[key] instanceof Array ){
+              obj[key] = obj[key].map(function(item) {
+                if(key === 'mode_of_travel') {
+                  return item.label;
+                }
+                return typeof  item === 'object' ? item.value : item
+              })
+            }
+          });
+        }
+
+        var dataKeys = Object.keys(data);
+
+        dataKeys.forEach(function(fieldSet){
+          if (data[fieldSet] instanceof Array) {
+            handleArray(data[fieldSet])
+          }
+          else if(typeof data[fieldSet] === 'object'){
+            handleObject(data[fieldSet]);
+          }
+        });
+
+        var serverKeys = Object.keys(this.serverData);
+
+
+        serverKeys.forEach(function(serverKey) {
+          if(data[serverKey] instanceof Array && data[serverKey][0]) {
+            if(Object.keys(data[serverKey][0]).length === 0) {
+              delete self.serverData[serverKey];
+            }
+          }
+          if(self.serverData[serverKey]) {
+            self.serverData[serverKey] = data[serverKey];
+          }
+          delete data[serverKey];
+        });
+
+        var leftoverKeys = Object.keys(data);
+        leftoverKeys.forEach(function(key) {
+          if (!data[key]) { return; }
+          var innerKeys = Object.keys(data[key]);
+          innerKeys.forEach(function(innerKey) {
+            self.serverData[innerKey] = data[key][innerKey];
+          })
+
+        });
+      },
+      _processAttachmentData: function(data) {
+        this.attachments = data.attachments.filter(function(item) {
+          return !item.id;
+        });
+        if(data.deletedAttachments) {
+          this.deletedAttachments = data.deletedAttachments.filter(function (item) {
+            return item === parseInt(item, 10);
+          });
+        } else {
+          this.deletedAttachments = [];
+        }
+        delete data.deletedAttachments;
+        delete data.attachments;
+
+      },
+      doRequest: function (details) {
+        this._processAttachmentData(this.data);
+        this._processOutboundData(this.data);
+        var self = this;
+        var endpointConfig = {
+          id: self.travelId ? self.travelId.replace(/\//g, '') : null,
+          status: null
+        };
+        var endpointName = 'et2fStateChange';
+
+        function doSavePost() {
+          self.method = 'POST';
+          self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelList;
+          self.postData = true;
+        }
+
+        function doSaveAndSubmit() {
+          self.method = 'POST';
+          self.postEndpoint = etoolsAppConfig.endpoints.et2fSaveAndSubmit;
+          self.postData = true;
+        }
+
+        function doSaveUpdate() {
+          self.method = 'PATCH';
+          self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelDetail;
+          self.postData = true;
+        }
+
+        function doPut() {
+          self.method = 'PUT';
+          self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
+          self.postData = true;
+        }
+
+        function doPost() {
+          self.method = 'POST';
+          self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
+          self.postData = true;
+        }
+
+        var statusActions = {
+
+          save: function () {
+            if(self.travelId !== undefined) {
+              doSaveUpdate();
+            } else {
+              doSavePost()
+            }
           },
-          generalModalAction: function() {
-              console.log('Default fn. ran!');
+
+          save_and_submit: function() {
+
+            self.set('serverData.clearances', {
+              medical_clearance: 'not_applicable',
+              security_clearance: 'not_applicable',
+              security_course: 'not_applicable'
+            });
+
+            self._clearancesOnConfirm = function () {
+
+              self.$['clearance-modal'].close();
+              if (endpointConfig.id) {
+                endpointConfig.status = 'submit_for_approval';
+                doPost();
+              } else {
+                endpointConfig.status = 'save_and_submit';
+                doSaveAndSubmit();
+              }
+            };
+            self.clearancesOpened = true;
           },
-
-          _processOutboundData: function (data) {
-              var self = this;
-              delete data.status;
-              this.serverData = {
-                  deductions: [],
-                  itinerary: [],
-                  activities: [],
-                  cost_assignments: [],
-                  expenses: [],
-                  clearances: {}
-              };
-
-              function duplicateIdPurging(collection) {
-                  if(collection.length < 2) {
-                      return collection;
-                  }
-                  return collection.reduce(function(prev, current) {
-                      if(prev.some(function(prevItem){return prevItem.id === current.id;})) {
-                          delete current.id;
-                      }
-                      prev.push(current);
-                      return prev;
-                  }, [])
-              }
-
-              function emptyIdPurging(collection) {
-                  return collection.map(function(item) {
-                      if(item && item.id === '') {
-                          delete item.id
-                      }
-                      return item;
-                  })
-              }
-
-              function handleArray(arr) {
-                  arr = duplicateIdPurging(arr);
-                  arr = emptyIdPurging(arr);
-                  arr.forEach(function(obj) {
-                      handleObject(obj);
-                  });
-              }
-
-
-              function handleObject(obj) {
-                  if (!obj) {return;}
-                  var keys = Object.keys(obj);
-                  keys.forEach(function(key) {
-                      if(obj[key] && !(obj[key] instanceof Array )){
-                          obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' || key === 'mode_of_travel' ? obj[key].label : obj[key].value : obj[key]
-                      }
-                      if(obj[key] && obj[key] instanceof Array ){
-                          obj[key] = obj[key].map(function(item) {
-                              if(key === 'mode_of_travel') {
-                                  return item.label;
-                              }
-                              return typeof  item === 'object' ? item.value : item
-                          })
-                      }
-                  });
-              }
-
-              var dataKeys = Object.keys(data);
-
-              dataKeys.forEach(function(fieldSet){
-                  if (data[fieldSet] instanceof Array) {
-                      handleArray(data[fieldSet])
-                  }
-                  else if(typeof data[fieldSet] === 'object'){
-                      handleObject(data[fieldSet]);
-                  }
-              });
-
-              var serverKeys = Object.keys(this.serverData);
-
-
-              serverKeys.forEach(function(serverKey) {
-                  if(data[serverKey] instanceof Array && data[serverKey][0]) {
-                      if(Object.keys(data[serverKey][0]).length === 0) {
-                          delete self.serverData[serverKey];
-                      }
-                  }
-                  if(self.serverData[serverKey]) {
-                      self.serverData[serverKey] = data[serverKey];
-                  }
-                  delete data[serverKey];
-              });
-
-              var leftoverKeys = Object.keys(data);
-              leftoverKeys.forEach(function(key) {
-                  if (!data[key]) { return; }
-                  var innerKeys = Object.keys(data[key]);
-                  innerKeys.forEach(function(innerKey) {
-                      self.serverData[innerKey] = data[key][innerKey];
-                  })
-
-              });
-          },
-
-          doRequest: function (details) {
-              this._processOutboundData(this.data);
-              var self = this;
-              var endpointConfig = {
-                  id: self.travelId ? self.travelId.replace(/\//g, '') : null,
-                  status: null
-              };
-              var endpointName = 'et2fStateChange';
-
-              function doSavePost() {
-                  self.method = 'POST';
-                  self.postEndpoint = etoolsAppConfig.endpoints.et2fNewTravel;
-                  self.postData = true;
-              }
-
-              function doSaveAndSubmit() {
-                  self.method = 'POST';
-                  self.postEndpoint = etoolsAppConfig.endpoints.et2fSaveAndSubmit;
-                  self.postData = true;
-              }
-
-              function doSaveUpdate() {
-                  self.method = 'PATCH';
-                  self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelDetail
-                  self.postData = true;
-              }
-
-              function doPut() {
-                  self.method = 'PUT';
-                  self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
-                  self.postData = true;
-              }
-
-              function doPost() {
-                  self.method = 'POST';
-                  self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig);
-                  self.postData = true;
-              }
-
-              var statusActions = {
-
-                  save: function () {
-                      if(self.travelId !== undefined) {
-                          doSaveUpdate();
-                      } else {
-                          doSavePost()
-                      }
-                  },
-
-                  save_and_submit: function() {
-
-                    self.set('serverData.clearances', {
-                      medical_clearance: 'not_applicable',
-                      security_clearance: 'not_applicable',
-                      security_course: 'not_applicable'
-                    });
-
-                    self._clearancesOnConfirm = function () {
-
-                      self.$['clearance-modal'].close();
-                      if (endpointConfig.id) {
-                          endpointConfig.status = 'submit_for_approval';
-                          doPost();
-                      } else {
-                          endpointConfig.status = 'save_and_submit';
-                          doSaveAndSubmit();
-                      }
-                    };
-                    self.clearancesOpened = true;
-                  },
 
                   cancel: function() {
 
-                    self._cancelOnConfirm = function() {
+            self._cancelOnConfirm = function() {
 
-                      self.$['cancel-modal'].close();
-                      if(self.travelId !== undefined) {
-                        endpointConfig.status = 'cancel';
-                        doPost();
-                      } else {
-                        this._handlePostSuccess();
-                      }
-                    }
+              self.$['cancel-modal'].close();
+              if(self.travelId !== undefined) {
+                endpointConfig.status = 'cancel';
+                doPost();
+              } else {
+                this._handlePostSuccess();
+              }
+            };
 
-                    self.cancellationOpened = true;
-                  },
+            self.cancellationOpened = true;
+          },
 
                   approve: function() {
 
@@ -414,15 +471,15 @@
                       });
                   },
 
-                  reject: function() {
-                    self._rejectOnConfirm = function() {
-                      self.$['rejection-modal'].close();
+          reject: function() {
+            self._rejectOnConfirm = function() {
+              self.$['rejection-modal'].close();
 
-                      endpointConfig.status = 'reject';
-                      doPost();
-                    }
-                    self.rejectionOpened = true;
-                  },
+              endpointConfig.status = 'reject';
+              doPost();
+            }
+            self.rejectionOpened = true;
+          },
 
                   // TODO: Reopen popup
                   reopen: function() {
@@ -591,26 +648,69 @@
                   }
               };
 
-              statusActions[details.endPoint]();
+        statusActions[details.endPoint]();
 
-          },
-          _handlePostFail: function(event, i) {
-              var self = this;
-              this.formError = i.request.detail.request.xhr.response;
-              if (!this.formError) {errorKey = []};
-              errorKey = Object.keys(this.formError);
-              errorKey.forEach(function(key) {
-                  console.error(key + 'error: ', self.formError[key])
-              });
-              this.postData = false;
-          },
-          _handlePostSuccess: function() {
-              this.postData = false;
-              this.fire('travel-post-success');
-              this.travelId = null;
-          },
+      },
+      _doAttachmentUpload: function() {
+        var current = null;
+        if(this.deletedAttachments.length > 0 ) {
+          current = this.deletedAttachments.pop();
+          this.set('deleteAttachmentEndpoint',etoolsAppConfig.globals.computeTemplate('et2fTravelAttachmentDetail', {id: this.travelId, itemId: current}));
+        }
+
+        if(this.attachments.length > 0) {
+          current = this.attachments.pop();
+
+          this.attachment = {
+            name: current.name,
+            file: current.raw,
+            type: current.type ? current.type.label : 'Report'
+          };
+          this.attachmentData = true;
+        }
+      },
+      _handlePostFail: function(event, i) {
+        var self = this;
+        this.formError = i.request.detail.request.xhr.response;
+        if (!this.formError) {return}
+        Object.keys(this.formError).forEach(function(key) {
+          console.error(key + 'error: ', self.formError[key])
+        });
+        this.postData = false;
+        this.attachmentData = false;
+        this.deleteAttachmentEndpoint = undefined;
+      },
+
+      _handleAttachmentPostSuccess: function (e, data) {
+        this.deleteAttachmentEndpoint = undefined;
+
+        if(this.attachments.length > 0 || this.deletedAttachments.length > 0 ) {
+          this.travelId =  this.travelId ? this.travelId : '' + data.id;
+          this._doAttachmentUpload();
+        }
+        else {
+          this.fire('travel-post-success', data);
+          var travelId = this.travelId;
+          this.attachmentData = false;
+          this.travelId = null;
+          this.travelId = travelId;
+        }
+      },
+
+      _handlePostSuccess: function(e, data) {
+        this.postData = false;
+        if(this.attachments.length > 0  || this.deletedAttachments.length > 0) {
+          this.travelId =  this.travelId ? this.travelId : '' + data.id;
+          this._doAttachmentUpload();
+        }
+        else {
+          this.fire('travel-post-success', data);
+          this.travelId = null;
+          this.travelId = '' + data.id
+        }
+      },
 
 
-      });
+    });
   </script>
 </dom-module>

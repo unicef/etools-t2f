@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "polymer serve --port 3000 & npm run watch",
     "test": "polymer test",
-    "watch": "browser-sync start --proxy localhost:3000 --files 'src/**/*, styles/*, images/*, mock-data/*, data/*, utility/*' --no-ghost-mode "
+    "watch": "browser-sync start --config bs-config.js"
   },
   "license": "http://polymer.github.io/LICENSE.txt",
   "bugs": {
@@ -17,6 +17,7 @@
   "private": true,
   "devDependencies": {
     "browser-sync": "^2.17.0",
+    "compression": "^1.6.2",
     "css-slam": "^1.1.0",
     "del": "^2.2.1",
     "gulp": "gulpjs/gulp#4.0",
@@ -33,6 +34,7 @@
     "gulp-useref": "^3.1.2",
     "gulp-util": "^3.0.7",
     "htmlhint-stylish": "^1.0.3",
+    "http-proxy-middleware": "^0.17.2",
     "jshint": "^2.9.3",
     "jshint-stylish": "^2.2.1",
     "jsoneditor": "^5.5.10",
