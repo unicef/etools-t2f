@@ -46,6 +46,7 @@
                             class="flex"
                             no-upload$="{{computedPermission.upload.disabled}}"
                             files="{{attachments}}"
+                            deleted-files="{{deletedAttachments}}"
                             multiple>
                     </etools-file-upload>
                 </etools-repeatable-field-set>
@@ -69,20 +70,26 @@
             value: [],
             notify: true,
           },
+          deletedAttachments: {
+            type: Array,
+            value: [],
+            notify: true
+          },
           status: String,
           userType: String,
-          filesMock: {
-            type: Array,
-            value: [
-              {id: 'pic1', file_name: 'cat.pdf', path: 'https://pbs.twimg.com/profile_images/616542814319415296/McCTpH_E.jpg'},
-              {id: 'pic2', file_name: 'dog.pdf', path: 'https://static.pexels.com/photos/7720/night-animal-dog-pet.jpg'}
-            ]
-          }
         },
-        observers: ['_attachmentsModified(attachments.*)'],
+        observers: ['_attachmentsModified(attachments.*)',
+        '_deletedAttachmentsModified(attachments.*)'],
         _attachmentsModified: function(files) {
           if(!files.value) {
             this.attachments = function() {
+              return []
+            } ();
+          }
+        },
+        _deletedAttachmentsModified: function(files) {
+          if(!files.value) {
+            this.deletedAttachments = function() {
               return []
             } ();
           }

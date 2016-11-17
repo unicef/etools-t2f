@@ -70,6 +70,7 @@
               structure="[[structure]]"
               et2f-permissions="[[et2fPermissions]]"
               attachments="{{data.attachments}}"
+              deleted-attachments="{{data.deletedAttachments}}"
               status="[[data.status]]"
               user-type="[[userType]]"
               on-form-action="_handleFormAction">
@@ -144,7 +145,7 @@
         }
       },
       observers: [
-        '_computeTravelPermission(et2fPermissions, status, user, data)'
+        '_computeTravelPermission(et2fPermissions, status, user, data)',
       ],
 
       _newTravelObserver: function(isNew) {

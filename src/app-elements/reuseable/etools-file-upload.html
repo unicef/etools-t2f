@@ -133,7 +133,7 @@ attributes:
 
         <div class="file-name flex horizontal center layout">
           <iron-icon icon="attachment"></iron-icon>
-          <span class="label">[[item.file_name]]</span>
+          <span class="label">[[item.name]]</span>
         </div>
 
         <div class="type-container flex horizontal layout">
@@ -205,6 +205,11 @@ attributes:
           notify: true,
           value: []
         },
+        deletedFiles: {
+          type: Array,
+          notify: true,
+          value: []
+        },
         typeOptions: {
           type: Array,
           value: [
@@ -232,8 +237,8 @@ attributes:
           for(var i=0; i < files.length; i++) {
             this.push('files', {
               id: '',
-              file_name: files[i].name,
-              path: '',
+              name: files[i].name,
+              file: '',
               raw: files[i]
             });
           }
@@ -242,19 +247,28 @@ attributes:
       },
 
       _btnDel: function(e) {
-
+        var self = this;
+        if (!this.deletedFiles) {
+          this.deletedFiles = [];
+        }
         this.set('files', this.files.filter(function(file) {
-          return file !== e.model.item;
+          if(file === e.model.item) {
+            self.push('deletedFiles', file.id);
+            return false;
+          }
+          else {
+            return true;
+          }
         }));
       },
 
       _btnDownload: function(e) {
 
         var a = this.$.downloader;
-        a.href = e.model.item.path;
-        a.download = e.model.item.file_name;
+        a.href = e.model.item.file;
+        a.download = e.model.item.name;
         a.click();
-        window.URL.revokeObjectURL(e.model.item.path);
+        window.URL.revokeObjectURL(e.model.item.file);
       },
 
       _isThereNoURL: function(item) {

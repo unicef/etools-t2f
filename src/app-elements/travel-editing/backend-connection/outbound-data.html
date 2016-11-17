@@ -162,6 +162,14 @@
                    on-fail="_handlePostFail"></etools-ajax>
     </template>
 
+    <template is="dom-if" if="[[deleteAttachmentEndpoint]]">
+      <etools-ajax endpoint="[[deleteAttachmentEndpoint]]"
+                   method="DELETE"
+                   body="placeholder"
+                   on-success="_handleAttachmentPostSuccess"
+                   on-fail="_handlePostFail"></etools-ajax>
+    </template>
+
 
   </template>
 
@@ -205,7 +213,13 @@
         attachmentsEndpoint: {
           type: String,
           computed: '_computeAttachmentsEndpoint(travelId)'
+        },
+        deleteAttachmentEndpoint: {
+          type: String,
+          value: false,
+          reflectToAttribute: true
         }
+
       },
       _computeAttachmentsEndpoint: function(travelId) {
         return etoolsAppConfig.globals.computeTemplate('et2fTravelAttachments', {id: travelId})
@@ -312,7 +326,17 @@
         });
       },
       _processAttachmentData: function(data) {
-        this.attachments = data.attachments;
+        this.attachments = data.attachments.filter(function(item) {
+          return !item.id;
+        });
+        if(data.deletedAttachments) {
+          this.deletedAttachments = data.deletedAttachments.filter(function (item) {
+            return item === parseInt(item, 10);
+          });
+        } else {
+          this.deletedAttachments = [];
+        }
+        delete data.deletedAttachments;
         delete data.attachments;
 
       },
@@ -400,7 +424,7 @@
               } else {
                 this._handlePostSuccess();
               }
-            }
+            };
 
             self.cancellationOpened = true;
           },
@@ -491,14 +515,22 @@
 
       },
       _doAttachmentUpload: function() {
-        var current = this.attachments.pop();
+        var current = null;
+        if(this.deletedAttachments.length > 0 ) {
+          current = this.deletedAttachments.pop();
+          this.set('deleteAttachmentEndpoint',etoolsAppConfig.globals.computeTemplate('et2fTravelAttachmentDetail', {id: this.travelId, itemId: current}));
+        }
 
-        this.attachment = {
-          name: current.file_name,
-          file: current.raw,
-          type: current.type ? current.type.label : 'Report'
-        };
-        this.attachmentData = true;
+        if(this.attachments.length > 0) {
+          current = this.attachments.pop();
+
+          this.attachment = {
+            name: current.name,
+            file: current.raw,
+            type: current.type ? current.type.label : 'Report'
+          };
+          this.attachmentData = true;
+        }
       },
       _handlePostFail: function(event, i) {
         var self = this;
@@ -509,16 +541,20 @@
         });
         this.postData = false;
         this.attachmentData = false;
+        this.deleteAttachmentEndpoint = undefined;
       },
 
       _handleAttachmentPostSuccess: function (e, data) {
-        if(this.attachments.length > 0 ) {
+        this.deleteAttachmentEndpoint = undefined;
+
+        if(this.attachments.length > 0 || this.deletedAttachments.length > 0 ) {
           this.travelId =  this.travelId ? this.travelId : '' + data.id;
           this._doAttachmentUpload();
         }
         else {
           this.fire('travel-post-success', data);
           var travelId = this.travelId;
+          this.attachmentData = false;
           this.travelId = null;
           this.travelId = travelId;
         }
@@ -526,7 +562,7 @@
 
       _handlePostSuccess: function(e, data) {
         this.postData = false;
-        if(this.attachments.length > 0 ) {
+        if(this.attachments.length > 0  || this.deletedAttachments.length > 0) {
           this.travelId =  this.travelId ? this.travelId : '' + data.id;
           this._doAttachmentUpload();
         }

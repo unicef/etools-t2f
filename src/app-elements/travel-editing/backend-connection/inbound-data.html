@@ -101,6 +101,16 @@
             grant: 'grants',
             fund: 'funds'
           },
+          attachments: {
+            type: function(value) {
+              var list = [{value: 0, label: 'Report'},
+                {value: 1, label: 'Document'},
+                {value: 3, label: 'Image'}];
+              return list.find(function(item){
+                return item.label === value;
+              })
+            }
+          },
           rejection_note: 'rejection_note',
           cancellation_note: 'rejection_note',
           cancellation_date: 'cancellation_date',
@@ -133,7 +143,8 @@
           'rejection_note',
           'cancellation_note',
           'cancellation_date',
-          'completion_date'
+          'completion_date',
+          'attachments',
         ];
         var dataKeys = Object.keys(incomingData).filter(function(key){
           return nonBaseKeys.indexOf(key) === -1;
@@ -194,7 +205,6 @@
         } else {
           incomingData.status = statusLib['planned'];
         }
-
           this.set('travelId', undefined);
           this.set('et2fData', incomingData);
 
