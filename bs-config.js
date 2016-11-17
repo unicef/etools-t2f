@@ -15,7 +15,7 @@
 
 var proxy = require('http-proxy-middleware');
 var backendProxy = proxy('/api', {
-  target: 'http://192.168.0.12:8000/', //change with own IP
+  target: 'http://127.0.0.1:8000/', //change with own IP
   changeOrigin: true,             // for vhosted sites, changes host header to match to target's host
   logLevel: 'debug'
 });
