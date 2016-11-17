@@ -105,7 +105,6 @@
       <div class="dialog-heading">Reject travel</div>
       <div class="dialog-intro-text">Please specify reasons for rejecting this travel:</div>
 
-      <!-- TODO: save, display somewhere -->
       <paper-textarea label="Rejection note" value="{{serverData.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
 
       <paper-button
@@ -121,7 +120,6 @@
       <div class="dialog-heading">Cancel travel</div>
       <div class="dialog-intro-text">Please specify reasons for cancelling this travel:</div>
 
-      <!-- TODO: save, display somewhere -->
       <paper-textarea label="Cancellation note" value="{{serverData.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
 
       <paper-button
@@ -145,15 +143,19 @@
     </paper-dialog>
 
     <!-- Certification dialog -->
-    <etools-dialog opened="{{certificationOpened}}"
-      dialog-title="Certify"
-      ok-btn-text="Send certification"
-      on-close="_certifyOnClose">
+    <paper-dialog id="certification-modal" opened="{{certificationOpened}}" with-backdrop>
 
-      <!-- TODO: wire in, save, display somewhere -->
-      <paper-textarea label="Certification" char-counter maxlength="2500"></paper-textarea>
-    </etools-dialog>
+      <div class="dialog-heading">Certify travel</div>
+      <div class="dialog-intro-text">Please specify the differences between the travel plan and the actual travel:</div>
 
+      <paper-textarea label="Cancellation note" value="{{serverData.certification_note}}" char-counter maxlength="2500"></paper-textarea>
+
+      <paper-button
+        class="dialog-confirm-button"
+        on-click="_certifyOnConfirm">
+        Certify travel
+      </paper-button>
+    </paper-dialog>
 
     <etools-loading active="[[postData]]"></etools-loading>
 
@@ -476,12 +478,13 @@
 
                   submit_certificate: function() {
 
-                      self.certificationOpened = true;
-                      self._certifyOnClose = function() {
+                      self._certifyOnConfirm = function() {
 
+                          self.$['certification-modal'].close();
                           endpointConfig.status = 'submit_certificate';
                           doPost();
                       }
+                      self.certificationOpened = true;
                   },
 
                   done: function() {
@@ -501,7 +504,6 @@
 
                   },
 
-                  // TEST
                   approve_certificate: function() {
 
                       self.generalModalAction = function() {
@@ -520,7 +522,6 @@
 
                   },
 
-                  // TODO: Raise modal
                   reject_certificate: function() {
 
                       self.generalModalAction = function() {
@@ -538,7 +539,6 @@
 
                   },
 
-                  // TEST
                   certify: function() {
 
                       self.generalModalAction = function() {
