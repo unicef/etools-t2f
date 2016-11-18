@@ -198,7 +198,7 @@
           <div class="layout vertical flex">
 
             <travel-deductions
-              disabled$="false"
+              disabled="[[!travelPermissions.deductions.edit]]"
               start-date="[[data.baseDetails.start_date]]"
               end-date="[[data.baseDetails.end_date]]"
               deductions="{{data.deductions}}"

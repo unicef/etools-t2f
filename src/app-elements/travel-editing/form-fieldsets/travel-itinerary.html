@@ -84,7 +84,7 @@
           checked="{{itinerary.overnight_travel}}">Overnight travel?
         </paper-checkbox>
       </div>
-      <div class="layout horizontal">
+      <div class="layout horizontal" hidden$="[[hideAirline]]">
         <etools-searchable-multiselection-menu class$="flex-8 [[computedPermission.airlines.readOnly]]"
           disabled="[[computedPermission.airlines.disabled]]"
           hidden$="[[computedPermission.airlines.hidden]]"
@@ -110,12 +110,19 @@
         structure: {
           type: Object,
           value: {}
+        },
+        hideAirline: {
+          type: Boolean,
+          computed: '_computeHideAirline(itinerary.mode_of_travel)'
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
       observers: ['_setCheckboxes(baseDetails.*)'],
       _setCheckboxes: function (changed) {
         this[changed.path] = changed.value;
+      },
+      _computeHideAirline: function(modeOfTravel) {
+        return modeOfTravel.label !== 'Plane'
       }
     });
   </script>
