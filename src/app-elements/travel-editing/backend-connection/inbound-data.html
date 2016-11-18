@@ -115,7 +115,8 @@
           cancellation_note: 'cancellation_note',
           certification_note: 'certification_note',
           canceled_at: 'canceled_at',
-          completed_at: 'completed_at'
+          completed_at: 'completed_at',
+          cost_summary: {}
 
         };
         var statusLib = {
@@ -148,6 +149,7 @@
           'cancellation_date',
           'completion_date',
           'attachments',
+          'cost_summary'
         ];
         var dataKeys = Object.keys(incomingData).filter(function(key){
           return nonBaseKeys.indexOf(key) === -1;

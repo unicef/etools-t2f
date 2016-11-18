@@ -1,0 +1,93 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import" href="../../travel-status-box/travel-status.html">
+<link rel="import" href="../datepicker-input.html">
+
+<link rel="import" href="../../../../styles/shared-styles.html">
+<link rel="import" href="../../../../styles/et2f-styles.html">
+
+<dom-module id="travel-cost-summary">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+
+      .right-align {
+        text-align: right;
+      }
+      .yellow-box {
+        background: var(--et2f-info-2);
+      }
+    </style>
+
+    <div class="layout vertical flex">
+      <div class="layout horizontal">
+        <div class="flex-6">
+          DSA Total
+        </div>
+        <div class="flex-6 right-align">
+          {{dsa}} {{currency.short}}
+        </div>
+        <div class="underline"></div>
+      </div>
+      <div class="layout horizontal">
+        <div class="flex-6">
+          Expenses Total
+        </div>
+        <div class="flex-6 right-align">
+          {{exp}} {{currency.short}}
+        </div>
+        <div class="underline"></div>
+      </div>
+      <div class="layout horizontal">
+        <div class="flex-6">
+          Deductions Total
+        </div>
+        <div class="flex-6 right-align">
+          {{ded}} {{currency.short}}
+        </div>
+        <div class="underline"></div>
+      </div>
+      <div class="layout horizontal">
+        <div class="flex-8">
+        </div>
+        <div class="flex-4 yellow-box right-align">
+          {{total}} {{currency.short}}
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-cost-summary',
+      properties: {
+        costSummary: {
+          type: Object,
+        },
+        total: {
+          type: Number,
+          computed: '_calculateTotal(costSummary.*)',
+          notify: true
+        },
+        currency: String
+      },
+      behaviors: [et2fBehaviors.PermissionLayer],
+      _calculateTotal: function(costSummary) {
+        if(costSummary) {
+          this.dsa = parseFloat(costSummary.value.dsa_total);
+          this.exp = parseFloat(costSummary.value.expenses_total);
+          this.ded = parseFloat(costSummary.value.deductions_total);
+          return ( this.dsa + this.exp ) - this.ded;
+        }
+      }
+    });
+  </script>
+</dom-module>

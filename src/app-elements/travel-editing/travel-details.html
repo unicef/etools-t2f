@@ -22,6 +22,7 @@
 <link rel="import" href="../travel-status-box/travel-status.html">
 <link rel="import" href="form-fieldsets/travel-costs-assignment.html">
 <link rel="import" href="form-fieldsets/travel-deductions.html">
+<link rel="import" href="form-fieldsets/travel-costs-summary.html">
 
 <link rel="import" href="datepicker-input.html">
 <link rel="import" href="../permission-layer.html">
@@ -236,12 +237,13 @@
         </etools-repeatable-field-set>
 
         <etools-repeatable-field-set title="Cost summary"
+          hide-vertical-divider
           class="orange-header"
           model="[1]"
           hide-plus
           elevation="1">
 
-          <div>Cost summary placeholder</div>
+         <travel-cost-summary cost-summary="[[data.cost_summary]]" currency="[[data.baseDetails.currency]]" structure="[[structure]]"></travel-cost-summary>
         </etools-repeatable-field-set>
       </div>
 
