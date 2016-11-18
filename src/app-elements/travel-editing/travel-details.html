@@ -116,7 +116,7 @@
           <div class="note-text">[[data.rejection_note]]</div>
         </paper-material>
 
-        <!-- Rejection note -->
+        <!-- Certification note -->
         <paper-material class="note reject" elevation="1" hidden$="[[_hideCertificationNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
               <g id="!---UI-Style-Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -208,6 +208,7 @@
         <etools-repeatable-field-set title="Expenses"
           model="{{data.expenses}}"
           show-counter
+          elevation="1"
           open="[[travelPermissions.expenses.edit]]"
           hidden$="[[!travelPermissions.expenses.view]]">
 

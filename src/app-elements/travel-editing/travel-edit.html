@@ -19,6 +19,7 @@
 <link rel="import" href="./backend-connection/outbound-data.html">
 <link rel="import" href="./ta-print.html">
 <link rel="import" href="../et2f-header.html">
+<link rel="import" href="./form-errors.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
 <link rel="import" href="../../../styles/et2f-styles.html">
@@ -42,7 +43,7 @@
 
 
     <et2f-inbound-data et2f-data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-inbound-data>
-    <et2f-outbound-data id="outbound-data" data="{{data}}" travel-id="{{travelId}}" structure="[[structure]]"></et2f-outbound-data>
+    <et2f-outbound-data id="outbound-data" form-errors="{{formErrors}}" data="{{data}}" travel-id="{{travelId}}" structure="[[structure]]"></et2f-outbound-data>
     <ta-print data="[[data]]" data-to-print="{{dataToPrint}}" print-styles="{{printStyles}}"></ta-print>
 
     <et2f-header title="Edit travel plan"
@@ -56,6 +57,8 @@
       </paper-tabs>
     </et2f-header>
 
+    <form-errors errors="{{formErrors}}"></form-errors>
+
     <iron-pages selected="{{selected}}">
 
       <travel-details
@@ -67,13 +70,13 @@
       </travel-details>
 
       <travel-attachments
-              structure="[[structure]]"
-              et2f-permissions="[[et2fPermissions]]"
-              attachments="{{data.attachments}}"
-              deleted-attachments="{{data.deletedAttachments}}"
-              status="[[data.status]]"
-              user-type="[[userType]]"
-              on-form-action="_handleFormAction">
+          structure="[[structure]]"
+          et2f-permissions="[[et2fPermissions]]"
+          attachments="{{data.attachments}}"
+          deleted-attachments="{{data.deletedAttachments}}"
+          status="[[data.status]]"
+          user-type="[[userType]]"
+          on-form-action="_handleFormAction">
       </travel-attachments>
 
       <travel-report

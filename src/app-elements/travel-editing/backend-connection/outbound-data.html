@@ -225,6 +225,10 @@
               return {}
             }
           },
+          formErrors: {
+            type: Object,
+            notify: true
+          },
           attachmentsEndpoint: {
             type: String,
           },
@@ -665,12 +669,7 @@
           }
         },
         _handlePostFail: function(event, i) {
-          var self = this;
-          this.formError = i.request.detail.request.xhr.response;
-          if (!this.formError) {return}
-          Object.keys(this.formError).forEach(function(key) {
-            console.error(key + 'error: ', self.formError[key])
-          });
+          this.set('formErrors', i.request.detail.request.xhr.response);
           this.postData = false;
           this.attachmentData = false;
           this.deleteAttachmentEndpoint = undefined;
@@ -679,7 +678,6 @@
 
         _handleAttachmentPostSuccess: function (e, data) {
           this.deleteAttachmentEndpoint = undefined;
-
           if(this.attachments.length > 0 || this.deletedAttachments.length > 0 ) {
             this.travelId =  this.travelId ? this.travelId : '' + data.id;
             this._doAttachmentUpload();
