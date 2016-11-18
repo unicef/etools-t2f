@@ -1,6 +1,7 @@
 <link rel="import" href="../../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="../../../../styles/shared-styles.html">
@@ -485,7 +486,6 @@
               self.rejectionOpened = true;
             },
 
-            // TODO: Reopen popup
             reopen: function() {
 
               self.generalModalAction = function() {
@@ -515,7 +515,7 @@
                 opened: true,
                 heading: 'Send for payment',
                 text: 'Are you sure you want to send this travel to payment?',
-                buttonText: 'Reopen'
+                buttonText: 'Send for payment'
               });
 
             },

@@ -139,7 +139,7 @@
 
       <etools-ajax
           url="[[listEndPoint]]"
-          params='{{ajaxParams}}'
+          params="{{ajaxParams}}""
           on-success="handleListResponse">
       </etools-ajax>
 
@@ -207,7 +207,7 @@
         </div>
 
         <div class="toggle-hidden-div horizontal layout center">
-          <span>Show hidden</span>
+          <span>Show canceled</span>
           <paper-toggle-button
               id="show-hidden-toggle"
               on-change="_changeShowHidden"
@@ -224,7 +224,13 @@
         </list-header>
 
         <template is="dom-repeat" items="[[data]]">
-          <list-element data="[[item]]" offices="[[structure.offices]]" sections="[[structure.sections]]"></list-element>
+          <list-element
+            data="[[item]]"
+            route="{{route}}"
+            users="[[structure.users]]"
+            offices="[[structure.offices]]"
+            sections="[[structure.sections]]">
+          </list-element>
         </template>
 
         <list-pagination
