@@ -689,7 +689,7 @@
             this._doAttachmentUpload();
           }
           else {
-            this.fire('travel-post-success', data);
+            this.fire('travel-post-success', data.id);
             this.attachmentData = false;
             var travelId = this.travelId;
             this.attachmentsEndpoint = undefined;
@@ -706,7 +706,7 @@
             this._doAttachmentUpload();
           }
           else {
-            this.fire('travel-post-success', data);
+            this.fire('travel-post-success', data.id);
             this.travelId = null;
             this.travelId = '' + data.id
           }

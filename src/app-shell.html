@@ -305,9 +305,11 @@
         this.page = 'not-found';
         this.fire('toast', {text: 'Oops you hit a 404!'});
       },
-      _navigateToList: function() {
+      _navigateToList: function(e, detail) {
         this.refreshData = true;
-//        this.set('route.path', '/travel-list');
+        if(this.route.path === '/plan-travel') {
+          this.set('route.path', '/edit-travel/' + detail);
+        }
       },
       _handleStructure: function (event, data) {
         data.mode_of_travel = [{name: 'Plane', id: 0}, {name: 'Boat', id: 1}, {name: 'Car', id: 2}, {name:'Train', id: 3}];
