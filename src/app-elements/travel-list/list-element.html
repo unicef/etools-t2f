@@ -146,6 +146,16 @@
     .statusdiv.rejected .statusdivtext, .statusdiv.cancelled .statusdivtext, .statusdiv.completed .statusdivtext {
       color: white;
     }
+    .dialog-heading {
+        font-size: 20px;
+        color: var(gray-dark);
+        font-weight: 500;
+    }
+    .dialog-intro-text {
+        color: var(--gray-mid);
+        font-size: 16px;
+        margin-bottom: 24px;
+    }
     .dialog-confirm-button {
         color: var(--et2f-primary);
         font-weight: 500;
@@ -165,10 +175,15 @@
       </etools-ajax>
 
       <!-- DUPLICATE MODAL -->
-      <paper-dialog id="duplicate-modal" opened="{{duplicateModalOpened}}" with-backdrop>
-        <h2>Duplicate travel</h2>
+      <paper-dialog
+        id="duplicate-modal"
+        opened="{{duplicateModalOpened}}"
+        with-backdrop
+        class="layout vertical">
 
-        <!-- CHOSER -->
+        <div class="dialog-heading">Duplicate travel</div>
+        <div class="dialog-intro-text">Please select the person to share this trips activities with</div>
+
         <paper-dropdown-menu label="Select traveler" class="filter-dropdown">
 
           <paper-listbox class="dropdown-content">
@@ -182,17 +197,22 @@
           </paper-listbox>
         </paper-dropdown-menu>
 
-        <paper-button class="dialog-confirm-button" on-click="duplicateConfirm">
+        <paper-button class="dialog-confirm-button self-end" on-click="duplicateConfirm">
           DUPLICATE TRAVEL
         </paper-button>
       </paper-dialog>
 
       <!-- ADD DRIVER MODAL -->
-      <paper-dialog id="driver-modal" opened="{{driverModalOpened}}" with-backdrop>
-        <h2>Add driver</h2>
+      <paper-dialog
+        id="driver-modal"
+        opened="{{driverModalOpened}}"
+        with-backdrop
+        class="layout vertical">
 
-        <!-- CHOSER -->
-        <paper-dropdown-menu label="Select traveler" class="filter-dropdown">
+        <div class="dialog-heading">Add driver</div>
+        <div class="dialog-intro-text">Please select the driver to share this travel plans itinerary with</div>
+
+        <paper-dropdown-menu label="Select driver" class="filter-dropdown">
 
           <paper-listbox class="dropdown-content">
             <template is="dom-repeat" items="[[users]]">
