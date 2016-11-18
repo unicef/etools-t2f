@@ -93,8 +93,8 @@
             </div>
 
             <paper-button
-                    class="dialog-confirm-button"
-                    on-click="_clearancesOnConfirm">
+              class="dialog-confirm-button"
+              on-click="_clearancesOnConfirm">
                 Submit for approval
             </paper-button>
         </paper-dialog>
@@ -108,8 +108,8 @@
             <paper-textarea label="Rejection note" value="{{serverData.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
 
             <paper-button
-                    class="dialog-confirm-button"
-                    on-click="_rejectOnConfirm">
+              class="dialog-confirm-button"
+              on-click="_rejectOnConfirm">
                 Send rejection
             </paper-button>
         </paper-dialog>
@@ -123,8 +123,8 @@
             <paper-textarea label="Cancellation note" value="{{serverData.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
 
             <paper-button
-                    class="dialog-confirm-button"
-                    on-click="_cancelOnConfirm">
+              class="dialog-confirm-button"
+              on-click="_cancelOnConfirm">
                 Cancel travel
             </paper-button>
         </paper-dialog>
@@ -136,8 +136,8 @@
             <div class="dialog-intro-text">[[generalModal.text]]</div>
 
             <paper-button
-                    class="dialog-confirm-button"
-                    on-click="generalModalAction">
+              class="dialog-confirm-button"
+              on-click="generalModalAction">
                 [[generalModal.buttonText]]
             </paper-button>
         </paper-dialog>
@@ -151,8 +151,8 @@
             <paper-textarea label="Cancellation note" value="{{serverData.certification_note}}" char-counter maxlength="2500"></paper-textarea>
 
             <paper-button
-                    class="dialog-confirm-button"
-                    on-click="_certifyOnConfirm">
+              class="dialog-confirm-button"
+              on-click="_certifyOnConfirm">
                 Certify travel
             </paper-button>
         </paper-dialog>
@@ -162,27 +162,27 @@
 
         <template is="dom-if" if="[[postData]]">
             <etools-ajax url="[[postEndpoint]]"
-                         body="[[serverData]]"
-                         method="[[method]]"
-                         on-success="_handlePostSuccess"
-                         on-fail="_handlePostFail"></etools-ajax>
+              body="[[serverData]]"
+              method="[[method]]"
+              on-success="_handlePostSuccess"
+              on-fail="_handlePostFail"></etools-ajax>
         </template>
 
         <template is="dom-if" if="[[attachmentData]]">
             <etools-ajax url="[[attachmentsEndpoint]]"
-                         body="[[attachment]]"
-                         method="POST"
-                         multi-part
-                         on-success="_handleAttachmentPostSuccess"
-                         on-fail="_handlePostFail"></etools-ajax>
+              body="[[attachment]]"
+              method="POST"
+              multi-part
+              on-success="_handleAttachmentPostSuccess"
+              on-fail="_handlePostFail"></etools-ajax>
         </template>
 
         <template is="dom-if" if="[[deleteAttachmentEndpoint]]">
             <etools-ajax url="[[deleteAttachmentEndpoint]]"
-                         method="DELETE"
-                         body="placeholder"
-                         on-success="_handleAttachmentPostSuccess"
-                         on-fail="_handlePostFail"></etools-ajax>
+              method="DELETE"
+              body="placeholder"
+              on-success="_handleAttachmentPostSuccess"
+              on-fail="_handlePostFail"></etools-ajax>
         </template>
 
 
@@ -256,6 +256,7 @@
         _processOutboundData: function (data) {
           var self = this;
           delete data.status;
+          delete data.cost_summary;
           this.serverData = {
             deductions: [],
             itinerary: [],
@@ -342,11 +343,16 @@
 
           var leftoverKeys = Object.keys(data);
           leftoverKeys.forEach(function(key) {
-            if (!data[key]) { return; }
-            var innerKeys = Object.keys(data[key]);
-            innerKeys.forEach(function(innerKey) {
-              self.serverData[innerKey] = data[key][innerKey];
-            })
+            if (data[key]) {
+              if(typeof(data[key]) === 'object') {
+                var innerKeys = Object.keys(data[key]);
+                innerKeys.forEach(function (innerKey) {
+                  self.serverData[innerKey] = data[key][innerKey];
+                })
+              } else {
+                self.serverData[key] = data[key];
+              }
+            }
 
           });
         },

@@ -149,7 +149,8 @@
           'cancellation_date',
           'completion_date',
           'attachments',
-          'cost_summary'
+          'cost_summary',
+          'report'
         ];
         var dataKeys = Object.keys(incomingData).filter(function(key){
           return nonBaseKeys.indexOf(key) === -1;
@@ -210,7 +211,7 @@
         } else {
           incomingData.status = statusLib['planned'];
         }
-
+          console.log(incomingData)
           this.set('travelId', undefined);
           this.set('et2fData', incomingData);
 

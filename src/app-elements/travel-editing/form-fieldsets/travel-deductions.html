@@ -141,7 +141,9 @@
 
         // Load the one already there
         var deductions = this.deductions;
-
+        if(!deductions) {
+          return;
+        }
         // Build a key library for the dates that should be in the new one
         var keyLib = [];
 
