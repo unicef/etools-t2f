@@ -255,7 +255,7 @@
       </div>
 
       <travel-status
-        user-type="God"
+        user-type="[[userType]]"
         status="[[data.status]]"
         scroll-top-margin="84"
         cancelled-date="[[data.canceled_at]]"
@@ -298,7 +298,7 @@
       },
 
       _hideCertificationNote: function(data) {
-        return data.status !== 'Certification Submitted';
+        return data.status !== 'Certification submitted';
       }
 
     });

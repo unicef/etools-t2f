@@ -383,13 +383,13 @@
 
           function doSavePost() {
             self.method = 'POST';
-            self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelList;
+            self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelList.url;
             self.postData = true;
           }
 
           function doSaveAndSubmit() {
             self.method = 'POST';
-            self.postEndpoint = etoolsAppConfig.endpoints.et2fSaveAndSubmit;
+            self.postEndpoint = etoolsAppConfig.endpoints.et2fSaveAndSubmit.url;
             self.postData = true;
           }
 
@@ -537,7 +537,7 @@
 
             },
 
-            submit_certificate: function() {
+            submit_Certification: function() {
 
               self._certifyOnConfirm = function() {
 
@@ -565,7 +565,7 @@
 
             },
 
-            approve_certificate: function() {
+            approve_Certification: function() {
 
               self.generalModalAction = function() {
                 self.$['general-modal'].close();
@@ -583,7 +583,7 @@
 
             },
 
-            reject_certificate: function() {
+            reject_Certification: function() {
 
               self.generalModalAction = function() {
                 self.$['general-modal'].close();
@@ -651,7 +651,7 @@
 
             }
           };
-
+          console.log(details.endPoint)
           statusActions[details.endPoint]();
 
         },

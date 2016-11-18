@@ -55,7 +55,7 @@
   <template>
 
     <template is="dom-if" if="[[show]]">
-      <paper-button raised class$="layout horizontal [[_buttonGreyClass(actions)]]"">
+      <paper-button raised class$="layout horizontal [[_buttonGreyClass(actions)]]">
 
         <div on-click="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
 
@@ -121,17 +121,17 @@
               'name': 'Travel went as planned',
               'endPoint': 'went_as_planned'
             },
-            'submitCertificate': {
-              'name': 'Submit certificate',
-              'endPoint': 'submit_certificate'
+            'submitCertification': {
+              'name': 'Not as planned',
+              'endPoint': 'submit_Certification'
             },
-            'approveCertificate': {
-              'name': 'Approve certificate',
-              'endPoint': 'approve_certificate'
+            'approveCertification': {
+              'name': 'Approve Certification',
+              'endPoint': 'approve_Certification'
             },
-            'rejectCertificate': {
-              'name': 'Reject certificate',
-              'endPoint': 'reject_certificate'
+            'rejectCertification': {
+              'name': 'Reject Certification',
+              'endPoint': 'reject_Certification'
             },
             'certify': {
               'name': 'Certify',
@@ -173,17 +173,17 @@
               },
               'Sent for payment': {
                 'primary': 'wentAsPlanned',
-                'secondary': ['submitCertificate']
+                'secondary': ['submitCertification']
               },
-              'Certificate submitted': {
-                'primary': 'approveCertificate',
-                'secondary': ['rejectCertificate']
+              'Certification submitted': {
+                'primary': 'approveCertification',
+                'secondary': ['rejectCertification']
               },
-              'Certificate rejected': {
-                'primary': 'submitCertificate',
+              'Certification rejected': {
+                'primary': 'submitCertification',
                 'secondary': []
               },
-              'Certificate approved': {
+              'Certification approved': {
                 'primary': 'save',
                 'secondary': ['certify']
               },
@@ -222,15 +222,15 @@
                 'primary': '',
                 'secondary': []
               },
-              'Certificate submitted': {
+              'Certification submitted': {
                 'primary': '',
                 'secondary': []
               },
-              'Certificate rejected': {
+              'Certification rejected': {
                 'primary': '',
                 'secondary': []
               },
-              'Certificate approved': {
+              'Certification approved': {
                 'primary': '',
                 'secondary': []
               },
@@ -266,18 +266,18 @@
                 'secondary': ['save_and_submit']
               },
               'Sent for payment': {
-                'primary': 'submitCertificate',
-                'secondary': []
+                'primary': 'certify',
+                'secondary': ['submitCertification']
               },
-              'Certificate submitted': {
+              'Certification submitted': {
                 'primary': '',
                 'secondary': []
               },
-              'Certificate rejected': {
-                'primary': 'submitCertificate',
-                'secondary': []
+              'Certification rejected': {
+                'primary': 'certify',
+                'secondary': ['submitCertification']
               },
-              'Certificate approved': {
+              'Certification approved': {
                 'primary': '',
                 'secondary': []
               },
@@ -313,18 +313,18 @@
                 'secondary': ['save_and_submit']
               },
               'Sent for payment': {
-                'primary': 'submitCertificate',
+                'primary': 'submitCertification',
                 'secondary': []
               },
-              'Certificate submitted': {
+              'Certification submitted': {
                 'primary': '',
                 'secondary': []
               },
-              'Certificate rejected': {
-                'primary': 'submitCertificate',
+              'Certification rejected': {
+                'primary': 'submitCertification',
                 'secondary': []
               },
-              'Certificate approved': {
+              'Certification approved': {
                 'primary': '',
                 'secondary': []
               },
@@ -363,15 +363,15 @@
                 'primary': '',
                 'secondary': []
               },
-              'Certificate submitted': {
-                'primary': 'approveCertificate',
-                'secondary': ['rejectCertificate']
+              'Certification submitted': {
+                'primary': 'approveCertification',
+                'secondary': ['rejectCertification']
               },
-              'Certificate rejected': {
+              'Certification rejected': {
                 'primary': '',
                 'secondary': []
               },
-              'Certificate approved': {
+              'Certification approved': {
                 'primary': '',
                 'secondary': []
               },
@@ -385,7 +385,7 @@
               }
             },
 
-            'tfp': {
+            'Travel Focal Point': {
               'Planned': {
                 'primary': 'save',
                 'secondary': []
@@ -410,15 +410,15 @@
                 'primary': '',
                 'secondary': []
               },
-              'Certificate submitted': {
+              'Certification submitted': {
                 'primary': '',
                 'secondary': []
               },
-              'Certificate rejected': {
+              'Certification rejected': {
                 'primary': '',
                 'secondary': []
               },
-              'Certificate approved': {
+              'Certification approved': {
                 'primary': '',
                 'secondary': []
               },
@@ -432,7 +432,7 @@
               }
             },
 
-            'ffp': {
+            'Finance Focal Point': {
               'Planned': {
                 'primary': 'save',
                 'secondary': []
@@ -447,7 +447,7 @@
               },
               'Approved': {
                 'primary': 'save',
-                'secondary': ['sendForPayment']
+                'secondary': ['sendForPayment', 'cancel']
               },
               'Rejected': {
                 'primary': 'save',
@@ -457,15 +457,15 @@
                 'primary': '',
                 'secondary': []
               },
-              'Certificate submitted': {
+              'Certification submitted': {
                 'primary': '',
                 'secondary': []
               },
-              'Certificate rejected': {
+              'Certification rejected': {
                 'primary': '',
                 'secondary': []
               },
-              'Certificate approved': {
+              'Certification approved': {
                 'primary': 'save',
                 'secondary': ['certify']
               },
@@ -504,15 +504,15 @@
                 'primary': '',
                 'secondary': []
               },
-              'Certificate submitted': {
+              'Certification submitted': {
                 'primary': '',
                 'secondary': []
               },
-              'Certificate rejected': {
+              'Certification rejected': {
                 'primary': '',
                 'secondary': []
               },
-              'Certificate approved': {
+              'Certification approved': {
                 'primary': '',
                 'secondary': []
               },
