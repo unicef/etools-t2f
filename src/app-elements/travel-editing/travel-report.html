@@ -106,7 +106,7 @@
         this.set('data.report', this.reportString);
       },
       saveReport: function() {
-        this.fire('form-action', 'save');
+        this.fire('form-action', {endPoint:'save'});
       }
     });
   </script>

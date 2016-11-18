@@ -81,7 +81,7 @@
       },
       behaviors: [et2fBehaviors.PermissionLayer],
       _calculateTotal: function(costSummary) {
-        if(costSummary) {
+        if(costSummary.value) {
           this.dsa = parseFloat(costSummary.value.dsa_total);
           this.exp = parseFloat(costSummary.value.expenses_total);
           this.ded = parseFloat(costSummary.value.deductions_total);
