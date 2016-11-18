@@ -170,8 +170,7 @@
           method="POST"
           url="[[enhancedNewTravelUrl]]"
           body="[[enhancedNewTravelBody]]"
-          on-success="gotBackId"
-          on-fail="mockThatSimonsReady">
+          on-success="gotBackId">
       </etools-ajax>
 
       <!-- DUPLICATE MODAL -->
@@ -314,7 +313,8 @@
           value: false
         },
         enhancedNewTravelUrl: String,
-        enhancedNewTravelBody: String
+        enhancedNewTravelBody: String,
+        route: Object
       },
       _statusClass: function(data) {
         var status = data.status;
@@ -377,7 +377,7 @@
         this.set('hackAroundId', travel);
 
         this.set('enhancedNewTravelBody', {traveler: traveler});
-        this.set('enhancedNewTravelUrl', '/api/et2f/travels/' + travel + '/duplicate_travel');
+        this.set('enhancedNewTravelUrl', '/api/et2f/travels/' + travel + '/duplicate_travel/');
         // TODO will it call only once?
       },
       addDriverConfirm: function() {
@@ -394,7 +394,7 @@
         this.set('hackAroundId', travel);
 
         this.set('enhancedNewTravelBody', {traveler: traveler});
-        this.set('enhancedNewTravelUrl', '/api/et2f/travels/' + travel + '/add_driver');
+        this.set('enhancedNewTravelUrl', '/api/et2f/travels/' + travel + '/add_driver/');
         // TODO will it call only once?
       },
       duplicationSetTraveler: function(e) {
@@ -403,16 +403,9 @@
       addDriverSetTraveler: function(e) {
         this.set('addDriverTravelerId', e.model.item.value);
       },
-      gotBackId: function(a, b, c) {
-        // TODO Navigate with the id from the payload!!
-        console.warn('Wire this in!!');
-        // var href = '/edit-travel/' + this.WAITING;
-        // this.set('route.path', href);
-      },
-      mockThatSimonsReady: function() {
-        // TODO This shouldn't exist
-        var href = '/edit-travel/' + this.hackAroundId;
-        this.set('route.path', href);
+      gotBackId: function(e, payload) {
+        // console.warn('Navigate to:', payload.id);
+        this.set('route.path', '/edit-travel/' + payload.id  + '/');
       },
       _isGreyClass: function(data) {
         return data.status === 'cancelled' ? 'grey-heading' : '';
