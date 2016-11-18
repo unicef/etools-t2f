@@ -81,10 +81,12 @@
       },
       behaviors: [et2fBehaviors.PermissionLayer],
       _calculateTotal: function(costSummary) {
-        this.dsa = parseFloat(costSummary.value.dsa_total);
-        this.exp = parseFloat(costSummary.value.expenses_total);
-        this.ded = parseFloat(costSummary.value.deductions_total);
-        return ( this.dsa + this.exp ) - this.ded;
+        if(costSummary) {
+          this.dsa = parseFloat(costSummary.value.dsa_total);
+          this.exp = parseFloat(costSummary.value.expenses_total);
+          this.ded = parseFloat(costSummary.value.deductions_total);
+          return ( this.dsa + this.exp ) - this.ded;
+        }
       }
     });
   </script>
