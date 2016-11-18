@@ -28,6 +28,7 @@
     .arrow {
       color: black;
       opacity: 0.38;
+      cursor: pointer;
     }
     .show-more {
       font-weight: 500;
@@ -35,19 +36,20 @@
       line-height: 16px;
       color: var(--et2f-sec-blue);
       text-transform: uppercase;
+      cursor: pointer;
     }
 
   </style>
 
   <template>
 
-    <paper-material class="main-container" elevation="1" >
+    <paper-material class="main-container" elevation="1" hidden$="[[!showElement]]">
       <paper-listbox>
         <template is="dom-repeat" items="[[_limitErrorList(errorList, limit)]]">
           <paper-icon-item>
             <iron-icon icon="warning" item-icon></iron-icon>
             <div class="flex">{{item.error}} : {{item.fieldSet}} / {{item.field}}</div>
-            <iron-icon icon="arrow-forward" class="arrow"></iron-icon>
+            <iron-icon icon="arrow-forward" class="arrow" on-tap="_goToElement"></iron-icon>
           </paper-icon-item>
         </template>
         <paper-item on-tap="_showHideFullList" class="show-more">
@@ -64,12 +66,19 @@
       properties: {
         errors: {
           type: Object,
-          observer: '_log',
-          value: JSON.parse('{"activities":[{"result":["Invalid pk 132 - object does not exist."]},{"result":["Invalid pk 132 - object does not exist."]},{"result":["Invalid pk 132 - object does not exist."]},{"result":["Invalid pk 132 - object does not exist."]},{"result":["Invalid pk 132 - object does not exist."]},{"result":["Invalid pk 132 - object does not exist."]},{"result":["Invalid pk 132 - object does not exist."]}]}')
+          value: {}
+        },
+        showElement: {
+          type: Boolean,
+          computed: '_computeShow(errorList)'
         },
         errorList: {
           type: Array,
           computed: '_computeErrorList(errors)'
+        },
+        errorSelected: {
+          type: String,
+          notify: true
         },
         limit: {
           type: Number,
@@ -80,9 +89,13 @@
           computed: '_computeHideShow(limit)'
         }
       },
+      _computeShow: function(errorList) {
+        console.log(errorList.length > 0)
+        return errorList.length > 0;
+      },
       _computeErrorList: function(errors) {
+        var errorList = [];
         if(errors) {
-          var errorList = [];
           Object.keys(errors).forEach(function(category) {
             errors[category].forEach(function(field){
               Object.keys(field).forEach(function(errors){
@@ -96,8 +109,8 @@
               });
             });
           });
-          return errorList
         }
+        return errorList
       },
       _limitErrorList: function(errorList, limit) {
         return errorList.slice(0, limit);
@@ -107,6 +120,9 @@
       },
       _computeHideShow: function(limit) {
         return limit !== 3;
+      },
+      _goToElement: function(event) {
+        this.errorSelected = event.model.item.fieldSet
       }
     });
   </script>

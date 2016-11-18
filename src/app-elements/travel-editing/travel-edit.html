@@ -57,11 +57,12 @@
       </paper-tabs>
     </et2f-header>
 
-    <form-errors errors="{{formErrors}}"></form-errors>
+    <form-errors errors="{{formErrors}}" error-selected="{{errorSelected}}"></form-errors>
 
     <iron-pages selected="{{selected}}">
 
       <travel-details
+        scroll-to-fieldset="[[errorSelected]]"
         structure="[[structure]]"
         travel-permissions="[[travelPermissions]]"
         data="{{data}}"
@@ -130,22 +131,11 @@
         travelId: {
           type: String
         },
-        postData: {
-          type: Boolean,
-          value: false
-        },
-        serverData: {
-          type: Object,
-          value: function () {
-            return {}
-          }
-        },
-        dataToPrint: {
-          type: Object,
-        },
-        printStyles: {
-          type: Object,
+        errorSelected: {
+          type: String,
+          notify: true
         }
+
       },
       observers: [
         '_computeTravelPermission(et2fPermissions, status, user, data)',
@@ -186,7 +176,11 @@
         else if(this.newTravel) {
           userType = 'Traveler';
         }
-        userType = 'God';
+        var urlParams = new URLSearchParams(window.location.search);
+        var forcedUserType = urlParams.get('usertype');
+        if(forcedUserType) {
+          userType = forcedUserType
+        }
         if(userType) {
           console.debug('User type:  ' + userType + ' Status: ' + this.status);
           this.set('userType', userType);

@@ -89,7 +89,7 @@
         <!-- Cancellation note -->
         <paper-material class="note cancel" elevation="1" hidden$="[[_hideCancelNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
-              <g id="!---UI-Style-Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                   <g id="cancel-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
                       <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
                           <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
@@ -104,7 +104,7 @@
         <!-- Rejection note -->
         <paper-material class="note reject" elevation="1" hidden$="[[_hideRejectionNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
-              <g id="!---UI-Style-Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                   <g id="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
                       <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
                           <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
@@ -119,7 +119,7 @@
         <!-- Certification note -->
         <paper-material class="note reject" elevation="1" hidden$="[[_hideCertificationNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
-              <g id="!---UI-Style-Guide" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                   <g id="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
                       <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
                           <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
@@ -148,6 +148,7 @@
         </etools-repeatable-field-set>
 
         <etools-repeatable-field-set title="Travel Activities"
+          id="activities"
           model="{{data.activities}}"
           allow-copy
           show-counter
@@ -167,6 +168,7 @@
         </etools-repeatable-field-set>
 
         <etools-repeatable-field-set title="Itinerary"
+          id="itinerary"
           model="{{data.itinerary}}"
           show-counter
           elevation="1"
@@ -185,6 +187,7 @@
         </etools-repeatable-field-set>
 
         <etools-repeatable-field-set title="Deductions"
+          id="deductions"
           hide-vertical-divider
           model="[1]"
           hide-plus
@@ -206,6 +209,7 @@
         </etools-repeatable-field-set>
 
         <etools-repeatable-field-set title="Expenses"
+          id="expenses"
           model="{{data.expenses}}"
           show-counter
           elevation="1"
@@ -221,6 +225,7 @@
         </etools-repeatable-field-set>
 
         <etools-repeatable-field-set title="Cost Assignment"
+          id="cost_assignments"
           model="{{data.cost_assignments}}"
           show-counter
           elevation="1"
@@ -238,6 +243,7 @@
         </etools-repeatable-field-set>
 
         <etools-repeatable-field-set title="Cost summary"
+          id="cost_summary"
           hide-vertical-divider
           class="orange-header"
           model="[1]"
@@ -272,7 +278,15 @@
         travelPermissions: {
           type: Object,
         },
-        userType: String
+        userType: String,
+        scrollToFieldset: {
+          type: String,
+          observer: '_scrollTo'
+        }
+      },
+
+      _scrollTo: function(fieldset) {
+        this.$[fieldset].scrollIntoView();
       },
 
       _hideCancelNote: function(data) {
