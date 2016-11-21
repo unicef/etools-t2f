@@ -142,7 +142,7 @@
           >
 
           <travel-plan base-details="{{data.baseDetails}}"
-            permissions-matrix="[[travelPermissions.baseDetails]]"
+            permissions-matrix="[[sectionPermissions.baseDetails]]"
             structure="[[structure]]">
           </travel-plan>
         </etools-repeatable-field-set>
@@ -153,15 +153,15 @@
           allow-copy
           show-counter
           elevation="1"
-          open="[[travelPermissions.activities.edit]]"
-          hidden$="[[!travelPermissions.activities.view]]">
+          open="[[sectionPermissions.activities.open]]"
+          hidden$="[[sectionPermissions.activities.hidden]]">
 
           <template is="dom-repeat"
             items="{{data.activities}}">
 
             <travel-activities
               activity="{{item}}"
-              permissions-matrix="[[travelPermissions.activities]]"
+              permissions-matrix="[[sectionPermissions.activities]]"
               structure="[[structure]]">
             </travel-activities>
           </template>
@@ -172,14 +172,14 @@
           model="{{data.itinerary}}"
           show-counter
           elevation="1"
-          open="[[travelPermissions.itinerary.edit]]"
-          hidden$="[[!travelPermissions.itinerary.view]]">
+          open="[[sectionPermissions.itinerary.open]]"
+          hidden$="[[sectionPermissions.itinerary.hidden]]">
 
           <template
             is="dom-repeat"
             items="{{data.itinerary}}">
 
-            <travel-itinerary permissions-matrix="[[travelPermissions.itinerary]]"
+            <travel-itinerary permissions-matrix="[[sectionPermissions.itinerary]]"
               itinerary="{{item}}"
               structure="[[structure]]">
             </travel-itinerary>
@@ -192,17 +192,17 @@
           model="[1]"
           hide-plus
           elevation="1"
-          open="[[travelPermissions.deductions.edit]]"
-          hidden$="[[!travelPermissions.deductions.view]]">
+          open="[[sectionPermissions.deductions.open]]"
+          hidden$="[[sectionPermissions.deductions.hidden]]">
 
           <div class="layout vertical flex">
 
             <travel-deductions
-              disabled="[[!travelPermissions.deductions.edit]]"
+              disabled="[[sectionPermissions.deductions.edit]]"
               start-date="[[data.baseDetails.start_date]]"
               end-date="[[data.baseDetails.end_date]]"
               deductions="{{data.deductions}}"
-              permissions-matrix="[[travelPermissions.deductions]]"
+              permissions-matrix="[[sectionPermissions.deductions]]"
             >
             </travel-deductions>
           </div>
@@ -213,11 +213,11 @@
           model="{{data.expenses}}"
           show-counter
           elevation="1"
-          open="[[travelPermissions.expenses.edit]]"
-          hidden$="[[!travelPermissions.expenses.view]]">
+          open="[[sectionPermissions.expenses.open]]"
+          hidden$="[[sectionPermissions.expenses.hidden]]">
 
           <template is="dom-repeat" items="{{data.expenses}}">
-            <travel-expense permissions-matrix="[[travelPermissions.expenses]]"
+            <travel-expense permissions-matrix="[[sectionPermissions.expenses]]"
               expense="{{item}}"
               structure="[[structure]]">
             </travel-expense>
@@ -229,12 +229,12 @@
           model="{{data.cost_assignments}}"
           show-counter
           elevation="1"
-          open="[[travelPermissions.cost_assignments.edit]]"
-          hidden$="[[!travelPermissions.cost_assignments.view]]">
+          open="[[sectionPermissions.cost_assignments.open]]"
+          hidden$="[[sectionPermissions.cost_assignments.hidden]]">
 
           <template is="dom-repeat" items="{{data.cost_assignments}}">
 
-            <travel-cost-assignment permissions-matrix="[[travelPermissions.cost_assignments]]"
+            <travel-cost-assignment permissions-matrix="[[sectionPermissions.cost_assignments]]"
               cost-assignment="{{item}}"
               structure="[[structure]]">
             </travel-cost-assignment>
@@ -279,13 +279,32 @@
         travelPermissions: {
           type: Object,
         },
+        sectionPermissions: {
+          type: Object,
+          computed: '_computeSectionPermissions(travelPermissions, data.baseDetails.international_travel)'
+        },
         userType: String,
         scrollToFieldset: {
           type: String,
           observer: '_scrollTo'
         }
       },
+      _computeSectionPermissions: function(permissions, isInternational) {
+        if (permissions) {
+          var computed = {};
+          Object.keys(permissions).forEach(function(key) {
 
+            if(isInternational) {
+              var forced = ['expenses', 'cost_assignments', 'deductions', 'cost_summary'].indexOf(key) > -1 ;
+            }
+            computed[key] = {
+              hidden: !permissions[key].view || forced,
+              open: permissions[key].edit
+            }
+          });
+          return computed;
+        }
+      },
       _scrollTo: function(fieldset) {
         this.$[fieldset].scrollIntoView();
       },

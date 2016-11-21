@@ -50,7 +50,7 @@
           options="[[structure.currencies]]"
           label="Document currency"
           value="{{expense.document_currency}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class$="flex-3 [git[computedPermission.account_currency.readOnly]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.account_currency.readOnly]]"
           disabled="[[computedPermission.account_currency.disabled]]"
           hidden$="[[computedPermission.account_currency.hidden]]"
           options="[[structure.currencies]]"
