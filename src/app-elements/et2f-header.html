@@ -126,7 +126,7 @@
         this.openPDF = false;
       },
       export: function() {
-        if(this.showExportButton) {
+        if (this.showExportButton) {
           this.loadCSV = true;
         }
       },
@@ -134,13 +134,12 @@
         return !show;
       },
       _handleCSVData: function(e, data) {
-        var a = document.createElement("a");
+        var a = document.createElement('a');
         a.href =  window.URL.createObjectURL(data);
         a.download = 'csv_export_' + Date.now() + '.csv';
         a.click();
-        window.URL.revokeObjectURL(url);
-        this.loadCSV = false;
-
+        window.URL.revokeObjectURL(a.href);
+        this.set('loadCSV', false);
       }
     });
   </script>

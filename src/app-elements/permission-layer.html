@@ -10,28 +10,21 @@
       }
     },
     observers: ['_calculatePermissions(permissionsMatrix)'],
-    _calculatePermissions: function (matrix) {
+    _calculatePermissions: function(matrix) {
       if (matrix) {
         var elements = Object.keys(matrix);
         elements.forEach(function(label) {
           var e = matrix[label];
 
-          if(e && e instanceof Object) {
-            if(!e.view) {
-//              console.debug('View disabled for: ' + label)
-            }
-            if(!e.edut) {
-//              console.debug('Edit disabled for: ' + label)
-            }
+          if (e && e instanceof Object) {
             e.disabled = !e.edit;
             e.hidden = !e.view;
-//          matrix[label].readOnly = !matrix[label].edit && matrix[label].view
-          }
-          else if (e instanceof Boolean) {
+
+          } else if (e instanceof Boolean) {
             matrix.disabled = !matrix.edit;
             matrix.hidden = !matrix.view;
-          }
 
+          }
         });
         this.set('computedPermission', {});
         this.set('computedPermission', matrix);
@@ -39,5 +32,5 @@
     },
   };
   window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
-  window.et2fBehaviors['PermissionLayer'] = PermissionLayer;
+  window.et2fBehaviors.PermissionLayer = PermissionLayer;
 </script>
