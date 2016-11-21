@@ -61,11 +61,11 @@ App global configuration
         et2fSaveAndSubmit: {
           url: '/api/et2f/travels/save_and_submit/'
         },
-        et2fTravelList : {
+        et2fTravelList: {
           url: '/api/et2f/travels/'
         },
 
-        et2fCSVListExport : {
+        et2fCSVListExport: {
           url: '/api/et2f/travels/export/'
         }
       },
@@ -88,10 +88,13 @@ App global configuration
           if (endpoint && endpoint.hasOwnProperty('template') && endpoint.template !== '') {
             endpoint.url = _.template(endpoint.template)(data);
           }
-          if (endpoint && endpoint.hasOwnProperty('cachingKeyTemplate') && endpoint.cachingKeyTemplate !== '') {
+          if (endpoint &&
+              endpoint.hasOwnProperty('cachingKeyTemplate') &&
+              endpoint.cachingKeyTemplate !== '') {
+
             endpoint.cachingKey = _.template(endpoint.cachingKeyTemplate)(data);
           }
-          return endpoint
+          return endpoint;
         },
 
         getAllPermissions: function() {
