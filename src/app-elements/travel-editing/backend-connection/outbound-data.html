@@ -302,6 +302,9 @@
             if (!obj) {return;}
             var keys = Object.keys(obj);
             keys.forEach(function(key) {
+              if(obj[key] === null || obj[key] === undefined || obj[key] === '') {
+                delete obj[key]
+              }
               if(obj[key] && !(obj[key] instanceof Array )){
                 obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' || key === 'mode_of_travel' ? obj[key].label : obj[key].value : obj[key]
               }

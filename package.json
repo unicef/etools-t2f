@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "polymer serve --port 3000 & npm run watch",
     "test": "polymer test",
+    "dev-test": "polymer serve --port 2000 & browser-sync start --config bs-test-config.js",
     "watch": "browser-sync start --config bs-config.js"
   },
   "license": "http://polymer.github.io/LICENSE.txt",

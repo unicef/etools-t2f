@@ -122,7 +122,10 @@
         this[changed.path] = changed.value;
       },
       _computeHideAirline: function(modeOfTravel) {
-        return modeOfTravel.label !== 'Plane'
+        if(modeOfTravel) {
+          return modeOfTravel.label !== 'Plane'
+        }
+        return true;
       }
     });
   </script>
