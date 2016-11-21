@@ -166,7 +166,7 @@
         var userType = undefined;
         if(data.baseDetails.id) {
           userType = 'Anyone';
-          if(data.baseDetails.traveller &&  data.baseDetails.traveller.value === user.id) {
+          if(data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
             userType = 'Traveler'
           }
           if(data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
@@ -191,11 +191,11 @@
 
         var self = this;
         if (self.newTravel && data.baseDetails) {
-          data.baseDetails.traveller = {
+          data.baseDetails.traveler = {
             label: user.full_name,
             value: user.id
           };
-          self.notifyPath('data.baseDetails.traveller');
+          self.notifyPath('data.baseDetails.traveler');
         }
       },
 

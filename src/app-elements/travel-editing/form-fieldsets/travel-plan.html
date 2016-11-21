@@ -100,12 +100,12 @@
         <div class="flex"></div>
       </div>
       <div class="layout horizontal">
-        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.traveller.readOnly]]"
-          disabled="[[computedPermission.traveller.disabled]]"
-          hidden$="[[computedPermission.traveller.hidden]]"
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.traveler.readOnly]]"
+          disabled="[[computedPermission.traveler.disabled]]"
+          hidden$="[[computedPermission.traveler.hidden]]"
           options="[[structure.users]]"
-          label="Traveller"
-          value="{{baseDetails.traveller}}"></etools-searchable-multiselection-menu>
+          label="Traveler"
+          value="{{baseDetails.traveler}}"></etools-searchable-multiselection-menu>
         <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.supervisor.readOnly]]"
           disabled="[[computedPermission.supervisor.disabled]]"
           hidden$="[[computedPermission.supervisor.hidden]]"
@@ -153,7 +153,7 @@
         <etools-searchable-multiselection-menu class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
-          options="[[structure.mode_of_travel]]"
+          options="[[structure.travel_types]]"
           multi
           label="Mode of travel"
           value="{{baseDetails.mode_of_travel}}"></etools-searchable-multiselection-menu>

@@ -58,33 +58,27 @@
           }
         }
 
-        function matchByLabel (fieldName, item) {
-          return self.structure[fieldName].find(function (struct) {
-            return struct.label === item;
-          })
-        }
-
         var structureLib = {
           baseDetails: {
-            traveller: 'users',
+            traveler: 'users',
             supervisor: 'users',
             office: 'offices',
             section: 'sections',
             start_date: convertDate,
             end_date: convertDate,
-            mode_of_travel: multiFieldConversion.bind(this, 'label', 'mode_of_travel'),
+            mode_of_travel: multiFieldConversion.bind(this, 'value', 'travel_types'),
             currency: 'currencies',
           },
           activities: {
             locations: multiFieldConversion.bind(this, 'value', 'locations'),
-            travel_type: matchByLabel.bind(this, 'mode_of_travel'),
+            travel_type: 'travel_types',
             partner: 'partners',
             partnership: 'partnerships',
             result: 'results',
           },
           itinerary: {
             airlines: multiFieldConversion.bind(this, 'value', 'airlines'),
-            mode_of_travel: matchByLabel.bind(this, 'mode_of_travel'),
+            mode_of_travel: 'travel_types',
             dsa_region: 'dsa_regions',
             departure_date: convertDate,
             arrival_date: convertDate,

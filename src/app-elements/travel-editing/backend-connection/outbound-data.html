@@ -306,13 +306,11 @@
                 delete obj[key]
               }
               if(obj[key] && !(obj[key] instanceof Array )){
-                obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' || key === 'mode_of_travel' ? obj[key].label : obj[key].value : obj[key]
+                obj[key] = typeof obj[key] === 'object' ?  obj[key].value : obj[key]
               }
               if(obj[key] && obj[key] instanceof Array ){
                 obj[key] = obj[key].map(function(item) {
-                  if(key === 'mode_of_travel') {
-                    return item.label;
-                  }
+                  console.log(item)
                   return typeof  item === 'object' ? item.value : item
                 })
               }
@@ -654,7 +652,6 @@
 
             }
           };
-          console.log(details.endPoint)
           statusActions[details.endPoint]();
 
         },
