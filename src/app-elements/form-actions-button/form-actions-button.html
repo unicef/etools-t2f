@@ -547,7 +547,10 @@
         }
       },
       _buttonGreyClass: function(actions) {
-        return (actions.primary && actions.primary.name === 'Cancel' && !this._showSecondary(actions)) ? 'grey' : '';
+        return (actions.primary &&
+                actions.primary.name === 'Cancel' &&
+                !this._showSecondary(actions)) ?
+                  'grey' : '';
       },
       _computeActions: function(actList, permissions, status, userType) {
 
@@ -567,7 +570,7 @@
       },
       _showSecondary: function(actions) {
 
-        return Array.isArray(actions.secondary) && actions.secondary.length != 0;
+        return Array.isArray(actions.secondary) && actions.secondary.length !== 0;
       },
       _clickPrimary: function() {
         this.fire('form-action', this.actions.primary);

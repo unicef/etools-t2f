@@ -56,16 +56,17 @@
           }
         },
         _dateChanged: function(date) {
-          if(date) {
+          if (date) {
+            /* global moment */
             return moment(date).format('LL');
           }
         },
         _openCalendar: function() {
-          if(this.disabled) {
+          if (this.disabled) {
             return;
           }
-          if(!this.opened) {
-            this.set('opened', true)
+          if (!this.opened) {
+            this.set('opened', true);
           }
         }
 

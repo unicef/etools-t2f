@@ -94,34 +94,34 @@
       },
       _computeErrorList: function(errors) {
         var errorList = [];
-        if(errors) {
+        if (errors) {
           Object.keys(errors).forEach(function(category) {
-            errors[category].forEach(function(field){
-              Object.keys(field).forEach(function(errors){
-                field[errors].forEach(function(message){
-                  errorList.push( {
+            errors[category].forEach(function(field) {
+              Object.keys(field).forEach(function(errors) {
+                field[errors].forEach(function(message) {
+                  errorList.push({
                     fieldSet: category,
                     field: errors,
                     error: message
-                  })
-                })
+                  });
+                });
               });
             });
           });
         }
-        return errorList
+        return errorList;
       },
       _limitErrorList: function(errorList, limit) {
         return errorList.slice(0, limit);
       },
       _showHideFullList: function() {
-        this.limit = this.limit === 3 ?  this.errorList.length : 3;
+        this.limit = this.limit === 3 ? this.errorList.length : 3;
       },
       _computeHideShow: function(limit) {
         return limit !== 3;
       },
       _goToElement: function(event) {
-        this.errorSelected = event.model.item.fieldSet
+        this.errorSelected = event.model.item.fieldSet;
       }
     });
   </script>
