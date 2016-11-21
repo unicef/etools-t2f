@@ -142,7 +142,7 @@
           >
 
           <travel-plan base-details="{{data.baseDetails}}"
-            permissions-matrix="[[sectionPermissions.baseDetails]]"
+            permissions-matrix="[[travelPermissions.baseDetails]]"
             structure="[[structure]]">
           </travel-plan>
         </etools-repeatable-field-set>
@@ -161,7 +161,7 @@
 
             <travel-activities
               activity="{{item}}"
-              permissions-matrix="[[sectionPermissions.activities]]"
+              permissions-matrix="[[travelPermissions.activities]]"
               structure="[[structure]]">
             </travel-activities>
           </template>
@@ -179,7 +179,7 @@
             is="dom-repeat"
             items="{{data.itinerary}}">
 
-            <travel-itinerary permissions-matrix="[[sectionPermissions.itinerary]]"
+            <travel-itinerary permissions-matrix="[[travelPermissions.itinerary]]"
               itinerary="{{item}}"
               structure="[[structure]]">
             </travel-itinerary>
@@ -202,7 +202,7 @@
               start-date="[[data.baseDetails.start_date]]"
               end-date="[[data.baseDetails.end_date]]"
               deductions="{{data.deductions}}"
-              permissions-matrix="[[sectionPermissions.deductions]]"
+              permissions-matrix="[[travelPermissions.deductions]]"
             >
             </travel-deductions>
           </div>
@@ -217,7 +217,7 @@
           hidden$="[[sectionPermissions.expenses.hidden]]">
 
           <template is="dom-repeat" items="{{data.expenses}}">
-            <travel-expense permissions-matrix="[[sectionPermissions.expenses]]"
+            <travel-expense permissions-matrix="[[travelPermissions.expenses]]"
               expense="{{item}}"
               structure="[[structure]]">
             </travel-expense>
@@ -234,7 +234,7 @@
 
           <template is="dom-repeat" items="{{data.cost_assignments}}">
 
-            <travel-cost-assignment permissions-matrix="[[sectionPermissions.cost_assignments]]"
+            <travel-cost-assignment permissions-matrix="[[travelPermissions.cost_assignments]]"
               cost-assignment="{{item}}"
               structure="[[structure]]">
             </travel-cost-assignment>
@@ -248,7 +248,9 @@
           class="orange-header"
           model="[1]"
           hide-plus
-          elevation="1">
+          elevation="1"
+          open="[[sectionPermissions.cost_summary.open]]"
+          hidden$="[[sectionPermissions.cost_summary.hidden]]">
 
          <travel-cost-summary cost-summary="[[data.cost_summary]]" currency="[[data.baseDetails.currency]]" structure="[[structure]]"></travel-cost-summary>
         </etools-repeatable-field-set>
@@ -295,10 +297,11 @@
           Object.keys(permissions).forEach(function(key) {
 
             if(isInternational) {
-              var forced = ['expenses', 'cost_assignments', 'deductions', 'cost_summary'].indexOf(key) > -1 ;
+              var forceHiddenStatus = ['expenses', 'cost_assignments', 'deductions', 'cost_summary'].indexOf(key) > -1 ;
             }
+
             computed[key] = {
-              hidden: !permissions[key].view || forced,
+              hidden: !permissions[key].view || forceHiddenStatus,
               open: permissions[key].edit
             }
           });

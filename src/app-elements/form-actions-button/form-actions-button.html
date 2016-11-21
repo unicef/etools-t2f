@@ -864,7 +864,7 @@
           type: String,
         },
         status: {
-          type: String
+          type: String,
         },
         actions: {
           type: Object,
@@ -880,6 +880,7 @@
         },
         isInternational: {
           type: Boolean,
+          value: false
         }
       },
       _buttonGreyClass: function(actions) {
@@ -888,12 +889,13 @@
       _computeActions: function(actList, permissions, status, userType, isInternational, internationalTravelPermissions) {
 
         var ret = isInternational ? internationalTravelPermissions[userType][status] : permissions[userType][status];
-        return {
+        var computed = {
           primary: actList[ret.primary],
           secondary: ret.secondary.map(function (el) {
             return actList[el];
           })
-        }
+        };
+        return computed;
       },
       _showAtAll: function(actions) {
 

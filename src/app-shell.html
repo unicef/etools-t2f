@@ -333,7 +333,7 @@
       },
       _handlePermissions: function (e, data) {
 
-        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances'];
+        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances', 'cost_summary'];
         Object.keys(data).forEach(function(role) {
           if(!data[role]) {
             return;
