@@ -72,13 +72,13 @@
       </travel-details>
 
       <travel-attachments
-          structure="[[structure]]"
-          et2f-permissions="[[et2fPermissions]]"
-          attachments="{{data.attachments}}"
-          deleted-attachments="{{data.deletedAttachments}}"
-          status="[[data.status]]"
-          user-type="[[userType]]"
-          on-form-action="_handleFormAction">
+        structure="[[structure]]"
+        et2f-permissions="[[et2fPermissions]]"
+        attachments="{{data.attachments}}"
+        deleted-attachments="{{data.deletedAttachments}}"
+        status="[[data.status]]"
+        user-type="[[userType]]"
+        on-form-action="_handleFormAction">
       </travel-attachments>
 
       <travel-report
@@ -157,7 +157,6 @@
           })
         }
       },
-
       _computeStatus: function(data) {
         if(data.status) {
           return data.status.toLowerCase().replace(/ /g, '_');

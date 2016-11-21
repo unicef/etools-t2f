@@ -485,7 +485,7 @@
 
                 endpointConfig.status = 'reject';
                 doPost();
-              }
+              };
               self.rejectionOpened = true;
             },
 
@@ -540,7 +540,7 @@
 
             },
 
-            submit_Certification: function() {
+            submit_certificate: function() {
 
               self._certifyOnConfirm = function() {
 
@@ -568,7 +568,7 @@
 
             },
 
-            approve_Certification: function() {
+            approve_certificate: function() {
 
               self.generalModalAction = function() {
                 self.$['general-modal'].close();
@@ -586,7 +586,7 @@
 
             },
 
-            reject_Certification: function() {
+            reject_certificate: function() {
 
               self.generalModalAction = function() {
                 self.$['general-modal'].close();
@@ -624,7 +624,7 @@
 
               self.generalModalAction = function() {
                 self.$['general-modal'].close();
-                endpointConfig.status = 'done';
+                endpointConfig.status = 'mark_as_completed';
                 doPost();
               };
 
