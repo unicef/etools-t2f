@@ -582,7 +582,7 @@
       labelLib: {
         'Reference #': 'id',
         'Purpose of travel': 'purpose',
-        'Traveler': 'traveller',
+        'Traveler': 'traveler',
         'Start date': 'start_date',
         'End date': 'end_date',
         'Status': 'status',
@@ -642,7 +642,9 @@
         if (typeof old === 'undefined' ) {
           return;
         }
-        this.set('ajaxParams.search', searchStr);
+        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+        backup.search = searchStr;
+        this.set('ajaxParams', backup);
       },
       _changeShowHidden: function(e, detail) {
         this.set('showHidden', !this.showHidden);
