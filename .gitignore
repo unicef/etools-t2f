@@ -8,3 +8,4 @@ dist/
 *.sublime-workspace
 diff.txt
 npm-debug.log
+/bs-test-config.js
