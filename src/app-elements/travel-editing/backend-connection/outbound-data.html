@@ -310,9 +310,6 @@
               }
               if(obj[key] && obj[key] instanceof Array ){
                 obj[key] = obj[key].map(function(item) {
-                  if(key === 'mode_of_travel') {
-                    return item.label;
-                  }
                   return typeof  item === 'object' ? item.value : item
                 })
               }
