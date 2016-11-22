@@ -79,20 +79,22 @@
           status: String,
           userType: String,
         },
-        observers: ['_attachmentsModified(attachments.*)',
-        '_deletedAttachmentsModified(attachments.*)'],
+        observers: [
+            '_attachmentsModified(attachments.*)',
+            '_deletedAttachmentsModified(attachments.*)'
+        ],
         _attachmentsModified: function(files) {
-          if(!files.value) {
-            this.attachments = function() {
-              return []
-            } ();
+          if (!files.value) {
+            this.attachments = (function() {
+              return [];
+            })();
           }
         },
         _deletedAttachmentsModified: function(files) {
-          if(!files.value) {
-            this.deletedAttachments = function() {
-              return []
-            } ();
+          if (!files.value) {
+            this.deletedAttachments = (function() {
+              return [];
+            })();
           }
         }
       });
