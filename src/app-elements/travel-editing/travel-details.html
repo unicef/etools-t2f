@@ -89,13 +89,13 @@
         <!-- Cancellation note -->
         <paper-material class="note cancel" elevation="1" hidden$="[[_hideCancelNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
-              <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                  <g id="cancel-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
-                      <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
-                          <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
-                      </g>
-                  </g>
+            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="cancel-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
+                  <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
+                </g>
               </g>
+            </g>
           </svg>
           <div class="note-heading">CANCELLATION NOTE</div>
           <div class="note-text">[[data.cancellation_note]]</div>
@@ -104,13 +104,13 @@
         <!-- Rejection note -->
         <paper-material class="note reject" elevation="1" hidden$="[[_hideRejectionNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
-              <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                  <g id="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
-                      <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
-                          <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
-                      </g>
-                  </g>
+            <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
+                  <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
+                </g>
               </g>
+            </g>
           </svg>
           <div class="note-heading">REJECTION NOTE</div>
           <div class="note-text">[[data.rejection_note]]</div>
@@ -119,13 +119,13 @@
         <!-- Certification note -->
         <paper-material class="note reject" elevation="1" hidden$="[[_hideCertificationNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
-              <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                  <g id="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
-                      <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
-                          <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
-                      </g>
-                  </g>
+            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g id="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
+                  <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
+                </g>
               </g>
+            </g>
           </svg>
           <div class="note-heading">CERTIFICATION NOTE</div>
           <div class="note-text">[[data.certification_note]]</div>
@@ -136,10 +136,11 @@
 
         <etools-repeatable-field-set title="Travel Plan"
           hide-plus
+          show-counter="[[false]]"
           model="[1]"
           hide-vertical-divider
           elevation="1"
-          >
+        >
 
           <travel-plan base-details="{{data.baseDetails}}"
             permissions-matrix="[[travelPermissions.baseDetails]]"
@@ -227,7 +228,6 @@
         <etools-repeatable-field-set title="Cost Assignment"
           id="cost_assignments"
           model="{{data.cost_assignments}}"
-          show-counter
           elevation="1"
           open="[[sectionPermissions.cost_assignments.open]]"
           hidden$="[[sectionPermissions.cost_assignments.hidden]]">
@@ -252,7 +252,7 @@
           open="[[sectionPermissions.cost_summary.open]]"
           hidden$="[[sectionPermissions.cost_summary.hidden]]">
 
-         <travel-cost-summary cost-summary="[[data.cost_summary]]" currency="[[data.baseDetails.currency]]" structure="[[structure]]"></travel-cost-summary>
+          <travel-cost-summary cost-summary="[[data.cost_summary]]" currency="[[data.baseDetails.currency]]" structure="[[structure]]"></travel-cost-summary>
         </etools-repeatable-field-set>
       </div>
 
@@ -292,21 +292,19 @@
         },
       },
       _computeSectionPermissions: function(permissions, isInternational) {
-        if (permissions) {
-          var computed = {};
-          Object.keys(permissions).forEach(function(key) {
+        var computed = {};
+        Object.keys(permissions).forEach(function(key) {
 
-            if(isInternational) {
-              var forceHiddenStatus = ['expenses', 'cost_assignments', 'deductions', 'cost_summary'].indexOf(key) > -1 ;
-            }
+          if(isInternational) {
+            var forceHiddenStatus = ['expenses', 'cost_assignments', 'deductions', 'cost_summary'].indexOf(key) > -1 ;
+          }
 
-            computed[key] = {
-              hidden: !permissions[key].view || forceHiddenStatus,
-              open: permissions[key].edit
-            }
-          });
-          return computed;
-        }
+          computed[key] = {
+            hidden: !permissions[key].view || forceHiddenStatus,
+            open: permissions[key].edit
+          }
+        });
+        return computed;
       },
       _scrollTo: function(fieldset) {
         this.$[fieldset].scrollIntoView();
