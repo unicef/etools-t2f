@@ -136,6 +136,16 @@
           hidden$="[[computedPermission.end_date.hidden]]"
           label="End Date"
           date="{{baseDetails.end_date}}"></datepicker-input>
+        <etools-searchable-multiselection-menu class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
+          disabled="[[computedPermission.mode_of_travel.disabled]]"
+          hidden$="[[computedPermission.mode_of_travel.hidden]]"
+          options="[[structure.travel_types]]"
+          multi
+          label="Mode of travel"
+          value="{{baseDetails.mode_of_travel}}"></etools-searchable-multiselection-menu>
+
+      </div>
+      <div class="layout horizontal">
         <paper-input class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
           disabled="[[computedPermission.estimated_travel_cost.disabled]]"
           hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
@@ -148,15 +158,7 @@
           options="[[structure.currencies]]"
           label="Currency"
           value="{{baseDetails.currency}}"></etools-searchable-multiselection-menu>
-      </div>
-      <div class="layout horizontal">
-        <etools-searchable-multiselection-menu class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
-          disabled="[[computedPermission.mode_of_travel.disabled]]"
-          hidden$="[[computedPermission.mode_of_travel.hidden]]"
-          options="[[structure.travel_types]]"
-          multi
-          label="Mode of travel"
-          value="{{baseDetails.mode_of_travel}}"></etools-searchable-multiselection-menu>
+
         <div class="flex-6"></div>
       </div>
       <div class="layout horizontal">

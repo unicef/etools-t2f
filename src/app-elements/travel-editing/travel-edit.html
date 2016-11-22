@@ -113,6 +113,7 @@
         },
         user: {
           type: Object,
+          observer: '_warn'
         },
         userType: {
           type: String,
@@ -187,7 +188,7 @@
           userType = forcedUserType
         }
         if(userType) {
-          console.debug('User type:  ' + userType + ' Status: ' + this.status);
+          console.debug('User type:  ' + userType + ' Status: ' + status);
           this.set('userType', userType);
           this.set('travelPermissions', {});
           this.set('travelPermissions', permissions[userType][status] );
