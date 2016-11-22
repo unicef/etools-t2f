@@ -151,7 +151,8 @@
         <etools-repeatable-field-set title="Travel Activities"
           id="activities"
           model="{{data.activities}}"
-          allow-copy
+          hide-plus=="[[!sectionPermissions.activities.edit]]"
+          allow-copy="[[sectionPermissions.activities.edit]]"
           show-counter
           elevation="1"
           open="[[sectionPermissions.activities.open]]"
@@ -301,7 +302,8 @@
 
           computed[key] = {
             hidden: !permissions[key].view || forceHiddenStatus,
-            open: permissions[key].edit
+            open: permissions[key].edit,
+            edit: permissions[key].edit
           }
         });
         return computed;

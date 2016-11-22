@@ -80,9 +80,9 @@
     <div class="layout vertical flex">
       <div class="layout horizontal">
         <paper-checkbox class$="flex custom-margin [[computedPermission.ta_required.readOnly]]"
-          disabled="[[computedPermission.ta_required.disabled]]"
           hidden$="[[computedPermission.ta_required.hidden]]"
           checked="{{baseDetails.ta_required}}"
+          disabled="[[taRequiredDisabled]]"
           >TA required?
         </paper-checkbox>
         <paper-checkbox class$="flex custom-margin [[computedPermission.international_travel.readOnly]]"
@@ -197,12 +197,19 @@
         falseValue: {
           type: Boolean,
           value: false
+        },
+        taRequiredDisabled: {
+          type: Boolean,
+          computed: '_computeDisableTaRequired(computedPermission.ta_required.disabled, baseDetails.international_travel)'
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
       observers: ['_setCheckboxes(baseDetails.*)'],
       _computeDefaultChecked: function (value) {
         return value !== false
+      },
+      _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel ) {
+        return taRequiredDisabled || internationalTravel
       },
       _setCheckboxes: function(changed) {
         this[changed.path] = changed.value;
