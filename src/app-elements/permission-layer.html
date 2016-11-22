@@ -17,6 +17,12 @@
           var e = matrix[label];
 
           if (e && e instanceof Object) {
+            if (!e.view) {
+              // console.debug('View disabled for: ' + label)
+            }
+            if (!e.edit) {
+              // console.debug('Edit disabled for: ' + label)
+            }
             e.disabled = !e.edit;
             e.hidden = !e.view;
 

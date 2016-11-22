@@ -312,13 +312,7 @@
           this.set('route.path', '/edit-travel/' + detail);
         }
       },
-      _handleStructure: function(event, data) {
-        data.mode_of_travel = [
-          {name: 'Plane', id: 0},
-          {name: 'Boat', id: 1},
-          {name: 'Car', id: 2},
-          {name: 'Train', id: 3}
-        ];
+      _handleStructure: function (event, data) {
         var dataKeys = Object.keys(data);
         dataKeys.forEach(function(key) {
           data[key] = data[key].length > 100 ? data[key].splice(0, 99) : data[key];
@@ -345,7 +339,8 @@
           'activities',
           'cost_assignments',
           'expenses',
-          'clearances'
+          'clearances',
+          'cost_summary'
         ];
         Object.keys(data).forEach(function(role) {
           if (!data[role]) {

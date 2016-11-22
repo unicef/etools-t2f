@@ -52,7 +52,7 @@
             <iron-icon icon="arrow-forward" class="arrow" on-tap="_goToElement"></iron-icon>
           </paper-icon-item>
         </template>
-        <paper-item on-tap="_showHideFullList" class="show-more">
+        <paper-item on-tap="_showHideFullList" class="show-more" hidden$="[[showListExtension]]">
           <div hidden$="[[hideShow]]">Show list ({{errorList.length}})</div>
           <div hidden$="[[!hideShow]]">Hide list ({{errorList.length}})</div>
         </paper-item>
@@ -87,7 +87,14 @@
         hideShow: {
           type: Boolean,
           computed: '_computeHideShow(limit)'
+        },
+        showListExtension: {
+          type: Boolean,
+          computed: '_computeShowListExtension(errorList, limit)'
         }
+      },
+      _computeShowListExtension: function(errorList, limit) {
+        return errorList.length > limit
       },
       _computeShow: function(errorList) {
         return errorList.length > 0;

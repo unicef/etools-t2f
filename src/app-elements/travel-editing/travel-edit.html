@@ -72,13 +72,13 @@
       </travel-details>
 
       <travel-attachments
-          structure="[[structure]]"
-          et2f-permissions="[[et2fPermissions]]"
-          attachments="{{data.attachments}}"
-          deleted-attachments="{{data.deletedAttachments}}"
-          status="[[data.status]]"
-          user-type="[[userType]]"
-          on-form-action="_handleFormAction">
+        structure="[[structure]]"
+        et2f-permissions="[[et2fPermissions]]"
+        attachments="{{data.attachments}}"
+        deleted-attachments="{{data.deletedAttachments}}"
+        status="[[data.status]]"
+        user-type="[[userType]]"
+        on-form-action="_handleFormAction">
       </travel-attachments>
 
       <travel-report
@@ -146,10 +146,14 @@
       _newTravelObserver: function(isNew) {
         if(isNew) {
           this.set('data', {
-            baseDetails: {},
+            baseDetails: {
+              ta_required: true,
+              international_travel: false
+            },
             activities: [{}],
             itinerary: [{}],
             cost_assignments: [{}],
+            cost_summary: {},
             deductions: [],
             expenses: [{}],
             attachments: [],
@@ -157,7 +161,6 @@
           })
         }
       },
-
       _computeStatus: function(data) {
         if(data.status) {
           return data.status.toLowerCase().replace(/ /g, '_');
@@ -167,7 +170,7 @@
         var userType = undefined;
         if(data.baseDetails.id) {
           userType = 'Anyone';
-          if(data.baseDetails.traveller &&  data.baseDetails.traveller.value === user.id) {
+          if(data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
             userType = 'Traveler'
           }
           if(data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
@@ -184,7 +187,7 @@
           userType = forcedUserType
         }
         if(userType) {
-          console.debug('User type:  ' + userType + ' Status: ' + this.status);
+          console.debug('User type:  ' + userType + ' Status: ' + status);
           this.set('userType', userType);
           this.set('travelPermissions', {});
           this.set('travelPermissions', permissions[userType][status] );
@@ -192,11 +195,11 @@
 
         var self = this;
         if (self.newTravel && data.baseDetails) {
-          data.baseDetails.traveller = {
+          data.baseDetails.traveler = {
             label: user.full_name,
             value: user.id
           };
-          self.notifyPath('data.baseDetails.traveller');
+          self.notifyPath('data.baseDetails.traveler');
         }
       },
 

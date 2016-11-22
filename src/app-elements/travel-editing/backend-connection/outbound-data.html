@@ -302,14 +302,14 @@
             if (!obj) {return;}
             var keys = Object.keys(obj);
             keys.forEach(function(key) {
+              if(obj[key] === null || obj[key] === undefined || obj[key] === '') {
+                delete obj[key]
+              }
               if(obj[key] && !(obj[key] instanceof Array )){
-                obj[key] = typeof obj[key] === 'object' ? key === 'travel_type' || key === 'mode_of_travel' ? obj[key].label : obj[key].value : obj[key]
+                obj[key] = typeof obj[key] === 'object' ?  obj[key].value : obj[key]
               }
               if(obj[key] && obj[key] instanceof Array ){
                 obj[key] = obj[key].map(function(item) {
-                  if(key === 'mode_of_travel') {
-                    return item.label;
-                  }
                   return typeof  item === 'object' ? item.value : item
                 })
               }
@@ -482,7 +482,7 @@
 
                 endpointConfig.status = 'reject';
                 doPost();
-              }
+              };
               self.rejectionOpened = true;
             },
 
@@ -537,7 +537,7 @@
 
             },
 
-            submit_Certification: function() {
+            submit_certificate: function() {
 
               self._certifyOnConfirm = function() {
 
@@ -565,7 +565,7 @@
 
             },
 
-            approve_Certification: function() {
+            approve_certificate: function() {
 
               self.generalModalAction = function() {
                 self.$['general-modal'].close();
@@ -583,7 +583,7 @@
 
             },
 
-            reject_Certification: function() {
+            reject_certificate: function() {
 
               self.generalModalAction = function() {
                 self.$['general-modal'].close();
@@ -621,7 +621,7 @@
 
               self.generalModalAction = function() {
                 self.$['general-modal'].close();
-                endpointConfig.status = 'done';
+                endpointConfig.status = 'mark_as_completed';
                 doPost();
               };
 
@@ -651,7 +651,6 @@
 
             }
           };
-          console.log(details.endPoint)
           statusActions[details.endPoint]();
 
         },

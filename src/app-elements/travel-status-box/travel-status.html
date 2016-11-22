@@ -200,7 +200,7 @@
           </div>
 
           <div class="card-actions">
-            <form-actions-button user-type="[[userType]]" status="[[status]]">
+            <form-actions-button user-type="[[userType]]" status="[[status]]" is-international="[[isInternational]]" >
             </form-actions-button>
           </div>
         </template>
@@ -258,7 +258,7 @@
           </div>
 
           <div class="card-actions">
-            <form-actions-button user-type="[[userType]]" status="[[status]]">
+            <form-actions-button user-type="[[userType]]" status="[[status]]" is-international="[[isInternational]]" >
             </form-actions-button>
           </div>
         </template>
@@ -282,7 +282,7 @@
           </div>
 
           <div class="card-actions">
-            <form-actions-button user-type="[[userType]]" status="[[status]]">
+            <form-actions-button user-type="[[userType]]" status="[[status]]" is-international="[[isInternational]]" >
             </form-actions-button>
           </div>
         </template>
@@ -304,7 +304,7 @@
           </div>
 
           <div class="card-actions">
-            <form-actions-button user-type="[[userType]]" status="[[status]]">
+            <form-actions-button user-type="[[userType]]" is-international="[[isInternational]]" status="[[status]]">
             </form-actions-button>
           </div>
         </template>
@@ -321,6 +321,9 @@
         status: {
           type: String,
           reflectToAttribute: true
+        },
+        isInternational: {
+          type: Boolean,
         },
         cancelledDate: String,
         completedDate: String,

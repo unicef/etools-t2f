@@ -75,7 +75,7 @@
         <etools-searchable-multiselection-menu class$="flex-2 [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
-          options="[[structure.mode_of_travel]]"
+          options="[[structure.travel_types]]"
           label="Mode of  travel"
           value="{{itinerary.mode_of_travel}}"></etools-searchable-multiselection-menu>
         <paper-checkbox class$="flex-2 custom-margin self-end [[computedPermission.overnight_travel.readOnly]]"
@@ -122,7 +122,10 @@
         this[changed.path] = changed.value;
       },
       _computeHideAirline: function(modeOfTravel) {
-        return modeOfTravel.label !== 'Plane'
+        if(modeOfTravel) {
+          return modeOfTravel.label !== 'Plane'
+        }
+        return true;
       }
     });
   </script>
