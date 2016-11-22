@@ -82,7 +82,7 @@
         <paper-checkbox class$="flex custom-margin [[computedPermission.ta_required.readOnly]]"
           disabled="[[computedPermission.ta_required.disabled]]"
           hidden$="[[computedPermission.ta_required.hidden]]"
-          checked="{{defaultChecked}}"
+          checked="{{baseDetails.ta_required}}"
           >TA required?
         </paper-checkbox>
         <paper-checkbox class$="flex custom-margin [[computedPermission.international_travel.readOnly]]"
@@ -191,10 +191,6 @@
         structure: {
           type: Object,
           value: {}
-        },
-        defaultChecked: {
-          type: Boolean,
-          computed: '_computeDefaultChecked(baseDetails.ta_required)'
         },
         falseValue: {
           type: Boolean,
