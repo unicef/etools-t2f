@@ -312,7 +312,7 @@
           this.set('route.path', '/edit-travel/' + detail);
         }
       },
-      _handleStructure: function (event, data) {
+      _handleStructure: function(event, data) {
         var dataKeys = Object.keys(data);
         dataKeys.forEach(function(key) {
           data[key] = data[key].length > 100 ? data[key].splice(0, 99) : data[key];

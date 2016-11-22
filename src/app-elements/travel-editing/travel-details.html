@@ -284,7 +284,8 @@
         },
         sectionPermissions: {
           type: Object,
-          computed: '_computeSectionPermissions(travelPermissions, data.baseDetails.international_travel)'
+          computed:
+            '_computeSectionPermissions(travelPermissions, data.baseDetails.international_travel)'
         },
         userType: String,
         scrollToFieldset: {
@@ -296,15 +297,22 @@
         var computed = {};
         Object.keys(permissions).forEach(function(key) {
 
-          if(isInternational) {
-            var forceHiddenStatus = ['expenses', 'cost_assignments', 'deductions', 'cost_summary'].indexOf(key) > -1 ;
+          var forceHiddenStatus = false;
+
+          if (isInternational) {
+            forceHiddenStatus = [
+              'expenses',
+              'cost_assignments',
+              'deductions',
+              'cost_summary'
+            ].indexOf(key) > -1;
           }
 
           computed[key] = {
             hidden: !permissions[key].view || forceHiddenStatus,
             open: permissions[key].edit,
             edit: permissions[key].edit
-          }
+          };
         });
         return computed;
       },
