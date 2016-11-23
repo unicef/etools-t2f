@@ -66,7 +66,7 @@
 
                 <div class="layout horizontal center">
                     <div class="row-container" id="label-sec-clear">Did you request Security Clearance?</div>
-                    <paper-radio-group class="flex layout horizontal" selected="{{serverData.clearances.security_clearance}}">
+                    <paper-radio-group class="flex layout horizontal" selected="{{data.clearances.security_clearance}}">
                         <paper-radio-button class="flex" name="requested"></paper-radio-button>
                         <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
                         <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
@@ -75,7 +75,7 @@
 
                 <div class="layout horizontal center">
                     <div class="row-container" id="label-med">Did you request Medical Clearance?</div>
-                    <paper-radio-group class="flex layout horizontal" selected="{{serverData.clearances.medical_clearance}}">
+                    <paper-radio-group class="flex layout horizontal" selected="{{data.clearances.medical_clearance}}">
                         <paper-radio-button class="flex" name="requested"></paper-radio-button>
                         <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
                         <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
@@ -84,7 +84,7 @@
 
                 <div class="layout horizontal center">
                     <div class="row-container" id="label-sec-course">Did you request Security Course?</div>
-                    <paper-radio-group class="flex layout horizontal" selected="{{serverData.clearances.security_course}}">
+                    <paper-radio-group class="flex layout horizontal" selected="{{data.clearances.security_course}}">
                         <paper-radio-button class="flex" name="requested"></paper-radio-button>
                         <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
                         <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
@@ -105,7 +105,7 @@
             <div class="dialog-heading">Reject travel</div>
             <div class="dialog-intro-text">Please specify reasons for rejecting this travel:</div>
 
-            <paper-textarea label="Rejection note" value="{{serverData.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
+            <paper-textarea label="Rejection note" value="{{data.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
 
             <paper-button
               class="dialog-confirm-button"
@@ -120,7 +120,7 @@
             <div class="dialog-heading">Cancel travel</div>
             <div class="dialog-intro-text">Please specify reasons for cancelling this travel:</div>
 
-            <paper-textarea label="Cancellation note" value="{{serverData.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
+            <paper-textarea label="Cancellation note" value="{{data.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
 
             <paper-button
               class="dialog-confirm-button"
@@ -148,7 +148,7 @@
             <div class="dialog-heading">Certify travel</div>
             <div class="dialog-intro-text">Please specify the differences between the travel plan and the actual travel:</div>
 
-            <paper-textarea label="Cancellation note" value="{{serverData.certification_note}}" char-counter maxlength="2500"></paper-textarea>
+            <paper-textarea label="Cancellation note" value="{{data.certification_note}}" char-counter maxlength="2500"></paper-textarea>
 
             <paper-button
               class="dialog-confirm-button"
@@ -256,8 +256,9 @@
           return post || attachment;
         },
 
-        _processOutboundData: function(data) {
+        _processOutboundData: function() {
           var self = this;
+          var data = self.data;
           delete data.status;
           delete data.cost_summary;
           this.serverData = {
@@ -266,7 +267,7 @@
             activities: [],
             cost_assignments: [],
             expenses: [],
-            clearances: {}
+            clearances: {},
           };
 
           function duplicateIdPurging(collection) {
@@ -338,7 +339,6 @@
             if (self.serverData[serverKey]) {
               self.serverData[serverKey] = data[serverKey];
             }
-            delete data[serverKey];
           });
 
           var leftoverKeys = Object.keys(data);
@@ -357,7 +357,8 @@
           });
         },
 
-        _processAttachmentData: function(data) {
+        _processAttachmentData: function() {
+          var data = this.data;
           this.attachments = data.attachments.filter(function(item) {
             return !item.id && item.raw;
           });
@@ -368,15 +369,12 @@
           } else {
             this.deletedAttachments = [];
           }
-          delete data.deletedAttachments;
-          delete data.attachments;
+//          delete data.deletedAttachments;
+//          delete data.attachments;
 
         },
 
         doRequest: function(details) {
-
-          this._processAttachmentData(this.data);
-          this._processOutboundData(this.data);
 
           var self = this;
           var endpointConfig = {
@@ -385,19 +383,27 @@
           };
           var endpointName = 'et2fStateChange';
 
+          function prepareData() {
+            self._processAttachmentData();
+            self._processOutboundData();
+          }
+
           function doSavePost() {
+            prepareData();
             self.method = 'POST';
             self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelList.url;
             self.postData = true;
           }
 
           function doSaveAndSubmit() {
+            prepareData();
             self.method = 'POST';
             self.postEndpoint = etoolsAppConfig.endpoints.et2fSaveAndSubmit.url;
             self.postData = true;
           }
 
           function doSaveUpdate() {
+            prepareData();
             self.method = 'PATCH';
             self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
               'et2fTravelDetail',
@@ -407,6 +413,7 @@
           }
 
           function doPut() {
+            prepareData();
             self.method = 'PUT';
             self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
               endpointName,
@@ -416,6 +423,7 @@
           }
 
           function doPost() {
+            prepareData();
             self.method = 'POST';
             self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
               endpointName,
@@ -435,15 +443,13 @@
             },
 
             save_and_submit: function() {
-
-              self.set('serverData.clearances', {
+              self.set('data.clearances', {
                 medical_clearance: 'not_applicable',
                 security_clearance: 'not_applicable',
                 security_course: 'not_applicable'
               });
 
               self._clearancesOnConfirm = function() {
-
                 self.$['clearance-modal'].close();
                 if (endpointConfig.id) {
                   endpointConfig.status = 'submit_for_approval';
