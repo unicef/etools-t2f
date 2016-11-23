@@ -45,6 +45,8 @@
                     <etools-file-upload
                             class="flex"
                             no-upload$="{{computedPermission.upload.disabled}}"
+                            disabled="[[!attachmentsPermission.edit]]"
+                            hidden$="[[!attachmentsPermission.view]]"
                             files="{{attachments}}"
                             deleted-files="{{deletedAttachments}}"
                             multiple>
@@ -78,6 +80,9 @@
           },
           status: String,
           userType: String,
+          attachmentsPermission: {
+            type: Object,
+          }
         },
         observers: [
             '_attachmentsModified(attachments.*)',
