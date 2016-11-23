@@ -31,7 +31,7 @@
         travelUrl: {
           type: String,
           computed: '_computeUrl(travelId)',
-          reflectToAttribute: true
+          reflectToAttribute: true,
         },
 
       },
@@ -214,7 +214,7 @@
         } else {
           incomingData.status = statusLib.planned;
         }
-
+        console.log('end of travel data handling', this.travelId)
         this.set('travelId', undefined);
         this.set('et2fData', incomingData);
       }

@@ -30,7 +30,7 @@
 <dom-module id="travel-details">
   <template>
     <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
-      :host {
+     :host {
         display: block;
         width: 100%;
       }
@@ -263,7 +263,7 @@
         is-international="[[data.baseDetails.international_travel]]"
         scroll-top-margin="84"
         cancelled-date="[[data.canceled_at]]"
-        completed-da§te="[[data.completed_at]]">
+        completed-date="[[data.completed_at]]">
       </travel-status>
     </div>
   </template>
@@ -298,29 +298,29 @@
 
         var collapsedStatus= {
           'Traveler': {
-            'Sent for payment' : ['deductions', 'expenses', 'cost_assignments'],
-            'Certification submitted' : ['deductions', 'expenses', 'cost_assignments'],
-            'Certification approved' : ['deductions', 'expenses', 'cost_assignments'],
-            'Certification rejected' : ['deductions', 'expenses', 'cost_assignments'],
-            'Certified' : ['deductions', 'expenses', 'cost_assignments'],
-            'Completed' : ['deductions', 'expenses', 'cost_assignments'],
+            'Sent for payment': ['deductions', 'expenses', 'cost_assignments'],
+            'Certification submitted': ['deductions', 'expenses', 'cost_assignments'],
+            'Certification approved': ['deductions', 'expenses', 'cost_assignments'],
+            'Certification rejected': ['deductions', 'expenses', 'cost_assignments'],
+            'Certified': ['deductions', 'expenses', 'cost_assignments'],
+            'Completed': ['deductions', 'expenses', 'cost_assignments'],
           },
           'Travel Administrator': {
-            'Canceled' : ['deductions', 'expenses', 'cost_assignments'],
-            'Submitted' : ['deductions', 'expenses', 'cost_assignments'],
-            'Sent for payment' : ['deductions', 'expenses', 'cost_assignments'],
-            'Certification submitted' : ['deductions', 'expenses', 'cost_assignments'],
-            'Certification approved' : ['deductions', 'expenses', 'cost_assignments'],
-            'Certification rejected' : ['deductions', 'expenses', 'cost_assignments'],
-            'Certified' : ['deductions', 'expenses', 'cost_assignments'],
-            'Completed' : ['deductions', 'expenses', 'cost_assignments'],
+            'Canceled': ['deductions', 'expenses', 'cost_assignments'],
+            'Submitted': ['deductions', 'expenses', 'cost_assignments'],
+            'Sent for payment': ['deductions', 'expenses', 'cost_assignments'],
+            'Certification submitted': ['deductions', 'expenses', 'cost_assignments'],
+            'Certification approved': ['deductions', 'expenses', 'cost_assignments'],
+            'Certification rejected': ['deductions', 'expenses', 'cost_assignments'],
+            'Certified': ['deductions', 'expenses', 'cost_assignments'],
+            'Completed': ['deductions', 'expenses', 'cost_assignments'],
           },
           'Supervisor': {
-            'Canceled' : ['deductions', 'expenses', 'cost_assignments'],
-            'Submitted' : ['deductions', 'expenses', 'cost_assignments'],
-            'Sent for payment' : ['deductions', 'expenses', 'cost_assignments'],
-            'Approved' : ['deductions', 'expenses', 'cost_assignments'],
-            'Rejected' : ['deductions', 'expenses', 'cost_assignments'],
+            'Canceled': ['deductions', 'expenses', 'cost_assignments'],
+            'Submitted': ['deductions', 'expenses', 'cost_assignments'],
+            'Sent for payment': ['deductions', 'expenses', 'cost_assignments'],
+            'Approved': ['deductions', 'expenses', 'cost_assignments'],
+            'Rejected': ['deductions', 'expenses', 'cost_assignments'],
           },
 
         };
