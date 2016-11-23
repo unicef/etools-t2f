@@ -1,16 +1,16 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 
-
 <dom-module id="ta-print">
+
   <template>
-
-
-
   </template>
 
   <script>
+
     Polymer({
+
       is: 'ta-print',
+
       properties: {
         data: {
           type: Object,
@@ -50,46 +50,51 @@
           rightAlign: {
             alignment: 'right'
           }
-        }
+        };
       },
-      _computeDataToPrint(incomingData){
-        if(!incomingData.baseDetails) {
-          return
+
+      _computeDataToPrint: function(incomingData) {
+        if (!incomingData.baseDetails) {
+          return;
         }
         var data = JSON.parse(JSON.stringify(incomingData));
         var dataToPrint = [];
         var innerTableVars = {
           widths: [380, 380],
-          margin: [-5,0],
-          innerWidths: [187,187],
+          margin: [-5, 0],
+          innerWidths: [187, 187],
           withCheckboxWidths: [710, 50],
           layout: 'lightHorizontalLines',
           noTopLayout: {
             hLineWidth: function(i, node) {
-              return (i === 0 ) ? 0 : 1;
+              //jshint unused:false
+              return (i === 0) ? 0 : 1;
             },
             vLineWidth: function(i, node) {
-              return 1
+              //jshint unused:false
+              return 1;
             },
             hLineColor: 'black',
             vLineColor: 'black'
           },
           onlyHorizontalDivider: {
             hLineWidth: function(i, node) {
-              return (i === 0 || i === node.table.body.length ) ? 0 : 1;
+              return (i === 0 || i === node.table.body.length) ? 0 : 1;
             },
             vLineWidth: function(i, node) {
-              return 0
+              //jshint unused:false
+              return 0;
             },
             hLineColor: 'black',
             vLineColor: 'black'
           },
           noVerticalNoTop: {
             hLineWidth: function(i, node) {
-              return (i === 0 ) ? 0 : 1;
+              //jshint unused:false
+              return (i === 0) ? 0 : 1;
             },
             vLineWidth: function(i, node) {
-              return (i === 0 || i === node.table.widths.length ) ? 1 : 0;
+              return (i === 0 || i === node.table.widths.length) ? 1 : 0;
             },
             hLineColor: 'black',
             vLineColor: 'black'
@@ -97,14 +102,17 @@
         };
 
         function innerColumnGen(label, value) {
-          return [{text: label + ': ', margin:[5,0]}, {text: '' + value, style: 'rightAlign', margin:[5,0]}]
+          return [
+            {text: label + ': ', margin: [5,0]},
+            {text: '' + value, style: 'rightAlign', margin: [5,0]}
+          ];
         }
         function concatManyToMany(value) {
-          if(value instanceof Array) {
-            return value.reduce(function (prev, cur, index) {
+          if (value instanceof Array) {
+            return value.reduce(function(prev, cur, index) {
               var tail = index === value.length - 1 ? '' : ',';
-              return prev + cur.label + tail
-            }, '')
+              return prev + cur.label + tail;
+            }, '');
           }
           return '';
         }
@@ -118,7 +126,13 @@
                     table: {
                       widths: innerTableVars.withCheckboxWidths,
                       body: [
-                        [{text: 'International Travel'}, {text: data.baseDetails.international_travel ? 'YES': 'NO', style: 'checkbox'}]
+                        [
+                          {text: 'International Travel'},
+                          {
+                            text: data.baseDetails.international_travel ? 'YES' : 'NO',
+                            style: 'checkbox'
+                          }
+                        ]
                       ]
                     },
                   },
@@ -131,26 +145,31 @@
                           {
                             margin: innerTableVars.margin,
                             layout: innerTableVars.onlyHorizontalDivider,
-                            table:{
+                            table: {
                               widths: innerTableVars.innerWidths,
                               body: [
-                                innerColumnGen('Reference Number', '' + data.baseDetails.reference_number),
-                                innerColumnGen('Traveler', data.baseDetails.traveler ? data.baseDetails.traveler.label : ''),
+                                innerColumnGen('Reference Number',
+                                  '' + data.baseDetails.reference_number),
+                                innerColumnGen('Traveler', data.baseDetails.traveler ?
+                                  data.baseDetails.traveler.label : ''),
                                 innerColumnGen('Start Date', '' + data.baseDetails.start_date),
-                                innerColumnGen('Est. Travel cost', '' + data.baseDetails.estimated_travel_cost),
+                                innerColumnGen('Est. Travel cost',
+                                  '' + data.baseDetails.estimated_travel_cost),
                               ]
                             }
                           },
                           {
                             margin: innerTableVars.margin,
                             layout: innerTableVars.onlyHorizontalDivider,
-                            table:{
+                            table: {
                               widths: innerTableVars.innerWidths,
                               body: [
                                 innerColumnGen('Travel Status', '' + data.baseDetails.status),
-                                innerColumnGen('Supervisor', data.baseDetails.supervisor ? data.baseDetails.supervisor.label : ''),
+                                innerColumnGen('Supervisor', data.baseDetails.supervisor ?
+                                  data.baseDetails.supervisor.label : ''),
                                 innerColumnGen('End date', '' + data.baseDetails.end_date),
-                                innerColumnGen('Mode of travel', concatManyToMany(data.baseDetails.mode_of_travel)),
+                                innerColumnGen('Mode of travel',
+                                  concatManyToMany(data.baseDetails.mode_of_travel)),
                               ]
                             }
                           }
@@ -173,7 +192,7 @@
             }
           },
           activities: {
-            name: 'Travel Activities (' + data.activities.length + ')' ,
+            name: 'Travel Activities (' + data.activities.length + ')',
             generator: function() {
               var mainStack = data.activities.map(function(activity, index) {
                 return {
@@ -184,7 +203,7 @@
                         widths: [16, 380, 321, 50],
                         body: [
                           [
-                            {text: '' + (index + 1 ), style: 'checkbox'},
+                            {text: '' + (index + 1), style: 'checkbox'},
                             {
                               columns: [
                                 {text: 'Travel type: '},
@@ -192,8 +211,10 @@
                               ]
                             },
                             {text: 'Primary Traveler?'},
-
-                            {text: activity.primary_traveler ? 'YES' : 'NO' + '', style: 'checkbox'}
+                            {
+                              text: activity.primary_traveler ? 'YES' : 'NO' + '',
+                              style: 'checkbox'
+                            }
                           ],
                         ]
                       },
@@ -207,38 +228,40 @@
                             {
                               margin: innerTableVars.margin,
                               layout: innerTableVars.onlyHorizontalDivider,
-                              table:{
+                              table: {
                                 widths: innerTableVars.innerWidths,
                                 body: [
-                                  innerColumnGen('Partner', activity.partner ? activity.partner.label  : ''),
+                                  innerColumnGen('Partner', activity.partner ?
+                                    activity.partner.label : ''),
                                   innerColumnGen('When?', '' + activity.date),
-                                  innerColumnGen('Result to be monitored', activity.result ? activity.result.label : ''),
+                                  innerColumnGen('Result to be monitored', activity.result ?
+                                    activity.result.label : ''),
                                 ]
                               }
                             },
                             {
                               margin: innerTableVars.margin,
                               layout: innerTableVars.onlyHorizontalDivider,
-                              table:{
+                              table: {
                                 widths: innerTableVars.innerWidths,
                                 body: [
-                                  innerColumnGen('Partnership', activity.partnership ? activity.partnership.label : ''),
+                                  innerColumnGen('Partnership', activity.partnership ?
+                                    activity.partnership.label : ''),
                                   innerColumnGen('Mode of travel', '' + activity.mode_of_travel),
                                   innerColumnGen('Locations', concatManyToMany(activity.locations)),
                                 ]
                               }
                             }
                           ]
-
                         ]
                       }
                     },
                   ]
-                }
+                };
               });
               return {
                 stack: mainStack
-              }
+              };
             }
           },
           itinerary: {
@@ -253,7 +276,7 @@
                         widths: [16, 380, 380,],
                         body: [
                           [
-                            {text: '' + (index + 1 ), style: 'checkbox'},
+                            {text: '' + (index + 1), style: 'checkbox'},
                             {
                               columns: [
                                 {text: 'From: '},
@@ -279,22 +302,24 @@
                             {
                               margin: innerTableVars.margin,
                               layout: innerTableVars.onlyHorizontalDivider,
-                              table:{
+                              table: {
                                 widths: innerTableVars.innerWidths,
                                 body: [
                                   innerColumnGen('Departing', '' + itinerary.departure_date),
-                                  innerColumnGen('DSA Region ', itinerary.dsa_region? itinerary.dsa_region.label : ''),
+                                  innerColumnGen('DSA Region ', itinerary.dsa_region ?
+                                    itinerary.dsa_region.label : '')
                                 ]
                               }
                             },
                             {
                               margin: innerTableVars.margin,
                               layout: innerTableVars.onlyHorizontalDivider,
-                              table:{
+                              table: {
                                 widths: innerTableVars.innerWidths,
                                 body: [
                                   innerColumnGen('Arriving', '' + itinerary.arrival_date),
-                                  innerColumnGen('Mode of travel', itinerary.mode_of_travel ? itinerary.mode_of_travel.label : ''),
+                                  innerColumnGen('Mode of travel', itinerary.mode_of_travel ?
+                                    itinerary.mode_of_travel.label : '')
                                 ]
                               }
                             }
@@ -310,46 +335,52 @@
                         body: [
                           [
                             {text: 'Overnight travel ? '},
-                            {text: itinerary.overnight_travel ? 'YES' : "NO", style: 'checkbox'}
+                            {text: itinerary.overnight_travel ? 'YES' : 'NO', style: 'checkbox'}
                           ]
                         ]
                       }
                     },
                   ]
-                }
+                };
               });
               return {
                 stack: mainStack
-              }
+              };
             }
           },
           deductions: {
             name: 'Deductions',
             generator: function() {
               var deductionRows = data.deductions.map(function(deduction) {
-                return Object.keys(deduction).filter(function(item){
+                return Object.keys(deduction).filter(function(item) {
                   return item !== 'id' && item !== 'day_of_the_week';
                 }).map(function(key) {
-                  if(key === 'date') {
-                    return deduction['day_of_the_week'] +' ' + deduction['date'];
-                  }
-                  else {
+                  if (key === 'date') {
+                    return deduction.day_of_the_week + ' ' + deduction.date;
+                  } else {
                     return deduction[key] ? 'YES' : '';
                   }
                 });
               });
-              deductionRows.unshift(['Date', 'Breakfast', 'Lunch', 'Dinner', 'Accommodation', 'Not applicable' ]);
+              deductionRows.unshift([
+                'Date',
+                'Breakfast',
+                'Lunch',
+                'Dinner',
+                'Accommodation',
+                'Not applicable'
+              ]);
               return {
                 table: {
                   widths: [170, 110, 110, 110, 110, 110],
                   headerRows: 1,
                   body: deductionRows
                 }
-              }
+              };
             }
           },
           expenses: {
-            name: 'Expenses (' + data.expenses.length + ')' ,
+            name: 'Expenses (' + data.expenses.length + ')',
             generator: function() {
               var mainStack = data.expenses.map(function(expense, index) {
                 return {
@@ -358,14 +389,16 @@
                     {
                       margin: [-25, 0],
                       table: {
-                        widths: [16, 380, 380,],
+                        widths: [16, 380, 380],
                         body: [
                           [
-                            {text: '' + (index + 1 ), style: 'checkbox'},
+                            {text: '' + (index + 1), style: 'checkbox'},
                             {
                               columns: [
                                 {text: 'Expense type: '},
-                                {text: '' + expense.type ? expense.type.label : '', style: 'rightAlign'}
+                                {
+                                  text: '' + expense.type ? expense.type.label : '',
+                                  style: 'rightAlign'}
                               ]
                             },
                             {
@@ -387,20 +420,22 @@
                             {
                               margin: innerTableVars.margin,
                               layout: innerTableVars.onlyHorizontalDivider,
-                              table:{
+                              table: {
                                 widths: innerTableVars.innerWidths,
                                 body: [
-                                  innerColumnGen('Document Currency', expense.document_currency? expense.document_currency.label : ''),
+                                  innerColumnGen('Document Currency', expense.document_currency ?
+                                    expense.document_currency.label : ''),
                                 ]
                               }
                             },
                             {
                               margin: innerTableVars.margin,
                               layout: innerTableVars.onlyHorizontalDivider,
-                              table:{
+                              table: {
                                 widths: innerTableVars.innerWidths,
                                 body: [
-                                  innerColumnGen('Account currency', expense.account_currency? expense.account_currency.label : ''),
+                                  innerColumnGen('Account currency', expense.account_currency ?
+                                    expense.account_currency.label : ''),
                                 ]
                               }
                             }
@@ -416,21 +451,21 @@
                         body: [
                           [
                             {text: 'Overnight travel ? '},
-                            {text: expense.overnight_travel ? 'YES' : "NO", style: 'checkbox'}
+                            {text: expense.overnight_travel ? 'YES' : 'NO', style: 'checkbox'}
                           ]
                         ]
                       }
                     },
                   ]
-                }
+                };
               });
               return {
                 stack: mainStack
-              }
+              };
             }
           },
           cost_assignments: {
-            name: 'Cost Assignment (' + data.cost_assignments.length + ')' ,
+            name: 'Cost Assignment (' + data.cost_assignments.length + ')',
             generator: function() {
               var mainStack = data.cost_assignments.map(function(cost, index) {
                 return {
@@ -442,7 +477,7 @@
                         widths: [16, 710, 50,],
                         body: [
                           [
-                            {text: '' + (index + 1 ), style: 'checkbox'},
+                            {text: '' + (index + 1), style: 'checkbox'},
                             {
                               columns: [
                                 {text: 'WBS: '},
@@ -464,7 +499,7 @@
                             {
                               margin: innerTableVars.margin,
                               layout: innerTableVars.onlyHorizontalDivider,
-                              table:{
+                              table: {
                                 widths: innerTableVars.innerWidths,
                                 body: [
                                   innerColumnGen('Grant', cost.grant ? cost.grant.label : ''),
@@ -474,7 +509,7 @@
                             {
                               margin: innerTableVars.margin,
                               layout: innerTableVars.onlyHorizontalDivider,
-                              table:{
+                              table: {
                                 widths: innerTableVars.innerWidths,
                                 body: [
                                   innerColumnGen('Fund', cost.fund ? cost.fund.label : ''),
@@ -493,21 +528,21 @@
                         body: [
                           [
                             {text: 'Overnight travel ? '},
-                            {text: cost.overnight_travel ? 'YES' : "NO", style: 'checkbox'}
+                            {text: cost.overnight_travel ? 'YES' : 'NO', style: 'checkbox'}
                           ]
                         ]
                       }
                     },
                   ]
-                }
+                };
               });
               return {
                 stack: mainStack
-              }
+              };
             }
           },
           cost_summary: {
-            name: 'Cost summary' ,
+            name: 'Cost summary',
             generator: function() {
               return {
                 stack: [
@@ -542,15 +577,18 @@
                       headerRows: 0,
                       widths: [700, 50],
                       body: [
-                        [{text: 'Total cost'}, {text: '' + ((parseFloat(data.cost_summary.dsa_total) +
-                        parseFloat(data.cost_summary.expenses_total)) -
-                        parseFloat(data.cost_summary.deductions_total)), style: 'checkboxRight' }]
+                        [{text: 'Total cost'},
+                        {
+                          text: '' + ((parseFloat(data.cost_summary.dsa_total) +
+                            parseFloat(data.cost_summary.expenses_total)) -
+                            parseFloat(data.cost_summary.deductions_total)),
+                          style: 'checkboxRight'
+                        }]
                       ]
                     }
                   }
                 ]
-
-              }
+              };
             }
           },
         };
@@ -558,7 +596,7 @@
         function mainHeaderGen(fieldSet) {
           return {
             style: 'mainHeader',
-            margin:[-40, 20],
+            margin: [-40, 20],
             table: {
               widths: [807],
               headerRows: 0,
@@ -568,19 +606,19 @@
                 ]
               ],
             }
-          }
+          };
         }
 
         //clean empty collections
 
-        Object.keys(data).forEach(function(key){
-          if(data[key] instanceof Array) {
+        Object.keys(data).forEach(function(key) {
+          if (data[key] instanceof Array) {
             data[key] = data[key].filter(function(item) {
               var itemKeys = Object.keys(item);
               return itemKeys.length > 0;
             });
 
-            if(data[key].length === 0) {
+            if (data[key].length === 0) {
               delete data[key];
             }
           }
@@ -588,13 +626,13 @@
 
         var mainKeys = Object.keys(titleLib);
         mainKeys.forEach(function(titleKey) {
-          if(data[titleKey]) {
+          if (data[titleKey]) {
             dataToPrint.push(mainHeaderGen(titleLib[titleKey]));
-            dataToPrint.push(titleLib[titleKey].generator())
+            dataToPrint.push(titleLib[titleKey].generator());
           }
         });
         return dataToPrint;
-      },
+      }
 
     });
   </script>

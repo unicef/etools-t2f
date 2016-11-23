@@ -232,9 +232,8 @@ attributes:
 
       _fileSelected: function(e) {
 
-
           var files = e.target.files;
-          for(var i=0; i < files.length; i++) {
+          for (var i = 0; i < files.length; i++) {
             this.push('files', {
               id: '',
               name: files[i].name,
@@ -252,11 +251,10 @@ attributes:
           this.deletedFiles = [];
         }
         this.set('files', this.files.filter(function(file) {
-          if(file === e.model.item) {
+          if (file === e.model.item) {
             self.push('deletedFiles', file.id);
             return false;
-          }
-          else {
+          } else {
             return true;
           }
         }));

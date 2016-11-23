@@ -11,7 +11,7 @@
   "noarg": true,
   "quotmark": "single",
   "undef": true,
-  "unused": true,
+  "unused": false,
   "newcap": false,
   "laxbreak": true,
   "globals": {
@@ -20,6 +20,8 @@
     "Dexie": true,
     "etoolsAppConfig": true,
     "etoolsAjaxDefaultDexieDbPrefix": true,
-    "DynamicCustomStyleBehavior": true
+    "DynamicCustomStyleBehavior": true,
+    "URLSearchParams": true,
+    "et2fBehaviors": true
   }
 }

@@ -292,12 +292,13 @@
 
         <div class="headings textsec w5"></div>
       </div>
-
   </template>
 
   <script>
     Polymer({
+
       is: 'list-element',
+
       properties: {
         data: {
           type: Object,
@@ -316,11 +317,11 @@
         enhancedNewTravelBody: String,
         route: Object
       },
+
       _statusClass: function(data) {
         var status = data.status;
         return {
           planned: 'planned',
-          approved: 'approved',
           approved: 'approved',
           rejected: 'rejected',
           submitted: 'submitted',
@@ -328,31 +329,33 @@
           completed: 'completed',
           'sent_for_payment': 'sent',
           'cert_needed': 'planned',
-          'cert-approved': 'approved',
+          'cert_approved': 'approved',
           'cert_submitted': 'submitted',
         }[status];
       },
+
       _statusMapping: function(status) {
         var statusLib = {
-          "planned": "Planned",
-          "submitted": "Submitted",
-          "approved": "Approved",
-          "rejected": "Rejected",
-          "sent_for_payment": "Sent for payment",
-          "cancelled": "Cancelled",
-          "done": "Certification needed",
-          "certification_approved": "Certification approved",
-          "certification_rejected": "Certification rejected",
-          "certification_submitted": "Certification submitted",
-          "certified": "Completed",
+          'planned': 'Planned',
+          'submitted': 'Submitted',
+          'approved': 'Approved',
+          'rejected': 'Rejected',
+          'sent_for_payment': 'Sent for payment',
+          'cancelled': 'Cancelled',
+          'done': 'Certification needed',
+          'certification_approved': 'Certification approved',
+          'certification_rejected': 'Certification rejected',
+          'certification_submitted': 'Certification submitted',
+          'certified': 'Completed'
         };
         return statusLib[status];
       },
-      _toggleExpanded: function(event) {
+
+      _toggleExpanded: function() {
         this.set('expanded', !this.expanded);
       },
       _isDetailed: function(expanded) {
-        return this.expanded;
+        return expanded;
       },
       _resetExpanded: function() {
         this.set('expanded', false);

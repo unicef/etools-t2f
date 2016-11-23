@@ -316,7 +316,9 @@
 
   <script>
     Polymer({
+
       is: 'travel-status',
+
       properties: {
         status: {
           type: String,
@@ -333,63 +335,79 @@
           value: 0
         }
       },
+
       firstStatuses: ['Planned', 'Submitted', 'Approved', 'Rejected', 'Sent for payment'],
-      secondStatuses: ['Certification needed', 'Certification submitted', 'Certification rejected', 'Certification approved'],
+
+      secondStatuses: [
+        'Certification needed',
+        'Certification submitted',
+        'Certification rejected',
+        'Certification approved'
+      ],
+
       _getHeading: function(status) {
         return this.secondStatuses.indexOf(status) >= 0 ? 'Certification' : 'Travel status';
       },
+
       _computeStatusClass: function(label, status, set) {
         var statusesToParse = set === 1 ? this.firstStatuses : this.secondStatuses;
-        var statClass = label == status ? 'blue' : '';
+        var statClass = label === status ? 'blue' : '';
         if (statusesToParse.indexOf(label) < statusesToParse.indexOf(status)) {
           statClass = 'green';
         }
-        if (['Rejected', 'Certification rejected'].indexOf(status) >= 0 ) {
+        if (['Rejected', 'Certification rejected'].indexOf(status) >= 0) {
           statClass += ' rejected';
         }
         return statClass;
       },
+
       _showFirst: function(status) {
         return this.firstStatuses.indexOf(status) >= 0;
       },
+
       _showSecond: function(status) {
         return this.secondStatuses.indexOf(status) >= 0;
       },
+
       _isSmallClass: function(status) {
         return ['Cancelled', 'Completed'].indexOf(status) >= 0 ? 'small' : 'big';
       },
+
       _showCancelled: function(status) {
         return status === 'Cancelled';
       },
+
       _showCompleted: function(status) {
         return status === 'Completed';
       },
+
       attached: function() {
         var self = this;
-        if(!self.scrollTopMargin) {
+        if (!self.scrollTopMargin) {
           return;
         }
         self._previousOnScroll = window.onscroll;
         window.onscroll = function() {
-          if(self.getBoundingClientRect().top < self.scrollTopMargin) {
-            self.$['main-card'].style.position= 'fixed';
-            self.$['main-card'].style.top = self.scrollTopMargin + "px";
+          if (self.getBoundingClientRect().top < self.scrollTopMargin) {
+            self.$['main-card'].style.position = 'fixed';
+            self.$['main-card'].style.top = self.scrollTopMargin + 'px';
+          } else {
+            self.$['main-card'].style.position = 'absolute';
+            self.$['main-card'].style.top = '0';
           }
-          else {
-            self.$['main-card'].style.position= 'absolute';
-            self.$['main-card'].style.top = "0";
-          }
-          if(self._previousOnScroll) {
+          if (self._previousOnScroll) {
             self._previousOnScroll();
           }
-        }
+        };
       },
+
       // '2016-11-17T13:53:13.839938Z' => '2016. 11. 17.'
       formatDate: function(dateStr) {
         return dateStr ? dateStr.split('T')[0].split('-').join('. ') + '.' : 'N.A.';
       },
+
       detached: function() {
-        if(this._previousOnScroll) {
+        if (this._previousOnScroll) {
           window.onscroll = this._previousOnScroll;
         }
       }

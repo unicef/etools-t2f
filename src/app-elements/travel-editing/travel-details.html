@@ -74,10 +74,10 @@
         top: -4px;
         left: 18px;
       }
-      #cancel-flag {
+      .cancel-flag {
         fill: var(--et2f-warning);
       }
-      #reject-flag {
+      .reject-flag {
         fill: var(--et2f-error);
       }
     </style>
@@ -90,9 +90,9 @@
         <paper-material class="note cancel" elevation="1" hidden$="[[_hideCancelNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-              <g id="cancel-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
-                <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
-                  <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
+              <g class="cancel-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                <g transform="translate(80.000000, 226.000000)">
+                  <polygon points="16 0 40 0 40 49 28 39 16 49"></polygon>
                 </g>
               </g>
             </g>
@@ -105,9 +105,9 @@
         <paper-material class="note reject" elevation="1" hidden$="[[_hideRejectionNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
             <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-              <g id="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
-                <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
-                  <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
+              <g class="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                <g transform="translate(80.000000, 226.000000)">
+                  <polygon points="16 0 40 0 40 49 28 39 16 49"></polygon>
                 </g>
               </g>
             </g>
@@ -120,9 +120,9 @@
         <paper-material class="note reject" elevation="1" hidden$="[[_hideCertificationNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-              <g id="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
-                <g id="rejection-list-box" transform="translate(80.000000, 226.000000)">
-                  <polygon id="Rectangle-3" points="16 0 40 0 40 49 28 39 16 49"></polygon>
+              <g class="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                <g transform="translate(80.000000, 226.000000)">
+                  <polygon points="16 0 40 0 40 49 28 39 16 49"></polygon>
                 </g>
               </g>
             </g>
@@ -132,15 +132,12 @@
         </paper-material>
 
 
-
-
         <etools-repeatable-field-set title="Travel Plan"
           hide-plus
           show-counter="[[false]]"
           model="[1]"
           hide-vertical-divider
-          elevation="1"
-        >
+          elevation="1">
 
           <travel-plan base-details="{{data.baseDetails}}"
             permissions-matrix="[[travelPermissions.baseDetails]]"
@@ -284,7 +281,8 @@
         },
         sectionPermissions: {
           type: Object,
-          computed: '_computeSectionPermissions(travelPermissions, data.baseDetails.international_travel)'
+          computed:
+            '_computeSectionPermissions(travelPermissions, data.baseDetails.international_travel)'
         },
         userType: String,
         scrollToFieldset: {
@@ -296,15 +294,22 @@
         var computed = {};
         Object.keys(permissions).forEach(function(key) {
 
-          if(isInternational) {
-            var forceHiddenStatus = ['expenses', 'cost_assignments', 'deductions', 'cost_summary'].indexOf(key) > -1 ;
+          var forceHiddenStatus = false;
+
+          if (isInternational) {
+            forceHiddenStatus = [
+              'expenses',
+              'cost_assignments',
+              'deductions',
+              'cost_summary'
+            ].indexOf(key) > -1;
           }
 
           computed[key] = {
             hidden: !permissions[key].view || forceHiddenStatus,
             open: permissions[key].edit,
             edit: permissions[key].edit
-          }
+          };
         });
         return computed;
       },

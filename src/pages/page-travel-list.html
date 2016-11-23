@@ -137,9 +137,8 @@
 
     <div class="background">
 
-      <etools-ajax
-          url="[[listEndPoint]]"
-          params="{{ajaxParams}}""
+      <etools-ajax url="[[listEndPoint]]"
+          params="{{ajaxParams}}"
           on-success="handleListResponse">
       </etools-ajax>
 
@@ -265,14 +264,38 @@
         headings: {
           type: Array,
           value: [
-            { "size": 13, "label": "Reference #" },
-            { "size": 13, "label": "Traveler" },
-            { "size": 13, "label": "Office" },
-            { "size": 13, "label": "Section" },
-            { "size": 11, "label": "Start date" },
-            { "size": 11, "label": "End date" },
-            { "size": 23, "label": "Status" },
-            { "size": 5, "label": "Actions" }
+            {
+              'size': 13,
+              'label': 'Reference #'
+            },
+            {
+              'size': 13,
+              'label': 'Traveler'
+            },
+            {
+              'size': 13,
+              'label': 'Office'
+            },
+            {
+              'size': 13,
+              'label': 'Section'
+            },
+            {
+              'size': 11,
+              'label': 'Start date'
+            },
+            {
+              'size': 11,
+              'label': 'End date'
+            },
+            {
+              'size': 23,
+              'label': 'Status'
+            },
+            {
+              'size': 5,
+              'label': 'Actions'
+            },
           ]
         },
         pages: {
@@ -555,7 +578,7 @@
       },
       _changeParamsOrder: function(orderObj, old) {
 
-        if (typeof old === 'undefined' ) {
+        if (typeof old === 'undefined') {
           return;
         }
         this.set('pages.page', 1);
@@ -576,7 +599,8 @@
       },
       _computeResultsToShow: function(pages, datalength) {
         var start = (pages.page - 1) * pages.itemsPerPage;
-        var end = (pages.itemsPerPage * pages.page) > datalength ? datalength : (pages.itemsPerPage * pages.page);
+        var end = (pages.itemsPerPage * pages.page) > datalength ?
+                   datalength : (pages.itemsPerPage * pages.page);
         return start + ' - ' + end + ' of ' + datalength;
       },
       labelLib: {
@@ -588,15 +612,14 @@
         'Status': 'status',
         'Office': 'office',
         'Section': 'section'
-
       },
       handleListResponse: function(event, data) {
         this.set('datalength', data.total_count);
         data.data.forEach(function(travel) {
-          if(travel.start_date ) {
+          if (travel.start_date) {
             travel.start_date = travel.start_date.split('T')[0];
           }
-          if(travel.end_date) {
+          if (travel.end_date) {
             travel.end_date = travel.end_date.split('T')[0];
           }
         });
@@ -612,13 +635,13 @@
             body: []
           }
         };
-        if(data.length > 0) {
-          var tableHeader = Object.keys(data[0]).slice(0, 7).map(function (item) {
+        if (data.length > 0) {
+          var tableHeader = Object.keys(data[0]).slice(0, 7).map(function(item) {
             return item.replace(/_/g, ' ');
           });
-          this.dataToPrint.table.body = data.map(function (item) {
-            return _.values(item).slice(0, 7).map(function (value) {
-              if(!value) {
+          this.dataToPrint.table.body = data.map(function(item) {
+            return _.values(item).slice(0, 7).map(function(value) {
+              if (!value) {
                 return ' ';
               }
               return '' + value;
@@ -639,7 +662,7 @@
       },
       _searchStringChanged: function(searchStr, old) {
 
-        if (typeof old === 'undefined' ) {
+        if (typeof old === 'undefined') {
           return;
         }
         var backup = JSON.parse(JSON.stringify(this.ajaxParams));
@@ -647,6 +670,7 @@
         this.set('ajaxParams', backup);
       },
       _changeShowHidden: function(e, detail) {
+        //jshint unused:false
         this.set('showHidden', !this.showHidden);
       },
       _showHiddenChanged: function(show, old) {
@@ -659,7 +683,7 @@
         this.set('ajaxParams', backup);
       },
       _doRefreshData: function(status) {
-        if(status) {
+        if (status) {
           var backup = this.ajaxParams;
           this.set('ajaxParams', {});
           this.set('ajaxParams', backup);

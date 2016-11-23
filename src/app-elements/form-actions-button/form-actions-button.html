@@ -4,10 +4,6 @@
   Properties:
     user-type: required, String, lowercase, eg: 'administrator'
     status: required, String, Capital, eg: 'Submitted'
-
-  Files:
-    "../../structure/actions-list.json"
-    "../../structure/form-actions-permissions.json"
 -->
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
@@ -75,7 +71,6 @@
         </template>
       </paper-button>
     </template>
-
   </template>
 
   <script>
@@ -121,15 +116,15 @@
               'name': 'Travel went as planned',
               'endPoint': 'went_as_planned'
             },
-            "submitCertificate": {
+            'submitCertificate': {
               'name': 'Not as planned',
               'endPoint': 'submit_certificate'
             },
-            "approveCertificate": {
+            'approveCertificate': {
               'name': 'Approve Certification',
               'endPoint': 'approve_certificate'
             },
-            "rejectCertificate": {
+            'rejectCertificate': {
               'name': 'Reject Certification',
               'endPoint': 'reject_certificate'
             },
@@ -868,7 +863,8 @@
         },
         actions: {
           type: Object,
-          computed: '_computeActions(actList, permissions, status, userType, isInternational, internationalTravelPermissions)'
+          computed: '_computeActions(actList, permissions, status,' +
+            ' userType, isInternational, internationalTravelPermissions)'
         },
         show: {
           type: Boolean,
@@ -884,14 +880,19 @@
         }
       },
       _buttonGreyClass: function(actions) {
-        return (actions.primary && actions.primary.name === 'Cancel' && !this._showSecondary(actions)) ? 'grey' : '';
+        return (actions.primary &&
+                actions.primary.name === 'Cancel' &&
+                !this._showSecondary(actions)) ?
+                  'grey' : '';
       },
-      _computeActions: function(actList, permissions, status, userType, isInternational, internationalTravelPermissions) {
+      _computeActions: function(actList, permissions, status, userType,
+        isInternational, internationalTravelPermissions) {
 
-        var ret = isInternational ? internationalTravelPermissions[userType][status] : permissions[userType][status];
+        var ret = isInternational ?
+          internationalTravelPermissions[userType][status] : permissions[userType][status];
         var computed = {
           primary: actList[ret.primary],
-          secondary: ret.secondary.map(function (el) {
+          secondary: ret.secondary.map(function(el) {
             return actList[el];
           })
         };
@@ -903,7 +904,7 @@
       },
       _showSecondary: function(actions) {
 
-        return Array.isArray(actions.secondary) && actions.secondary.length != 0;
+        return Array.isArray(actions.secondary) && actions.secondary.length !== 0;
       },
       _clickPrimary: function() {
         this.fire('form-action', this.actions.primary);

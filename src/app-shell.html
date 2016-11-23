@@ -308,20 +308,20 @@
       },
       _navigateToList: function(e, detail) {
         this.refreshData = true;
-        if(this.route.path === '/plan-travel') {
+        if (this.route.path === '/plan-travel') {
           this.set('route.path', '/edit-travel/' + detail);
         }
       },
-      _handleStructure: function (event, data) {
+      _handleStructure: function(event, data) {
         var dataKeys = Object.keys(data);
         dataKeys.forEach(function(key) {
-          data[key] = data[key].length > 100 ? data[key].splice(0,99) : data[key];
-          if(key === 'currencies') {
-            data[key] = data[key].map(function (obj) {
+          data[key] = data[key].length > 100 ? data[key].splice(0, 99) : data[key];
+          if (key === 'currencies') {
+            data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id, short: obj.iso_4217};
             });
           } else {
-            data[key] = data[key].map(function (obj) {
+            data[key] = data[key].map(function(obj) {
               return {label: obj.name || obj.full_name, value: obj.id};
             });
           }
@@ -331,21 +331,29 @@
         Object.freeze(data);
         this.set('structure', data);
       },
-      _handlePermissions: function (e, data) {
+      _handlePermissions: function(e, data) {
 
-        var nonBaseKeys = [ 'deductions', 'itinerary', 'activities', 'cost_assignments', 'expenses', 'clearances', 'cost_summary'];
+        var nonBaseKeys = [
+          'deductions',
+          'itinerary',
+          'activities',
+          'cost_assignments',
+          'expenses',
+          'clearances',
+          'cost_summary'
+        ];
         Object.keys(data).forEach(function(role) {
-          if(!data[role]) {
+          if (!data[role]) {
             return;
           }
-          Object.keys(data[role]).forEach(function(status){
-            if(!data[role][status]) {
+          Object.keys(data[role]).forEach(function(status) {
+            if (!data[role][status]) {
               return;
             }
-            var currentKeys =Object.keys(data[role][status]);
+            var currentKeys = Object.keys(data[role][status]);
             data[role][status].baseDetails = {};
-            currentKeys.forEach(function(key){
-              if (nonBaseKeys.indexOf(key) === -1 ) {
+            currentKeys.forEach(function(key) {
+              if (nonBaseKeys.indexOf(key) === -1) {
                 data[role][status].baseDetails[key] = data[role][status][key];
                 delete data[role][status][key];
               }
@@ -355,10 +363,11 @@
         Object.freeze(data);
         this.et2fPermissions = data;
       },
-      _handleMe: function(e,data) {
+      _handleMe: function(e, data) {
         this.user = data;
       },
       _commonDataLoaded: function(structure, permissions, user) {
+        // jshint unused:false
         this.loading = false;
       }
 

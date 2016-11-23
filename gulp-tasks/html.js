@@ -22,7 +22,8 @@ var htmlLintOptions = {
   'title-require': false,
   'attr-value-double-quotes': true,
   'attr-no-duplication': true,
-  'id-unique': true
+  'id-unique': true,
+  'attr-lowercase': false
 };
 
 /**
