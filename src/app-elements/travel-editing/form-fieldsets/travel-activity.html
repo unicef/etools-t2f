@@ -84,7 +84,9 @@
 
   <script>
     Polymer({
+
       is: 'travel-activities',
+
       properties: {
         activity: {
           type: Object,
@@ -95,8 +97,11 @@
           value: {}
         }
       },
+
       behaviors: [et2fBehaviors.PermissionLayer],
+
       observers: ['_setCheckboxes(activity.*)'],
+
       _setCheckboxes: function(changed) {
         this[changed.path] = changed.value;
       }

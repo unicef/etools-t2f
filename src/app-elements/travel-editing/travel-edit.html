@@ -25,6 +25,7 @@
 <link rel="import" href="../../../styles/et2f-styles.html">
 
 <dom-module id="travel-edit">
+
   <template>
     <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
       :host {
@@ -90,7 +91,6 @@
         on-form-action="_handleFormAction">
       </travel-report>
     </iron-pages>
-
   </template>
 
   <script>
@@ -144,7 +144,7 @@
       ],
 
       _newTravelObserver: function(isNew) {
-        if(isNew) {
+        if (isNew) {
           this.set('data', {
             baseDetails: {
               ta_required: true,
@@ -158,39 +158,45 @@
             expenses: [{}],
             attachments: [],
             status: 'Planned'
-          })
+          });
         }
       },
+
       _computeStatus: function(data) {
-        if(data.status) {
+        if (data.status) {
           return data.status.toLowerCase().replace(/ /g, '_');
         }
       },
+
       _computeTravelPermission: function(permissions, status, user, data) {
-        var userType = undefined;
-        if(data.baseDetails.id) {
+
+        var userType;
+
+        if (data.baseDetails.id) {
           userType = 'Anyone';
-          if(data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
-            userType = 'Traveler'
+          if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
+            userType = 'Traveler';
           }
-          if(data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
+          if (data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
             userType = 'Supervisor';
           }
 
-        }
-        else if(this.newTravel) {
+        } else if (this.newTravel) {
           userType = 'Traveler';
         }
+
         var urlParams = new URLSearchParams(window.location.search);
         var forcedUserType = urlParams.get('usertype');
-        if(forcedUserType) {
-          userType = forcedUserType
+
+        if (forcedUserType) {
+          userType = forcedUserType;
         }
-        if(userType) {
+
+        if (userType) {
           console.debug('User type:  ' + userType + ' Status: ' + status);
           this.set('userType', userType);
           this.set('travelPermissions', {});
-          this.set('travelPermissions', permissions[userType][status] );
+          this.set('travelPermissions', permissions[userType][status]);
         }
 
         var self = this;
@@ -203,10 +209,9 @@
         }
       },
 
-
-      _handleFormAction: function (e, details) {
+      _handleFormAction: function(e, details) {
         this.$['outbound-data'].doRequest(details);
-      },
+      }
 
     });
   </script>

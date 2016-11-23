@@ -44,7 +44,6 @@
             text-align: center;
             margin-left: 10px;
         }
-
     </style>
 
     <template>
@@ -191,7 +190,9 @@
 
     <script>
       Polymer({
+
         is: 'et2f-outbound-data',
+
         properties: {
           data: {
             type: Object,
@@ -222,8 +223,8 @@
           },
           serverData: {
             type: Object,
-            value: function () {
-              return {}
+            value: function() {
+              return {};
             }
           },
           formErrors: {
@@ -245,16 +246,17 @@
               buttonText: ''
             }
           },
-
         },
+
         generalModalAction: function() {
           console.log('Default fn. ran!');
         },
-        _computeLoading: function(post, attachment){
-          return post || attachment
+
+        _computeLoading: function(post, attachment) {
+          return post || attachment;
         },
 
-        _processOutboundData: function (data) {
+        _processOutboundData: function(data) {
           var self = this;
           delete data.status;
           delete data.cost_summary;
@@ -268,25 +270,43 @@
           };
 
           function duplicateIdPurging(collection) {
-            if(collection.length < 2) {
+            if (collection.length < 2) {
               return collection;
             }
             return collection.reduce(function(prev, current) {
-              if(prev.some(function(prevItem){return prevItem.id === current.id;})) {
+              if (prev.some(function(prevItem) {return prevItem.id === current.id;})) {
                 delete current.id;
               }
               prev.push(current);
               return prev;
-            }, [])
+            }, []);
           }
 
           function emptyIdPurging(collection) {
             return collection.map(function(item) {
-              if(item && item.id === '') {
-                delete item.id
+              if (item && item.id === '') {
+                delete item.id;
               }
               return item;
-            })
+            });
+          }
+
+          function handleObject(obj) {
+            if (!obj) {return;}
+            var keys = Object.keys(obj);
+            keys.forEach(function(key) {
+              if (obj[key] === null || obj[key] === undefined || obj[key] === '') {
+                delete obj[key];
+              }
+              if (obj[key] && !(obj[key] instanceof Array)) {
+                obj[key] = typeof obj[key] === 'object' ?  obj[key].value : obj[key];
+              }
+              if (obj[key] && obj[key] instanceof Array) {
+                obj[key] = obj[key].map(function(item) {
+                  return typeof item === 'object' ? item.value : item;
+                });
+              }
+            });
           }
 
           function handleArray(arr) {
@@ -297,46 +317,25 @@
             });
           }
 
-
-          function handleObject(obj) {
-            if (!obj) {return;}
-            var keys = Object.keys(obj);
-            keys.forEach(function(key) {
-              if(obj[key] === null || obj[key] === undefined || obj[key] === '') {
-                delete obj[key]
-              }
-              if(obj[key] && !(obj[key] instanceof Array )){
-                obj[key] = typeof obj[key] === 'object' ?  obj[key].value : obj[key]
-              }
-              if(obj[key] && obj[key] instanceof Array ){
-                obj[key] = obj[key].map(function(item) {
-                  return typeof  item === 'object' ? item.value : item
-                })
-              }
-            });
-          }
-
           var dataKeys = Object.keys(data);
 
-          dataKeys.forEach(function(fieldSet){
+          dataKeys.forEach(function(fieldSet) {
             if (data[fieldSet] instanceof Array) {
-              handleArray(data[fieldSet])
-            }
-            else if(typeof data[fieldSet] === 'object'){
+              handleArray(data[fieldSet]);
+            } else if (typeof data[fieldSet] === 'object') {
               handleObject(data[fieldSet]);
             }
           });
 
           var serverKeys = Object.keys(this.serverData);
 
-
           serverKeys.forEach(function(serverKey) {
-            if(data[serverKey] instanceof Array && data[serverKey][0]) {
-              if(Object.keys(data[serverKey][0]).length === 0) {
+            if (data[serverKey] instanceof Array && data[serverKey][0]) {
+              if (Object.keys(data[serverKey][0]).length === 0) {
                 delete self.serverData[serverKey];
               }
             }
-            if(self.serverData[serverKey]) {
+            if (self.serverData[serverKey]) {
               self.serverData[serverKey] = data[serverKey];
             }
             delete data[serverKey];
@@ -345,11 +344,11 @@
           var leftoverKeys = Object.keys(data);
           leftoverKeys.forEach(function(key) {
             if (data[key]) {
-              if(typeof(data[key]) === 'object') {
+              if (typeof(data[key]) === 'object') {
                 var innerKeys = Object.keys(data[key]);
-                innerKeys.forEach(function (innerKey) {
+                innerKeys.forEach(function(innerKey) {
                   self.serverData[innerKey] = data[key][innerKey];
-                })
+                });
               } else {
                 self.serverData[key] = data[key];
               }
@@ -357,12 +356,13 @@
 
           });
         },
+
         _processAttachmentData: function(data) {
           this.attachments = data.attachments.filter(function(item) {
             return !item.id && item.raw;
           });
-          if(data.deletedAttachments) {
-            this.deletedAttachments = data.deletedAttachments.filter(function (item) {
+          if (data.deletedAttachments) {
+            this.deletedAttachments = data.deletedAttachments.filter(function(item) {
               return item === parseInt(item, 10);
             });
           } else {
@@ -372,9 +372,12 @@
           delete data.attachments;
 
         },
-        doRequest: function (details) {
+
+        doRequest: function(details) {
+
           this._processAttachmentData(this.data);
           this._processOutboundData(this.data);
+
           var self = this;
           var endpointConfig = {
             id: self.travelId ? self.travelId.replace(/\//g, '') : null,
@@ -396,29 +399,38 @@
 
           function doSaveUpdate() {
             self.method = 'PATCH';
-            self.postEndpoint = etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', endpointConfig).url;
+            self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
+              'et2fTravelDetail',
+              endpointConfig
+            ).url;
             self.postData = true;
           }
 
           function doPut() {
             self.method = 'PUT';
-            self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig).url;
+            self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
+              endpointName,
+              endpointConfig
+            ).url;
             self.postData = true;
           }
 
           function doPost() {
             self.method = 'POST';
-            self.postEndpoint = etoolsAppConfig.globals.computeTemplate(endpointName, endpointConfig).url;
+            self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
+              endpointName,
+              endpointConfig
+            ).url;
             self.postData = true;
           }
 
           var statusActions = {
 
-            save: function () {
-              if(self.travelId !== undefined) {
+            save: function() {
+              if (self.travelId !== undefined) {
                 doSaveUpdate();
               } else {
-                doSavePost()
+                doSavePost();
               }
             },
 
@@ -430,7 +442,7 @@
                 security_course: 'not_applicable'
               });
 
-              self._clearancesOnConfirm = function () {
+              self._clearancesOnConfirm = function() {
 
                 self.$['clearance-modal'].close();
                 if (endpointConfig.id) {
@@ -449,7 +461,7 @@
               self._cancelOnConfirm = function() {
 
                 self.$['cancel-modal'].close();
-                if(self.travelId !== undefined) {
+                if (self.travelId !== undefined) {
                   endpointConfig.status = 'cancel';
                   doPost();
                 } else {
@@ -544,7 +556,7 @@
                 self.$['certification-modal'].close();
                 endpointConfig.status = 'submit_certificate';
                 doPost();
-              }
+              };
               self.certificationOpened = true;
             },
 
@@ -579,8 +591,6 @@
                 text: 'Are you sure you want to certify this travel?',
                 buttonText: 'Yes'
               });
-
-
             },
 
             reject_certificate: function() {
@@ -597,7 +607,6 @@
                 text: 'Are you sure you want to reject the certification provided for this travel?',
                 buttonText: 'Reject certificate'
               });
-
             },
 
             certify: function() {
@@ -614,7 +623,6 @@
                 text: 'Are you sure you want to certify this travel?',
                 buttonText: 'Certify'
               });
-
             },
 
             complete: function() {
@@ -631,7 +639,6 @@
                 text: 'Are you sure you want to mark this travel as completed?',
                 buttonText: 'Complete'
               });
-
             },
 
             planned: function() {
@@ -648,21 +655,28 @@
                 text: 'Are you sure you want to make this travel editable again?',
                 buttonText: 'Yes'
               });
-
             }
           };
           statusActions[details.endPoint]();
-
         },
+
         _doAttachmentUpload: function() {
+
           var current = null;
-          if(this.deletedAttachments.length > 0 ) {
+
+          if (this.deletedAttachments.length > 0) {
             current = this.deletedAttachments.pop();
-            this.set('deleteAttachmentEndpoint', etoolsAppConfig.globals.computeTemplate('et2fTravelAttachmentDetail', {id: this.travelId, itemId: current}).url);
+            this.set('deleteAttachmentEndpoint', etoolsAppConfig.globals.computeTemplate(
+              'et2fTravelAttachmentDetail',
+              {id: this.travelId, itemId: current}
+            ).url);
           }
 
-          if(this.attachments.length > 0) {
-            this.set('attachmentsEndpoint', etoolsAppConfig.globals.computeTemplate('et2fTravelAttachments', {id: this.travelId}).url);
+          if (this.attachments.length > 0) {
+            this.set('attachmentsEndpoint', etoolsAppConfig.globals.computeTemplate(
+              'et2fTravelAttachments',
+              {id: this.travelId}
+            ).url);
             current = this.attachments.pop();
 
             this.attachment = {
@@ -673,6 +687,7 @@
             this.attachmentData = true;
           }
         },
+
         _handlePostFail: function(event, i) {
           this.set('formErrors', i.request.detail.request.xhr.response);
           this.postData = false;
@@ -681,13 +696,12 @@
           this.attachmentsEndpoint = undefined;
         },
 
-        _handleAttachmentPostSuccess: function (e, data) {
+        _handleAttachmentPostSuccess: function(e, data) {
           this.deleteAttachmentEndpoint = undefined;
-          if(this.attachments.length > 0 || this.deletedAttachments.length > 0 ) {
+          if (this.attachments.length > 0 || this.deletedAttachments.length > 0) {
             this.travelId =  this.travelId ? this.travelId : '' + data.id;
             this._doAttachmentUpload();
-          }
-          else {
+          } else {
             this.fire('travel-post-success', data.id);
             this.attachmentData = false;
             var travelId = this.travelId;
@@ -700,18 +714,15 @@
         _handlePostSuccess: function(e, data) {
           this.postData = false;
           this.travelId = this.travelId ? this.travelId : data.id;
-          if(this.attachments.length > 0  || this.deletedAttachments.length > 0) {
+          if (this.attachments.length > 0  || this.deletedAttachments.length > 0) {
             this.travelId =  this.travelId ? this.travelId : '' + data.id;
             this._doAttachmentUpload();
-          }
-          else {
+          } else {
             this.fire('travel-post-success', data.id);
             this.travelId = null;
-            this.travelId = '' + data.id
+            this.travelId = '' + data.id;
           }
         },
-
-
       });
     </script>
 </dom-module>

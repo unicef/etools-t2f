@@ -62,7 +62,9 @@
 
   <script>
     Polymer({
+
       is: 'list-header',
+
       properties: {
         data: {
           type: Array,
@@ -78,6 +80,7 @@
           notify: true
         }
       },
+
       _headingClassGenerator: function(item, orderedBy) {
 
         var returnClass = 'w' + item.size;
@@ -88,10 +91,11 @@
 
         return returnClass;
       },
+
       _clickOnLabel: function(event) {
 
         var newOrderBy = event.model.item.label;
-        if (newOrderBy === "Actions") { return; } // Don't reorder by passive
+        if (newOrderBy === 'Actions') { return; }
 
         if (newOrderBy === this.orderObj.orderedBy) {
           this.set('orderObj', {
@@ -107,8 +111,6 @@
       },
 
       _getMetaData: function(data, orderObj) {
-        // console.log('Computing metadata fn. called');
-        // console.log(data, orderObj);
 
         var metaData = data.map(function(el) {
           el.down = !(orderObj.orderedBy === el.label && !orderObj.reverse);
@@ -116,11 +118,12 @@
           return el;
         });
 
-        // console.log('metaData: ', metaData);
         return metaData;
       },
 
-      _hidden: function(hidden, rev, orderedBy) { return hidden; }
+      _hidden: function(hidden, rev, orderedBy) {
+        return hidden;
+      }
 
     });
   </script>
