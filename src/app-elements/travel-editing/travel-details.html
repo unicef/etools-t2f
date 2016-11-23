@@ -282,7 +282,7 @@
         sectionPermissions: {
           type: Object,
           computed:
-            '_computeSectionPermissions(travelPermissions, data.baseDetails.international_travel)'
+            '_computeSectionPermissions(travelPermissions, data.baseDetails.international_travel, data.status, userType)'
         },
         userType: String,
         scrollToFieldset: {
@@ -290,24 +290,58 @@
           observer: '_scrollTo'
         },
       },
-      _computeSectionPermissions: function(permissions, isInternational) {
+      _computeSectionPermissions: function(permissions, isInternational, status, userType) {
         var computed = {};
+
+        var collapsedStatus= {
+          'Traveler': {
+            'Sent for payment' : ['deductions', 'expenses', 'cost_assignments'],
+            'Certification submitted' : ['deductions', 'expenses', 'cost_assignments'],
+            'Certification approved' : ['deductions', 'expenses', 'cost_assignments'],
+            'Certification rejected' : ['deductions', 'expenses', 'cost_assignments'],
+            'Certified' : ['deductions', 'expenses', 'cost_assignments'],
+            'Completed' : ['deductions', 'expenses', 'cost_assignments'],
+          },
+          'Travel Administrator': {
+            'Canceled' : ['deductions', 'expenses', 'cost_assignments'],
+            'Submitted' : ['deductions', 'expenses', 'cost_assignments'],
+            'Sent for payment' : ['deductions', 'expenses', 'cost_assignments'],
+            'Certification submitted' : ['deductions', 'expenses', 'cost_assignments'],
+            'Certification approved' : ['deductions', 'expenses', 'cost_assignments'],
+            'Certification rejected' : ['deductions', 'expenses', 'cost_assignments'],
+            'Certified' : ['deductions', 'expenses', 'cost_assignments'],
+            'Completed' : ['deductions', 'expenses', 'cost_assignments'],
+          },
+          'Supervisor': {
+            'Canceled' : ['deductions', 'expenses', 'cost_assignments'],
+            'Submitted' : ['deductions', 'expenses', 'cost_assignments'],
+            'Sent for payment' : ['deductions', 'expenses', 'cost_assignments'],
+            'Approved' : ['deductions', 'expenses', 'cost_assignments'],
+            'Rejected' : ['deductions', 'expenses', 'cost_assignments'],
+          },
+
+        };
+
+        var hiddenForInternational = [
+          'expenses',
+          'cost_assignments',
+          'deductions',
+          'cost_summary'
+        ];
+
         Object.keys(permissions).forEach(function(key) {
 
           var forceHiddenStatus = false;
+          var hiddenFieldSet = collapsedStatus[userType] ?
+              collapsedStatus[userType][status] ? collapsedStatus[userType][status] : [] : [];
 
           if (isInternational) {
-            forceHiddenStatus = [
-              'expenses',
-              'cost_assignments',
-              'deductions',
-              'cost_summary'
-            ].indexOf(key) > -1;
+            forceHiddenStatus = hiddenForInternational.indexOf(key) > -1;
           }
 
           computed[key] = {
             hidden: !permissions[key].view || forceHiddenStatus,
-            open: permissions[key].edit,
+            open: hiddenFieldSet.indexOf(key) === -1,
             edit: permissions[key].edit
           };
         });
