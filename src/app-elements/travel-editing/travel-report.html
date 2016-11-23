@@ -67,10 +67,12 @@
           label="Add your report here*"
           char-counter
           maxlength="5000"
-          value="{{reportString}}">
+          value="{{reportString}}"
+          disabled="[[!reportPermission.edit]]"
+          hidden$="[[!reportPermission.view]]">
         </paper-textarea>
 
-        <paper-button raised on-click="saveReport">
+        <paper-button raised on-click="saveReport" disabled="[[!reportPermission.edit]]">
           Save report
         </paper-button>
       </paper-material>
@@ -99,7 +101,11 @@
           type: Object,
           notify: true
         },
-        userType: String
+        userType: String,
+        reportPermission: {
+          type: Object,
+          observer: '_warn'
+        }
       },
 
       setReportToData: function() {

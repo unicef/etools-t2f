@@ -148,7 +148,7 @@
         <etools-repeatable-field-set title="Travel Activities"
           id="activities"
           model="{{data.activities}}"
-          hide-plus=="[[!sectionPermissions.activities.edit]]"
+          hide-plus="[[!sectionPermissions.activities.edit]]"
           allow-copy="[[sectionPermissions.activities.edit]]"
           show-counter
           elevation="1"
@@ -169,7 +169,8 @@
         <etools-repeatable-field-set title="Itinerary"
           id="itinerary"
           model="{{data.itinerary}}"
-          show-counter
+          hide-plus="[[!sectionPermissions.itinerary.edit]]"
+          allow-copy="[[sectionPermissions.itinerary.edit]]"
           elevation="1"
           open="[[sectionPermissions.itinerary.open]]"
           hidden$="[[sectionPermissions.itinerary.hidden]]">
@@ -211,6 +212,7 @@
           id="expenses"
           model="{{data.expenses}}"
           show-counter
+          hide-plus="[[!sectionPermissions.expenses.edit]]"
           elevation="1"
           open="[[sectionPermissions.expenses.open]]"
           hidden$="[[sectionPermissions.expenses.hidden]]">
@@ -227,6 +229,7 @@
           id="cost_assignments"
           model="{{data.cost_assignments}}"
           elevation="1"
+          hide-plus="[[!sectionPermissions.cost_assignments.edit]]"
           open="[[sectionPermissions.cost_assignments.open]]"
           hidden$="[[sectionPermissions.cost_assignments.hidden]]">
 
