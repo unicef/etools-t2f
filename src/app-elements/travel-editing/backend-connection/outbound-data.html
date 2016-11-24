@@ -197,6 +197,7 @@
           data: {
             type: Object,
             notify: true,
+            observer: '_warn'
           },
           structure: {
             type: Object,
@@ -246,6 +247,10 @@
               buttonText: ''
             }
           },
+          inboundData: {
+            type: Object,
+            notify: true
+          }
         },
 
         generalModalAction: function() {
@@ -259,8 +264,6 @@
         _processOutboundData: function() {
           var self = this;
           var data = self.data;
-          delete data.status;
-          delete data.cost_summary;
           this.serverData = {
             deductions: [],
             itinerary: [],
@@ -353,8 +356,12 @@
                 self.serverData[key] = data[key];
               }
             }
-
           });
+
+
+          delete self.serverData.status;
+          delete self.serverData.cost_summary;
+
         },
 
         _processAttachmentData: function() {
@@ -705,28 +712,24 @@
         _handleAttachmentPostSuccess: function(e, data) {
           this.deleteAttachmentEndpoint = undefined;
           if (this.attachments.length > 0 || this.deletedAttachments.length > 0) {
-            this.travelId =  this.travelId ? this.travelId : '' + data.id;
             this._doAttachmentUpload();
           } else {
-            this.fire('travel-post-success', data.id);
+            this.set('inboundData', data);
             this.attachmentData = false;
-            var travelId = this.travelId;
             this.attachmentsEndpoint = undefined;
-            this.travelId = null;
-            this.travelId = travelId;
+            this.fire('travel-post-success', this.travelId);
+
           }
         },
 
         _handlePostSuccess: function(e, data) {
           this.postData = false;
-          this.travelId = this.travelId ? this.travelId : data.id;
+          this.travelId = data.id;
           if (this.attachments.length > 0  || this.deletedAttachments.length > 0) {
-            this.travelId =  this.travelId ? this.travelId : '' + data.id;
             this._doAttachmentUpload();
           } else {
-            this.fire('travel-post-success', data.id);
-            this.travelId = null;
-            this.travelId = '' + data.id;
+            this.set('inboundData', data);
+            this.fire('travel-post-success', this.travelId);
           }
         },
       });

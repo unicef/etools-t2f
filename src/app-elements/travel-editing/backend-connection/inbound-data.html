@@ -8,9 +8,9 @@
   <template>
 
     <etools-ajax url="[[travelUrl]]"
-      on-success="_handleData"></etools-ajax>
+      on-success="_handleData" loading="{{loading}}"></etools-ajax>
 
-    <etools-loading active="[[travelUrl]]"></etools-loading>
+    <etools-loading active="[[loading]]"></etools-loading>
 
   </template>
 
@@ -30,24 +30,33 @@
         },
         travelUrl: {
           type: String,
-          computed: '_computeUrl(travelId)',
-          reflectToAttribute: true,
+          computed: '_computeUrl(travelId, dataToSerialize)',
         },
+        dataToSerialize: {
+          type: Object,
+          value: false,
+          observer: '_handleIncomingData'
+        }
 
       },
 
-      _computeUrl: function(travelId) {
-        this.set('et2fData', {});
-        var innerTravelId = travelId ? travelId.replace(/\//g, '') : null;
-        if (innerTravelId) {
+      _computeUrl: function(travelId, incomingData) {
+        var innerTravelId = travelId ? ('' + travelId).replace(/\//g, '') : null;
+        console.log(innerTravelId)
+        if (innerTravelId && incomingData === false) {
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {
             id: innerTravelId
           }).url;
         }
       },
 
-      _handleData: function(e, incomingData) {
+      _handleIncomingData: function(incomingData) {
+        if(incomingData !== false) {
+          this._handleData(null, incomingData)
+        }
+      },
 
+      _handleData: function(e, incomingData) {
         var self = this;
 
         function convertDate(item) {
@@ -214,7 +223,8 @@
         } else {
           incomingData.status = statusLib.planned;
         }
-        this.set('travelId', undefined);
+//        this.set('travelId', undefined);
+        this.set('et2fData', {})
         this.set('et2fData', incomingData);
       }
     });
