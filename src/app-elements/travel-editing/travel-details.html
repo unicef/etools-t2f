@@ -285,7 +285,8 @@
         sectionPermissions: {
           type: Object,
           computed:
-            '_computeSectionPermissions(travelPermissions, data.baseDetails.international_travel, data.status, userType)'
+            '_computeSectionPermissions(travelPermissions,' +
+              ' data.baseDetails.international_travel, data.status, userType)'
         },
         userType: String,
         scrollToFieldset: {
@@ -296,7 +297,7 @@
       _computeSectionPermissions: function(permissions, isInternational, status, userType) {
         var computed = {};
 
-        var collapsedStatus= {
+        var collapsedStatus = {
           'Traveler': {
             'Sent for payment': ['deductions', 'expenses', 'cost_assignments'],
             'Certification submitted': ['deductions', 'expenses', 'cost_assignments'],

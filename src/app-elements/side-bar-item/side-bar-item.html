@@ -99,6 +99,14 @@
 
       is: 'side-bar-item',
 
+      properties: {
+
+        name: String,
+        href: String,
+        icon: String,
+        opened: Boolean
+      },
+
       _handleMainTap: function() {
         if (this.hasAttribute('nested-nav')) {
           this.toggleDrawer();

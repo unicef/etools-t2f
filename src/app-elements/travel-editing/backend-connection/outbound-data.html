@@ -571,7 +571,7 @@
               self.generalModalAction = function() {
                 self.$['general-modal'].close();
                 endpointConfig.status = 'done';
-                doMarkAsDone();
+                doPost();
               };
 
               self.set('generalModal', {

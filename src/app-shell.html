@@ -171,6 +171,9 @@
 
       properties: {
 
+        routeData: Object,
+        countries: Array,
+
         page: {
           type: String,
           reflectToAttribute: true,
@@ -190,8 +193,7 @@
         _toastQueue: {
           type: Array,
           value: function() { return []; }
-        },
-
+        }
       },
 
       observers: [

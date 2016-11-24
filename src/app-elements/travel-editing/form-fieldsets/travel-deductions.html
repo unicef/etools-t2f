@@ -54,7 +54,6 @@
       font-weight: 500;
       color: var(--gray-dark);
     }
-
   </style>
 
   <template>
@@ -91,7 +90,6 @@
         <paper-checkbox class="flex checkbox-mid" disabled="{{_disabled(disabled)}}" checked="{{item.no_dsa}}"></paper-checkbox>
       </div>
     </template>
-
   </template>
 
   <script>
@@ -137,11 +135,11 @@
         var startDate = new Date(startDateStr);
         var endDate = new Date(endDateStr);
 
-        var daysToCalculate = Math.floor(( endDate - startDate ) / 86400000);
+        var daysToCalculate = Math.floor((endDate - startDate) / 86400000);
 
         // Load the one already there
         var deductions = this.deductions;
-        if(!deductions) {
+        if (!deductions) {
           return;
         }
         // Build a key library for the dates that should be in the new one
@@ -158,6 +156,7 @@
           keyLib.push(key);
 
           // Fill in new empty ones
+          /*jshint loopfunc: true */
           if (!deductions.some(function(day) {
             return day.date === key;
           })) {
@@ -178,7 +177,7 @@
             return keyLib.indexOf(day.date) > -1;
           })
           .sort(function(a, b) {
-            return new Date(a.date) - new Date (b.date);
+            return new Date(a.date) - new Date(b.date);
           });
 
         this.set('deductions', deductions);
@@ -190,14 +189,27 @@
 
       _calcFullDate: function(dateStr) {
 
-        if(!date || date.length === 0) {
+        if (!dateStr || dateStr.length === 0) {
           return;
         }
 
         var date = dateStr.split('-');
         return [
           date[2],
-          ['Jan', 'Feb', 'Mar', 'May', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][date[1] - 1],
+          [
+            'Jan',
+            'Feb',
+            'Mar',
+            'May',
+            'Apr',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec'
+          ][date[1] - 1],
           date[0]
         ].join(' ');
       }
