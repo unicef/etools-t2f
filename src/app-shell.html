@@ -24,6 +24,7 @@
 <link rel="import" href="app-elements/countries-data/countries-data.html">
 
 <link rel="import" href="../styles/shared-styles.html">
+<link rel="import" href="../styles/page-layout-styles.html">
 <link rel="import" href="../styles/app-theme.html">
 <link rel="import" href="./et2f-app.html">
 
@@ -104,8 +105,6 @@
     </style>
 
     <user-data permissions="{{permissions}}"></user-data>
-
-    <countries-data countries="{{countries}}"></countries-data>
 
     <app-location route="{{route}}"></app-location>
 
@@ -194,8 +193,9 @@
         },
 
       },
+
       observers: [
-        '_routePageChanged(routeData.page)',
+        '_routePageChanged(routeData.page)'
       ],
 
       listeners: {
@@ -203,6 +203,7 @@
         'drawer': 'toggleDrawer',
         '404': '_pageNotFound',
       },
+
       attached: function() {
         if (this.route.path === '/') {
           this.set('route.path', '/travel-list');
