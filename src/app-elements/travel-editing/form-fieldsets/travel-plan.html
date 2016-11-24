@@ -200,32 +200,38 @@
         },
         taRequiredDisabled: {
           type: Boolean,
-          computed: '_computeDisableTaRequired(computedPermission.ta_required.disabled, baseDetails.international_travel)'
+          computed: '_computeDisableTaRequired(computedPermission.ta_required.disabled,' +
+            ' baseDetails.international_travel)'
         }
       },
+
       behaviors: [et2fBehaviors.PermissionLayer],
+
       observers: ['_setCheckboxes(baseDetails.*)'],
-      _computeDefaultChecked: function (value) {
-        return value !== false
+
+      _computeDefaultChecked: function(value) {
+        return value !== false;
       },
-      _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel ) {
-        return taRequiredDisabled || internationalTravel
+      _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel) {
+        return taRequiredDisabled || internationalTravel;
       },
+
       _setCheckboxes: function(changed) {
         this[changed.path] = changed.value;
       },
+
       _openDialog: function() {
-        if(this.baseDetails.international_travel === true) {
-          this.set('baseDetails.international_travel', false)
-        }
-        else {
+        if (this.baseDetails.international_travel === true) {
+          this.set('baseDetails.international_travel', false);
+        } else {
           this.$['confirmation-modal'].open();
         }
       },
+
       _closeDialog: function() {
         this.$['confirmation-modal'].close();
-      }
-      ,
+      },
+
       _confirmInternationalTravel: function() {
         this.$['confirmation-modal'].close();
         this.set('baseDetails.international_travel', true);

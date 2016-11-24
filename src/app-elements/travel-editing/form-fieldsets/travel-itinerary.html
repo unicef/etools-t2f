@@ -116,14 +116,18 @@
           computed: '_computeHideAirline(itinerary.mode_of_travel)'
         }
       },
+
       behaviors: [et2fBehaviors.PermissionLayer],
+
       observers: ['_setCheckboxes(baseDetails.*)'],
-      _setCheckboxes: function (changed) {
+
+      _setCheckboxes: function(changed) {
         this[changed.path] = changed.value;
       },
+
       _computeHideAirline: function(modeOfTravel) {
-        if(modeOfTravel) {
-          return modeOfTravel.label !== 'Plane'
+        if (modeOfTravel) {
+          return modeOfTravel.label !== 'Plane';
         }
         return true;
       }
