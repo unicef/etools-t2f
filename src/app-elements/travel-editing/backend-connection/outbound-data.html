@@ -200,10 +200,6 @@
           structure: {
             type: Object,
           },
-          newTravel: {
-            type: Boolean,
-            value: false
-          },
           travelId: {
             type: String,
             notify: true,
@@ -376,10 +372,9 @@
         },
 
         doRequest: function(details) {
-
           var self = this;
           var endpointConfig = {
-            id: self.travelId ? ('' + self.travelId).replace(/\//g, '') : null,
+            id: self.data.baseDetails.id,
             status: null
           };
           var endpointName = 'et2fStateChange';
@@ -441,7 +436,7 @@
           var statusActions = {
 
             save: function() {
-              if (self.travelId !== undefined) {
+              if (self.travelId !== '/-1') {
                 doSaveUpdate();
               } else {
                 doSavePost();

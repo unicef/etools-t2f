@@ -30,19 +30,31 @@
         },
         travelUrl: {
           type: String,
-          computed: '_computeUrl(travelId, dataToSerialize)',
+          computed: '_computeUrl(travelId)',
         },
         dataToSerialize: {
           type: Object,
-          value: false,
           observer: '_handleIncomingData'
+        },
+        loading: {
+          type: Boolean,
+          notify: true,
+          value: false
+        },
+        listen: {
+          type: Boolean,
+          value: true
+        },
+        route: {
+          type: Object,
+          notify: true
         }
 
       },
 
-      _computeUrl: function(travelId, incomingData) {
+      _computeUrl: function(travelId) {
         var innerTravelId = travelId ? ('' + travelId).replace(/\//g, '') : null;
-        if (innerTravelId && incomingData === false) {
+        if (this.listen && innerTravelId && innerTravelId !== '-1') {
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {
             id: innerTravelId
           }).url;
@@ -50,9 +62,14 @@
       },
 
       _handleIncomingData: function(incomingData) {
-        if(incomingData !== false) {
-          this._handleData(null, incomingData)
-        }
+        this.listen = false;
+        var id = incomingData.id;
+        this._handleData(null, incomingData);
+        var route = this.route;
+        route.path = '/edit-travel/' + id;
+        this.set('route', {});
+        this.set('route', route);
+        this.listen = true;
       },
 
       _handleData: function(e, incomingData) {
@@ -222,8 +239,7 @@
         } else {
           incomingData.status = statusLib.planned;
         }
-//        this.set('travelId', undefined);
-        this.set('et2fData', {})
+        this.set('et2fData', {});
         this.set('et2fData', incomingData);
       }
     });
