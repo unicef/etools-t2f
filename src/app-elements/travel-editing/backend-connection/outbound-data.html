@@ -196,8 +196,6 @@
         properties: {
           data: {
             type: Object,
-            notify: true,
-            observer: '_warn'
           },
           structure: {
             type: Object,
@@ -261,9 +259,8 @@
           return post || attachment;
         },
 
-        _processOutboundData: function() {
+        _processOutboundData: function(data) {
           var self = this;
-          var data = self.data;
           this.serverData = {
             deductions: [],
             itinerary: [],
@@ -364,20 +361,17 @@
 
         },
 
-        _processAttachmentData: function() {
-          var data = this.data;
-          this.attachments = data.attachments.filter(function(item) {
+        _processAttachmentData: function(attachments, deletedAttachments) {
+          this.attachments = attachments.filter(function(item) {
             return !item.id && item.raw;
           });
-          if (data.deletedAttachments) {
-            this.deletedAttachments = data.deletedAttachments.filter(function(item) {
+          if (deletedAttachments) {
+            this.deletedAttachments = deletedAttachments.filter(function(item) {
               return item === parseInt(item, 10);
             });
           } else {
             this.deletedAttachments = [];
           }
-//          delete data.deletedAttachments;
-//          delete data.attachments;
 
         },
 
@@ -385,14 +379,19 @@
 
           var self = this;
           var endpointConfig = {
-            id: self.travelId ? self.travelId.replace(/\//g, '') : null,
+            id: self.travelId ? ('' + self.travelId).replace(/\//g, '') : null,
             status: null
           };
           var endpointName = 'et2fStateChange';
 
           function prepareData() {
-            self._processAttachmentData();
-            self._processOutboundData();
+            var attachments = self.data.attachments;
+            var deletedAttachments = self.data.deletedAttachments;
+            var data = JSON.parse(JSON.stringify(self.data));
+            delete data.attachments;
+            delete data.deletedAttachments;
+            self._processAttachmentData(attachments, deletedAttachments);
+            self._processOutboundData(data);
           }
 
           function doSavePost() {
@@ -691,7 +690,7 @@
               {id: this.travelId}
             ).url);
             current = this.attachments.pop();
-
+            console.log(current);
             this.attachment = {
               name: current.name,
               file: current.raw,

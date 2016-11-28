@@ -42,7 +42,6 @@
 
       _computeUrl: function(travelId, incomingData) {
         var innerTravelId = travelId ? ('' + travelId).replace(/\//g, '') : null;
-        console.log(innerTravelId)
         if (innerTravelId && incomingData === false) {
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {
             id: innerTravelId
