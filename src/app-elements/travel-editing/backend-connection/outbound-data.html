@@ -39,6 +39,11 @@
             height: 40px;
             float: right;
         }
+        .dialog-confirm-button[disabled] {
+            color: var(--gray-mid);
+            background-color: white;
+            cursor: not-allowed;
+        }
 
         paper-radio-button {
             text-align: center;
@@ -148,11 +153,16 @@
             <div class="dialog-heading">Certify travel</div>
             <div class="dialog-intro-text">Please specify the differences between the travel plan and the actual travel:</div>
 
+            <paper-checkbox checked="{{certificationChecked}}">
+              I acknowledge that UNICEF will review the changes to the originally authorised travel and calculate any monetary adjustment to the original travel payment.
+            </paper-checkbox>
+
             <paper-textarea label="Cancellation note" value="{{data.certification_note}}" char-counter maxlength="2500"></paper-textarea>
 
             <paper-button
               class="dialog-confirm-button"
-              on-click="_certifyOnConfirm">
+              on-click="_certifyOnConfirm"
+              disabled="[[!certificationChecked]]">
                 Certify travel
             </paper-button>
         </paper-dialog>
@@ -196,9 +206,14 @@
         properties: {
           data: {
             type: Object,
+            notify: true,
           },
           structure: {
             type: Object,
+          },
+          newTravel: {
+            type: Boolean,
+            value: false
           },
           travelId: {
             type: String,
@@ -240,6 +255,10 @@
               text: '',
               buttonText: ''
             }
+          },
+          certificationChecked: {
+            type: Boolean,
+            value: false
           },
           inboundData: {
             type: Object,
@@ -560,6 +579,7 @@
 
               self._certifyOnConfirm = function() {
 
+                self.set('certificationChecked', false);
                 self.$['certification-modal'].close();
                 endpointConfig.status = 'submit_certificate';
                 doPost();
