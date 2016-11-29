@@ -42,16 +42,10 @@
         route="{{route}}"
         refresh-data="{{refreshData}}">
       </page-travel-list>
-      <plan-travel fullbleed
-        name="plan-travel"
-        user="[[user]]"
-        on-travel-post-success="_navigateToList"
-        et2f-permissions="[[et2fPermissions]]"
-        structure="[[structure]]"></plan-travel>
       <page-edit-travel fullbleed
         name="edit-travel"
         user="[[user]]"
-        on-travel-post-success="_navigateToList"
+        route="{{route}}"
         travel-id="[[subroute.path]]"
         et2f-permissions="[[et2fPermissions]]"
         structure="[[structure]]"></page-edit-travel>
@@ -107,12 +101,6 @@
         meEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.et2fMe
-        },
-      },
-      _navigateToList: function(e, detail) {
-        this.refreshData = true;
-        if (this.route.path === '/plan-travel') {
-          this.set('route.path', '/edit-travel/' + detail);
         }
       },
       _handleStructure: function(event, data) {

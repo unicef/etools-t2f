@@ -8,9 +8,9 @@
   <template>
 
     <etools-ajax url="[[travelUrl]]"
-      on-success="_handleData"></etools-ajax>
+      on-success="_handleData" loading="{{loading}}"></etools-ajax>
 
-    <etools-loading active="[[travelUrl]]"></etools-loading>
+    <etools-loading active="[[loading]]"></etools-loading>
 
   </template>
 
@@ -31,23 +31,48 @@
         travelUrl: {
           type: String,
           computed: '_computeUrl(travelId)',
-          reflectToAttribute: true,
         },
+        dataToSerialize: {
+          type: Object,
+          observer: '_handleIncomingData'
+        },
+        loading: {
+          type: Boolean,
+          notify: true,
+          value: false
+        },
+        listen: {
+          type: Boolean,
+          value: true
+        },
+        route: {
+          type: Object,
+          notify: true
+        }
 
       },
 
       _computeUrl: function(travelId) {
-        this.set('et2fData', {});
-        var innerTravelId = travelId ? travelId.replace(/\//g, '') : null;
-        if (innerTravelId) {
+        var innerTravelId = travelId ? ('' + travelId).replace(/\//g, '') : null;
+        if (this.listen && innerTravelId && innerTravelId !== '-1') {
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {
             id: innerTravelId
           }).url;
         }
       },
 
-      _handleData: function(e, incomingData) {
+      _handleIncomingData: function(incomingData) {
+        this.listen = false;
+        var id = incomingData.id;
+        this._handleData(null, incomingData);
+        var route = this.route;
+        route.path = '/edit-travel/' + id;
+        this.set('route', {});
+        this.set('route', route);
+        this.listen = true;
+      },
 
+      _handleData: function(e, incomingData) {
         var self = this;
 
         function convertDate(item) {
@@ -214,7 +239,7 @@
         } else {
           incomingData.status = statusLib.planned;
         }
-        this.set('travelId', undefined);
+        this.set('et2fData', {});
         this.set('et2fData', incomingData);
       }
     });

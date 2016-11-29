@@ -42,8 +42,8 @@
 
 
 
-    <et2f-inbound-data et2f-data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]"></et2f-inbound-data>
-    <et2f-outbound-data id="outbound-data" form-errors="{{formErrors}}" data="{{data}}" travel-id="{{travelId}}" structure="[[structure]]"></et2f-outbound-data>
+    <et2f-inbound-data loading="{{loading}}" route="{{route}}" et2f-data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]" data-to-serialize="[[incomingData]]"></et2f-inbound-data>
+    <et2f-outbound-data id="outbound-data" form-errors="{{formErrors}}" data="[[data]]" travel-id="[[travelId]]" structure="[[structure]]" inbound-data="{{incomingData}}"></et2f-outbound-data>
     <ta-print data="[[data]]" data-to-print="{{dataToPrint}}" print-styles="{{printStyles}}"></ta-print>
 
     <et2f-header title="Edit travel plan"
@@ -98,7 +98,7 @@
       properties: {
         data: {
           type: Object,
-          notify: true
+          notify: true,
         },
         structure: {
           type: Object,
@@ -124,26 +124,26 @@
           type: Number,
           value: 0
         },
-        newTravel: {
-          type: Boolean,
-          value: false,
-          observer: '_newTravelObserver'
-        },
         travelId: {
           type: String
         },
         errorSelected: {
           type: String,
           notify: true
-        }
+        },
+        route: {
+          type: Object,
+          notify: true,
+          observer: '_routeObserver'
+        },
 
       },
       observers: [
         '_computeTravelPermission(et2fPermissions, status, user, data)',
       ],
 
-      _newTravelObserver: function(isNew) {
-        if (isNew) {
+      _loadDefault: function() {
+          this.set('data', {});
           this.set('data', {
             baseDetails: {
               ta_required: true,
@@ -158,9 +158,13 @@
             attachments: [],
             status: 'Planned'
           });
+      },
+      _routeObserver: function(route) {
+        this.showForm = false;
+        if(route.path === '/edit-travel/-1') {
+          this._loadDefault();
         }
       },
-
       _computeStatus: function(data) {
         if (data.status) {
           return data.status.toLowerCase().replace(/ /g, '_');
@@ -168,9 +172,7 @@
       },
 
       _computeTravelPermission: function(permissions, status, user, data) {
-
         var userType;
-
         if (data.baseDetails.id) {
           userType = 'Anyone';
           if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
@@ -180,10 +182,9 @@
             userType = 'Supervisor';
           }
 
-        } else if (this.newTravel) {
+        } else {
           userType = 'Traveler';
         }
-
         var urlParams = new URLSearchParams(window.location.search);
         var forcedUserType = urlParams.get('usertype');
 
@@ -192,14 +193,13 @@
         }
 
         if (userType) {
-          console.debug('User type:  ' + userType + ' Status: ' + status);
           this.set('userType', userType);
           this.set('travelPermissions', {});
           this.set('travelPermissions', permissions[userType][status]);
         }
 
         var self = this;
-        if (self.newTravel && data.baseDetails) {
+        if ((!self.travelId || self.travelId === '/-1') && data.baseDetails) {
           data.baseDetails.traveler = {
             label: user.full_name,
             value: user.id
