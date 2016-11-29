@@ -60,7 +60,7 @@
 
     <form-errors errors="{{formErrors}}" error-selected="{{errorSelected}}"></form-errors>
 
-    <iron-pages selected="{{selected}}" hidden$="[[!showForm]]">
+    <iron-pages selected="{{selected}}">
 
       <travel-details
         scroll-to-fieldset="[[errorSelected]]"
@@ -136,22 +136,12 @@
           notify: true,
           observer: '_routeObserver'
         },
-        loading: {
-          type: Boolean,
-          observer: '_computeShowForm'
-        },
-        showForm: {
-          type: Boolean,
-          value: false
-        }
 
       },
       observers: [
         '_computeTravelPermission(et2fPermissions, status, user, data)',
       ],
-      _computeShowForm: function(loading) {
-        this.showForm = !loading;
-      },
+
       _loadDefault: function() {
           this.set('data', {});
           this.set('data', {
