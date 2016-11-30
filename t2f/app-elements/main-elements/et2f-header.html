@@ -76,7 +76,7 @@
             Print
           </paper-button>
 
-          <a href="[[baseUrl]]/edit-travel/-1" hidden$="[[_hideNewTravelButton(showNewTravelButton)]]">
+          <a href="[[baseUrl]]edit-travel/-1" hidden$="[[_hideNewTravelButton(showNewTravelButton)]]">
             <paper-button class="addnbtn" raised>
               <iron-icon icon="add"></iron-icon>
               <span>Add New Travel</span>
@@ -121,9 +121,13 @@
           value: etoolsAppConfig.endpoints.et2fCSVListExport.url
         },
         baseUrl: {
-          type: String,
-          value: baseUrl
+            type: String,
+            value: null
         }
+      },
+      behaviors: [etoolsAppConfig.globals],
+      attached: function() {
+        this.baseUrl = this.basePath;
       },
       print: function() {
         this.openPDF = true;

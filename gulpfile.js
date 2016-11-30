@@ -74,7 +74,7 @@ var log = function (message) {
   return function () {
     gutil.log(message);
   }
-}
+};
 
 // The source task will split all of your source files into one
 // big ReadableStream. Source files are those in src/** as well as anything
