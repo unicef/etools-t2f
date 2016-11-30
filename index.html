@@ -42,7 +42,7 @@
         lazyRegister: true
       };
       var serverBackend = (window.location.port === '8080') || (window.location.port === '80') || (window.location.port === '');;
-      baseUrl = serverBackend ? 't2f/' : '';
+      baseUrl = serverBackend ? '/et2f' : '';
       // Load webcomponentsjs polyfill if browser does not support native Web Components
       (function() {
         'use strict';
@@ -74,21 +74,21 @@
         }
       })();
       // add base tag with href set to baseUrl
-      var base = document.createElement('base');
-      base.href = baseUrl;
-      document.head.appendChild(base);
+//      var base = document.createElement('base');
+//      base.href = baseUrl;
+//      document.head.appendChild(base);
 
       // Load pre-caching Service Worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/'+ baseUrl +'service-worker.js');
+          navigator.serviceWorker.register(baseUrl +'/service-worker.js');
         });
       }
 
       // set app shell import path based on baseUrl
       var appShellImport = document.createElement('link');
       appShellImport.rel = 'import';
-      appShellImport.href ='/' + baseUrl + 't2f/app-shell.html';
+      appShellImport.href =baseUrl + '/t2f/app-shell.html';
       document.head.appendChild(appShellImport);
 
     </script>

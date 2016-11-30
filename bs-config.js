@@ -30,7 +30,7 @@ module.exports = {
     "files": ['t2f/**/*'],
     "watchOptions": {},
     "server": false,
-    "proxy": 'localhost:3000/t2f/',
+    "proxy": 'localhost:3000',
     "port": 3001,
     "middleware": [backendProxy],
     "serveStatic": [],

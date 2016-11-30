@@ -31,7 +31,7 @@ global.config = {
   appName: 'et2f',
   polymerJsonPath: path.join(process.cwd(), 'polymer.json'),
   build: {
-    rootDirectory: 'build/t2f',
+    rootDirectory: 'build/et2f',
     bundledDirectory: 'bundled',
     unbundledDirectory: 'unbundled',
     // Accepts either 'bundled', 'unbundled', or 'both'
