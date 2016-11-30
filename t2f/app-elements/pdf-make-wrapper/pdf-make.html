@@ -32,14 +32,12 @@ pdfMake polymer wrapper
         content: {
           type: Object,
           value: function() {
-            return {
-              text: 'Etools Pdf Maker polymer wrapper'
-            }
+            return {text: 'Etools Pdf Maker polymer wrapper'};
           }
         },
         styles: {
           type: Object,
-          value: function() { return {}}
+          value: function() { return {}; }
         },
         output: {
           type: String,
@@ -47,7 +45,7 @@ pdfMake polymer wrapper
         },
         pageSize: {
           type: String,
-          value:'A4'
+          value: 'A4'
         },
         pageOrientation: {
           type: String,
@@ -55,13 +53,13 @@ pdfMake polymer wrapper
         },
         pageMargins: {
           type: Array,
-          value: function() { return [40, 40, 40, 40]}
+          value: function() { return [40, 40, 40, 40]; }
         }
       },
       observers: ['_doPrint(print, content, styles, output, pageSize, pageOrientation, pageMargins)'],
 
       _doPrint: function(print, content, styles, output, pageSize, pageOrientation, pageMargins) {
-        if(print) {
+        if (print) {
           var documentDefinition = {
             pageSize: pageSize,
             pageOrientation: pageOrientation,
@@ -69,7 +67,7 @@ pdfMake polymer wrapper
             content: content,
             styles: styles
           };
-          switch(output) {
+          switch (output) {
             case 'open':
               pdfMake.createPdf(documentDefinition).open();
               break;

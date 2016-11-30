@@ -23,6 +23,7 @@
     "DynamicCustomStyleBehavior": true,
     "URLSearchParams": true,
     "et2fBehaviors": true,
-    "baseUrl": true
+    "baseUrl": true,
+    "pdfMake": true
   }
 }
