@@ -21,6 +21,7 @@
     "compression": "^1.6.2",
     "css-slam": "^1.1.0",
     "del": "^2.2.1",
+    "express": "^4.14.0",
     "gulp": "gulpjs/gulp#4.0",
     "gulp-csslint": "^1.0.0",
     "gulp-html-extract": "^0.2.0",
