@@ -1,0 +1,89 @@
+<script type="application/javascript" src="../../../bower_components/pdfmake/build/pdfmake.js"></script>
+<script type="application/javascript" src="../../../bower_components/pdfmake/build/vfs_fonts.js"></script>
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<!--
+`pdf-make`
+pdfMake polymer wrapper
+
+@demo demo/index.html 
+-->
+
+<dom-module id="pdf-make">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'pdf-make',
+
+      properties: {
+        print: {
+          type: Boolean,
+          value: false
+        },
+        content: {
+          type: Object,
+          value: function() {
+            return {
+              text: 'Etools Pdf Maker polymer wrapper'
+            }
+          }
+        },
+        styles: {
+          type: Object,
+          value: function() { return {}}
+        },
+        output: {
+          type: String,
+          value: 'open'
+        },
+        pageSize: {
+          type: String,
+          value:'A4'
+        },
+        pageOrientation: {
+          type: String,
+          value: 'portraits'
+        },
+        pageMargins: {
+          type: Array,
+          value: function() { return [40, 40, 40, 40]}
+        }
+      },
+      observers: ['_doPrint(print, content, styles, output, pageSize, pageOrientation, pageMargins)'],
+
+      _doPrint: function(print, content, styles, output, pageSize, pageOrientation, pageMargins) {
+        if(print) {
+          var documentDefinition = {
+            pageSize: pageSize,
+            pageOrientation: pageOrientation,
+            pageMargins: pageMargins,
+            content: content,
+            styles: styles
+          };
+          switch(output) {
+            case 'open':
+              pdfMake.createPdf(documentDefinition).open();
+              break;
+            case 'print':
+              pdfMake.createPdf(documentDefinition).print();
+              break;
+            case 'download':
+              pdfMake.createPdf(documentDefinition).download();
+              break;
+          }
+        }
+        this.print = false;
+      }
+
+    });
+  </script>
+</dom-module>

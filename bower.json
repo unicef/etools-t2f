@@ -45,7 +45,6 @@
     "etools-repeatable-field-set": "^1.0.0",
     "etools-searchable-multiselection-menu": "^1.0.2",
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1",
-    "polymer-pdf-make-wrapper": "https://github.com/lordfuoco/polymer-pdf-make.git#^0.0.2",
     "paper-radio-group": "PolymerElements/paper-radio-group#^1.2.1",
     "paper-listbox": "^1.1.2",
     "paper-toolbar": "PolymerElements/paper-toolbar#^1.1.7",
@@ -53,7 +52,8 @@
     "etools-dialog": "^1.0.0",
     "etools-loading": "^1.0.3",
     "etools-page-refresh": "^1.0.0",
-    "etools-content-panel": "^1.0.1"
+    "etools-content-panel": "^1.0.1",
+    "pdfmake": "^0.1.20"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

@@ -6,10 +6,11 @@
     "t2f/pages/page-edit-travel.html",
     "t2f/pages/page-travel-list.html"
   ],
-  "sources": [
+  "sourceGlobs": [
    "t2f/**/*",
-   "data/**/*",
-   "bower.json"
+    "data/**/*",
+    "bower.json",
+    "manifest.json"
   ],
   "extraDependencies": [
     "bower_components/webcomponentsjs/webcomponents-lite.min.js"

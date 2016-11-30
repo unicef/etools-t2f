@@ -27,10 +27,10 @@ module.exports = {
             "port": 8080
         }
     },
-    "files": ['t2f/**/*', 'styles/*', 'images/*', 'data/*'],
+    "files": ['t2f/**/*'],
     "watchOptions": {},
     "server": false,
-    "proxy": 'localhost:3000',
+    "proxy": 'localhost:3000/t2f/',
     "port": 3001,
     "middleware": [backendProxy],
     "serveStatic": [],

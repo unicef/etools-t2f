@@ -110,7 +110,7 @@
 
     <app-route
       route="{{route}}"
-      pattern="/:page"
+      pattern$="/[[baseUrl]]:page"
       data="{{routeData}}"
       tail="{{subroute}}"></app-route>
 
@@ -130,7 +130,7 @@
           <div class="nav-menu">
             <iron-selector selected="[[page]]" attr-for-selected="name" selectable="side-bar-item" role="navigation">
 
-              <side-bar-item name="travel-list" icon="description" href="/travel-list"></side-bar-item>
+              <side-bar-item name="travel-list" icon="description" href="/[[baseUrl]]travel-list"></side-bar-item>
               <div class="divider"></div>
 
               <!-- Permissions example: only display settings if the user has permission -->
@@ -193,6 +193,10 @@
         _toastQueue: {
           type: Array,
           value: function() { return []; }
+        },
+        baseUrl: {
+          type: String,
+          value: baseUrl
         }
       },
 

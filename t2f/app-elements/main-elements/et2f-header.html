@@ -1,9 +1,9 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/polymer-pdf-make-wrapper/pdf-make.html">
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
-
+<link rel="import" href="../../app-config/etools-app-config.html">
+<link rel="import" href="../../app-elements/pdf-make-wrapper/pdf-make.html">
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 
@@ -76,7 +76,7 @@
             Print
           </paper-button>
 
-          <a href="/edit-travel/-1" hidden$="[[_hideNewTravelButton(showNewTravelButton)]]">
+          <a href="/[[baseUrl]]edit-travel/-1" hidden$="[[_hideNewTravelButton(showNewTravelButton)]]">
             <paper-button class="addnbtn" raised>
               <iron-icon icon="add"></iron-icon>
               <span>Add New Travel</span>
@@ -119,6 +119,10 @@
         csvEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.et2fCSVListExport.url
+        },
+        baseUrl: {
+          type: String,
+          value: baseUrl
         }
       },
       print: function() {
