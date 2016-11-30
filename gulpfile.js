@@ -28,10 +28,10 @@ if (argv.l) {
 // Keep the global.config above any of the gulp-tasks that depend on it
 global.config = {
   // Name of your app
-  appName: 'et2f',
+  appName: 't2f',
   polymerJsonPath: path.join(process.cwd(), 'polymer.json'),
   build: {
-    rootDirectory: 'build/et2f',
+    rootDirectory: 'build/t2f',
     bundledDirectory: 'bundled',
     unbundledDirectory: 'unbundled',
     // Accepts either 'bundled', 'unbundled', or 'both'
