@@ -322,31 +322,32 @@
         var status = data.status;
         return {
           planned: 'planned',
-          approved: 'approved',
-          rejected: 'rejected',
           submitted: 'submitted',
+          rejected: 'rejected',
+          approved: 'approved',
           cancelled: 'cancelled',
-          completed: 'completed',
-          'sent_for_payment': 'sent',
-          'cert_needed': 'planned',
-          'cert_approved': 'approved',
-          'cert_submitted': 'submitted',
+          sent_for_payment: 'sent',
+          certification_submitted: 'submitted',
+          certification_approved: 'approved',
+          certification_rejected: 'rejected',
+          certified: 'sent',
+          completed: 'completed'
         }[status];
       },
 
       _statusMapping: function(status) {
         var statusLib = {
-          'planned': 'Planned',
-          'submitted': 'Submitted',
-          'approved': 'Approved',
-          'rejected': 'Rejected',
-          'sent_for_payment': 'Sent for payment',
-          'cancelled': 'Cancelled',
-          'done': 'Certification needed',
-          'certification_approved': 'Certification approved',
-          'certification_rejected': 'Certification rejected',
-          'certification_submitted': 'Certification submitted',
-          'certified': 'Completed'
+          planned: 'Planned',
+          submitted: 'Submitted',
+          rejected: 'Rejected',
+          approved: 'Approved',
+          cancelled: 'Cancelled',
+          sent_for_payment: 'Sent for payment',
+          certification_submitted: 'Certification submitted',
+          certification_approved: 'Certification approved',
+          certification_rejected: 'Certification rejected',
+          certified: 'Certified',
+          completed: 'Completed'
         };
         return statusLib[status];
       },
