@@ -1,0 +1,247 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="travel-deductions">
+
+  <style include="shared-styles et2f-styles iron-flex" is="custom-style">
+    :host {
+      display: block;
+      margin: 0 35px;
+    }
+    .header {
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,.3);
+    }
+    .fix-width {
+      width: 230px;
+    }
+    .header paper-button {
+      color: var(--et2f-primary);
+      font-weight: 500;
+      font-size: 14px;
+      text-transform: none;
+      height: 36px;
+      margin: 10px 14px;
+    }
+    .headingtext {
+      color: var(--gray-mid);
+      text-align: center;
+      font-weight: 500;
+      font-size: 12px;
+    }
+    .checkbox-mid {
+      text-align: center;
+    }
+
+    .rows {
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,.12);
+    }
+
+    .weekday {
+      font-size: 16px;
+      color: var(--gray-dark);
+      margin-left: 24px;
+      margin-right: 18px;
+      width: 37px;
+    }
+
+    .full-date {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--gray-dark);
+    }
+  </style>
+
+  <template>
+
+    <div class="layout horizontal center header">
+
+      <div class="fix-width">
+        <paper-button>
+          <iron-icon icon="refresh"></iron-icon>
+          Populate list
+        </paper-button>
+      </div>
+
+      <span class="flex headingtext">Breakfast</span>
+      <span class="flex headingtext">Lunch</span>
+      <span class="flex headingtext">Dinner</span>
+      <span class="flex headingtext">Accomodation</span>
+      <span class="flex headingtext">Not Applicable</span>
+    </div>
+
+    <template is="dom-repeat" items="{{deductions}}">
+
+      <div class="layout horizontal center rows">
+
+        <div class="fix-width layout horizontal center">
+          <span class="weekday">[[_calcWeekday(item.date)]]</span>
+          <span class="full-date">[[_calcFullDate(item.date)]]</span>
+        </div>
+
+        <paper-checkbox class="flex checkbox-mid" disabled="{{_disabled(disabled)}}" checked="{{item.breakfast}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" disabled="{{_disabled(disabled)}}" checked="{{item.lunch}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" disabled="{{_disabled(disabled)}}" checked="{{item.dinner}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" disabled="{{_disabled(disabled)}}" checked="{{item.accomodation}}"></paper-checkbox>
+        <paper-checkbox class="flex checkbox-mid" disabled="{{_disabled(disabled)}}" checked="{{item.no_dsa}}"></paper-checkbox>
+      </div>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'travel-deductions',
+
+      properties: {
+
+        itinerary: Array,
+        startDate: {
+          type: String,
+          computed: '_calculateStartingDate(itinerary)'
+        },
+        endDate: {
+          type: String,
+          computed: '_calculateEndDate(itinerary)'
+        },
+        deductions: {
+          type: Array,
+          notify: true,
+          observer: 'gotDeductions'
+        },
+
+        disabled: {
+          type: Boolean,
+          reflectToAttribute: true,
+        },
+
+      },
+
+      observers: [
+        // Prevent double firing this, when real dates are used
+        'recalcDeductions(startDate, endDate, hasDeductions)'
+      ],
+
+      _disabled: function(disabled) {
+        return disabled;
+      },
+
+      gotDeductions: function() {
+        if (Array.isArray(this.deductions) && !this.hasDeductions) {
+          this.set('hasDeductions', true);
+        }
+      },
+
+      recalcDeductions: function(startDateStr, endDateStr, hasDeductions) {
+
+        var startDate = new Date(startDateStr);
+        var endDate = new Date(endDateStr);
+
+        var daysToCalculate = Math.floor((endDate - startDate) / 86400000);
+
+        // Load the one already there
+        var deductions = this.deductions;
+        if (!deductions) {
+          return;
+        }
+        // Build a key library for the dates that should be in the new one
+        var keyLib = [];
+
+        for (var actDate = startDate; actDate <= endDate; actDate.setDate(actDate.getDate() + 1)) {
+
+          var key = [
+            actDate.getFullYear(),
+            ('0' + (actDate.getMonth() + 1)).slice(-2),
+            ('0' + actDate.getDate()).slice(-2)
+          ].join('-');
+
+          keyLib.push(key);
+
+          // Fill in new empty ones
+          /*jshint loopfunc: true */
+          if (!deductions.some(function(day) {
+            return day.date === key;
+          })) {
+            deductions.push({
+              date: key,
+              breakfast: false,
+              lunch: false,
+              dinner: false,
+              accomodation: false,
+              no_dsa: false
+            });
+          }
+        }
+
+        // Erase days no longer needed & resort the array
+        deductions = deductions
+          .filter(function(day) {
+            return keyLib.indexOf(day.date) > -1;
+          })
+          .sort(function(a, b) {
+            return new Date(a.date) - new Date(b.date);
+          });
+
+        this.set('deductions', deductions);
+      },
+
+      _calcWeekday: function(dateStr) {
+        return ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][new Date(dateStr).getDay()];
+      },
+
+      _calcFullDate: function(dateStr) {
+
+        if (!dateStr || dateStr.length === 0) {
+          return;
+        }
+
+        var date = dateStr.split('-');
+        return [
+          date[2],
+          [
+            'Jan',
+            'Feb',
+            'Mar',
+            'May',
+            'Apr',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec'
+          ][date[1] - 1],
+          date[0]
+        ].join(' ');
+      },
+
+      _calculateStartingDate: function(itinerary) {
+        // Returns the first day of travels from the itinerary array
+        var defaultTime = '2200-11-30T10:52:25+01:00';
+        var calculated = itinerary.reduce(function(ret, curr) {
+          return (new Date(curr.departure_date)).getTime() < (new Date(ret)).getTime() ?
+            curr.departure_date : ret;
+        }, defaultTime);
+
+        return calculated === defaultTime ? undefined : calculated;
+      },
+
+      _calculateEndDate: function(itinerary) {
+        // Returns the last day of travels from the itinerary array
+        var defaultTime = '1970-11-30T10:52:25+01:00';
+        var calculated = itinerary.reduce(function(ret, curr) {
+          return (new Date(curr.arrival_date)).getTime() > (new Date(ret)).getTime() ?
+            curr.arrival_date : ret;
+        }, defaultTime);
+
+        return calculated === defaultTime ? undefined : calculated;
+      },
+    });
+  </script>
+
+</dom-module>

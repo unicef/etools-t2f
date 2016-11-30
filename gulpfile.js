@@ -28,10 +28,10 @@ if (argv.l) {
 // Keep the global.config above any of the gulp-tasks that depend on it
 global.config = {
   // Name of your app
-  appName: 'app',
+  appName: 'et2f',
   polymerJsonPath: path.join(process.cwd(), 'polymer.json'),
   build: {
-    rootDirectory: 'build',
+    rootDirectory: 'build/et2f',
     bundledDirectory: 'bundled',
     unbundledDirectory: 'unbundled',
     // Accepts either 'bundled', 'unbundled', or 'both'
@@ -46,9 +46,10 @@ global.config = {
   // Service Worker precache options based on
   // https://github.com/GoogleChrome/sw-precache#options-parameter
   swPrecacheConfig: {
+    replacePrefix: '/t2f/',
     navigateFallback: '/index.html'
   },
-  sourceCodeDirectory: './src'
+  sourceCodeDirectory: './t2f'
 };
 
 // Change global config if building into eTools
@@ -85,7 +86,7 @@ var log = function (message) {
 
 function source() {
   return project.splitSource()
-  // Add your own build tasks here!
+  // // Add your own build tasks here!
     .pipe(gulpif('**/*.html', html.lint())).on('end', log('Linted HTML'))
     .pipe(gulpif('**/*.html', html.minify())).on('end', log('Minified HTML'))
 
@@ -95,8 +96,8 @@ function source() {
 
     .pipe(gulpif('**/*.js', javascript.lint())).on('end', log('Linted Javascript'))
     .pipe(gulpif('**/*.js', javascript.minify())).on('end', log('Minified Javascript'))
+    .pipe(gulpif('**/*.{gif,jpg,svg}', images.minify())).on('end', log('Minified Images'))
 
-    .pipe(gulpif('**/*.{png,gif,jpg,svg}', images.minify())).on('end', log('Minified Images'))
 
     .pipe(project.rejoin()); // Call rejoin when you're finished
 }

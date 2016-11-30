@@ -1,0 +1,919 @@
+<!--
+  The two part button, which will fire the form actions
+
+  Properties:
+    user-type: required, String, lowercase, eg: 'administrator'
+    status: required, String, Capital, eg: 'Submitted'
+-->
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="form-actions-button">
+
+  <style include="shared-styles et2f-styles iron-flex iron-flex-alignment" is="custom-style">
+    :host {
+      display: block;
+    }
+    paper-button {
+      margin: 24px;
+      padding: 0;
+      height: 36px;
+      background-color: var(--et2f-primary);
+      color: white;
+    }
+    paper-button.grey {
+      background-color: var(--gray-mid);
+    }
+    paper-menu-button {
+      padding: 0 4px;
+    }
+    paper-icon-button {
+      border-left: 1px solid rgba(255,255,255,0.3);
+    }
+    .main-btn-part {
+      text-align: center;
+      font-weight: 500;
+    }
+    .dropdown-content, .dropdown-content paper-item {
+      background-color: white;
+    }
+  </style>
+
+  <template>
+
+    <template is="dom-if" if="[[show]]">
+      <paper-button raised class$="layout horizontal [[_buttonGreyClass(actions)]]">
+
+        <div on-click="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
+
+        <template is="dom-if" if="[[showDropdown]]">
+          <paper-menu-button horizontal-align="right">
+
+            <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
+            <paper-menu class="dropdown-content">
+              <template is="dom-repeat" items="[[actions.secondary]]">
+
+                <paper-item on-click="_clickSecondary">[[item.name]]</paper-item>
+
+              </template>
+            </paper-menu>
+
+          </paper-menu-button>
+        </template>
+      </paper-button>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'form-actions-button',
+      properties: {
+        actList: {
+          type: Object,
+          value: {
+            'save': {
+              'name': 'Save',
+              'endPoint': 'save'
+            },
+            'save_and_submit': {
+              'name': 'Save & submit',
+              'endPoint': 'save_and_submit'
+            },
+            'cancel': {
+              'name': 'Cancel',
+              'endPoint': 'cancel'
+            },
+            'approve': {
+              'name': 'Approve',
+              'endPoint': 'approve'
+            },
+            'reject': {
+              'name': 'Reject',
+              'endPoint': 'reject'
+            },
+            'reOpen': {
+              'name': 'Reopen',
+              'endPoint': 'reopen'
+            },
+            'done': {
+              'name': 'Travel done',
+              'endPoint': 'done'
+            },
+            'sendForPayment': {
+              'name': 'Send for payment',
+              'endPoint': 'send_for_payment'
+            },
+            'wentAsPlanned': {
+              'name': 'Travel went as planned',
+              'endPoint': 'went_as_planned'
+            },
+            'submitCertificate': {
+              'name': 'Not as planned',
+              'endPoint': 'submit_certificate'
+            },
+            'approveCertificate': {
+              'name': 'Approve Certification',
+              'endPoint': 'approve_certificate'
+            },
+            'rejectCertificate': {
+              'name': 'Reject Certification',
+              'endPoint': 'reject_certificate'
+            },
+            'certify': {
+              'name': 'Certify',
+              'endPoint': 'certify'
+            },
+            'complete': {
+              'name': 'Complete',
+              'endPoint': 'complete'
+            },
+            'planned': {
+              'name': 'To planned',
+              'endPoint': 'planned'
+            }
+          }
+        },
+        permissions: {
+          type: Object,
+          value: {
+            'God': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel']
+              },
+              'Submitted': {
+                'primary': 'approve',
+                'secondary': ['reject', 'save']
+              },
+              'Cancelled': {
+                'primary': 'planned',
+                'secondary': ['save', 'save_and_submit']
+              },
+              'Approved': {
+                'primary': 'save',
+                'secondary': ['sendForPayment']
+              },
+              'Rejected': {
+                'primary': 'planned',
+                'secondary': ['save', 'save_and_submit']
+              },
+              'Sent for payment': {
+                'primary': 'wentAsPlanned',
+                'secondary': ['submitCertificate']
+              },
+              'Certification submitted': {
+                'primary': 'approveCertificate',
+                'secondary': ['rejectCertificate']
+              },
+              'Certification rejected': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': 'save',
+                'secondary': ['certify']
+              },
+              'Certified': {
+                'primary': 'complete',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Anyone': {
+              'Planned': {
+                'primary': '',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': '',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Traveler': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel']
+              },
+              'Submitted': {
+                'primary': 'cancel',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Sent for payment': {
+                'primary': 'certify',
+                'secondary': ['submitCertificate', 'save']
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': 'save',
+                'secondary': ['submitCertificate']
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': 'complete',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Travel Administrator': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel']
+              },
+              'Submitted': {
+                'primary': 'save',
+                'secondary': ['cancel']
+              },
+              'Cancelled': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Sent for payment': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': 'complete',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Supervisor': {
+              'Planned': {
+                'primary': '',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': 'approve',
+                'secondary': ['reject']
+              },
+              'Cancelled': {
+                'primary': '',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification submitted': {
+                'primary': 'approveCertificate',
+                'secondary': ['rejectCertificate']
+              },
+              'Certification rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Travel Focal Point': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Finance Focal Point': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': 'save',
+                'secondary': ['cancel']
+              },
+              'Cancelled': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': 'save',
+                'secondary': ['sendForPayment', 'cancel']
+              },
+              'Rejected': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': 'save',
+                'secondary': ['cancel']
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': 'save',
+                'secondary': ['certify']
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Representative': {
+              'Planned': {
+                'primary': '',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': '',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            }
+          }
+        },
+        internationalTravelPermissions: {
+          type: Object,
+          value: {
+            'Anyone': {
+              'Planned': {
+                'primary': '',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': '',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Traveler': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel']
+              },
+              'Submitted': {
+                'primary': 'cancel',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Sent for payment': {
+                'primary': 'certify',
+                'secondary': ['submitCertificate', 'save']
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': 'certify',
+                'secondary': ['submitCertificate']
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': 'complete',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Travel Administrator': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel']
+              },
+              'Submitted': {
+                'primary': 'save',
+                'secondary': ['cancel']
+              },
+              'Cancelled': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': 'planned',
+                'secondary': ['save_and_submit']
+              },
+              'Sent for payment': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': 'complete',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Supervisor': {
+              'Planned': {
+                'primary': '',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': 'complete',
+                'secondary': ['reject']
+              },
+              'Cancelled': {
+                'primary': '',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification submitted': {
+                'primary': 'approveCertificate',
+                'secondary': ['rejectCertificate']
+              },
+              'Certification rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Travel Focal Point': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Finance Focal Point': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': 'save',
+                'secondary': ['cancel']
+              },
+              'Cancelled': {
+                'primary': 'save',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': 'save',
+                'secondary': ['sendForPayment', 'cancel']
+              },
+              'Rejected': {
+                'primary': 'save',
+                'secondary': ['cancel']
+              },
+              'Sent for payment': {
+                'primary': 'save',
+                'secondary': ['cancel']
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': 'save',
+                'secondary': ['certify']
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
+
+            'Representative': {
+              'Planned': {
+                'primary': '',
+                'secondary': []
+              },
+              'Submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Cancelled': {
+                'primary': '',
+                'secondary': []
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Sent for payment': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification submitted': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification rejected': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': '',
+                'secondary': []
+              },
+              'Certified': {
+                'primary': '',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            }
+          }
+        },
+        userType: {
+          type: String,
+        },
+        status: {
+          type: String,
+        },
+        actions: {
+          type: Object,
+          computed: '_computeActions(actList, permissions, status,' +
+            ' userType, isInternational, internationalTravelPermissions)'
+        },
+        show: {
+          type: Boolean,
+          computed: '_showAtAll(actions)'
+        },
+        showDropdown: {
+          type: Boolean,
+          computed: '_showSecondary(actions)'
+        },
+        isInternational: {
+          type: Boolean,
+          value: false
+        }
+      },
+      _buttonGreyClass: function(actions) {
+        return (actions.primary &&
+                actions.primary.name === 'Cancel' &&
+                !this._showSecondary(actions)) ?
+                  'grey' : '';
+      },
+      _computeActions: function(actList, permissions, status, userType,
+        isInternational, internationalTravelPermissions) {
+
+        var ret = isInternational ?
+          internationalTravelPermissions[userType][status] : permissions[userType][status];
+        var computed = {
+          primary: actList[ret.primary],
+          secondary: ret.secondary.map(function(el) {
+            return actList[el];
+          })
+        };
+        return computed;
+      },
+      _showAtAll: function(actions) {
+
+        return actions.primary !== '' && actions.primary !== undefined;
+      },
+      _showSecondary: function(actions) {
+
+        return Array.isArray(actions.secondary) && actions.secondary.length !== 0;
+      },
+      _clickPrimary: function() {
+        this.fire('form-action', this.actions.primary);
+      },
+      _clickSecondary: function(event) {
+
+        this.fire('form-action', event.model.item);
+      }
+    });
+  </script>
+
+</dom-module>

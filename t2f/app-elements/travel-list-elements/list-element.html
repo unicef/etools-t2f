@@ -1,0 +1,428 @@
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="list-element">
+
+  <style include="shared-styles et2f-styles travel-list iron-flex">
+    :host {
+      display: block;
+      padding: 0;
+      margin: 0;
+      border-bottom: 1px solid rgba(0,0,0,0.3);
+      box-sizing: border-box;
+    }
+    .heading-row {
+      width: 100%;
+    }
+    .heading-row.grey-heading {
+      background-color: var(--gray-lighter);
+    }
+    .heading-row-detailed {
+      background-color: #EEEEEE;
+      height: 64px;
+    }
+    .headings {
+      display: block;
+      float: left;
+      font-size: 13px;
+      line-height: 47px;
+      box-sizing: border-box;
+    }
+    .detail-headings {
+      color: var(--gray-mid);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 32px;
+    }
+    .detail-text {
+      color: var(--gray-dark);
+      font-weight: normal;
+      line-height: 32px;
+    }
+    .blue {
+      color: #00AEEF;
+      cursor: pointer;
+    }
+    .bold {
+      font-weight: 500;
+    }
+    .capital {
+      text-transform: capitalize;
+    }
+    .w60 {
+      border-left-width: 3px;
+      border-left-style: solid;
+    }
+    .w60.planned {
+      border-left-color: var(--et2f-planned);
+    }
+    .w60.approved {
+      border-left-color: var(--et2f-approved);
+    }
+    .w60.submitted {
+      border-left-color: var(--et2f-submitted);
+    }
+    .w60.sent {
+      border-left-color: var(--et2f-sent);
+    }
+    .w60.rejected {
+      border-left-color: var(--et2f-error);
+    }
+    .w60.cancelled {
+      border-left-color: var(--gray-light);
+    }
+    .w60.completed {
+      border-left-color: var(--et2f-completed);
+    }
+    .w60 iron-icon {
+      margin-left: 10px;
+      color: var(--gray-mid);
+    }
+    .statusdiv {
+      height: 32px;
+      border-radius: 2px;
+      margin: 8px 16px 8px 0;
+      font-size: 13px;
+      line-height: 32px;
+      text-align: center;
+      -moz-box-shadow: inset 0 -1px 0 var(--gray-light);
+      -webkit-box-shadow: inset 0 -1px 0 var(--gray-light);
+      box-shadow: inset 0 -1px 0 var(--gray-light);
+    }
+    #more-button {
+      --paper-menu-button: {
+        padding: 0;
+      }
+    }
+    #more-button .dropdown-content {
+      background-color: white;
+    }
+    #more-button paper-item {
+      --paper-item: {
+        color: var(--gray-dark);
+      }
+    }
+    #more-button iron-icon {
+      margin-right: 16px;
+      color: var(--gray-mid);
+    }
+    .statusdiv.planned {
+      background-color: var(--et2f-planned);
+    }
+    .statusdiv.approved {
+      background-color: var(--et2f-approved);
+    }
+    .statusdiv.submitted {
+      background-color: var(--et2f-submitted);
+    }
+    .statusdiv.sent {
+      background-color: var(--et2f-sent);
+    }
+    .statusdiv.rejected {
+      background-color: var(--et2f-error);
+    }
+    .statusdiv.cancelled {
+      background-color: var(--gray-light);
+    }
+    .statusdiv.completed {
+      background-color: var(--et2f-completed);
+    }
+    .statusdiv.rejected .statusdivtext, .statusdiv.cancelled .statusdivtext, .statusdiv.completed .statusdivtext {
+      color: white;
+    }
+    .dialog-heading {
+        font-size: 20px;
+        color: var(--gray-dark);
+        font-weight: 500;
+    }
+    .dialog-intro-text {
+        color: var(--gray-mid);
+        font-size: 16px;
+        margin-bottom: 24px;
+    }
+    .dialog-confirm-button {
+        color: var(--et2f-primary);
+        font-weight: 500;
+        height: 40px;
+        float: right;
+    }
+  </style>
+
+  <template>
+
+      <etools-ajax
+          method="POST"
+          url="[[enhancedNewTravelUrl]]"
+          body="[[enhancedNewTravelBody]]"
+          on-success="gotBackId">
+      </etools-ajax>
+
+      <!-- DUPLICATE MODAL -->
+      <paper-dialog
+        id="duplicate-modal"
+        opened="{{duplicateModalOpened}}"
+        with-backdrop
+        class="layout vertical">
+
+        <div class="dialog-heading">Duplicate travel</div>
+        <div class="dialog-intro-text">Please select the person to share this trips activities with</div>
+
+        <paper-dropdown-menu label="Select traveler" class="filter-dropdown">
+
+          <paper-listbox class="dropdown-content">
+            <template is="dom-repeat" items="[[users]]">
+
+              <paper-item on-click="duplicationSetTraveler">
+                [[item.label]]
+              </paper-item>
+
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+
+        <paper-button class="dialog-confirm-button self-end" on-click="duplicateConfirm">
+          DUPLICATE TRAVEL
+        </paper-button>
+      </paper-dialog>
+
+      <!-- ADD DRIVER MODAL -->
+      <paper-dialog
+        id="driver-modal"
+        opened="{{driverModalOpened}}"
+        with-backdrop
+        class="layout vertical">
+
+        <div class="dialog-heading">Add driver</div>
+        <div class="dialog-intro-text">Please select the driver to share this travel plans itinerary with</div>
+
+        <paper-dropdown-menu label="Select driver" class="filter-dropdown">
+
+          <paper-listbox class="dropdown-content">
+            <template is="dom-repeat" items="[[users]]">
+
+              <paper-item on-click="addDriverSetTraveler">
+                [[item.label]]
+              </paper-item>
+
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+
+        <paper-button class="dialog-confirm-button" on-click="addDriverConfirm">
+          ADD DRIVER
+        </paper-button>
+      </paper-dialog>
+
+      <div class$="heading-row clearfix layout horizontal [[_isGreyClass(data)]]">
+
+        <div class$="headings textprim bold w60 [[_statusClass(data)]]">
+          <iron-icon
+            icon="icons:expand-more"
+            on-click="_toggleExpanded"
+            hidden$="[[_isDetailed(expanded)]]">
+          </iron-icon>
+          <iron-icon
+            icon="icons:expand-less"
+            on-click="_toggleExpanded"
+            hidden$="[[!_isDetailed(expanded)]]">
+          </iron-icon>
+        </div>
+        <div class="headings blue bold w13">
+          <a href="/edit-travel/{{data.id}}">[[data.reference_number]]</a>
+        </div>
+        <div class="headings textprim w13">[[data.traveler]]</div>
+        <div class="headings textprim w13">[[getOffice(data.office, offices)]]</div>
+        <div class="headings textprim w13">[[getSection(data.section, sections)]]</div>
+        <div class="headings textprim w11">[[data.start_date]]</div>
+        <div class="headings textprim w11">[[data.end_date]]</div>
+        <div class="headings textprim bold capital w23">
+          <div class$="statusdiv [[_statusClass(data)]]">
+            <span class="statusdivtext">[[_statusMapping(data.status)]]</span>
+          </div>
+        </div>
+        <div class="headings textsec w5">
+
+          <paper-menu-button horizontal-align="right" id="more-button">
+
+            <paper-icon-button icon="more-vert" class="dropdown-trigger">
+            </paper-icon-button>
+
+            <paper-menu class="dropdown-content">
+
+              <paper-item on-click="duplicate">
+                <iron-icon icon="social:person-add"></iron-icon>
+                <paper-item-body>Duplicate trip</paper-item-body>
+              </paper-item>
+
+              <paper-item on-click="addDriver">
+                <iron-icon icon="maps:directions-car"></iron-icon>
+                <paper-item-body>Add driver</paper-item-body>
+              </paper-item>
+
+            </paper-menu>
+          </paper-menu-button>
+        </div>
+      </div>
+
+      <!-- EXPANDED VIEW -->
+      <div hidden$="[[!_isDetailed(expanded)]]" class="heading-row heading-row-detailed clearfix layout horizontal">
+
+        <div class$="headings textprim bold w60 [[_statusClass(data)]]"></div>
+
+        <div class="flex vertical around-justified layout">
+          <span class="flex detail-headings">Purpose of travel</span>
+          <span class="flex detail-text">[[data.purpose]]</span>
+        </div>
+
+        <div class="headings textsec w5"></div>
+      </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'list-element',
+
+      properties: {
+        data: {
+          type: Object,
+          observer: '_resetExpanded'
+        },
+        offices: Object,
+        sections: Object,
+        users: {
+          type: Object
+        },
+        expanded: {
+          type: Boolean,
+          value: false
+        },
+        enhancedNewTravelUrl: String,
+        enhancedNewTravelBody: String,
+        route: Object
+      },
+
+      _statusClass: function(data) {
+        var status = data.status;
+        return {
+          planned: 'planned',
+          approved: 'approved',
+          rejected: 'rejected',
+          submitted: 'submitted',
+          cancelled: 'cancelled',
+          completed: 'completed',
+          'sent_for_payment': 'sent',
+          'cert_needed': 'planned',
+          'cert_approved': 'approved',
+          'cert_submitted': 'submitted',
+        }[status];
+      },
+
+      _statusMapping: function(status) {
+        var statusLib = {
+          'planned': 'Planned',
+          'submitted': 'Submitted',
+          'approved': 'Approved',
+          'rejected': 'Rejected',
+          'sent_for_payment': 'Sent for payment',
+          'cancelled': 'Cancelled',
+          'done': 'Certification needed',
+          'certification_approved': 'Certification approved',
+          'certification_rejected': 'Certification rejected',
+          'certification_submitted': 'Certification submitted',
+          'certified': 'Completed'
+        };
+        return statusLib[status];
+      },
+
+      _toggleExpanded: function() {
+        this.set('expanded', !this.expanded);
+      },
+      _isDetailed: function(expanded) {
+        return expanded;
+      },
+      _resetExpanded: function() {
+        this.set('expanded', false);
+      },
+      duplicate: function() {
+        this.duplicateModalOpened = true;
+      },
+      addDriver: function() {
+        this.driverModalOpened = true;
+      },
+      duplicateConfirm: function() {
+        if (!this.duplicationTravelerId) {
+          return;
+        }
+        this.$['duplicate-modal'].close();
+
+        var traveler = this.duplicationTravelerId;
+        var travel = this.data.id;
+        console.log('confirmed duplicate, user#', traveler);
+        console.log('confirmed duplicate, travel#', travel);
+
+        this.set('hackAroundId', travel);
+
+        this.set('enhancedNewTravelBody', {traveler: traveler});
+        this.set('enhancedNewTravelUrl', '/api/et2f/travels/' + travel + '/duplicate_travel/');
+        // TODO will it call only once?
+      },
+      addDriverConfirm: function() {
+        if (!this.addDriverTravelerId) {
+          return;
+        }
+        this.$['driver-modal'].close();
+
+        var traveler = this.addDriverTravelerId;
+        var travel = this.data.id;
+        console.log('confirmed addDriver, user#', traveler);
+        console.log('confirmed addDriver, travel#', travel);
+
+        this.set('hackAroundId', travel);
+
+        this.set('enhancedNewTravelBody', {traveler: traveler});
+        this.set('enhancedNewTravelUrl', '/api/et2f/travels/' + travel + '/add_driver/');
+        // TODO will it call only once?
+      },
+      duplicationSetTraveler: function(e) {
+        this.set('duplicationTravelerId', e.model.item.value);
+      },
+      addDriverSetTraveler: function(e) {
+        this.set('addDriverTravelerId', e.model.item.value);
+      },
+      gotBackId: function(e, payload) {
+        // console.warn('Navigate to:', payload.id);
+        this.set('route.path', '/edit-travel/' + payload.id  + '/');
+      },
+      _isGreyClass: function(data) {
+        return data.status === 'cancelled' ? 'grey-heading' : '';
+      },
+      getOffice: function(id, offices) {
+        return (offices.filter(function(office) {
+          return office.value === id;
+        })[0] || {label: 'N.A.'}).label;
+      },
+      getSection: function(id, sections) {
+        return (sections.filter(function(section) {
+          return section.value === id;
+        })[0] || {label: 'N.A.'}).label;
+      }
+    });
+  </script>
+</dom-module>

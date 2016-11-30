@@ -1,0 +1,217 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../../bower_components/etools-dialog/etools-dialog.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../field-set-elements/travel-details.html">
+<link rel="import" href="./travel-attachments.html">
+<link rel="import" href="./travel-report.html">
+<link rel="import" href="../api-elements/inbound-data.html">
+<link rel="import" href="../api-elements/outbound-data.html">
+<link rel="import" href="./ta-print.html">
+<link rel="import" href="../main-elements/et2f-header.html">
+<link rel="import" href="./form-errors.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="travel-edit">
+
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+        background-color: var(--gray-lighter);
+      }
+
+      #label-sec-clear, #label-med, #label-sec-course {
+        display: inline-block;
+        width: 220px;
+      }
+    </style>
+
+
+
+
+    <et2f-inbound-data loading="{{loading}}" route="{{route}}" et2f-data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]" data-to-serialize="[[incomingData]]"></et2f-inbound-data>
+    <et2f-outbound-data id="outbound-data" form-errors="{{formErrors}}" data="[[data]]" travel-id="[[travelId]]" structure="[[structure]]" inbound-data="{{incomingData}}"></et2f-outbound-data>
+    <ta-print data="[[data]]" data-to-print="{{dataToPrint}}" print-styles="{{printStyles}}"></ta-print>
+
+    <et2f-header title="Edit travel plan"
+      data-to-print="[[dataToPrint]]"
+      print-styles="[[printStyles]]"
+      show-new-travel-button="true">
+      <paper-tabs scrollable
+        selected="{{selected}}">
+        <paper-tab>TRAVEL DETAILS</paper-tab>
+        <paper-tab>ATTACHMENTS</paper-tab>
+        <paper-tab>REPORT</paper-tab>
+      </paper-tabs>
+    </et2f-header>
+
+    <form-errors errors="{{formErrors}}" error-selected="{{errorSelected}}"></form-errors>
+
+    <iron-pages selected="{{selected}}">
+
+      <travel-details
+        scroll-to-fieldset="[[errorSelected]]"
+        structure="[[structure]]"
+        travel-permissions="[[travelPermissions]]"
+        data="{{data}}"
+        user-type="[[userType]]"
+        on-form-action="_handleFormAction">
+      </travel-details>
+
+      <travel-attachments
+        structure="[[structure]]"
+        attachments-permission="[[travelPermissions.attachments]]"
+        attachments="{{data.attachments}}"
+        deleted-attachments="{{data.deletedAttachments}}"
+        status="[[data.status]]"
+        user-type="[[userType]]"
+        on-form-action="_handleFormAction">
+      </travel-attachments>
+
+      <travel-report
+        structure="[[structure]]"
+        report-permission="[[travelPermissions.report]]"
+        data="{{data}}"
+        report-string="[[data.report]]"
+        user-type="[[userType]]"
+        on-form-action="_handleFormAction">
+      </travel-report>
+    </iron-pages>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-edit',
+      properties: {
+        data: {
+          type: Object,
+          notify: true,
+        },
+        structure: {
+          type: Object,
+        },
+        et2fPermissions: {
+          type: Object
+        },
+        status: {
+          type: String,
+          computed: '_computeStatus(data)'
+        },
+        user: {
+          type: Object,
+        },
+        userType: {
+          type: String,
+        },
+        travelPermissions: {
+          type: Object,
+          notify: true,
+        },
+        selected: {
+          type: Number,
+          value: 0
+        },
+        travelId: {
+          type: String
+        },
+        errorSelected: {
+          type: String,
+          notify: true
+        },
+        route: {
+          type: Object,
+          notify: true,
+          observer: '_routeObserver'
+        },
+
+      },
+      observers: [
+        '_computeTravelPermission(et2fPermissions, status, user, data)',
+      ],
+
+      _loadDefault: function() {
+          this.set('data', {});
+          this.set('data', {
+            baseDetails: {
+              ta_required: true,
+              international_travel: false
+            },
+            activities: [{}],
+            itinerary: [{}],
+            cost_assignments: [{}],
+            cost_summary: {},
+            deductions: [],
+            expenses: [{}],
+            attachments: [],
+            status: 'Planned'
+          });
+      },
+      _routeObserver: function(route) {
+        this.showForm = false;
+        if (route.path === '/edit-travel/-1') {
+          this._loadDefault();
+        }
+      },
+      _computeStatus: function(data) {
+        if (data.status) {
+          return data.status.toLowerCase().replace(/ /g, '_');
+        }
+      },
+
+      _computeTravelPermission: function(permissions, status, user, data) {
+        var userType;
+        if (data.baseDetails.id) {
+          userType = 'Anyone';
+          if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
+            userType = 'Traveler';
+          }
+          if (data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
+            userType = 'Supervisor';
+          }
+
+        } else {
+          userType = 'Traveler';
+        }
+        var urlParams = new URLSearchParams(window.location.search);
+        var forcedUserType = urlParams.get('usertype');
+
+        if (forcedUserType) {
+          userType = forcedUserType;
+        }
+
+        if (userType) {
+          this.set('userType', userType);
+          this.set('travelPermissions', {});
+          this.set('travelPermissions', permissions[userType][status]);
+        }
+
+        var self = this;
+        if ((!self.travelId || self.travelId === '/-1') && data.baseDetails) {
+          data.baseDetails.traveler = {
+            label: user.full_name,
+            value: user.id
+          };
+          self.notifyPath('data.baseDetails.traveler');
+        }
+      },
+
+      _handleFormAction: function(e, details) {
+        this.$['outbound-data'].doRequest(details);
+      }
+
+    });
+  </script>
+</dom-module>

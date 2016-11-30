@@ -1,0 +1,170 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/etools-loading/etools-loading.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+
+
+<dom-module id="et2f-app">
+
+  <template>
+
+    <style include="shared-styles">
+
+      :host {
+        display: block;
+      }
+
+    </style>
+
+
+    <etools-ajax endpoint="[[structureEndpoint]]"
+      on-success="_handleStructure" loading="{{structureLoading}}"></etools-ajax>
+    <etools-ajax endpoint="[[permissionsEndpoint]]"
+      on-success="_handlePermissions" loading="{{permissionsLoading}}"></etools-ajax>
+    <etools-ajax endpoint="[[meEndpoint]]" loading="{{meLoading}}"
+      on-success="_handleMe" ></etools-ajax>
+
+
+
+    <etools-loading active="[[loading]]"></etools-loading>
+    <iron-pages id="pages"
+      selected="[[page]]"
+      attr-for-selected="name"
+      fallback-selection="not-found"
+      role="main">
+      <page-travel-list name="travel-list"
+        user="[[user]]"
+        structure="[[structure]]"
+        route="{{route}}"
+        refresh-data="{{refreshData}}">
+      </page-travel-list>
+      <page-edit-travel fullbleed
+        name="edit-travel"
+        user="[[user]]"
+        route="{{route}}"
+        travel-id="[[subroute.path]]"
+        et2f-permissions="[[et2fPermissions]]"
+        structure="[[structure]]"></page-edit-travel>
+      <page-not-found name="not-found"></page-not-found>
+    </iron-pages>
+
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'et2f-app',
+
+      properties: {
+        refreshData: {
+          type: Boolean,
+          value: false
+        },
+        structure: Object,
+        et2fPermissions: Object,
+        user: {
+          type: Object
+        },
+        route: {
+          type: Object,
+          notify: true
+        },
+        subroute: {
+          type: Object,
+          notify: true
+        },
+        page: {
+          type: Object,
+          notify: true
+        },
+        structureLoading: Boolean,
+        permissionsLoading: Boolean,
+        meLoading: Boolean,
+        loading: {
+          type: Boolean,
+          computed: '_computeLoading(structureLoading, permissionsLoading, meLoading)'
+        },
+        structureEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fStaticData
+        },
+        permissionsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
+        },
+        meEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fMe
+        }
+      },
+      _handleStructure: function(event, data) {
+        var dataKeys = Object.keys(data);
+        dataKeys.forEach(function(key) {
+          data[key] = data[key].length > 100 ? data[key].splice(0, 99) : data[key];
+          if (key === 'currencies') {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, short: obj.iso_4217};
+            });
+          } else {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name || obj.full_name, value: obj.id};
+            });
+          }
+
+        });
+
+        Object.freeze(data);
+        this.set('structure', data);
+      },
+      _handlePermissions: function(e, data) {
+
+        var nonBaseKeys = [
+          'deductions',
+          'itinerary',
+          'activities',
+          'cost_assignments',
+          'expenses',
+          'clearances',
+          'cost_summary',
+          'report',
+          'attachments'
+        ];
+        Object.keys(data).forEach(function(role) {
+          if (!data[role]) {
+            return;
+          }
+          Object.keys(data[role]).forEach(function(status) {
+            if (!data[role][status]) {
+              return;
+            }
+            var currentKeys = Object.keys(data[role][status]);
+            data[role][status].baseDetails = {};
+            currentKeys.forEach(function(key) {
+              if (nonBaseKeys.indexOf(key) === -1) {
+                data[role][status].baseDetails[key] = data[role][status][key];
+                delete data[role][status][key];
+              }
+            });
+          });
+        });
+        Object.freeze(data);
+        this.et2fPermissions = data;
+      },
+      _handleMe: function(e, data) {
+        this.user = data;
+      },
+      _computeLoading: function(structure, permissions, user) {
+        return structure && permissions && user;
+      }
+
+    });
+
+  </script>
+
+</dom-module>

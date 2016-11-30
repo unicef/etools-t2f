@@ -1,0 +1,147 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/polymer-pdf-make-wrapper/pdf-make.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="et2f-header">
+  <style include="iron-flex shared-styles et2f-styles">
+    :host {
+      display: block;
+    }
+    .header-wrapper {
+      box-shadow: inset 0 -1px rgba(0,0,0,0.26);
+      background-color: white;
+    }
+    .side-heading {
+      margin: 0;
+      height: 80px;
+      margin-right: 48px;
+    }
+    .side-heading span.title {
+      font-size: 24px;
+      padding-left: 48px;
+    }
+    .side-heading .grey-buttons {
+      color: var(--gray-mid);
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .side-heading .grey-buttons iron-icon {
+      margin-right: 8px;
+    }
+    .side-heading a paper-button {
+      background-color: var(--et2f-primary);
+      color: white;
+      height: 36px;
+      font-weight: 500;
+      padding-left: 10px;
+      padding-right: 15px;
+    }
+    .side-heading a paper-button span {
+      margin-left: 25px;
+      font-size: 14px;
+    }
+  </style>
+
+  <template>
+
+    <pdf-make output="download" print="{{openPDF}}" content="[[dataToPrint]]" styles="[[printStyles]]" page-orientation="landscape"></pdf-make>
+    <template is="dom-if" if="[[loadCSV]]">
+      <etools-ajax download-csv handle-as="text" url="[[csvEndpoint]]" params="[[exportParams]]" on-success="_handleCSVData"></etools-ajax>
+    </template>
+
+    <div class="header-wrapper">
+      <div class="side-heading horizontal layout center">
+
+        <span class="flex title">[[title]]</span>
+
+        <div class="side-heading-button-holder">
+          <paper-button
+            hidden$="[[!showExportButton]]"
+            class="grey-buttons"
+            on-click="export">
+
+            <iron-icon icon="file-download"></iron-icon>
+            Export
+          </paper-button>
+          <paper-button
+            class="grey-buttons"
+            on-click="print">
+
+            <iron-icon icon="print"></iron-icon>
+            Print
+          </paper-button>
+
+          <a href="/edit-travel/-1" hidden$="[[_hideNewTravelButton(showNewTravelButton)]]">
+            <paper-button class="addnbtn" raised>
+              <iron-icon icon="add"></iron-icon>
+              <span>Add New Travel</span>
+            </paper-button>
+          </a>
+        </div>
+      </div>
+      <content></content>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'et2f-header',
+      properties: {
+        title: String,
+        showNewTravelButton: {
+          type: Boolean,
+          value: false
+        },
+        showExportButton: {
+          type: Boolean,
+          value: false
+        },
+        dataToPrint: {
+          type: Object,
+        },
+        printStyles: Object,
+        openPDF: {
+          type: Boolean,
+          value: false
+        },
+        exportParams: {
+          type: Object
+        },
+        loadCSV: {
+          type: Boolean,
+          value: false
+        },
+        csvEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fCSVListExport.url
+        }
+      },
+      print: function() {
+        this.openPDF = true;
+        this.openPDF = false;
+      },
+      export: function() {
+        if (this.showExportButton) {
+          this.loadCSV = true;
+        }
+      },
+      _hideNewTravelButton: function(show) {
+        return !show;
+      },
+      _handleCSVData: function(e, data) {
+        var a = document.createElement('a');
+        a.href =  window.URL.createObjectURL(data);
+        a.download = 'csv_export_' + Date.now() + '.csv';
+        a.click();
+        window.URL.revokeObjectURL(a.href);
+        this.set('loadCSV', false);
+      }
+    });
+  </script>
+
+</dom-module>

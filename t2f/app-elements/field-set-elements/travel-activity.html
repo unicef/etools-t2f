@@ -1,0 +1,110 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import" href="../travel-status-box/travel-status.html">
+<link rel="import" href="../datepicker-input/datepicker-input.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="travel-activities">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+      .custom-margin {
+        --paper-input-container: {
+          height: auto;
+          margin-left: 12px;
+          margin-right: 12px;
+          margin-bottom: 12px;
+        };
+        --paper-checkbox-margin: 12px;
+      }
+    </style>
+
+    <div class="layout vertical flex">
+      <div class="layout horizontal">
+        <etools-searchable-multiselection-menu
+          class$="flex-4 [[computedPermission.travel_type.readOnly]]"
+          disabled="[[computedPermission.travel_type.disabled]]"
+          hidden$="[[computedPermission.travel_type.hidden]]"
+          options="[[structure.travel_types]]"
+          label="Travel Type"
+          value="{{activity.travel_type}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-4 [[computedPermission.partner.readOnly]]"
+          disabled="[[computedPermission.partner.disabled]]"
+          hidden$="[[computedPermission.partner.hidden]]"
+          options="[[structure.partners]]"
+          label="Partner"
+          value="{{activity.partner}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-4 [[computedPermission.partnership.readOnly]]"
+          disabled="[[computedPermission.partnership.disabled]]"
+          hidden$="[[computedPermission.partnership.hidden]]"
+          options="[[structure.partnerships]]"
+          label="Partnership"
+          value="{{activity.partnership}}"></etools-searchable-multiselection-menu>
+      </div>
+      <div class="layout horizontal">
+        <etools-searchable-multiselection-menu class$="flex-4 [[computedPermission.travel_type.readOnly]]"
+          disabled="[[computedPermission.travel_type.disabled]]"
+          hidden$="[[computedPermission.travel_type.hidden]]"
+          options="[[structure.results]]"
+          label="Result/Activities to be monitored"
+          value="{{activity.result}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-8 [[computedPermission.locations.readOnly]]"
+          disabled="[[computedPermission.locations.disabled]]"
+          hidden$="[[computedPermission.locations.hidden]]"
+          options="[[structure.locations]]"
+          label="Travel locations"
+          multi
+          value="{{activity.locations}}"></etools-searchable-multiselection-menu>
+      </div>
+      <div class="layout horizontal">
+        <datepicker-input class$="flex-4 [[computedPermission.date.readOnly]]"
+          disabled="[[computedPermission.date.disabled]]"
+          hidden$="[[computedPermission.date.hidden]]"
+          label="When?"
+          date="{{activity.date}}"></datepicker-input>
+        <paper-checkbox class$="flex-8 custom-margin self-end [[computedPermission.primary_traveler.readOnly]]"
+          disabled="[[computedPermission.primary_traveler.disabled]]"
+          hidden$="[[computedPermission.primary_traveler.hidden]]"
+          checked="{{activity.primary_traveler}}">I am a Primary Traveler
+        </paper-checkbox>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'travel-activities',
+
+      properties: {
+        activity: {
+          type: Object,
+          notify: true
+        },
+        structure: {
+          type: Object,
+          value: {}
+        }
+      },
+
+      behaviors: [et2fBehaviors.PermissionLayer],
+
+      observers: ['_setCheckboxes(activity.*)'],
+
+      _setCheckboxes: function(changed) {
+        this[changed.path] = changed.value;
+      }
+    });
+  </script>
+</dom-module>
