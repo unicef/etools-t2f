@@ -13,6 +13,7 @@ var backendProxy = proxy('/api/', {
 });
 
 app.use('/et2f/',express.static(basedir));
+
 // app.get('/et2f/*', function(req, res) {
 //   res.sendFile(basedir + '/index.html');
 // });
