@@ -26,7 +26,15 @@
             }
         </style>
 
-        <paper-input id="date-input" readonly label="[[label]]" on-tap="_openCalendar" value="{{prettyDate}}" disabled$="[[disabled]]">
+        <paper-input id="date-input" 
+          readonly
+          label="[[label]]"
+          always-float-label
+          on-tap="_openCalendar"
+          value="{{prettyDate}}"
+          disabled$="[[disabled]]"
+          error-message="[[errorMessage]]">
+
             <etools-datepicker-button no-init open="{{opened}}" suffix  json-date="{{date}}" date="[[date]]"></etools-datepicker-button>
         </paper-input>
 
@@ -39,6 +47,7 @@
           label: {
             type: String
           },
+          errorMessage: String,
           date: {
             notify: true
           },

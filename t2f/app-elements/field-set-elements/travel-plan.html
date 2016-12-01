@@ -111,43 +111,57 @@
       <div class="layout horizontal">
 
         <etools-searchable-multiselection-menu label="Traveler*"
-          value="{{baseDetails.traveler}}">
+          id="travel_input"
+          value="{{baseDetails.traveler}}"
           class$="flex-3 [[computedPermission.traveler.readOnly]]"
           disabled="[[computedPermission.traveler.disabled]]"
           hidden$="[[computedPermission.traveler.hidden]]"
           options="[[structure.users]]"
+
           required
-          error-message="error message"
+          error-message="*required"
+          placeholder="select"
+          auto-validate>
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Supervisor*"
-          value="{{baseDetails.supervisor}}">
+          id="supervisor_input"
+          value="{{baseDetails.supervisor}}"
           class$="flex-3 [[computedPermission.supervisor.readOnly]]"
           disabled="[[computedPermission.supervisor.disabled]]"
           hidden$="[[computedPermission.supervisor.hidden]]"
           options="[[structure.users]]"
+
           required
-          error-message="error message"
+          error-message="*required"
+          placeholder="select"
+          auto-validate>
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Office*"
-          value="{{baseDetails.office}}">
+          value="{{baseDetails.office}}"
           class$="flex-3 [[computedPermission.office.readOnly]]"
           disabled="[[computedPermission.office.disabled]]"
           hidden$="[[computedPermission.office.hidden]]"
           options="[[structure.offices]]"
+
           required
-          error-message="error message"
+          error-message="*required"
+          placeholder="select"
+          auto-validate>
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Section*"
-          value="{{baseDetails.section}}">
+          value="{{baseDetails.section}}"
           class$="flex-3 [[computedPermission.section.readOnly]]"
           disabled="[[computedPermission.section.disabled]]"
           hidden$="[[computedPermission.section.hidden]]"
           options="[[structure.sections]]"
+
           required
-          error-message="error message"
+          error-message="*required"
+          placeholder="select"
+          auto-validate>
         </etools-searchable-multiselection-menu>
       </div>
 
@@ -158,6 +172,7 @@
           disabled="[[computedPermission.start_date.disabled]]"
           hidden$="[[computedPermission.start_date.hidden]]"
           required
+          error-message="*required"
           date="{{baseDetails.start_date}}">
         </datepicker-input>
 
@@ -166,6 +181,8 @@
           disabled="[[computedPermission.end_date.disabled]]"
           hidden$="[[computedPermission.end_date.hidden]]"
           required
+          auto-validate
+          error-message="*required"
           date="{{baseDetails.end_date}}">
         </datepicker-input>
 
@@ -174,9 +191,13 @@
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.travel_types]]"
-          required
+          value="{{baseDetails.mode_of_travel}}"
           multi
-          value="{{baseDetails.mode_of_travel}}">
+
+          required
+          error-message="*required"
+          placeholder="select"
+          invalid="[[_hasModeSelected(baseDetails.mode_of_travel)]]">
         </etools-searchable-multiselection-menu>
       </div>
 
@@ -188,7 +209,7 @@
           hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
           required
           pattern="^[0-9]+(\.[0-9]{1,4})?$"
-          auto-validate
+          on-blur="_validateTravelPlan"
           error-message="*number required"
           value="{{baseDetails.estimated_travel_cost}}">
         </paper-input>
@@ -198,28 +219,33 @@
           disabled="[[computedPermission.currency.disabled]]"
           hidden$="[[computedPermission.currency.hidden]]"
           options="[[structure.currencies]]"
+          value="{{baseDetails.currency}}"
+
           required
-          value="{{baseDetails.currency}}">
+          error-message="*required"
+          placeholder="select"
+          auto-validate>
         </etools-searchable-multiselection-menu>
 
         <div class="flex-6"></div>
       </div>
 
       <div class="layout horizontal">
+
         <paper-textarea label="Purpose of travel*"
           class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
           disabled="[[computedPermission.purpose.disabled]]"
           hidden$="[[computedPermission.purpose.hidden]]"
           required
-          auto-validate
           error-message="*required"
           char-counter maxlength="120"
+          on-blur="_validateTravelPlan"
           value="{{baseDetails.purpose}}">
         </paper-textarea>
       </div>
 
+      <!-- TODO: add additional notes -->
     </form>
-
   </template>
 
   <script>
@@ -242,12 +268,28 @@
           type: Boolean,
           computed: '_computeDisableTaRequired(computedPermission.ta_required.disabled,' +
             ' baseDetails.international_travel)'
+        },
+        valid: {
+          type: Boolean
         }
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
       observers: ['_setCheckboxes(baseDetails.*)'],
+
+      ready: function() {
+        this._validateTravelPlan();
+      },
+
+      _validateTravelPlan: function() {
+        console.log('Validate TRAVEL PLAN:' + this.$.travel_plan_form.validate());
+        // this.$.travel_plan_form.validate();
+      },
+
+      _hasModeSelected: function(mode_of_travel) {
+        return !(Array.isArray(mode_of_travel) && mode_of_travel.length > 0);
+      },
 
       _computeDefaultChecked: function(value) {
         return value !== false;
