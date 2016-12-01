@@ -1,0 +1,247 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../../bower_components/etools-loading/etools-loading.html">
+<link rel="import" href="../../app-config/etools-app-config.html">
+
+
+<dom-module id="et2f-inbound-data">
+  <template>
+
+    <etools-ajax url="[[travelUrl]]"
+      on-success="_handleData" loading="{{loading}}"></etools-ajax>
+
+    <etools-loading active="[[loading]]"></etools-loading>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'et2f-inbound-data',
+
+      properties: {
+        et2fData: {
+          type: Object,
+          notify: true,
+        },
+        structure: Object,
+        travelId: {
+          type: String
+        },
+        travelUrl: {
+          type: String,
+          computed: '_computeUrl(travelId)',
+        },
+        dataToSerialize: {
+          type: Object,
+          observer: '_handleIncomingData'
+        },
+        loading: {
+          type: Boolean,
+          notify: true,
+          value: false
+        },
+        listen: {
+          type: Boolean,
+          value: true
+        },
+        route: {
+          type: Object,
+          notify: true
+        }
+
+      },
+
+      _computeUrl: function(travelId) {
+        var innerTravelId = travelId ? ('' + travelId).replace(/\//g, '') : null;
+        if (this.listen && innerTravelId && innerTravelId !== '-1') {
+          return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {
+            id: innerTravelId
+          }).url;
+        }
+      },
+
+      _handleIncomingData: function(incomingData) {
+        this.listen = false;
+        var id = incomingData.id;
+        this._handleData(null, incomingData);
+        var route = this.route;
+        route.path = '/edit-travel/' + id;
+        this.set('route', {});
+        this.set('route', route);
+        this.listen = true;
+      },
+
+      _handleData: function(e, incomingData) {
+        var self = this;
+
+        function convertDate(item) {
+          var date = new Date(item);
+          return date;
+        }
+
+        function multiFieldConversion(subField, fieldName, fieldSet) {
+          if (fieldSet instanceof Array) {
+            return fieldSet.map(function(field) {
+              return self.structure[fieldName].find(function(item) {
+                return item[subField] === field;
+              });
+            });
+          }
+        }
+
+        var structureLib = {
+          baseDetails: {
+            traveler: 'users',
+            supervisor: 'users',
+            office: 'offices',
+            section: 'sections',
+            start_date: convertDate,
+            end_date: convertDate,
+            mode_of_travel: multiFieldConversion.bind(this, 'value', 'travel_types'),
+            currency: 'currencies',
+          },
+          activities: {
+            locations: multiFieldConversion.bind(this, 'value', 'locations'),
+            travel_type: 'travel_types',
+            partner: 'partners',
+            partnership: 'partnerships',
+            result: 'results',
+          },
+          itinerary: {
+            airlines: multiFieldConversion.bind(this, 'value', 'airlines'),
+            mode_of_travel: 'travel_types',
+            dsa_region: 'dsa_regions',
+            departure_date: convertDate,
+            arrival_date: convertDate,
+          },
+          expenses: {
+            type: 'expense_types',
+            document_currency: 'currencies',
+            account_currency: 'currencies'
+          },
+          clearances: {},
+          deductions: {},
+          cost_assignments: {
+            wbs: 'wbs',
+            grant: 'grants',
+            fund: 'funds'
+          },
+          attachments: {
+            type: function(value) {
+              var list = [
+                {value: 0, label: 'Report'},
+                {value: 1, label: 'Document'},
+                {value: 3, label: 'Image'}
+              ];
+              return list.find(function(item) {
+                return item.label === value;
+              });
+            }
+          },
+          rejection_note: 'rejection_note',
+          cancellation_note: 'cancellation_note',
+          certification_note: 'certification_note',
+          canceled_at: 'canceled_at',
+          completed_at: 'completed_at',
+          cost_summary: {}
+        };
+
+        var statusLib = {
+          'planned': 'Planned',
+          'submitted': 'Submitted',
+          'approved': 'Approved',
+          'rejected': 'Rejected',
+          'sent_for_payment': 'Sent for payment',
+          'cancelled': 'Cancelled',
+          'done': 'Certification needed',
+          'certification_approved': 'Certification approved',
+          'certification_rejected': 'Certification rejected',
+          'certification_submitted': 'Certification submitted',
+          'certified': 'Completed',
+          'completed': 'Completed'
+        };
+
+        var nonBaseKeys = [
+          'deductions',
+          'itinerary',
+          'activities',
+          'cost_assignments',
+          'expenses',
+          'clearances',
+          'rejection_note',
+          'cancellation_note',
+          'certification_note',
+          'canceled_at',
+          'completed_at',
+          'cancellation_date',
+          'completion_date',
+          'attachments',
+          'cost_summary',
+          'report'
+        ];
+
+        var dataKeys = Object.keys(incomingData).filter(function(key) {
+          return nonBaseKeys.indexOf(key) === -1;
+        });
+
+        incomingData.baseDetails = {};
+        dataKeys.forEach(function(key) {
+          incomingData.baseDetails[key] = incomingData[key];
+          delete incomingData[key];
+        });
+
+        function handleObject(fieldSet, key) {
+          // loop on the object inner keys
+          if (!fieldSet) {
+            return;
+          }
+          var localKeys = Object.keys(fieldSet);
+          localKeys.forEach(function(label) {
+            // search the structure library for a match
+            var structureData = structureLib[key][label];
+            if (structureData) {
+              //apply the matching function or the transformation from the structure
+              if (typeof structureData  === 'function') {
+                fieldSet[label] = structureData(fieldSet[label]);
+              } else {
+                fieldSet[label] = self.structure[structureData].find(function(item) {
+                  return item.value === fieldSet[label];
+                });
+              }
+            }
+          });
+        }
+
+        function handleArray(fieldSet, key) {
+          if (fieldSet.length === 0 && key !== 'attachments') {
+            // add one empty object in case of empty array
+            fieldSet.push({});
+          } else {
+            //loop on array elements and run the object handling function
+            fieldSet.forEach(function(innerFieldSet) {
+              handleObject(innerFieldSet, key);
+            });
+          }
+        }
+
+        var newKeys = Object.keys(incomingData);
+        newKeys.forEach(function(fieldSet) {
+          if (incomingData[fieldSet] instanceof Array) {
+            handleArray(incomingData[fieldSet], fieldSet);
+          } else if (typeof incomingData[fieldSet] === 'object') {
+            handleObject(incomingData[fieldSet], fieldSet);
+          }
+        });
+
+        if (incomingData.baseDetails.status) {
+          incomingData.status = statusLib[incomingData.baseDetails.status];
+        } else {
+          incomingData.status = statusLib.planned;
+        }
+        this.set('et2fData', {});
+        this.set('et2fData', incomingData);
+      }
+    });
+  </script>
+</dom-module>

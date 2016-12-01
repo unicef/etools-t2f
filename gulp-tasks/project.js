@@ -30,7 +30,7 @@ const unbundledPath = path.join(global.config.build.rootDirectory, global.config
 // https://github.com/PolymerElements/generator-polymer-init-custom-build/issues
 
 // Returns a ReadableStream of all the source files
-// Source files are those in src/** as well as anything
+// Source files are those in t2f/** as well as anything
 // added to the sourceGlobs property of polymer.json
 function splitSource() {
   return project.sources().pipe(project.splitHtml());

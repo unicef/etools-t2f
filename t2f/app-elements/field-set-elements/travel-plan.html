@@ -1,0 +1,242 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import" href="../datepicker-input/datepicker-input.html">
+<link rel="import" href="../et2f-file-upload/et2f-file-upload.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="travel-plan">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+      .custom-margin {
+        --paper-input-container: {
+          height: auto;
+          margin-left: 12px;
+          margin-right: 12px;
+          margin-bottom: 12px;
+        };
+        --paper-checkbox-margin: 12px;
+      }
+      span.standalone {
+        color: var(--gray-dark);
+        font-size: 16px;
+        padding-left: 12px;
+      }
+      etools-file-upload {
+        --primary: var(--et2f-primary);
+        --delete: var(--et2f-error);
+        --gray-dark: rgba(0,0,0,.87);
+        --gray-mid: rgba(0,0,0,.54);
+        --gray-light: rgba(0,0,0,.38);
+      }
+      .dialog-heading {
+        font-size: 20px;
+        color: var(gray-dark);
+        font-weight: 500;
+      }
+
+      .dialog-intro-text {
+        color: var(--gray-mid);
+        font-size: 16px;
+        margin-bottom: 24px;
+      }
+
+      .dialog-confirm-button {
+        color: var(--et2f-primary);
+        font-weight: 500;
+        height: 40px;
+        float: right;
+      }
+    </style>
+
+    <paper-dialog id="confirmation-modal" with-backdrop>
+
+      <div class="dialog-heading">Caution</div>
+      <div class="dialog-intro-text">Financial detail of International travels are handled through Vision</div>
+
+      <paper-button
+        class="dialog-confirm-button"
+        on-click="_confirmInternationalTravel">
+        Confirm
+      </paper-button>
+      <paper-button
+        class="dialog-confirm-button"
+        on-click="_closeDialog">
+        Cancel
+      </paper-button>
+    </paper-dialog>
+
+    <div class="layout vertical flex">
+      <div class="layout horizontal">
+        <paper-checkbox class$="flex custom-margin [[computedPermission.ta_required.readOnly]]"
+          hidden$="[[computedPermission.ta_required.hidden]]"
+          checked="{{baseDetails.ta_required}}"
+          disabled="[[taRequiredDisabled]]"
+          >TA required?
+        </paper-checkbox>
+        <paper-checkbox class$="flex custom-margin [[computedPermission.international_travel.readOnly]]"
+          disabled="[[computedPermission.international_travel.disabled]]"
+          hidden$="[[computedPermission.international_travel.hidden]]"
+          toggles="[[falseValue]]"
+          checked="[[baseDetails.international_travel]]"
+          on-tap="_openDialog"
+          >International travel?
+        </paper-checkbox>
+        <div class="flex layout horizontal center">
+          <span class$="standalone [[computedPermission.reference_number.readOnly]]"
+            hidden$="[[computedPermission.reference_number.hidden]]">Reference #: [[baseDetails.reference_number]]</span>
+        </div>
+        <div class="flex"></div>
+      </div>
+      <div class="layout horizontal">
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.traveler.readOnly]]"
+          disabled="[[computedPermission.traveler.disabled]]"
+          hidden$="[[computedPermission.traveler.hidden]]"
+          options="[[structure.users]]"
+          label="Traveler"
+          value="{{baseDetails.traveler}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.supervisor.readOnly]]"
+          disabled="[[computedPermission.supervisor.disabled]]"
+          hidden$="[[computedPermission.supervisor.hidden]]"
+          options="[[structure.users]]"
+          label="Supervisor"
+          value="{{baseDetails.supervisor}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.office.readOnly]]"
+          disabled="[[computedPermission.office.disabled]]"
+          hidden$="[[computedPermission.office.hidden]]"
+          options="[[structure.offices]]"
+          label="Office"
+          value="{{baseDetails.office}}"></etools-searchable-multiselection-menu>
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.section.readOnly]]"
+          disabled="[[computedPermission.section.disabled]]"
+          hidden$="[[computedPermission.section.hidden]]"
+          options="[[structure.sections]]"
+          label="Section"
+          value="{{baseDetails.section}}"></etools-searchable-multiselection-menu>
+      </div>
+      <div class="layout horizontal">
+        <datepicker-input class$="flex-3 [[computedPermission.start_date.readOnly]]"
+          disabled="[[computedPermission.start_date.disabled]]"
+          hidden$="[[computedPermission.start_date.hidden]]"
+          label="Start Date"
+          date="{{baseDetails.start_date}}"></datepicker-input>
+        <datepicker-input class$="flex-3 [[computedPermission.end_date.readOnly]]"
+          disabled="[[computedPermission.end_date.disabled]]"
+          hidden$="[[computedPermission.end_date.hidden]]"
+          label="End Date"
+          date="{{baseDetails.end_date}}"></datepicker-input>
+        <etools-searchable-multiselection-menu class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
+          disabled="[[computedPermission.mode_of_travel.disabled]]"
+          hidden$="[[computedPermission.mode_of_travel.hidden]]"
+          options="[[structure.travel_types]]"
+          multi
+          label="Mode of travel"
+          value="{{baseDetails.mode_of_travel}}"></etools-searchable-multiselection-menu>
+
+      </div>
+      <div class="layout horizontal">
+        <paper-input class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
+          disabled="[[computedPermission.estimated_travel_cost.disabled]]"
+          hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
+          label="Estimated travel cost"
+          type="number"
+          value="{{baseDetails.estimated_travel_cost}}"></paper-input>
+        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.currency.readOnly]]"
+          disabled="[[computedPermission.currency.disabled]]"
+          hidden$="[[computedPermission.currency.hidden]]"
+          options="[[structure.currencies]]"
+          label="Currency"
+          value="{{baseDetails.currency}}"></etools-searchable-multiselection-menu>
+
+        <div class="flex-6"></div>
+      </div>
+      <div class="layout horizontal">
+        <paper-textarea label="Purpose of travel"
+          disabled="[[computedPermission.purpose.disabled]]"
+          hidden$="[[computedPermission.purpose.hidden]]"
+          class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
+          required
+          char-counter
+          maxlength="500"
+          value="{{baseDetails.purpose}}"></paper-textarea>
+      </div>
+
+      <!--<etools-file-upload-->
+        <!--no-upload$="{{computedPermission.upload.disabled}}"-->
+        <!--files="[[filesMock]]"-->
+        <!--multiple>-->
+      <!--</etools-file-upload>-->
+
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-plan',
+      properties: {
+        baseDetails: {
+          type: Object,
+          value: {},
+        },
+        structure: {
+          type: Object,
+          value: {}
+        },
+        falseValue: {
+          type: Boolean,
+          value: false
+        },
+        taRequiredDisabled: {
+          type: Boolean,
+          computed: '_computeDisableTaRequired(computedPermission.ta_required.disabled,' +
+            ' baseDetails.international_travel)'
+        }
+      },
+
+      behaviors: [et2fBehaviors.PermissionLayer],
+
+      observers: ['_setCheckboxes(baseDetails.*)'],
+
+      _computeDefaultChecked: function(value) {
+        return value !== false;
+      },
+      _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel) {
+        return taRequiredDisabled || internationalTravel;
+      },
+
+      _setCheckboxes: function(changed) {
+        this[changed.path] = changed.value;
+      },
+
+      _openDialog: function() {
+        if (this.baseDetails.international_travel === true) {
+          this.set('baseDetails.international_travel', false);
+        } else {
+          this.$['confirmation-modal'].open();
+        }
+      },
+
+      _closeDialog: function() {
+        this.$['confirmation-modal'].close();
+      },
+
+      _confirmInternationalTravel: function() {
+        this.$['confirmation-modal'].close();
+        this.set('baseDetails.international_travel', true);
+        this.set('baseDetails.ta_required', false);
+      }
+    });
+  </script>
+</dom-module>
