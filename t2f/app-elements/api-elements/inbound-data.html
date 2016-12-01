@@ -66,7 +66,8 @@
         var id = incomingData.id;
         this._handleData(null, incomingData);
         var route = this.route;
-        route.path = '/edit-travel/' + id;
+        var routeFragments = route.path.split('/');
+        route.path = (routeFragments.slice(0, routeFragments.length -1).join('/')) + '/' + id;
         this.set('route', {});
         this.set('route', route);
         this.listen = true;
