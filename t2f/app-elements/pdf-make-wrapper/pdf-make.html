@@ -39,6 +39,10 @@ pdfMake polymer wrapper
           type: Object,
           value: function() { return {}; }
         },
+        images: {
+          type: Object,
+          value: function() { return {}; }
+        },
         output: {
           type: String,
           value: 'open'
@@ -56,15 +60,16 @@ pdfMake polymer wrapper
           value: function() { return [40, 40, 40, 40]; }
         }
       },
-      observers: ['_doPrint(print, content, styles, output, pageSize, pageOrientation, pageMargins)'],
+      observers: ['_doPrint(print, content, styles, images, output, pageSize, pageOrientation, pageMargins)'],
 
-      _doPrint: function(print, content, styles, output, pageSize, pageOrientation, pageMargins) {
+      _doPrint: function(print, content, styles, images, output, pageSize, pageOrientation, pageMargins) {
         if (print) {
           var documentDefinition = {
             pageSize: pageSize,
             pageOrientation: pageOrientation,
             pageMargins: pageMargins,
             content: content,
+            images: images,
             styles: styles
           };
           switch (output) {
