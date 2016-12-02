@@ -898,7 +898,7 @@
         }, []);
         var allActions = userRoles.reduce(function(result, role) {
           var secondary = lib[role][status].secondary.filter(function(action) {
-            return result.indexOf(action) === -1;
+            return result.indexOf(action) === -1 && action !== '';
           });
           return result.concat(secondary);
         }, mainActions);
