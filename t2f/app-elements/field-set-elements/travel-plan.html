@@ -117,7 +117,6 @@
           disabled="[[computedPermission.traveler.disabled]]"
           hidden$="[[computedPermission.traveler.hidden]]"
           options="[[structure.users]]"
-
           required
           error-message="*required"
           placeholder="select"
@@ -131,7 +130,6 @@
           disabled="[[computedPermission.supervisor.disabled]]"
           hidden$="[[computedPermission.supervisor.hidden]]"
           options="[[structure.users]]"
-
           required
           error-message="*required"
           placeholder="select"
@@ -211,7 +209,6 @@
           class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
           disabled="[[computedPermission.estimated_travel_cost.disabled]]"
           hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
-          required
           pattern="^[0-9]+(\.[0-9]{1,4})?$"
           on-blur="_validateTravelPlan"
           error-message="*number required"
@@ -225,11 +222,7 @@
           hidden$="[[computedPermission.currency.hidden]]"
           options="[[structure.currencies]]"
           value="{{baseDetails.currency}}"
-
-          required
-          error-message="*required"
-          placeholder="select"
-          auto-validate>
+          placeholder="select">
         </etools-searchable-multiselection-menu>
 
         <div class="flex-6"></div>
@@ -287,10 +280,6 @@
         '_validDates(baseDetails.start_date, baseDetails.end_date)'
       ],
 
-      ready: function() {
-        this._validateTravelPlan();
-      },
-
       _validDates: function(start_date, end_date) {
 
         var start = new Date(start_date);
@@ -306,8 +295,11 @@
       },
 
       _validateTravelPlan: function() {
-        // console.log('Validate TRAVEL PLAN:' + this.$.travel_plan_form.validate());
         this.$.travel_plan_form.validate();
+      },
+
+      attached: function() {
+        this._validateTravelPlan();
       },
 
       _hasModeSelected: function(mode_of_travel) {
