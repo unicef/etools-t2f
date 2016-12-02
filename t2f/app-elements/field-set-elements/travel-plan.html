@@ -233,15 +233,14 @@
         </paper-textarea>
       </div>
 
-      <!-- TODO: add additional notes -->
       <div class="layout horizontal">
 
         <paper-textarea label="Additional notes"
-          class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
-          disabled="[[computedPermission.purpose.disabled]]"
-          hidden$="[[computedPermission.purpose.hidden]]"
+          class$="flex-12 custom-margin [[computedPermission.additional_note.readOnly]]"
+          disabled="[[computedPermission.additional_note.disabled]]"
+          hidden$="[[computedPermission.additional_note.hidden]]"
           placeholder="more details"
-          value="{{baseDetails.purpose}}">
+          value="{{baseDetails.additional_note}}">
         </paper-textarea>
       </div>
     </form>
