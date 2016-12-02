@@ -172,16 +172,20 @@
           disabled="[[computedPermission.start_date.disabled]]"
           hidden$="[[computedPermission.start_date.hidden]]"
           required
+          auto-validate
+          placeholder="select"
           error-message="*required"
           date="{{baseDetails.start_date}}">
         </datepicker-input>
 
         <datepicker-input label="End Date*"
+          id="end_date"
           class$="flex-3 [[computedPermission.end_date.readOnly]]"
           disabled="[[computedPermission.end_date.disabled]]"
           hidden$="[[computedPermission.end_date.hidden]]"
           required
           auto-validate
+          placeholder="select"
           error-message="*required"
           date="{{baseDetails.end_date}}">
         </datepicker-input>
@@ -211,6 +215,7 @@
           pattern="^[0-9]+(\.[0-9]{1,4})?$"
           on-blur="_validateTravelPlan"
           error-message="*number required"
+          placeholder="eg.: 567.1234"
           value="{{baseDetails.estimated_travel_cost}}">
         </paper-input>
 
@@ -240,6 +245,7 @@
           error-message="*required"
           char-counter maxlength="120"
           on-blur="_validateTravelPlan"
+          placeholder="brief explanation"
           value="{{baseDetails.purpose}}">
         </paper-textarea>
       </div>
@@ -276,15 +282,32 @@
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
-      observers: ['_setCheckboxes(baseDetails.*)'],
+      observers: [
+        '_setCheckboxes(baseDetails.*)',
+        '_validDates(baseDetails.start_date, baseDetails.end_date)'
+      ],
 
       ready: function() {
         this._validateTravelPlan();
       },
 
+      _validDates: function(start_date, end_date) {
+
+        var start = new Date(start_date);
+        var end = new Date(end_date);
+
+        if (end <= start) {
+          this.$.end_date.setAttribute('error-message', '*should be bigger than start');
+          this.$.end_date.invalid = true;
+        } else {
+          this.$.end_date.setAttribute('error-message', '*required');
+          this.$.end_date.invalid = false;
+        }
+      },
+
       _validateTravelPlan: function() {
-        console.log('Validate TRAVEL PLAN:' + this.$.travel_plan_form.validate());
-        // this.$.travel_plan_form.validate();
+        // console.log('Validate TRAVEL PLAN:' + this.$.travel_plan_form.validate());
+        this.$.travel_plan_form.validate();
       },
 
       _hasModeSelected: function(mode_of_travel) {
