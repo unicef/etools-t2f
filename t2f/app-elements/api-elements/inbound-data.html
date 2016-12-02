@@ -66,7 +66,8 @@
         var id = incomingData.id;
         this._handleData(null, incomingData);
         var route = this.route;
-        route.path = '/edit-travel/' + id;
+        var routeFragments = route.path.split('/');
+        route.path = (routeFragments.slice(0, routeFragments.length - 1).join('/')) + '/' + id;
         this.set('route', {});
         this.set('route', route);
         this.listen = true;
@@ -98,19 +99,19 @@
             section: 'sections',
             start_date: convertDate,
             end_date: convertDate,
-            mode_of_travel: multiFieldConversion.bind(this, 'value', 'travel_types'),
-            currency: 'currencies',
+            mode_of_travel: multiFieldConversion.bind(this, 'value', 'travel_modes'),
+            currency: 'currencies'
           },
           activities: {
             locations: multiFieldConversion.bind(this, 'value', 'locations'),
             travel_type: 'travel_types',
             partner: 'partners',
             partnership: 'partnerships',
-            result: 'results',
+            result: 'results'
           },
           itinerary: {
             airlines: multiFieldConversion.bind(this, 'value', 'airlines'),
-            mode_of_travel: 'travel_types',
+            mode_of_travel: 'travel_modes',
             dsa_region: 'dsa_regions',
             departure_date: convertDate,
             arrival_date: convertDate,

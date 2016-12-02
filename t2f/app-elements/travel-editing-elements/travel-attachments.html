@@ -28,7 +28,7 @@
                     background: #FFF;
                 };
             }
-            etools-file-upload {
+            et2f-file-upload {
                 --primary: var(--et2f-primary);
                 --delete: var(--et2f-error);
                 --gray-dark: rgba(0,0,0,.87);
@@ -43,7 +43,7 @@
         <div class="horizontal layout">
             <div class="flex">
                 <etools-repeatable-field-set hide-plus model="[1]" title="Files" elevation="1" hide-vertical-divider>
-                    <etools-file-upload
+                    <et2f-file-upload
                             class="flex"
                             no-upload$="{{computedPermission.upload.disabled}}"
                             disabled="[[!attachmentsPermission.edit]]"
@@ -51,7 +51,7 @@
                             files="{{attachments}}"
                             deleted-files="{{deletedAttachments}}"
                             multiple>
-                    </etools-file-upload>
+                    </et2f-file-upload>
                 </etools-repeatable-field-set>
             </div>
 

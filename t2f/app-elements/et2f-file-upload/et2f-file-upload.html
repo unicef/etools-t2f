@@ -40,7 +40,7 @@ attributes:
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
-<dom-module id="etools-file-upload">
+<dom-module id="et2f-file-upload">
 
   <style include="iron-flex">
     :host {
@@ -187,7 +187,7 @@ attributes:
   <script>
     Polymer({
 
-      is: 'etools-file-upload',
+      is: 'et2f-file-upload',
 
       properties: {
 
@@ -217,13 +217,13 @@ attributes:
         typeOptions: {
           type: Array,
           value: [
-            {value: 0, label: 'Report'},
-            {value: 1, label: 'Document'},
-            {value: 3, label: 'Image'}
+            {value: 0, label: 'Ticket Doc'},
+            {value: 1, label: 'Email corespondance'},
+            {value: 3, label: 'Cleareance Doc'},
+            {value: 4, label: 'Other'}
           ]
         }
       },
-
       _openFileChooser: function() {
 
         var elem = this.$.fileInput;
