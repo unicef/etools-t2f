@@ -67,7 +67,7 @@
         structure="[[structure]]"
         travel-permissions="[[travelPermissions]]"
         data="{{data}}"
-        user-type="[[userType]]"
+        user-roles="[[userRoles]]"
         on-form-action="_handleFormAction">
       </travel-details>
 
@@ -77,7 +77,7 @@
         attachments="{{data.attachments}}"
         deleted-attachments="{{data.deletedAttachments}}"
         status="[[data.status]]"
-        user-type="[[userType]]"
+        user-roles="[[userRoles]]"
         on-form-action="_handleFormAction">
       </travel-attachments>
 
@@ -86,7 +86,7 @@
         report-permission="[[travelPermissions.report]]"
         data="{{data}}"
         report-string="[[data.report]]"
-        user-type="[[userType]]"
+        user-roles="[[userRoles]]"
         on-form-action="_handleFormAction">
       </travel-report>
     </iron-pages>
@@ -113,8 +113,8 @@
         user: {
           type: Object,
         },
-        userType: {
-          type: String,
+        userRoles: {
+          type: Array,
         },
         travelPermissions: {
           type: Object,
@@ -172,30 +172,55 @@
       },
 
       _computeTravelPermission: function(permissions, status, user, data) {
-        var userType;
+        var travelRole ;
         if (data.baseDetails.id) {
-          userType = 'Anyone';
           if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
-            userType = 'Traveler';
+            travelRole = 'Traveler';
           }
           if (data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
-            userType = 'Supervisor';
+            travelRole = 'Supervisor';
           }
 
         } else {
-          userType = 'Traveler';
+          travelRole = 'Traveler';
         }
         var urlParams = new URLSearchParams(window.location.search);
-        var forcedUserType = urlParams.get('usertype');
+        var forcedTravelRole = urlParams.get('travelRole');
 
-        if (forcedUserType) {
-          userType = forcedUserType;
+        if (forcedTravelRole) {
+          travelRole = forcedTravelRole;
         }
+        var userTravelRoles = travelRole ? user.roles.concat(travelRole) : user.roles;
 
-        if (userType) {
-          this.set('userType', userType);
+        if (userTravelRoles.length > 0) {
+          var userPermissions = {};
+          var draft = permissions[userTravelRoles[0]][status];
+          Object.keys(draft).forEach(function(fieldSet) {
+            userPermissions[fieldSet] = {};
+              Object.keys(draft[fieldSet]).forEach(function(field) {
+                var item = draft[fieldSet][field];
+                if (typeof(item) === 'boolean') {
+                  userPermissions[fieldSet][field] = item;
+                  userTravelRoles.forEach(function(role) {
+                    userPermissions[fieldSet][field] = userPermissions[fieldSet][field]
+                    || permissions[role][status][fieldSet][field];
+                  });
+                } else {
+                  userPermissions[fieldSet][field] = {};
+                  Object.keys(item).forEach(function(fieldPermission) {
+                    userPermissions[fieldSet][field][fieldPermission] =  draft[fieldSet][field][fieldPermission];
+                    userTravelRoles.forEach(function(role) {
+                       userPermissions[fieldSet][field][fieldPermission] =
+                       userPermissions[fieldSet][field][fieldPermission]
+                       || permissions[role][status][fieldSet][field][fieldPermission];
+                    });
+                  });
+                }
+              });
+          });
+          this.set('userRoles', userTravelRoles);
           this.set('travelPermissions', {});
-          this.set('travelPermissions', permissions[userType][status]);
+          this.set('travelPermissions', userPermissions);
         }
 
         var self = this;

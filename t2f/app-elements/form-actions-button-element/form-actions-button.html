@@ -855,8 +855,8 @@
             }
           }
         },
-        userType: {
-          type: String,
+        userRoles: {
+          type: Array,
         },
         status: {
           type: String,
@@ -864,7 +864,7 @@
         actions: {
           type: Object,
           computed: '_computeActions(actList, permissions, status,' +
-            ' userType, isInternational, internationalTravelPermissions)'
+            ' userRoles, isInternational, internationalTravelPermissions)'
         },
         show: {
           type: Boolean,
@@ -885,18 +885,31 @@
                 !this._showSecondary(actions)) ?
                   'grey' : '';
       },
-      _computeActions: function(actList, permissions, status, userType,
+      _computeActions: function(actList, permissions, status, userRoles,
         isInternational, internationalTravelPermissions) {
+        var lib = isInternational ?  internationalTravelPermissions : permissions;
+        userRoles.reverse();
+        var mainActions = userRoles.reduce(function(result, role) {
+            var primary = lib[role][status].primary;
+            if (result.indexOf(primary) === -1 && primary !== '') {
+              return result.concat(primary);
+            }
+            return result;
+        }, []);
+        var allActions = userRoles.reduce(function(result, role) {
+          var secondary = lib[role][status].secondary.filter(function(action) {
+            return result.indexOf(action) === -1 && action !== '';
+          });
+          return result.concat(secondary);
+        }, mainActions);
 
-        var ret = isInternational ?
-          internationalTravelPermissions[userType][status] : permissions[userType][status];
-        var computed = {
-          primary: actList[ret.primary],
-          secondary: ret.secondary.map(function(el) {
-            return actList[el];
+        var availableActions = {
+          primary: actList[allActions.shift()],
+          secondary: allActions.map(function(action) {
+            return actList[action];
           })
         };
-        return computed;
+        return availableActions;
       },
       _showAtAll: function(actions) {
 

@@ -257,7 +257,7 @@
       </div>
 
       <travel-status
-        user-type="[[userType]]"
+        user-roles="[[userRoles]]"
         status="[[data.status]]"
         is-international="[[data.baseDetails.international_travel]]"
         scroll-top-margin="84"
@@ -285,15 +285,17 @@
           type: Object,
           computed:
             '_computeSectionPermissions(travelPermissions,' +
-              ' data.baseDetails.international_travel, data.status, userType)'
+              ' data.baseDetails.international_travel, data.status, userRoles)'
         },
-        userType: String,
+        userRoles: {
+          type: Array,
+        },
         scrollToFieldset: {
           type: String,
           observer: '_scrollTo'
         },
       },
-      _computeSectionPermissions: function(permissions, isInternational, status, userType) {
+      _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
         var computed = {};
 
         var collapsedStatus = {
@@ -331,13 +333,14 @@
           'deductions',
           'cost_summary'
         ];
+        var collapseRule = userRoles.find(function(role) {
+          return Object.keys(collapsedStatus).indexOf(role) > -1;
+        });
+        var hiddenFieldSet = collapseRule ?
+          collapsedStatus[collapseRule][status] ? collapsedStatus[collapseRule][status] : [] : [];
 
         Object.keys(permissions).forEach(function(key) {
-
           var forceHiddenStatus = false;
-          var hiddenFieldSet = collapsedStatus[userType] ?
-              collapsedStatus[userType][status] ? collapsedStatus[userType][status] : [] : [];
-
           if (isInternational) {
             forceHiddenStatus = hiddenForInternational.indexOf(key) > -1;
           }

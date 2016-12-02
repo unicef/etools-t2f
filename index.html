@@ -44,7 +44,6 @@
      var serverBackend = (window.location.port !== '8080');
     //we work with browsersync and it assign the port dinamically but always on the 300X range
      var isDev = ('' + window.location.port).indexOf('300') > -1;
-     console.log(isDev);
       var baseUrl = serverBackend ? 't2f' : '';
       // Load webcomponentsjs polyfill if browser does not support native Web Components
       (function() {
