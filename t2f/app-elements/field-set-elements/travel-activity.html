@@ -44,31 +44,28 @@
           options="[[structure.travel_types]]"
           value="{{activity.travel_type}}"
           required
-          error-message="*required"
           placeholder="select"
           auto-validate>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Partner*"
+        <etools-searchable-multiselection-menu label="Partner"
           class$="flex-4 [[computedPermission.partner.readOnly]]"
           disabled="[[computedPermission.partner.disabled]]"
           hidden$="[[computedPermission.partner.hidden]]"
           options="[[structure.partners]]"
           value="{{activity.partner}}"
           required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
-          error-message="*required"
           placeholder="select"
           auto-validate>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu class$="flex-4 [[computedPermission.partnership.readOnly]]"
+        <etools-searchable-multiselection-menu label="Partnership"
+          class$="flex-4 [[computedPermission.partnership.readOnly]]"
           disabled="[[computedPermission.partnership.disabled]]"
           hidden$="[[computedPermission.partnership.hidden]]"
           options="[[structure.partnerships]]"
-          label="Partnership"
           value="{{activity.partnership}}"
           required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
-          error-message="*required"
           placeholder="select"
           auto-validate>
         </etools-searchable-multiselection-menu>
@@ -76,19 +73,19 @@
 
       <div class="layout horizontal">
 
-        <etools-searchable-multiselection-menu class$="flex-4 [[computedPermission.travel_type.readOnly]]"
+        <etools-searchable-multiselection-menu label="Results"
+          class$="flex-4 [[computedPermission.travel_type.readOnly]]"
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
           options="[[structure.results]]"
-          label="Results"
           value="{{activity.result}}">
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu class$="flex-8 [[computedPermission.locations.readOnly]]"
+        <etools-searchable-multiselection-menu label="Travel locations"
+          class$="flex-8 [[computedPermission.locations.readOnly]]"
           disabled="[[computedPermission.locations.disabled]]"
           hidden$="[[computedPermission.locations.hidden]]"
           options="[[structure.locations]]"
-          label="Travel locations"
           multi
           value="{{activity.locations}}">
         </etools-searchable-multiselection-menu>
@@ -96,14 +93,15 @@
 
       <div class="layout horizontal">
 
-        <datepicker-input class$="flex-4 [[computedPermission.date.readOnly]]"
+        <datepicker-input label="When"
+          class$="flex-4 [[computedPermission.date.readOnly]]"
           disabled="[[computedPermission.date.disabled]]"
           hidden$="[[computedPermission.date.hidden]]"
-          label="When"
           date="{{activity.date}}">
         </datepicker-input>
 
-        <paper-checkbox class$="flex-8 custom-margin self-end [[computedPermission.primary_traveler.readOnly]]"
+        <paper-checkbox
+          class$="flex-8 custom-margin self-end [[computedPermission.primary_traveler.readOnly]]"
           disabled="[[computedPermission.primary_traveler.disabled]]"
           hidden$="[[computedPermission.primary_traveler.hidden]]"
           checked="{{activity.primary_traveler}}">I am a Primary Traveler
