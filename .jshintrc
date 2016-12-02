@@ -22,6 +22,8 @@
     "etoolsAjaxDefaultDexieDbPrefix": true,
     "DynamicCustomStyleBehavior": true,
     "URLSearchParams": true,
-    "et2fBehaviors": true
+    "et2fBehaviors": true,
+    "baseUrl": true,
+    "pdfMake": true
   }
 }

@@ -1,0 +1,136 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="form-errors">
+  <style include="iron-flex shared-styles et2f-styles">
+    :host {
+      display: block;
+    }
+    .main-container {
+      margin: 24px;
+      padding: 0;
+      box-shadow: inset 0 2px 0 0 #EA4022, 0 0 2px 0 rgba(0,0,0,0.12), 0 2px 2px 0 rgba(0,0,0,0.24);
+    }
+    paper-icon-item {
+      --paper-icon-item: {
+        color: var(--et2f-error);
+        font-weight: bold;
+        border-bottom: 1px solid rgba(0,0,0,0.12);
+      }
+    }
+    .arrow {
+      color: black;
+      opacity: 0.38;
+      cursor: pointer;
+    }
+    .show-more {
+      font-weight: 500;
+      text-align: center;
+      line-height: 16px;
+      color: var(--et2f-sec-blue);
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+  </style>
+
+  <template>
+
+    <paper-material class="main-container" elevation="1" hidden$="[[!showElement]]">
+      <paper-listbox>
+        <template is="dom-repeat" items="[[_limitErrorList(errorList, limit)]]">
+          <paper-icon-item>
+            <iron-icon icon="warning" item-icon></iron-icon>
+            <div class="flex">{{item.error}} : {{item.fieldSet}} / {{item.field}}</div>
+            <iron-icon icon="arrow-forward" class="arrow" on-tap="_goToElement"></iron-icon>
+          </paper-icon-item>
+        </template>
+        <paper-item on-tap="_showHideFullList" class="show-more" hidden$="[[showListExtension]]">
+          <div hidden$="[[hideShow]]">Show list ({{errorList.length}})</div>
+          <div hidden$="[[!hideShow]]">Hide list ({{errorList.length}})</div>
+        </paper-item>
+      </paper-listbox>
+    </paper-material>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'form-errors',
+      properties: {
+        errors: {
+          type: Object,
+          value: {}
+        },
+        showElement: {
+          type: Boolean,
+          computed: '_computeShow(errorList)'
+        },
+        errorList: {
+          type: Array,
+          computed: '_computeErrorList(errors)'
+        },
+        errorSelected: {
+          type: String,
+          notify: true
+        },
+        limit: {
+          type: Number,
+          value: 3
+        },
+        hideShow: {
+          type: Boolean,
+          computed: '_computeHideShow(limit)'
+        },
+        showListExtension: {
+          type: Boolean,
+          computed: '_computeShowListExtension(errorList, limit)'
+        }
+      },
+      _computeShowListExtension: function(errorList, limit) {
+        return errorList.length > limit;
+      },
+      _computeShow: function(errorList) {
+        return errorList.length > 0;
+      },
+      _computeErrorList: function(errors) {
+        var errorList = [];
+        if (errors) {
+          Object.keys(errors).forEach(function(category) {
+            errors[category].forEach(function(field) {
+              Object.keys(field).forEach(function(errors) {
+                field[errors].forEach(function(message) {
+                  errorList.push({
+                    fieldSet: category,
+                    field: errors,
+                    error: message
+                  });
+                });
+              });
+            });
+          });
+        }
+        return errorList;
+      },
+      _limitErrorList: function(errorList, limit) {
+        return errorList.slice(0, limit);
+      },
+      _showHideFullList: function() {
+        this.limit = this.limit === 3 ? this.errorList.length : 3;
+      },
+      _computeHideShow: function(limit) {
+        return limit !== 3;
+      },
+      _goToElement: function(event) {
+        this.errorSelected = event.model.item.fieldSet;
+      }
+    });
+  </script>
+
+</dom-module>
