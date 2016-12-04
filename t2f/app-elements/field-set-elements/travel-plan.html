@@ -183,6 +183,7 @@
         </datepicker-input>
 
         <etools-searchable-multiselection-menu label="Mode of travel*"
+          id="mode_of_travel"
           class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
@@ -190,8 +191,8 @@
           value="{{baseDetails.mode_of_travel}}"
           multi
           required
-          placeholder="select"
-          invalid="[[_hasModeSelected(baseDetails.mode_of_travel)]]">
+          placeholder="select">
+          <!-- invalid="[[_isModeInvalid(baseDetails.mode_of_travel, computedPermission.mode_of_travel.disabled)]]" -->
         </etools-searchable-multiselection-menu>
       </div>
 
@@ -202,7 +203,6 @@
           disabled="[[computedPermission.estimated_travel_cost.disabled]]"
           hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
           pattern="^[0-9]+(\.[0-9]{1,4})?$"
-          on-blur="_validateTravelPlan"
           error-message="*number required"
           placeholder="eg.: 567.1234"
           value="{{baseDetails.estimated_travel_cost}}">
@@ -227,8 +227,8 @@
           disabled="[[computedPermission.purpose.disabled]]"
           hidden$="[[computedPermission.purpose.hidden]]"
           required
+          auto-validate
           char-counter maxlength="120"
-          on-blur="_validateTravelPlan"
           placeholder="brief explanation"
           value="{{baseDetails.purpose}}">
         </paper-textarea>
@@ -295,6 +295,7 @@
       },
 
       _validateTravelPlan: function() {
+        console.log('baseDetails', this.baseDetails);
         this.$.travel_plan_form.validate();
       },
 
@@ -302,13 +303,14 @@
         this._validateTravelPlan();
       },
 
-      _hasModeSelected: function(mode_of_travel) {
-        return !(Array.isArray(mode_of_travel) && mode_of_travel.length > 0);
-      },
+      // _isModeInvalid: function(mode_of_travel) {
+      //   return !(Array.isArray(mode_of_travel) && mode_of_travel.length > 0);
+      // },
 
       _computeDefaultChecked: function(value) {
         return value !== false;
       },
+
       _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel) {
         return taRequiredDisabled || internationalTravel;
       },
