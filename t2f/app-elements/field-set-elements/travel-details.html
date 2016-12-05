@@ -4,6 +4,7 @@
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
@@ -33,6 +34,28 @@
      :host {
         display: block;
         width: 100%;
+      }
+      .dialog-heading {
+          font-size: 20px;
+          color: var(--gray-dark);
+          font-weight: 500;
+      }
+      .dialog-intro-text {
+          color: var(--gray-mid);
+          font-size: 16px;
+          margin-bottom: 24px;
+      }
+      .missing-action {
+        color: var(--et2f-warning);
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .dialog-confirm-button {
+          color: var(--et2f-primary);
+          font-weight: 500;
+          height: 40px;
+          float: right;
       }
       etools-repeatable-field-set {
         width: calc( 100% - 48px);
@@ -85,6 +108,22 @@
     <div class="horizontal layout">
 
       <div class="flex">
+
+        <paper-dialog id="invalid_modal" with-backdrop>
+
+          <div class="dialog-heading">Warning</div>
+          <div class="dialog-intro-text">You are not allowed to take this action, until you have missing, or badly formatted information in the following fields:</div>
+
+          <template is="dom-repeat" items="[[invalids]]">
+            <div class="missing-action">[[item]]</div>
+          </template>
+
+          <paper-button
+            class="dialog-confirm-button"
+            on-click="closeInvalidModal">
+              I understand
+          </paper-button>
+        </paper-dialog>
 
         <!-- Cancellation note -->
         <paper-material class="note cancel" elevation="1" hidden$="[[_hideCancelNote(data)]]">
@@ -289,6 +328,7 @@
             '_computeSectionPermissions(travelPermissions,' +
               ' data.baseDetails.international_travel, data.status, userRoles)'
         },
+        invalids: Array,
         userRoles: {
           type: Array,
         },
@@ -297,6 +337,7 @@
           observer: '_scrollTo'
         },
       },
+
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
         var computed = {};
 
@@ -355,6 +396,7 @@
         });
         return computed;
       },
+
       _scrollTo: function(fieldset) {
         this.$[fieldset].scrollIntoView();
       },
@@ -371,10 +413,24 @@
         return data.status !== 'Certification submitted';
       },
 
-      onValidate: function() {
-        console.log('caught validation request!');
-        var validd = this.$.travel_plan._validateTravelPlan();
-        console.log('travel plan valid?', validd);
+      onValidate: function(e, action) {
+
+        var invalids = [];
+
+        if (!this.$.travel_plan._validateTravelPlan()) {
+          invalids.push('Trip Plan');
+        }
+
+        if (!invalids.length) {
+          this.fire('form-action', action);
+        } else {
+          this.set('invalids', invalids);
+          this.$.invalid_modal.open();
+        }
+      },
+
+      closeInvalidModal: function() {
+        this.$.invalid_modal.close();
       }
 
     });

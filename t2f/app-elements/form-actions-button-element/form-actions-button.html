@@ -921,13 +921,13 @@
       },
       _clickPrimary: function() {
 
-        this.fire('validate');
-        this.fire('form-action', this.actions.primary);
+        // Up until travel details, validate there, fire forward as action to travel edit
+        this.fire('validate', this.actions.primary);
       },
       _clickSecondary: function(event) {
 
-        this.fire('validate');
-        this.fire('form-action', event.model.item);
+        // Up until travel details, validate there, fire forward as action to travel edit
+        this.fire('validate', event.model.item);
       }
     });
   </script>
