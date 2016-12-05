@@ -421,7 +421,7 @@
           invalids.push('Trip Plan');
         }
 
-        if (!invalids.length) {
+        if (!invalids.length || action.name === 'Save') {
           this.fire('form-action', action);
         } else {
           this.set('invalids', invalids);
