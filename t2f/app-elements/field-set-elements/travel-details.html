@@ -139,7 +139,8 @@
           hide-vertical-divider
           elevation="1">
 
-          <travel-plan base-details="{{data.baseDetails}}"
+          <travel-plan id="travel_plan"
+            base-details="{{data.baseDetails}}"
             permissions-matrix="[[travelPermissions.baseDetails]]"
             structure="[[structure]]">
           </travel-plan>
@@ -262,7 +263,8 @@
         is-international="[[data.baseDetails.international_travel]]"
         scroll-top-margin="84"
         cancelled-date="[[data.canceled_at]]"
-        completed-date="[[data.completed_at]]">
+        completed-date="[[data.completed_at]]"
+        on-validate="onValidate">
       </travel-status>
     </div>
   </template>
@@ -367,6 +369,12 @@
 
       _hideCertificationNote: function(data) {
         return data.status !== 'Certification submitted';
+      },
+
+      onValidate: function() {
+        console.log('caught validation request!');
+        var validd = this.$.travel_plan._validateTravelPlan();
+        console.log('travel plan valid?', validd);
       }
 
     });

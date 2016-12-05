@@ -120,7 +120,7 @@
           options="[[structure.users]]"
           required
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Supervisor*"
@@ -132,7 +132,7 @@
           options="[[structure.users]]"
           required
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Office*"
@@ -143,7 +143,7 @@
           options="[[structure.offices]]"
           required
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Section*"
@@ -154,7 +154,7 @@
           options="[[structure.sections]]"
           required
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
       </div>
 
@@ -165,7 +165,7 @@
           disabled="[[computedPermission.start_date.disabled]]"
           hidden$="[[computedPermission.start_date.hidden]]"
           required
-          auto-validate
+          auto-validate$="[[autoValidate]]"
           placeholder="select"
           date="{{baseDetails.start_date}}">
         </datepicker-input>
@@ -176,7 +176,7 @@
           disabled="[[computedPermission.end_date.disabled]]"
           hidden$="[[computedPermission.end_date.hidden]]"
           required
-          auto-validate
+          auto-validate$="[[autoValidate]]"
           error-message=""
           placeholder="select"
           date="{{baseDetails.end_date}}">
@@ -191,8 +191,8 @@
           value="{{baseDetails.mode_of_travel}}"
           multi
           required
+          invalid="[[_isModeInvalid(baseDetails.mode_of_travel, _isModeInvalid)]]"
           placeholder="select">
-          <!-- invalid="[[_isModeInvalid(baseDetails.mode_of_travel, computedPermission.mode_of_travel.disabled)]]" -->
         </etools-searchable-multiselection-menu>
       </div>
 
@@ -223,14 +223,15 @@
       <div class="layout horizontal">
 
         <paper-textarea label="Purpose of travel*"
+          id="purpose"
           class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
           disabled="[[computedPermission.purpose.disabled]]"
           hidden$="[[computedPermission.purpose.hidden]]"
           required
-          auto-validate
           char-counter maxlength="120"
           placeholder="brief explanation"
-          value="{{baseDetails.purpose}}">
+          value="{{baseDetails.purpose}}"
+          auto-validate$="[[autoValidate]]">
         </paper-textarea>
       </div>
 
@@ -295,17 +296,20 @@
       },
 
       _validateTravelPlan: function() {
-        console.log('baseDetails', this.baseDetails);
-        this.$.travel_plan_form.validate();
+
+        this.set('autoValidate', true);
+
+        this._isModeInvalid = function(mode_of_travel) {
+          return !(Array.isArray(mode_of_travel) && mode_of_travel.length > 0);
+        };
+
+        return this.$.travel_plan_form.validate();
       },
 
-      attached: function() {
-        this._validateTravelPlan();
+      _isModeInvalid: function() {
+        // default, gets set upon validation
+        return false;
       },
-
-      // _isModeInvalid: function(mode_of_travel) {
-      //   return !(Array.isArray(mode_of_travel) && mode_of_travel.length > 0);
-      // },
 
       _computeDefaultChecked: function(value) {
         return value !== false;
