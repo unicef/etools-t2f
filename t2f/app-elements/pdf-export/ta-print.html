@@ -1,10 +1,12 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
+<link rel="import" href="./pdf-images.html">
 
 <dom-module id="ta-print">
 
   <template>
-    <pdf-make output="download" print="{{openPDF}}" content="[[dataToPrint]]" styles="[[printStyles]]" page-orientation="portrait"></pdf-make>
+    <pdf-make output="open" print="{{openPDF}}" images="{{images}}" content="[[dataToPrint]]" styles="[[printStyles]]" page-orientation="portrait"></pdf-make>
+    <pdf-images unicef-logo="{{unicefLogo}}" black-line="{{blackLine}}"> </pdf-images>
   </template>
 
   <script>
@@ -29,30 +31,13 @@
           type: Boolean,
           value: false
         },
+        unicefLogo: String,
+        blackLine: String,
         images: {
           type: Object,
-          computed: '_computeImages(data)'
+          computed: '_computeImages(unicefLogo, blackLine)'
         }
       },
-
-      _computeImages: function() {
-        var images = {};
-        function imageToBase64(url, name) {
-          var xhr = new XMLHttpRequest();
-          xhr.responseType = 'blob';
-          xhr.onload = function() {
-            var reader = new FileReader();
-            reader.onloadend = function() {
-              image.name = reader.result;
-            };
-            reader.readAsDataURL(xhr.response);
-          };
-          xhr.open('GET', url);
-          xhr.send();
-        }
-        return images;
-      },
-
       _computeStyles: function() {
         return {
           mainHeader: {
@@ -74,10 +59,18 @@
           },
           rightAlign: {
             alignment: 'right'
+          },
+          centerAlign: {
+            alignment: 'center'
           }
         };
       },
-
+      _computeImages: function(unicefLogo, blackLine) {
+        return {
+          unicefLogo: unicefLogo,
+          // blackLine: blackLine
+        };
+      },
       _computeDataToPrint: function(incomingData) {
         if (!incomingData.baseDetails) {
           return;
@@ -94,6 +87,12 @@
           }
           return '';
         }
+
+        dataToPrint.push({
+          image: 'unicefLogo',
+          fit: [212,50],
+          margin: [151,0]
+        });
 
         return dataToPrint;
       },
