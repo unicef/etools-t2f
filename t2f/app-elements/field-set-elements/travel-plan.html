@@ -118,9 +118,9 @@
           disabled="[[computedPermission.traveler.disabled]]"
           hidden$="[[computedPermission.traveler.hidden]]"
           options="[[structure.users]]"
-          required
+          required$="[[computedPermission.traveler.required]]"
           placeholder="select"
-          auto-validate$="[[autoValidate]]">
+          auto-validate>
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Supervisor*"
@@ -130,9 +130,9 @@
           disabled="[[computedPermission.supervisor.disabled]]"
           hidden$="[[computedPermission.supervisor.hidden]]"
           options="[[structure.users]]"
-          required
+          required$="[[computedPermission.supervisor.required]]"
           placeholder="select"
-          auto-validate$="[[autoValidate]]">
+          auto-validate>
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Office*"
@@ -141,9 +141,9 @@
           disabled="[[computedPermission.office.disabled]]"
           hidden$="[[computedPermission.office.hidden]]"
           options="[[structure.offices]]"
-          required
+          required$="[[computedPermission.office.required]]"
           placeholder="select"
-          auto-validate$="[[autoValidate]]">
+          auto-validate>
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Section*"
@@ -152,9 +152,9 @@
           disabled="[[computedPermission.section.disabled]]"
           hidden$="[[computedPermission.section.hidden]]"
           options="[[structure.sections]]"
-          required
+          required$="[[computedPermission.section.required]]"
           placeholder="select"
-          auto-validate$="[[autoValidate]]">
+          auto-validate>
         </etools-searchable-multiselection-menu>
       </div>
 
@@ -164,8 +164,8 @@
           class$="flex-3 [[computedPermission.start_date.readOnly]]"
           disabled="[[computedPermission.start_date.disabled]]"
           hidden$="[[computedPermission.start_date.hidden]]"
-          required
-          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.start_date.required]]"
+          auto-validate
           placeholder="select"
           date="{{baseDetails.start_date}}">
         </datepicker-input>
@@ -175,11 +175,11 @@
           class$="flex-3 [[computedPermission.end_date.readOnly]]"
           disabled="[[computedPermission.end_date.disabled]]"
           hidden$="[[computedPermission.end_date.hidden]]"
-          required
-          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.end_date.required]]"
           error-message=""
           placeholder="select"
-          date="{{baseDetails.end_date}}">
+          date="{{baseDetails.end_date}}"
+          auto-validate>
         </datepicker-input>
 
         <etools-searchable-multiselection-menu label="Mode of travel*"
@@ -190,8 +190,9 @@
           options="[[structure.travel_modes]]"
           value="{{baseDetails.mode_of_travel}}"
           multi
-          required
-          invalid="[[_isModeInvalid(baseDetails.mode_of_travel, _isModeInvalid)]]"
+          required$="[[computedPermission.mode_of_travel.required]]"
+          auto-validate
+          invalid="[[_isModeInvalid(baseDetails.mode_of_travel)]]"
           placeholder="select">
         </etools-searchable-multiselection-menu>
       </div>
@@ -227,11 +228,12 @@
           class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
           disabled="[[computedPermission.purpose.disabled]]"
           hidden$="[[computedPermission.purpose.hidden]]"
-          required
+          required$="[[computedPermission.purpose.required]]"
           char-counter maxlength="120"
           placeholder="brief explanation"
           value="{{baseDetails.purpose}}"
-          auto-validate$="[[autoValidate]]">
+          on-blur="validatePurpose">
+          <!-- auto-validate -->
         </paper-textarea>
       </div>
 
@@ -281,6 +283,10 @@
         '_validDates(baseDetails.start_date, baseDetails.end_date)'
       ],
 
+      validatePurpose: function() {
+        this.$.purpose.validate();
+      },
+
       _validDates: function(start_date, end_date) {
 
         var start = new Date(start_date);
@@ -296,19 +302,12 @@
       },
 
       _validateTravelPlan: function() {
-
-        this.set('autoValidate', true);
-
-        this._isModeInvalid = function(mode_of_travel) {
-          return !(Array.isArray(mode_of_travel) && mode_of_travel.length > 0);
-        };
-
         return this.$.travel_plan_form.validate();
       },
 
-      _isModeInvalid: function() {
-        // default, gets set upon validation
-        return false;
+      _isModeInvalid: function(mode_of_travel) {
+        // Wire in as supposed!!!!!
+        return !(Array.isArray(mode_of_travel) && mode_of_travel.length > 0);
       },
 
       _computeDefaultChecked: function(value) {
