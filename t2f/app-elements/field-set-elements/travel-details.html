@@ -186,7 +186,6 @@
         </etools-repeatable-field-set>
 
         <etools-repeatable-field-set title="Trip Activities"
-          id="activities"
           model="{{data.activities}}"
           hide-plus="[[!sectionPermissions.activities.edit]]"
           allow-copy="[[sectionPermissions.activities.edit]]"
@@ -195,13 +194,14 @@
           open="[[sectionPermissions.activities.open]]"
           hidden$="[[sectionPermissions.activities.hidden]]">
 
-          <template is="dom-repeat"
-            items="{{data.activities}}">
+          <template is="dom-repeat" items="{{data.activities}}" id="travel_activities">
 
             <travel-activities
+              class="travel_activities"
               activity="{{item}}"
               permissions-matrix="[[travelPermissions.activities]]"
-              structure="[[structure]]">
+              structure="[[structure]]"
+              activity-validation-array="{{activityValidationArray}}">
             </travel-activities>
           </template>
         </etools-repeatable-field-set>
@@ -332,6 +332,10 @@
         userRoles: {
           type: Array,
         },
+        activityValidationArray: {
+          type: Array,
+          value: []
+        },
         scrollToFieldset: {
           type: String,
           observer: '_scrollTo'
@@ -421,7 +425,14 @@
           invalids.push('Trip Plan');
         }
 
+        if (!this.activityValidationArray.every(function(activityValFn) {
+          return activityValFn();
+        })) {
+          invalids.push('Trip Activities');
+        }
+
         if (!invalids.length || action.name === 'Save') {
+        // if (!invalids.length) { // for testing
           this.fire('form-action', action);
         } else {
           this.set('invalids', invalids);

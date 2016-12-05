@@ -38,14 +38,15 @@
       <div class="layout horizontal">
 
         <etools-searchable-multiselection-menu label="Trip type*"
+          id="trip_type"
           class$="flex-4 [[computedPermission.travel_type.readOnly]]"
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
           options="[[structure.travel_types]]"
           value="{{activity.travel_type}}"
-          required
+          required$="[[computedPermission.travel_type.required]]"
           placeholder="select"
-          auto-validate>
+          on-paper-dropdown-close="_validateType">
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Partner"
@@ -129,10 +130,21 @@
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
-      observers: [
-        '_setCheckboxes(activity.*)',
-        '_validateActivities(activity.travel_type)'
-      ],
+      observers: ['_setCheckboxes(activity.*)'],
+
+      _validateType: function() {
+
+        if (this.activity.travel_type) {
+
+          this.$.trip_type.removeAttribute('invalid');
+          return true;
+
+        } else {
+
+          this.$.trip_type.setAttribute('invalid', true);
+          return false;
+        }
+      },
 
       _setCheckboxes: function(changed) {
         this[changed.path] = changed.value;
@@ -140,17 +152,24 @@
 
       _progVisOrSpotCheck: function(travel_type) {
         return travel_type ?
-          ['spot_check', 'programme_monitoring'].indexOf(travel_type.label) > -1 :
+          [19, 20].indexOf(travel_type.value) > -1 :
           false;
       },
 
       _validateActivities: function() {
-        this.$.activities_form.validate();
+
+        var typeVal = this._validateType.bind(this)();
+        // console.log('typeVal', typeVal);
+
+        var activityVal = this.$.activities_form.validate();
+        // console.log('activityVal', activityVal);
+
+        return typeVal && activityVal;
       },
 
-      // attached: function() {
-      //   this._validateActivities();
-      // }
+      attached: function() {
+        this.activityValidationArray.push(this._validateActivities.bind(this));
+      }
     });
   </script>
 </dom-module>
