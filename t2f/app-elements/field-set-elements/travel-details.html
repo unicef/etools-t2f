@@ -425,9 +425,11 @@
 
         var invalids = [];
 
-        if (!this.$.travel_plan._validateTravelPlan()) {
-          invalids.push('Trip Plan');
-        }
+        // if (!this.$.travel_plan._validateTravelPlan()) {
+        //   invalids.push('Trip Plan');
+        // }
+
+        console.log(this.data.activities[0]._validationFunction());
 
 
         Polymer.dom.flush();
