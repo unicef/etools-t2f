@@ -60,7 +60,6 @@
           return;
         }
         var data = JSON.parse(JSON.stringify(incomingData));
-        console.log(data);
         var dataToPrint = [];
 
         function printManyToMany(value) {
@@ -129,7 +128,7 @@
             {
               columns: [
                 {text: 'Date: ', style: 'bold', width: 'auto', margin: [5,0]},
-                {text: printDate(data.baseDetails.start_date)}
+                {text: printDate(Date.now())}
               ]
             },
             {text: 'travel authorization'.toUpperCase(), style: 'bold'},
