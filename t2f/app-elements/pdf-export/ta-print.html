@@ -39,31 +39,13 @@
       },
       _computeStyles: function() {
         return {
-          mainHeader: {
+          bigBold: {
             fontSize: 16,
             bold: true,
-            color: '#FFFFFF',
-            fillColor: '#000000'
-          },
-          checkbox: {
-            bold: true,
-            color: '#FFFFFF',
-            fillColor: '#000000'
-          },
-          checkboxRight: {
-            bold: true,
-            color: '#FFFFFF',
-            fillColor: '#000000',
-            alignment: 'right'
+            color: '#000',
           },
           bold: {
             bold: true
-          },
-          rightAlign: {
-            alignment: 'right'
-          },
-          leftAlign: {
-            alignment: 'left'
           }
         };
       },
@@ -107,7 +89,24 @@
         }
 
         function printDate(date) {
+          if (date === '') {
+            return date;
+          }
           return window.moment(date).format('ll');
+        }
+
+        function printX(item) {
+          return item ? 'X' : '';
+        }
+
+        function printAmount() {
+          var dsa = parseFloat(data.cost_summary.dsa_total);
+          dsa = Number.isNaN(dsa) ? 0 : dsa;
+          var exp = parseFloat(data.cost_summary.expenses_total);
+          exp = Number.isNaN(exp) ? 0 : exp;
+          var ded = parseFloat(data.cost_summary.deductions_total);
+          ded = Number.isNaN(ded) ? 0 : ded;
+          return ((dsa + exp) - ded) + ' ' + data.baseDetails.currency.short;
         }
 
         var logo = {
@@ -115,10 +114,14 @@
           fit: [212,50],
           margin: [151,10]
         };
-        var blackLine = {
-          image: 'blackLine',
-          fit: [515, 1],
-          margin: [0, 20]
+
+        //needs to be a function if used more than one time
+        var blackLine = function(margin) {
+          return {
+            image: 'blackLine',
+            fit: [515, 2],
+            margin: [0, margin || 20]
+          };
         };
 
         var firstLine = {
@@ -154,28 +157,168 @@
           ]
         };
 
-        var itineraryBLock = {
-          columns: [
-              {text: 'Purpose of travel', style: 'bold'},
-              {text: print(data.baseDetails.purpose)},
-          ],
-          stack: data.itinerary.map(function(it) {
-            return {
-              columns: [
-                {stack: [
-                  {text: 'Departure date: ', style: 'bold'},
-                  {text: 'Return date: ', style: 'bold'},
-                  {text: 'From: ', style: 'bold'},
-                ]}
+        var departureDate = data.deductions[0] ? data.deductions[0].date : '' ;
+        var returnDate = data.deductions[data.deductions.length - 1] ? data.deductions[data.deductions.length - 1].date : '';
+
+        var detailBlock = {
+          stack: [
+            {columns: [
+                {text: 'Purpose of travel:', style: 'bold', width: 'auto', margin: [5,0]},
+                {text: print(data.baseDetails.purpose)},
               ]
-            };
-          })
+            },
+            {columns: [
+                {text: 'Departure date:', style: 'bold', width: 'auto', margin: [5,0]},
+                {text: printDate(departureDate)},
+                {text: 'Return date:', style: 'bold', width: 'auto', margin: [5,0]},
+                {text: printDate(returnDate)},
+              ]
+            },
+            {columns: [
+                {text: 'Itinerary:', style: 'bold', width: 'auto', margin: [5,0]},
+                {text: data.itinerary.reduce(function(result, current) {
+                  return result.concat([current.origin, current.destination]);
+                }, []).join(' - ')},
+              ]
+            }
+          ]
         };
+
+        var dsaDetailsBlock = {
+            stack: [
+              {text: 'DSA Details', alignment: 'center', style: 'bold'},
+              blackLine(5),
+              {text: 'dsa details WIP'}
+            ]
+        };
+
+        var deductionsBlock = {
+          stack: [
+              {text: 'Deductions', alignment: 'center', style: 'bold'},
+              blackLine(5),
+              {layout: 'noBorders',
+                table: {
+                widths: [97,97,97,97,97],
+                headerRows: 1,
+                body: [
+                  [{text: 'Date', style: 'bold', alignment: 'center'},
+                  {text: 'Breakfast', style: 'bold', alignment: 'center'},
+                  {text: 'Lunch', style: 'bold', alignment: 'center'},
+                  {text: 'Dinner', style: 'bold', alignment: 'center'},
+                  {text: 'Accomodation', style: 'bold', alignment: 'center'},]
+                ].concat(data.deductions.map(function(dd) {
+                    return [
+                      {text: printDate(dd.date), alignment: 'center'},
+                      {text: printX(dd.breakfast), alignment: 'center'},
+                      {text: printX(dd.lunch), alignment: 'center'},
+                      {text: printX(dd.dinner), alignment: 'center'},
+                      {text: printX(dd.accomodation), alignment: 'center'}
+                    ];
+                  }))
+              }}
+          ]
+        };
+
+        var expensesBlock = {
+          stack: [
+              {text: 'Breakdown of estimated costs for the trip', alignment: 'center', style: 'bold'},
+              blackLine(5),
+              {layout: 'noBorders',
+                table: {
+                widths: [123,123,123,123],
+                headerRows: 1,
+                body: [
+                  [{text: 'Expense', style: 'bold', alignment: 'left'},
+                  {text: 'Document currency', style: 'bold', alignment: 'center'},
+                  {text: 'Account currency', style: 'bold', alignment: 'center'},
+                  {text: 'Amount', style: 'bold', alignment: 'right'},]
+                ].concat(data.expenses.map(function(ee) {
+                    return [
+                      {text: print(ee.type), alignment: 'left'},
+                      {text: print(ee.document_currency), alignment: 'center'},
+                      {text: print(ee.account_currency), alignment: 'center'},
+                      {text: print(ee.amount), alignment: 'right'}
+                    ];
+                  }))
+              }}
+          ]
+        };
+
+        var costAssignmentsBlock = {
+          stack: [
+              {text: 'Trip cost assignment', alignment: 'center', style: 'bold'},
+              blackLine(5),
+              {layout: 'noBorders',
+                table: {
+                widths: [123,123,123,123],
+                headerRows: 1,
+                body: [
+                  [{text: 'WBS', style: 'bold', alignment: 'left'},
+                  {text: 'Share', style: 'bold', alignment: 'center'},
+                  {text: 'Grant', style: 'bold', alignment: 'center'},
+                  {text: 'Fund', style: 'bold', alignment: 'right'},]
+                ].concat(data.cost_assignments.map(function(ca) {
+                    return [
+                      {text: print(ca.wbs), alignment: 'left'},
+                      {text: print(ca.share), alignment: 'center'},
+                      {text: print(ca.grant), alignment: 'center'},
+                      {text: print(ca.fund), alignment: 'right'}
+                    ];
+                  }))
+              }}
+          ]
+        };
+
+        var itineraryBlock = {
+          stack: [
+              {text: 'Details of the itinerary', alignment: 'center', style: 'bold'},
+              blackLine(5),
+              {layout: 'noBorders',
+                table: {
+                widths: [97,97,97,97,97],
+                headerRows: 1,
+                body: [
+                  [{text: 'Departing', style: 'bold', alignment: 'left'},
+                  {text: 'Arriving', style: 'bold', alignment: 'center'},
+                  {text: 'From', style: 'bold', alignment: 'center'},
+                  {text: 'To', style: 'bold', alignment: 'right'},
+                  {text: 'DSA Region', style: 'bold', alignment: 'right'}]
+                ].concat(data.itinerary.map(function(it) {
+                    return [
+                      {text: printDate(it.departure_date), alignment: 'left'},
+                      {text: printDate(it.arrival_date), alignment: 'center'},
+                      {text: print(it.origin), alignment: 'center'},
+                      {text: print(it.destination), alignment: 'right'},
+                      {text: print(it.dsa_region), alignment: 'right'}
+                    ];
+                  }))
+              }}
+          ]
+        };
+
+        var finalRow = {text: 'Amount due to the traveler: '.toUpperCase() + printAmount(), style: 'bigBold', alignment: 'center'};
+        var additionalNote = {text: print(data.additional_note)}
 
         dataToPrint.push(logo);
         dataToPrint.push(firstLine);
-        dataToPrint.push(blackLine);
+        dataToPrint.push(blackLine());
         dataToPrint.push(travelerData);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(detailBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(dsaDetailsBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(deductionsBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(expensesBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(costAssignmentsBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(itineraryBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(finalRow);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(additionalNote);
         return dataToPrint;
       },
 
