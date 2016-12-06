@@ -296,8 +296,9 @@
           ]
         };
 
-        var finalRow = {text: 'Amount due to the traveler: '.toUpperCase() + printAmount(), style: 'bigBold', alignment: 'center'};
-        var additionalNote = {text: print(data.additional_note)}
+        var finalRow = {text: 'Amount due to the traveler: '.toUpperCase()
+        + printAmount(), style: 'bigBold', alignment: 'center'};
+        var additionalNote = {text: print(data.additional_note)};
 
         dataToPrint.push(logo);
         dataToPrint.push(firstLine);
