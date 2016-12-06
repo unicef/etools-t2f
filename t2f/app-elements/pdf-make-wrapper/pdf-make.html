@@ -7,7 +7,7 @@
 `pdf-make`
 pdfMake polymer wrapper
 
-@demo demo/index.html 
+@demo demo/index.html
 -->
 
 <dom-module id="pdf-make">
@@ -25,14 +25,10 @@ pdfMake polymer wrapper
       is: 'pdf-make',
 
       properties: {
-        print: {
-          type: Boolean,
-          value: false
-        },
         content: {
           type: Object,
           value: function() {
-            return {text: 'Etools Pdf Maker polymer wrapper'};
+            return {text: 'PDF Maker polymer wrapper'};
           }
         },
         styles: {
@@ -49,37 +45,33 @@ pdfMake polymer wrapper
         },
         pageOrientation: {
           type: String,
-          value: 'portraits'
+          value: 'portrait'
         },
         pageMargins: {
           type: Array,
           value: function() { return [40, 40, 40, 40]; }
         }
       },
-      observers: ['_doPrint(print, content, styles, output, pageSize, pageOrientation, pageMargins)'],
-
-      _doPrint: function(print, content, styles, output, pageSize, pageOrientation, pageMargins) {
-        if (print) {
-          var documentDefinition = {
-            pageSize: pageSize,
-            pageOrientation: pageOrientation,
-            pageMargins: pageMargins,
-            content: content,
-            styles: styles
-          };
-          switch (output) {
-            case 'open':
-              pdfMake.createPdf(documentDefinition).open();
-              break;
-            case 'print':
-              pdfMake.createPdf(documentDefinition).print();
-              break;
-            case 'download':
-              pdfMake.createPdf(documentDefinition).download();
-              break;
-          }
+      printPDF: function() {
+        var self = this;
+        var documentDefinition = {
+          pageSize: self.pageSize,
+          pageOrientation: self.pageOrientation,
+          pageMargins: self.pageMargins,
+          content: self.content,
+          styles: self.styles
+        };
+        switch (self.output) {
+          case 'open':
+            pdfMake.createPdf(documentDefinition).open();
+            break;
+          case 'print':
+            pdfMake.createPdf(documentDefinition).print();
+            break;
+          case 'download':
+            pdfMake.createPdf(documentDefinition).download();
+            break;
         }
-        this.print = false;
       }
 
     });
