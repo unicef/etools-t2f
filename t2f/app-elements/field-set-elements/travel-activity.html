@@ -125,6 +125,10 @@
         structure: {
           type: Object,
           value: {}
+        },
+        activityValidationArray: {
+          type: Array,
+          notify: true
         }
       },
 
@@ -132,9 +136,9 @@
 
       observers: ['_setCheckboxes(activity.*)'],
 
-      _validateType: function() {
+      _validateType: function(self) {
 
-        if (this.activity.travel_type) {
+        if (this.activity.travel_type || self.activity.travel_type) {
 
           this.$.trip_type.removeAttribute('invalid');
           return true;
@@ -156,9 +160,11 @@
           false;
       },
 
-      _validateActivities: function() {
+      _validateActivities: function(activity) {
 
-        var typeVal = this._validateType.bind(this)();
+        console.log('this.activity', activity);
+
+        var typeVal = this._validateType(this);
         // console.log('typeVal', typeVal);
 
         var activityVal = this.$.activities_form.validate();
@@ -167,8 +173,10 @@
         return typeVal && activityVal;
       },
 
-      attached: function() {
-        this.activityValidationArray.push(this._validateActivities.bind(this));
+      ready: function() {
+        // this.push('activityValidationArray', this._validateActivities.bind(this, this.activity));
+        // console.log('activity attached');
+        // console.log(this.activityValidationArray);
       }
     });
   </script>
