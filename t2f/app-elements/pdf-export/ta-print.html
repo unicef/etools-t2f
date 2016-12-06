@@ -1,11 +1,14 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
 <link rel="import" href="./pdf-images.html">
+<link rel="import" href="../pdf-make-wrapper/pdf-make.html">
+<link rel="import" href="../../../bower_components/moment-element/moment-with-locales-import.html">
+
 
 <dom-module id="ta-print">
 
   <template>
-    <pdf-make output="open" print="{{openPDF}}" images="{{images}}" content="[[dataToPrint]]" styles="[[printStyles]]" page-orientation="portrait"></pdf-make>
+    <pdf-make id="pdfMake" output="open" images="{{images}}" content="[[dataToPrint]]" styles="[[printStyles]]" page-orientation="portrait"></pdf-make>
     <pdf-images unicef-logo="{{unicefLogo}}" black-line="{{blackLine}}"> </pdf-images>
   </template>
 
@@ -26,10 +29,6 @@
         printStyles: {
           type: Object,
           computed: '_computeStyles(data)',
-        },
-        openPDF: {
-          type: Boolean,
-          value: false
         },
         unicefLogo: String,
         blackLine: String,
@@ -57,18 +56,21 @@
             fillColor: '#000000',
             alignment: 'right'
           },
+          bold: {
+            bold: true
+          },
           rightAlign: {
             alignment: 'right'
           },
-          centerAlign: {
-            alignment: 'center'
+          leftAlign: {
+            alignment: 'left'
           }
         };
       },
       _computeImages: function(unicefLogo, blackLine) {
         return {
           unicefLogo: unicefLogo,
-          // blackLine: blackLine
+          blackLine: blackLine
         };
       },
       _computeDataToPrint: function(incomingData) {
@@ -76,9 +78,10 @@
           return;
         }
         var data = JSON.parse(JSON.stringify(incomingData));
+        console.log(data);
         var dataToPrint = [];
 
-        function concatManyToMany(value) {
+        function printManyToMany(value) {
           if (value instanceof Array) {
             return value.reduce(function(prev, cur, index) {
               var tail = index === value.length - 1 ? '' : ',';
@@ -88,18 +91,96 @@
           return '';
         }
 
-        dataToPrint.push({
+        function print(item) {
+          if (item) {
+            if (item.label) {
+              return item.label;
+            }
+            if (typeof(item) === 'string') {
+              return item;
+            }
+            if (typeof(item) === 'number') {
+              return '' + item;
+            }
+          }
+          return '';
+        }
+
+        function printDate(date) {
+          return window.moment(date).format('ll');
+        }
+
+        var logo = {
           image: 'unicefLogo',
           fit: [212,50],
-          margin: [151,0]
-        });
+          margin: [151,10]
+        };
+        var blackLine = {
+          image: 'blackLine',
+          fit: [515, 1],
+          margin: [0, 20]
+        };
 
+        var firstLine = {
+          columns: [
+            {
+              columns: [
+                {text: 'Date: ', style: 'bold', width: 'auto', margin: [5,0]},
+                {text: printDate(data.baseDetails.start_date)}
+              ]
+            },
+            {text: 'travel authorization'.toUpperCase(), style: 'bold'},
+            {
+            columns: [
+                {text: 'Tripo No. ', style: 'bold', width: 'auto'},
+                {text: data.baseDetails.reference_number}
+              ]
+            }
+          ]
+        };
+
+        var travelerData = {
+          columns: [
+            {stack: [
+                {text: 'Name', style: 'bold'},
+                {text: print(data.baseDetails.traveler)}
+              ]
+            },
+            {stack: [
+                {text: 'Index', style: 'bold'},
+                {text: print(data.baseDetails.id)}
+              ]
+            }
+          ]
+        };
+
+        var itineraryBLock = {
+          columns: [
+              {text: 'Purpose of travel', style: 'bold'},
+              {text: print(data.baseDetails.purpose)},
+          ],
+          stack: data.itinerary.map(function(it) {
+            return {
+              columns: [
+                {stack: [
+                  {text: 'Departure date: ', style: 'bold'},
+                  {text: 'Return date: ', style: 'bold'},
+                  {text: 'From: ', style: 'bold'},
+                ]}
+              ]
+            };
+          })
+        };
+
+        dataToPrint.push(logo);
+        dataToPrint.push(firstLine);
+        dataToPrint.push(blackLine);
+        dataToPrint.push(travelerData);
         return dataToPrint;
       },
 
       printTa: function() {
-        this.openPDF = true;
-        this.openPDF = false;
+       this.$.pdfMake.printPDF();
       }
 
     });

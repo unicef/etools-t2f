@@ -52,8 +52,7 @@
     "etools-dialog": "^1.0.0",
     "etools-loading": "^1.0.3",
     "etools-page-refresh": "^1.0.0",
-    "etools-content-panel": "^1.0.1",
-    "pdfmake": "^0.1.20"
+    "etools-content-panel": "^1.0.1"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
