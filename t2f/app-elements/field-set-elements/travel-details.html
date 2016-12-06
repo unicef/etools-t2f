@@ -425,43 +425,24 @@
 
         var invalids = [];
 
-        // if (!this.$.travel_plan._validateTravelPlan()) {
-        //   invalids.push('Trip Plan');
-        // }
+        // Validating Trip plan
+        if (!this.$.travel_plan._validateTravelPlan()) {
+          invalids.push('Trip Plan');
+        }
 
-        console.log(this.data.activities[0]._validationFunction());
-
-
-        Polymer.dom.flush();
-        // var allActivities = this.$.activities.getEffectiveChildren();
-        // var allActivities = this.$$('travel-activities.travel_activity');
-        // console.log('allActivities', allActivities);
-
-
-
-        var allActivities = this.$.activities;
-        console.log('allActivities', allActivities);
-
-        var allActivities2 = this.$.activities.getEffectiveChildren();
-        console.log('allActivities2', allActivities2);
-
-        var allActivities21 = this.$.activities.children[0];
-        console.log('allActivities21', allActivities21);
-        // var allActivities3 = this.$.activities.children[0]._content;
-        // console.log('allActivities3', allActivities3);
-        // var allActivities4 = this.$.activities.children[0]._content.children;
-        // console.log('allActivities4', allActivities4);
+        // Validating Activities
+        var allActivitiesValid = true;
+        this.data.activities.forEach(function(act) {
+          allActivitiesValid = act._validationFunction() && allActivitiesValid;
+        });
+        if (!allActivitiesValid) {
+          invalids.push('Trip Activities');
+        }
 
 
-        // if (!this.activityValidationArray.every(function(activityValFn) {
-        //   return activityValFn();
-        // })) {
-        //   invalids.push('Trip Activities');
-        // }
 
-
-        // if (!invalids.length || action.name === 'Save') {
-        if (!invalids.length) { // for testing
+        if (!invalids.length || action.name === 'Save') {
+        // if (!invalids.length) { // for testing
           this.fire('form-action', action);
         } else {
           this.set('invalids', invalids);

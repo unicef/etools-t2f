@@ -134,14 +134,18 @@
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
-      observers: ['_setCheckboxes(activity.*)', '_addValidationFunction(activity.*)'],
+      observers: [
+        '_setCheckboxes(activity.*)',
+        '_addValidationFunction(activity.*)'
+      ],
 
       _addValidationFunction: function(changed) {
-        var self = this;
+
         if (!changed.base._validationFunction) {
-            self.set('activity._validationFunction', self._validateActivities.bind(self, changed.base));
+          this.set('activity._validationFunction', this._validateActivities.bind(this, changed.base));
         }
       },
+
       _validateType: function(self) {
 
         if (this.activity.travel_type || self.activity.travel_type) {
@@ -168,21 +172,10 @@
 
       _validateActivities: function(activity) {
 
-        console.log(this, activity);
-
         var typeVal = this._validateType(this);
-        // console.log('typeVal', typeVal);
-
         var activityVal = this.$.activities_form.validate();
-        // console.log('activityVal', activityVal);
 
         return typeVal && activityVal;
-      },
-
-      ready: function() {
-        // this.push('activityValidationArray', this._validateActivities.bind(this, this.activity));
-        // console.log('activity attached');
-        // console.log(this.activityValidationArray);
       }
     });
   </script>
