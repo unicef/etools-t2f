@@ -439,6 +439,14 @@
           invalids.push('Trip Activities');
         }
 
+        // Validating Expenses
+        var expensesAreValid = true;
+        this.data.expenses.forEach(function(exp) {
+          expensesAreValid = exp._validationFunction() && expensesAreValid;
+        });
+        if (!expensesAreValid) {
+          invalids.push('Expenses');
+        }
 
 
         if (!invalids.length || action.name === 'Save') {
