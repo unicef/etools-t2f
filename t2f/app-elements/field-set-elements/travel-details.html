@@ -170,7 +170,6 @@
           <div class="note-text">[[data.certification_note]]</div>
         </paper-material>
 
-
         <etools-repeatable-field-set title="Trip Plan"
           hide-plus
           show-counter="[[false]]"
@@ -245,8 +244,7 @@
               disabled="[[!sectionPermissions.deductions.open]]"
               itinerary="[[data.itinerary]]"
               deductions="{{data.deductions}}"
-              permissions-matrix="[[travelPermissions.deductions]]"
-            >
+              permissions-matrix="[[travelPermissions.deductions]]">
             </travel-deductions>
           </div>
         </etools-repeatable-field-set>
@@ -447,7 +445,6 @@
         if (!expensesAreValid) {
           invalids.push('Expenses');
         }
-
 
         if (!invalids.length || action.name === 'Save') {
         // if (!invalids.length) { // for testing
