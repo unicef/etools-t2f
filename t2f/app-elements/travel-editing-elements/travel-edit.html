@@ -17,7 +17,6 @@
 <link rel="import" href="../api-elements/inbound-data.html">
 <link rel="import" href="../api-elements/outbound-data.html">
 <link rel="import" href="../pdf-export/ta-print.html">
-<link rel="import" href="../pdf-export/pdf-print.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
 <link rel="import" href="./form-errors.html">
 
@@ -45,12 +44,10 @@
 
     <et2f-inbound-data loading="{{loading}}" route="{{route}}" et2f-data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]" data-to-serialize="[[incomingData]]"></et2f-inbound-data>
     <et2f-outbound-data id="outbound-data" form-errors="{{formErrors}}" data="[[data]]" travel-id="[[travelId]]" structure="[[structure]]" inbound-data="{{incomingData}}"></et2f-outbound-data>
-    <pdf-print data="[[data]]" data-to-print="{{dataToPrint}}" print-styles="{{printStyles}}"></pdf-print>
-    <ta-print id="taPrint" data="[[data]]" data-to-print="{{dataToPrint}}" print-styles="{{printStyles}}"></ta-print>
+    <ta-print id="taPrint" data="[[data]]"></ta-print>
 
     <et2f-header title="Edit travel plan"
-      data-to-print="[[dataToPrint]]"
-      print-styles="[[printStyles]]"
+      data=[[data]]
       show-new-travel-button="true">
       <paper-tabs scrollable
         selected="{{selected}}">

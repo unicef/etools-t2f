@@ -4,6 +4,7 @@
 <dom-module id="pdf-print">
 
   <template>
+    <pdf-make id="pdfMake" output="download" styles="[[printStyles]]" page-orientation="landscape"></pdf-make>
   </template>
 
   <script>
@@ -14,18 +15,15 @@
 
       properties: {
         data: {
-          type: Object,
-          notify: true
+          type: Object
         },
-        dataToPrint: {
+        storedData: {
           type: Object,
-          computed: '_computeDataToPrint(data)',
-          notify: true
+          computed: '_computeStoredData(data)',
         },
         printStyles: {
           type: Object,
-          computed: '_computeStyles(data)',
-          notify: true
+          computed: '_computeStyles(data)'
         }
       },
 
@@ -53,12 +51,19 @@
           }
         };
       },
-
-      _computeDataToPrint: function(incomingData) {
+      printPDF: function() {
+        var dataToPrint = this._parseData(0);
+        this.$.pdfMake.printPDF(dataToPrint);
+      },
+      _computeStoredData: function(incomingData) {
         if (!incomingData.baseDetails) {
           return;
         }
-        var data = JSON.parse(JSON.stringify(incomingData));
+        return JSON.parse(JSON.stringify(incomingData));
+      },
+      _parseData: function() {
+
+        var data = this.storedData;
         var dataToPrint = [];
         var innerTableVars = {
           widths: [380, 380],

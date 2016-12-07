@@ -8,7 +8,7 @@
 <dom-module id="ta-print">
 
   <template>
-    <pdf-make id="pdfMake" output="open" images="{{images}}" content="[[dataToPrint]]" styles="[[printStyles]]" page-orientation="portrait"></pdf-make>
+    <pdf-make id="pdfMake" output="download" images="{{images}}" styles="[[printStyles]]" page-orientation="portrait"></pdf-make>
     <pdf-images unicef-logo="{{unicefLogo}}" black-line="{{blackLine}}"> </pdf-images>
   </template>
 
@@ -22,9 +22,9 @@
         data: {
           type: Object,
         },
-        dataToPrint: {
+        storedData: {
           type: Object,
-          computed: '_computeDataToPrint(data)',
+          computed: '_computeStoredData(data)',
         },
         printStyles: {
           type: Object,
@@ -55,23 +55,17 @@
           blackLine: blackLine
         };
       },
-      _computeDataToPrint: function(incomingData) {
+      _computeStoredData: function(incomingData) {
         if (!incomingData.baseDetails) {
           return;
         }
-        var data = JSON.parse(JSON.stringify(incomingData));
-        console.log(data);
-        var dataToPrint = [];
+        return JSON.parse(JSON.stringify(incomingData));
 
-        function printManyToMany(value) {
-          if (value instanceof Array) {
-            return value.reduce(function(prev, cur, index) {
-              var tail = index === value.length - 1 ? '' : ',';
-              return prev + cur.label + tail;
-            }, '');
-          }
-          return '';
-        }
+      },
+
+      _parseData: function() {
+        var data = this.storedData;
+         var dataToPrint = [];
 
         function print(item) {
           if (item) {
@@ -184,30 +178,6 @@
             }
           ]
         };
-
-
-        /*
-         *amount_usd
-:
-"619.9500"
-daily_rate_usd
-:
-"123.9900"
-dsa_region
-:
-2
-end_date
-:
-"2016-12-07T08:46:19.517288+00:00"
-night_count
-:
-5
-start_date
-:
-"2016-12-07T08:46:19.517288+00:00
-         *
-         */
-
         var dsaDetailsBlock = {
             stack: [
               {text: 'DSA Details', alignment: 'center', style: 'bold'},
@@ -369,7 +339,8 @@ start_date
       },
 
       printTa: function() {
-       this.$.pdfMake.printPDF();
+        var dataToPrint = this._parseData();
+        this.$.pdfMake.printPDF(dataToPrint);
       }
 
     });

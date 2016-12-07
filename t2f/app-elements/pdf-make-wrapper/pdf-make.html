@@ -49,13 +49,13 @@
           value: function() { return [40, 40, 40, 40]; }
         }
       },
-      printPDF: function() {
+      printPDF: function(content) {
         var self = this;
         var documentDefinition = {
           pageSize: self.pageSize,
           pageOrientation: self.pageOrientation,
           pageMargins: self.pageMargins,
-          content: self.content,
+          content: content || self.content,
           images: self.images,
           styles: self.styles
         };
