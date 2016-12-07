@@ -445,7 +445,7 @@
           invalids.push('Expenses');
         }
 
-        if (!invalids.length || action.name === 'Save') {
+        if (!invalids.length || action.name === 'Save' || action.name === 'Print TA') {
         // if (!invalids.length) { // for testing
           this.fire('form-action', action);
         } else {
