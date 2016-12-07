@@ -1,0 +1,31 @@
+<link rel="import" href="../../bower_components/moment-element/moment-with-locales-import.html">
+<script>
+var PDFBehavior = {
+  _print: function(item) {
+    if (item) {
+      if (item.label) {
+        return item.label;
+      }
+      if (typeof item === 'string') {
+        return item;
+      }
+      if (typeof item === 'number') {
+        return '' + item;
+      }
+    }
+    return '';
+  },
+  _printDate: function(date) {
+    if (date === '') {
+      return date;
+    }
+    return window.moment(date).format('ll');
+  },
+  _printX: function(item) {
+    return item ? 'X' : '';
+  }
+
+};
+window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
+window.et2fBehaviors.PDFBehavior = PDFBehavior;
+</script>

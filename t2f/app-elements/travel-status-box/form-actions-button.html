@@ -139,6 +139,10 @@
             'planned': {
               'name': 'To planned',
               'endPoint': 'planned'
+            },
+            'printTa': {
+              'name': 'Print TA',
+              'endPoint': 'printTa'
             }
           }
         },
@@ -160,34 +164,34 @@
               },
               'Approved': {
                 'primary': 'save',
-                'secondary': ['sendForPayment']
+                'secondary': ['sendForPayment', 'printTa']
               },
               'Rejected': {
                 'primary': 'planned',
-                'secondary': ['save', 'save_and_submit']
+                'secondary': ['save', 'save_and_submit', 'printTa']
               },
               'Sent for payment': {
                 'primary': 'wentAsPlanned',
-                'secondary': ['submitCertificate']
+                'secondary': ['submitCertificate', 'printTa']
               },
               'Certification submitted': {
                 'primary': 'approveCertificate',
-                'secondary': ['rejectCertificate']
+                'secondary': ['rejectCertificate', 'printTa']
               },
               'Certification rejected': {
                 'primary': 'submitCertificate',
-                'secondary': []
+                'secondary': ['printTa']
               },
               'Certification approved': {
                 'primary': 'save',
-                'secondary': ['certify']
+                'secondary': ['certify', 'printTa']
               },
               'Certified': {
                 'primary': 'complete',
-                'secondary': []
+                'secondary': ['printTa']
               },
               'Completed': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               }
             },
@@ -253,35 +257,35 @@
                 'secondary': ['save_and_submit']
               },
               'Approved': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Rejected': {
                 'primary': 'planned',
-                'secondary': ['save_and_submit']
+                'secondary': ['save_and_submit', 'printTa']
               },
               'Sent for payment': {
                 'primary': 'certify',
-                'secondary': ['submitCertificate', 'save']
+                'secondary': ['submitCertificate', 'save', 'printTa']
               },
               'Certification submitted': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification rejected': {
                 'primary': 'save',
-                'secondary': ['submitCertificate']
+                'secondary': ['submitCertificate', 'printTa']
               },
               'Certification approved': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certified': {
                 'primary': 'complete',
-                'secondary': []
+                'secondary': ['printTa']
               },
               'Completed': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               }
             },
@@ -300,35 +304,35 @@
                 'secondary': ['save_and_submit']
               },
               'Approved': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Rejected': {
                 'primary': 'planned',
-                'secondary': ['save_and_submit']
+                'secondary': ['save_and_submit', 'printTa']
               },
               'Sent for payment': {
                 'primary': 'submitCertificate',
-                'secondary': []
+                'secondary': ['printTa']
               },
               'Certification submitted': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification rejected': {
                 'primary': 'submitCertificate',
-                'secondary': []
+                'secondary': ['printTa']
               },
               'Certification approved': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certified': {
                 'primary': 'complete',
-                'secondary': []
+                'secondary': ['printTa']
               },
               'Completed': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               }
             },
@@ -347,35 +351,35 @@
                 'secondary': []
               },
               'Approved': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Rejected': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Sent for payment': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification submitted': {
                 'primary': 'approveCertificate',
-                'secondary': ['rejectCertificate']
+                'secondary': ['rejectCertificate', 'printTa']
               },
               'Certification rejected': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification approved': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certified': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Completed': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               }
             },
@@ -395,34 +399,34 @@
               },
               'Approved': {
                 'primary': 'save',
-                'secondary': []
+                'secondary': ['printTa']
               },
               'Rejected': {
                 'primary': 'save',
-                'secondary': []
+                'secondary': ['printTa']
               },
               'Sent for payment': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification submitted': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification rejected': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification approved': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certified': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Completed': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               }
             },
@@ -442,34 +446,34 @@
               },
               'Approved': {
                 'primary': 'save',
-                'secondary': ['sendForPayment', 'cancel']
+                'secondary': ['sendForPayment', 'cancel', 'printTa']
               },
               'Rejected': {
                 'primary': 'save',
-                'secondary': []
+                'secondary': ['printTa']
               },
               'Sent for payment': {
                 'primary': 'save',
-                'secondary': ['cancel']
+                'secondary': ['cancel', 'printTa']
               },
               'Certification submitted': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification rejected': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification approved': {
                 'primary': 'save',
-                'secondary': ['certify']
+                'secondary': ['certify', 'printTa']
               },
               'Certified': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Completed': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               }
             },
@@ -488,35 +492,35 @@
                 'secondary': []
               },
               'Approved': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Rejected': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Sent for payment': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification submitted': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification rejected': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certification approved': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Certified': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               },
               'Completed': {
-                'primary': '',
+                'primary': 'printTa',
                 'secondary': []
               }
             }
