@@ -6,10 +6,10 @@ var PDFBehavior = {
       if (item.label) {
         return item.label;
       }
-      if (typeof(item) === 'string') {
+      if (typeof item === 'string') {
         return item;
       }
-      if (typeof(item) === 'number') {
+      if (typeof item === 'number') {
         return '' + item;
       }
     }
