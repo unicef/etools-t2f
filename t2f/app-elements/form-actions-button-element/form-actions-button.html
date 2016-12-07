@@ -920,11 +920,14 @@
         return Array.isArray(actions.secondary) && actions.secondary.length !== 0;
       },
       _clickPrimary: function() {
-        this.fire('form-action', this.actions.primary);
+
+        // Up until travel details, validate there, fire forward as action to travel edit
+        this.fire('validate', this.actions.primary);
       },
       _clickSecondary: function(event) {
 
-        this.fire('form-action', event.model.item);
+        // Up until travel details, validate there, fire forward as action to travel edit
+        this.fire('validate', event.model.item);
       }
     });
   </script>

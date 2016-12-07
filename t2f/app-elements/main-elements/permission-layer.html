@@ -27,11 +27,12 @@
             }
             e.disabled = !e.edit;
             e.hidden = !e.view;
+            e.required = e.edit && e.view;
 
           } else if (e instanceof Boolean) {
             matrix.disabled = !matrix.edit;
             matrix.hidden = !matrix.view;
-
+            matrix.required = matrix.edit && matrix.view;
           }
         });
         this.set('computedPermission', {});

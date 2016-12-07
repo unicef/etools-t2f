@@ -1,5 +1,6 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
@@ -30,50 +31,143 @@
       }
     </style>
 
-    <div class="layout vertical flex">
+    <form is="iron-form" id="expense_form" class="layout vertical flex">
+
       <div class="layout horizontal">
-        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.type.readOnly]]"
+
+        <etools-searchable-multiselection-menu label="Travel expense type*"
+          id="type"
+          class$="flex-3 [[computedPermission.type.readOnly]]"
           disabled="[[computedPermission.type.disabled]]"
           hidden$="[[computedPermission.type.hidden]]"
           options="[[structure.expense_types]]"
-          label="Travel expense type"
-          value="{{expense.type}}"></etools-searchable-multiselection-menu>
-        <paper-input class$="flex-3 custom-margin [[computedPermission.amount.readOnly]]"
+          value="{{expense.type}}"
+          placeholder="select"
+          required$="[[computedPermission.type.required]]"
+          on-paper-dropdown-close="_validateType"
+          auto-validate>
+        </etools-searchable-multiselection-menu>
+
+        <paper-input label="Amount*"
+          class$="flex-3 custom-margin [[computedPermission.amount.readOnly]]"
           disabled="[[computedPermission.amount.disabled]]"
           hidden$="[[computedPermission.amount.hidden]]"
-          label="Amount"
-          type="number"
-          value="{{expense.amount}}"></paper-input>
-        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.document_currency.readOnly]]"
+          pattern="^[0-9]+(\.[0-9]{1,4})?$"
+          placeholder="eg.: 567.1234"
+          value="{{expense.amount}}"
+          required$="[[computedPermission.amount.required]]"
+          auto-validate>
+        </paper-input>
+
+        <etools-searchable-multiselection-menu label="Document currency*"
+          id="curr1"
+          class$="flex-3 [[computedPermission.document_currency.readOnly]]"
           disabled="[[computedPermission.document_currency.disabled]]"
           hidden$="[[computedPermission.document_currency.hidden]]"
           options="[[structure.currencies]]"
-          label="Document currency"
-          value="{{expense.document_currency}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.account_currency.readOnly]]"
+          value="{{expense.document_currency}}"
+          placeholder="select"
+          required$="[[computedPermission.document_currency.required]]"
+          on-paper-dropdown-close="_validateDocCurr"
+          auto-validate>
+        </etools-searchable-multiselection-menu>
+
+        <etools-searchable-multiselection-menu label="Accounting currency*"
+          id="curr2"
+          class$="flex-3 [[computedPermission.account_currency.readOnly]]"
           disabled="[[computedPermission.account_currency.disabled]]"
           hidden$="[[computedPermission.account_currency.hidden]]"
           options="[[structure.currencies]]"
-          label="Accounting currency"
-          value="{{expense.account_currency}}"></etools-searchable-multiselection-menu>
+          value="{{expense.account_currency}}"
+          placeholder="select"
+          required$="[[computedPermission.account_currency.required]]"
+          on-paper-dropdown-close="_validateAccCurr"
+          auto-validate>
+        </etools-searchable-multiselection-menu>
       </div>
-    </div>
+    </form>
   </template>
 
   <script>
     Polymer({
+
       is: 'travel-expense',
+
       properties: {
+
         expense: {
           type: Object,
           notify: true,
         },
+
         structure: {
           type: Object,
           value: {}
         }
       },
+
       behaviors: [et2fBehaviors.PermissionLayer],
+
+      observers: ['_addValidationFunction(expense.*)'],
+
+      _addValidationFunction: function(changed) {
+
+        if (!changed.base._validationFunction) {
+          this.set('expense._validationFunction', this.validateExpense.bind(this, changed.base));
+        }
+      },
+
+      _validateType: function(self) {
+
+        if (this.expense.type || self.expense.type) {
+
+          this.$.type.removeAttribute('invalid');
+          return true;
+
+        } else {
+
+          this.$.type.setAttribute('invalid', true);
+          return false;
+        }
+      },
+
+      _validateDocCurr: function(self) {
+
+        if (this.expense.document_currency || self.expense.document_currency) {
+
+          this.$.curr1.removeAttribute('invalid');
+          return true;
+
+        } else {
+
+          this.$.curr1.setAttribute('invalid', true);
+          return false;
+        }
+      },
+
+      _validateAccCurr: function(self) {
+
+        if (this.expense.account_currency || self.expense.account_currency) {
+
+          this.$.curr2.removeAttribute('invalid');
+          return true;
+
+        } else {
+
+          this.$.curr2.setAttribute('invalid', true);
+          return false;
+        }
+      },
+
+      validateExpense: function() {
+
+        var typeValid = this._validateType(this);
+        var accCurr = this._validateAccCurr(this);
+        var docCurr = this._validateDocCurr(this);
+        var formValid = this.$.expense_form.validate();
+
+        return typeValid && formValid && accCurr && docCurr;
+      }
     });
   </script>
 </dom-module>

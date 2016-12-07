@@ -4,6 +4,7 @@
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
@@ -33,6 +34,28 @@
      :host {
         display: block;
         width: 100%;
+      }
+      .dialog-heading {
+          font-size: 20px;
+          color: var(--gray-dark);
+          font-weight: 500;
+      }
+      .dialog-intro-text {
+          color: var(--gray-mid);
+          font-size: 16px;
+          margin-bottom: 24px;
+      }
+      .missing-action {
+        color: var(--et2f-warning);
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .dialog-confirm-button {
+          color: var(--et2f-primary);
+          font-weight: 500;
+          height: 40px;
+          float: right;
       }
       etools-repeatable-field-set {
         width: calc( 100% - 48px);
@@ -86,6 +109,22 @@
 
       <div class="flex">
 
+        <paper-dialog id="invalid_modal" with-backdrop>
+
+          <div class="dialog-heading">Warning</div>
+          <div class="dialog-intro-text">You are not allowed to take this action, until you have missing, or badly formatted information in the following fields:</div>
+
+          <template is="dom-repeat" items="[[invalids]]">
+            <div class="missing-action">[[item]]</div>
+          </template>
+
+          <paper-button
+            class="dialog-confirm-button"
+            on-click="closeInvalidModal">
+              I understand
+          </paper-button>
+        </paper-dialog>
+
         <!-- Cancellation note -->
         <paper-material class="note cancel" elevation="1" hidden$="[[_hideCancelNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
@@ -131,37 +170,41 @@
           <div class="note-text">[[data.certification_note]]</div>
         </paper-material>
 
-
-        <etools-repeatable-field-set title="Travel Plan"
+        <etools-repeatable-field-set title="Trip Plan"
           hide-plus
           show-counter="[[false]]"
           model="[1]"
           hide-vertical-divider
           elevation="1">
 
-          <travel-plan base-details="{{data.baseDetails}}"
+          <travel-plan id="travel_plan"
+            base-details="{{data.baseDetails}}"
             permissions-matrix="[[travelPermissions.baseDetails]]"
             structure="[[structure]]">
           </travel-plan>
         </etools-repeatable-field-set>
 
-        <etools-repeatable-field-set title="Travel Activities"
-          id="activities"
+        <etools-repeatable-field-set title="Trip Activities"
           model="{{data.activities}}"
           hide-plus="[[!sectionPermissions.activities.edit]]"
           allow-copy="[[sectionPermissions.activities.edit]]"
           show-counter
           elevation="1"
+            id="activities"
           open="[[sectionPermissions.activities.open]]"
           hidden$="[[sectionPermissions.activities.hidden]]">
 
-          <template is="dom-repeat"
-            items="{{data.activities}}">
+          <template
+            is="dom-repeat"
+            items="{{data.activities}}"
+            strip-whitespace>
 
             <travel-activities
+              class="travel_activity"
               activity="{{item}}"
               permissions-matrix="[[travelPermissions.activities]]"
-              structure="[[structure]]">
+              structure="[[structure]]"
+              activity-validation-array="{{activityValidationArray}}">
             </travel-activities>
           </template>
         </etools-repeatable-field-set>
@@ -201,8 +244,7 @@
               disabled="[[!sectionPermissions.deductions.open]]"
               itinerary="[[data.itinerary]]"
               deductions="{{data.deductions}}"
-              permissions-matrix="[[travelPermissions.deductions]]"
-            >
+              permissions-matrix="[[travelPermissions.deductions]]">
             </travel-deductions>
           </div>
         </etools-repeatable-field-set>
@@ -262,7 +304,8 @@
         is-international="[[data.baseDetails.international_travel]]"
         scroll-top-margin="84"
         cancelled-date="[[data.canceled_at]]"
-        completed-date="[[data.completed_at]]">
+        completed-date="[[data.completed_at]]"
+        on-validate="onValidate">
       </travel-status>
     </div>
   </template>
@@ -287,14 +330,20 @@
             '_computeSectionPermissions(travelPermissions,' +
               ' data.baseDetails.international_travel, data.status, userRoles)'
         },
+        invalids: Array,
         userRoles: {
           type: Array,
+        },
+        activityValidationArray: {
+          type: Array,
+          value: []
         },
         scrollToFieldset: {
           type: String,
           observer: '_scrollTo'
         },
       },
+
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
         var computed = {};
 
@@ -353,6 +402,7 @@
         });
         return computed;
       },
+
       _scrollTo: function(fieldset) {
         this.$[fieldset].scrollIntoView();
       },
@@ -367,6 +417,46 @@
 
       _hideCertificationNote: function(data) {
         return data.status !== 'Certification submitted';
+      },
+
+      onValidate: function(e, action) {
+
+        var invalids = [];
+
+        // Validating Trip plan
+        if (!this.$.travel_plan._validateTravelPlan()) {
+          invalids.push('Trip Plan');
+        }
+
+        // Validating Activities
+        var allActivitiesValid = true;
+        this.data.activities.forEach(function(act) {
+          allActivitiesValid = act._validationFunction() && allActivitiesValid;
+        });
+        if (!allActivitiesValid) {
+          invalids.push('Trip Activities');
+        }
+
+        // Validating Expenses
+        var expensesAreValid = true;
+        this.data.expenses.forEach(function(exp) {
+          expensesAreValid = exp._validationFunction() && expensesAreValid;
+        });
+        if (!expensesAreValid) {
+          invalids.push('Expenses');
+        }
+
+        if (!invalids.length || action.name === 'Save') {
+        // if (!invalids.length) { // for testing
+          this.fire('form-action', action);
+        } else {
+          this.set('invalids', invalids);
+          this.$.invalid_modal.open();
+        }
+      },
+
+      closeInvalidModal: function() {
+        this.$.invalid_modal.close();
       }
 
     });
