@@ -60,6 +60,7 @@
           return;
         }
         var data = JSON.parse(JSON.stringify(incomingData));
+        console.log(data);
         var dataToPrint = [];
 
         function printManyToMany(value) {
@@ -184,11 +185,55 @@
           ]
         };
 
+
+        /*
+         *amount_usd
+:
+"619.9500"
+daily_rate_usd
+:
+"123.9900"
+dsa_region
+:
+2
+end_date
+:
+"2016-12-07T08:46:19.517288+00:00"
+night_count
+:
+5
+start_date
+:
+"2016-12-07T08:46:19.517288+00:00
+         *
+         */
+
         var dsaDetailsBlock = {
             stack: [
               {text: 'DSA Details', alignment: 'center', style: 'bold'},
               blackLine(5),
-              {text: 'dsa details WIP'}
+              {layout: 'noBorders',
+                table: {
+                widths: [79,79,79,79,79, 79],
+                headerRows: 1,
+                body: [
+                  [{text: 'Start date', style: 'bold', alignment: 'left'},
+                  {text: 'End Date', style: 'bold', alignment: 'center'},
+                  {text: 'DSA Region', style: 'bold', alignment: 'center'},
+                  {text: 'Daily rate', style: 'bold', alignment: 'center'},
+                  {text: 'No. of Nights', style: 'bold', alignment: 'center'},
+                  {text: 'Amount', style: 'bold', alignment: 'right'}]
+                ].concat(data.cost_summary.dsa.map(function(dsa) {
+                    return [
+                      {text: printDate(dsa.start_date), alignment: 'left'},
+                      {text: printDate(dsa.end_Date), alignment: 'center'},
+                      {text: print(dsa.dsa_region), alignment: 'center'},
+                      {text: print(dsa.daily_rate_usd), alignment: 'center'},
+                      {text: print(dsa.night_count), alignment: 'center'},
+                      {text: print(dsa.amount_usd), alignment: 'right'}
+                    ];
+                  }))
+              }}
             ]
         };
 
@@ -298,7 +343,7 @@
 
         var finalRow = {text: 'Amount due to the traveler: '.toUpperCase()
         + printAmount(), style: 'bigBold', alignment: 'center'};
-        var additionalNote = {text: print(data.additional_note)};
+        var additionalNote = {text: print(data.baseDetails.additional_note)};
 
         dataToPrint.push(logo);
         dataToPrint.push(firstLine);

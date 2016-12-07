@@ -52,7 +52,8 @@
     "etools-dialog": "^1.0.0",
     "etools-loading": "^1.0.3",
     "etools-page-refresh": "^1.0.0",
-    "etools-content-panel": "^1.0.1"
+    "etools-content-panel": "^1.0.1",
+    "iron-form": "PolymerElements/iron-form#^1.1.4"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

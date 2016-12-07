@@ -1,5 +1,6 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
@@ -70,6 +71,7 @@
         on-click="_confirmInternationalTravel">
         Confirm
       </paper-button>
+
       <paper-button
         class="dialog-confirm-button"
         on-click="_closeDialog">
@@ -77,14 +79,20 @@
       </paper-button>
     </paper-dialog>
 
-    <div class="layout vertical flex">
+    <form
+      is="iron-form"
+      id="travel_plan_form"
+      class="layout vertical flex">
+
       <div class="layout horizontal">
+
         <paper-checkbox class$="flex custom-margin [[computedPermission.ta_required.readOnly]]"
           hidden$="[[computedPermission.ta_required.hidden]]"
           checked="{{baseDetails.ta_required}}"
           disabled="[[taRequiredDisabled]]"
           >TA required?
         </paper-checkbox>
+
         <paper-checkbox class$="flex custom-margin [[computedPermission.international_travel.readOnly]]"
           disabled="[[computedPermission.international_travel.disabled]]"
           hidden$="[[computedPermission.international_travel.hidden]]"
@@ -93,93 +101,151 @@
           on-tap="_openDialog"
           >International travel?
         </paper-checkbox>
+
         <div class="flex layout horizontal center">
           <span class$="standalone [[computedPermission.reference_number.readOnly]]"
             hidden$="[[computedPermission.reference_number.hidden]]">Reference #: [[baseDetails.reference_number]]</span>
         </div>
         <div class="flex"></div>
       </div>
+
       <div class="layout horizontal">
-        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.traveler.readOnly]]"
+
+        <etools-searchable-multiselection-menu label="Traveler*"
+          id="travel_input"
+          value="{{baseDetails.traveler}}"
+          class$="flex-3 [[computedPermission.traveler.readOnly]]"
           disabled="[[computedPermission.traveler.disabled]]"
           hidden$="[[computedPermission.traveler.hidden]]"
           options="[[structure.users]]"
-          label="Traveler"
-          value="{{baseDetails.traveler}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.supervisor.readOnly]]"
+          required$="[[computedPermission.traveler.required]]"
+          placeholder="select"
+          auto-validate>
+        </etools-searchable-multiselection-menu>
+
+        <etools-searchable-multiselection-menu label="Supervisor*"
+          id="supervisor_input"
+          value="{{baseDetails.supervisor}}"
+          class$="flex-3 [[computedPermission.supervisor.readOnly]]"
           disabled="[[computedPermission.supervisor.disabled]]"
           hidden$="[[computedPermission.supervisor.hidden]]"
           options="[[structure.users]]"
-          label="Supervisor"
-          value="{{baseDetails.supervisor}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.office.readOnly]]"
+          required$="[[computedPermission.supervisor.required]]"
+          placeholder="select"
+          auto-validate>
+        </etools-searchable-multiselection-menu>
+
+        <etools-searchable-multiselection-menu label="Office*"
+          value="{{baseDetails.office}}"
+          class$="flex-3 [[computedPermission.office.readOnly]]"
           disabled="[[computedPermission.office.disabled]]"
           hidden$="[[computedPermission.office.hidden]]"
           options="[[structure.offices]]"
-          label="Office"
-          value="{{baseDetails.office}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.section.readOnly]]"
+          required$="[[computedPermission.office.required]]"
+          placeholder="select"
+          auto-validate>
+        </etools-searchable-multiselection-menu>
+
+        <etools-searchable-multiselection-menu label="Section*"
+          value="{{baseDetails.section}}"
+          class$="flex-3 [[computedPermission.section.readOnly]]"
           disabled="[[computedPermission.section.disabled]]"
           hidden$="[[computedPermission.section.hidden]]"
           options="[[structure.sections]]"
-          label="Section"
-          value="{{baseDetails.section}}"></etools-searchable-multiselection-menu>
+          required$="[[computedPermission.section.required]]"
+          placeholder="select"
+          auto-validate>
+        </etools-searchable-multiselection-menu>
       </div>
+
       <div class="layout horizontal">
-        <datepicker-input class$="flex-3 [[computedPermission.start_date.readOnly]]"
+
+        <datepicker-input label="Start Date*"
+          class$="flex-3 [[computedPermission.start_date.readOnly]]"
           disabled="[[computedPermission.start_date.disabled]]"
           hidden$="[[computedPermission.start_date.hidden]]"
-          label="Start Date"
-          date="{{baseDetails.start_date}}"></datepicker-input>
-        <datepicker-input class$="flex-3 [[computedPermission.end_date.readOnly]]"
+          required$="[[computedPermission.start_date.required]]"
+          auto-validate
+          placeholder="select"
+          date="{{baseDetails.start_date}}">
+        </datepicker-input>
+
+        <datepicker-input label="End Date*"
+          id="end_date"
+          class$="flex-3 [[computedPermission.end_date.readOnly]]"
           disabled="[[computedPermission.end_date.disabled]]"
           hidden$="[[computedPermission.end_date.hidden]]"
-          label="End Date"
-          date="{{baseDetails.end_date}}"></datepicker-input>
-        <etools-searchable-multiselection-menu class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
+          required$="[[computedPermission.end_date.required]]"
+          error-message=""
+          placeholder="select"
+          date="{{baseDetails.end_date}}"
+          auto-validate>
+        </datepicker-input>
+
+        <etools-searchable-multiselection-menu label="Mode of travel*"
+          id="mode_of_travel"
+          class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.travel_modes]]"
+          value="{{baseDetails.mode_of_travel}}"
           multi
-          label="Mode of travel"
-          value="{{baseDetails.mode_of_travel}}"></etools-searchable-multiselection-menu>
-
+          on-paper-dropdown-close="_validateMode"
+          required$="[[computedPermission.mode_of_travel.required]]"
+          placeholder="select">
+        </etools-searchable-multiselection-menu>
       </div>
+
       <div class="layout horizontal">
-        <paper-input class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
+
+        <paper-input label="Estimated travel cost*"
+          class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
           disabled="[[computedPermission.estimated_travel_cost.disabled]]"
           hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
-          label="Estimated travel cost"
-          type="number"
-          value="{{baseDetails.estimated_travel_cost}}"></paper-input>
-        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.currency.readOnly]]"
+          pattern="^[0-9]+(\.[0-9]{1,4})?$"
+          error-message="*number required"
+          placeholder="eg.: 567.1234"
+          value="{{baseDetails.estimated_travel_cost}}">
+        </paper-input>
+
+        <etools-searchable-multiselection-menu label="Currency*"
+          class$="flex-3 [[computedPermission.currency.readOnly]]"
           disabled="[[computedPermission.currency.disabled]]"
           hidden$="[[computedPermission.currency.hidden]]"
           options="[[structure.currencies]]"
-          label="Currency"
-          value="{{baseDetails.currency}}"></etools-searchable-multiselection-menu>
+          value="{{baseDetails.currency}}"
+          placeholder="select">
+        </etools-searchable-multiselection-menu>
 
         <div class="flex-6"></div>
       </div>
+
       <div class="layout horizontal">
-        <paper-textarea label="Purpose of travel"
+
+        <paper-textarea label="Purpose of travel*"
+          id="purpose"
+          class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
           disabled="[[computedPermission.purpose.disabled]]"
           hidden$="[[computedPermission.purpose.hidden]]"
-          class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
-          required
-          char-counter
-          maxlength="500"
-          value="{{baseDetails.purpose}}"></paper-textarea>
+          required$="[[computedPermission.purpose.required]]"
+          char-counter maxlength="120"
+          placeholder="brief explanation"
+          value="{{baseDetails.purpose}}"
+          on-blur="validatePurpose">
+        </paper-textarea>
       </div>
 
-      <!--<etools-file-upload-->
-        <!--no-upload$="{{computedPermission.upload.disabled}}"-->
-        <!--files="[[filesMock]]"-->
-        <!--multiple>-->
-      <!--</etools-file-upload>-->
+      <div class="layout horizontal">
 
-    </div>
-
+        <paper-textarea label="Additional notes"
+          class$="flex-12 custom-margin [[computedPermission.additional_note.readOnly]]"
+          disabled="[[computedPermission.additional_note.disabled]]"
+          hidden$="[[computedPermission.additional_note.hidden]]"
+          placeholder="more details"
+          value="{{baseDetails.additional_note}}">
+        </paper-textarea>
+      </div>
+    </form>
   </template>
 
   <script>
@@ -202,16 +268,75 @@
           type: Boolean,
           computed: '_computeDisableTaRequired(computedPermission.ta_required.disabled,' +
             ' baseDetails.international_travel)'
+        },
+        modeInputTouched: {
+          type: Boolean,
+          computed: '_computeModeInputTouched(baseDetails.mode_of_travel)'
         }
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
-      observers: ['_setCheckboxes(baseDetails.*)'],
+      observers: [
+        '_setCheckboxes(baseDetails.*)',
+        '_validDates(baseDetails.start_date, baseDetails.end_date)'
+      ],
+
+      validatePurpose: function() {
+        this.$.purpose.validate();
+      },
+
+      _validDates: function(start_date, end_date) {
+
+        if (!start_date && !end_date) {
+          return false;
+        }
+
+        var start = new Date(start_date);
+        var end = new Date(end_date);
+
+        if (end <= start) {
+          this.$.end_date.setAttribute('error-message', '*should be bigger than start');
+          this.$.end_date.invalid = true;
+          return false;
+        } else {
+          this.$.end_date.setAttribute('error-message', '');
+          this.$.end_date.invalid = false;
+          return true;
+        }
+      },
+
+      _validateTravelPlan: function() {
+
+        var modeValid = this._validateMode();
+        var dateValid = this._validDates(this.baseDetails.start_date, this.baseDetails.end_date);
+        var formValid = this.$.travel_plan_form.validate();
+
+        return modeValid && dateValid && formValid;
+      },
+
+      _validateMode: function() {
+
+        if (Array.isArray(this.baseDetails.mode_of_travel) && this.baseDetails.mode_of_travel.length > 0) {
+
+          this.$.mode_of_travel.removeAttribute('invalid');
+          return true;
+
+        } else {
+
+          this.$.mode_of_travel.setAttribute('invalid', true);
+          return false;
+        }
+      },
+
+      _computeModeInputTouched: function(mode_of_travel) {
+        return mode_of_travel && mode_of_travel.length ? true : undefined;
+      },
 
       _computeDefaultChecked: function(value) {
         return value !== false;
       },
+
       _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel) {
         return taRequiredDisabled || internationalTravel;
       },
