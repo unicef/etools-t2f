@@ -3,7 +3,8 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
-<link rel="import" href="../../app-elements/pdf-make-wrapper/pdf-make.html">
+<link rel="import" href="../pdf-make-wrapper/pdf-make.html">
+<link rel="import" href="../pdf-export/pdf-print.html">
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 
@@ -48,8 +49,7 @@
   </style>
 
   <template>
-
-    <pdf-make output="download" print="{{openPDF}}" content="[[dataToPrint]]" styles="[[printStyles]]" page-orientation="landscape"></pdf-make>
+    <pdf-print id="pdfPrint" data="[[data]]" ></pdf-print>
     <template is="dom-if" if="[[loadCSV]]">
       <etools-ajax download-csv handle-as="text" url="[[csvEndpoint]]" params="[[exportParams]]" on-success="_handleCSVData"></etools-ajax>
     </template>
@@ -105,10 +105,6 @@
           type: Object,
         },
         printStyles: Object,
-        openPDF: {
-          type: Boolean,
-          value: false
-        },
         exportParams: {
           type: Object
         },
@@ -130,8 +126,7 @@
         this.baseUrl = this.basePath;
       },
       print: function() {
-        this.openPDF = true;
-        this.openPDF = false;
+        this.$.pdfPrint.printPDF();
       },
       export: function() {
         if (this.showExportButton) {

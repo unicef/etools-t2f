@@ -94,9 +94,9 @@ function source() {
     // .pipe(gulpif('**/*.{css,html}', css.lint()))              .on('end', log('Linted CSS'))
     .pipe(gulpif('**/*.{html,css}', css.minify())).on('end', log('Minified CSS'))
 
-    .pipe(gulpif('**/*.js', javascript.lint())).on('end', log('Linted Javascript'))
+    .pipe(gulpif(['**/*.js', '!**/*.min.js'], javascript.lint())).on('end', log('Linted Javascript'))
 
-    .pipe(gulpif('**/*.js', javascript.minify())).on('end', log('Minified Javascript'))
+    .pipe(gulpif(['**/*.js', '!**/*.min.js'], javascript.minify())).on('end', log('Minified Javascript'))
 
     .pipe(gulpif('**/*.{gif,jpg,svg}', images.minify())).on('end', log('Minified Images'))
 

@@ -100,6 +100,19 @@
         return errorList.length > 0;
       },
       _computeErrorList: function(errors) {
+        /**
+         * backend 400 comes with a json object containing the reason for the error
+         * this object is in this form:
+         *  {"activities":[
+         *    {
+         *      "date":["This field is required."],
+         *      "partner":["This field is required."]
+         *    }
+         *  }
+         *   this function convert it in the flat form needed by the UX
+         *
+         */
+
         var errorList = [];
         if (errors) {
           Object.keys(errors).forEach(function(category) {

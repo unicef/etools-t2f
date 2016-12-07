@@ -1,14 +1,7 @@
-<script type="application/javascript" src="../../../bower_components/pdfmake/build/pdfmake.js"></script>
-<script type="application/javascript" src="../../../bower_components/pdfmake/build/vfs_fonts.js"></script>
+<script type="application/javascript" src="../../scripts/pdf-make/pdfmake.min.js"></script>
+<script type="application/javascript" src="../../scripts/pdf-make/vfs_fonts.min.js"></script>
 
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-
-<!--
-`pdf-make`
-pdfMake polymer wrapper
-
-@demo demo/index.html 
--->
 
 <dom-module id="pdf-make">
   <template>
@@ -25,17 +18,17 @@ pdfMake polymer wrapper
       is: 'pdf-make',
 
       properties: {
-        print: {
-          type: Boolean,
-          value: false
-        },
         content: {
           type: Object,
           value: function() {
-            return {text: 'Etools Pdf Maker polymer wrapper'};
+            return {text: 'PDF Maker polymer wrapper'};
           }
         },
         styles: {
+          type: Object,
+          value: function() { return {}; }
+        },
+        images: {
           type: Object,
           value: function() { return {}; }
         },
@@ -49,37 +42,34 @@ pdfMake polymer wrapper
         },
         pageOrientation: {
           type: String,
-          value: 'portraits'
+          value: 'portrait'
         },
         pageMargins: {
           type: Array,
           value: function() { return [40, 40, 40, 40]; }
         }
       },
-      observers: ['_doPrint(print, content, styles, output, pageSize, pageOrientation, pageMargins)'],
-
-      _doPrint: function(print, content, styles, output, pageSize, pageOrientation, pageMargins) {
-        if (print) {
-          var documentDefinition = {
-            pageSize: pageSize,
-            pageOrientation: pageOrientation,
-            pageMargins: pageMargins,
-            content: content,
-            styles: styles
-          };
-          switch (output) {
-            case 'open':
-              pdfMake.createPdf(documentDefinition).open();
-              break;
-            case 'print':
-              pdfMake.createPdf(documentDefinition).print();
-              break;
-            case 'download':
-              pdfMake.createPdf(documentDefinition).download();
-              break;
-          }
+      printPDF: function(content) {
+        var self = this;
+        var documentDefinition = {
+          pageSize: self.pageSize,
+          pageOrientation: self.pageOrientation,
+          pageMargins: self.pageMargins,
+          content: content || self.content,
+          images: self.images,
+          styles: self.styles
+        };
+        switch (self.output) {
+          case 'open':
+            pdfMake.createPdf(documentDefinition).open();
+            break;
+          case 'print':
+            pdfMake.createPdf(documentDefinition).print();
+            break;
+          case 'download':
+            pdfMake.createPdf(documentDefinition).download();
+            break;
         }
-        this.print = false;
       }
 
     });
