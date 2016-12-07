@@ -422,7 +422,7 @@
 
         var invalids = [];
 
-        if (['Save', 'Print TA'].indexOf(action.name) < 0) {
+        if (['Save', 'Print TA', 'Cancel'].indexOf(action.name) < 0) {
 
           // Validating Trip plan
           if (!this.$.travel_plan._validateTravelPlan()) {
@@ -430,21 +430,25 @@
           }
 
           // Validating Activities
-          var allActivitiesValid = true;
-          this.data.activities.forEach(function(act) {
-            allActivitiesValid = act._validationFunction() && allActivitiesValid;
-          });
-          if (!allActivitiesValid) {
-            invalids.push('Trip Activities');
+          if (!this.sectionPermissions.activities.hidden) {
+            var allActivitiesValid = true;
+            this.data.activities.forEach(function(act) {
+              allActivitiesValid = act._validationFunction() && allActivitiesValid;
+            });
+            if (!allActivitiesValid) {
+              invalids.push('Trip Activities');
+            }
           }
 
           // Validating Expenses
-          var expensesAreValid = true;
-          this.data.expenses.forEach(function(exp) {
-            expensesAreValid = exp._validationFunction() && expensesAreValid;
-          });
-          if (!expensesAreValid) {
-            invalids.push('Expenses');
+          if (!this.sectionPermissions.expenses.hidden) {
+            var expensesAreValid = true;
+            this.data.expenses.forEach(function(exp) {
+              expensesAreValid = exp._validationFunction() && expensesAreValid;
+            });
+            if (!expensesAreValid) {
+              invalids.push('Expenses');
+            }
           }
         }
 
