@@ -233,7 +233,7 @@
       },
 
       _handleFormAction: function(e, details) {
-       if ( details.endPoint === 'printTa') {
+       if (details.endPoint === 'printTa') {
           this.$.taPrint.printTa();
        } else {
          this.$['outbound-data'].doRequest(details);
