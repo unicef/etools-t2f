@@ -361,7 +361,6 @@
                 Object.keys(data.activities[0])[0] === 'locations' &&
                 data.activities[0].locations.length === 0) {
 
-                console.warn('Freaking empty locations CASE!!, should delete it!!');
                 delete self.serverData.activities;
               }
 
@@ -373,7 +372,6 @@
                 Object.keys(data.itinerary[0])[0] === 'airlines' &&
                 data.itinerary[0].airlines.length === 0) {
 
-                console.warn('Freaking empty itinerary CASE!!, should delete it!!');
                 delete self.serverData.itinerary;
               }
             }
