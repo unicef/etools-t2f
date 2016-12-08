@@ -77,6 +77,9 @@
         var self = this;
 
         function convertDate(item) {
+          if (!item) {
+            return;
+          }
           var date = new Date(item);
           return date;
         }

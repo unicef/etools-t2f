@@ -566,6 +566,7 @@
         var backup = JSON.parse(JSON.stringify(this.ajaxParams));
         backup.page = 1;
         backup.reverse = orderObj.reverse;
+        backup.sort_by = this.labelLib[orderObj.orderedBy];
         this.set('ajaxParams', backup);
       },
       _changeParamsPages: function(pages, old) {

@@ -352,6 +352,28 @@
               if (Object.keys(data[serverKey][0]).length === 0) {
                 delete self.serverData[serverKey];
               }
+
+              // Preventing sending "empty" activity,
+              //   which would otherwise fail on backend validation
+              if (serverKey === 'activities' &&
+                data.activities.length === 1 &&
+                Object.keys(data.activities[0]).length === 1 &&
+                Object.keys(data.activities[0])[0] === 'locations' &&
+                data.activities[0].locations.length === 0) {
+
+                delete self.serverData.activities;
+              }
+
+              // Preventing sending "empty" itinerary,
+              //   which would otherwise fail on backend validation
+              if (serverKey === 'itinerary' &&
+                data.itinerary.length === 1 &&
+                Object.keys(data.itinerary[0]).length === 1 &&
+                Object.keys(data.itinerary[0])[0] === 'airlines' &&
+                data.itinerary[0].airlines.length === 0) {
+
+                delete self.serverData.itinerary;
+              }
             }
             if (self.serverData[serverKey]) {
               self.serverData[serverKey] = data[serverKey];

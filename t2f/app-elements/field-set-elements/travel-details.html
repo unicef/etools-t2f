@@ -184,12 +184,12 @@
         </etools-repeatable-field-set>
 
         <etools-repeatable-field-set title="Trip Activities"
+          id="activities"
           model="{{data.activities}}"
           hide-plus="[[!sectionPermissions.activities.edit]]"
           allow-copy="[[sectionPermissions.activities.edit]]"
           show-counter
           elevation="1"
-            id="activities"
           open="[[sectionPermissions.activities.open]]"
           hidden$="[[sectionPermissions.activities.hidden]]">
 
@@ -422,35 +422,44 @@
 
         var invalids = [];
 
-        // Validating Trip plan
-        if (!this.$.travel_plan._validateTravelPlan()) {
-          invalids.push('Trip Plan');
+        if (['Save', 'Print TA', 'Cancel'].indexOf(action.name) < 0) {
+
+          // Validating Trip plan
+          if (!this.$.travel_plan._validateTravelPlan()) {
+            invalids.push('Trip Plan');
+          }
+
+          // Validating Activities
+          if (!this.sectionPermissions.activities.hidden) {
+            var allActivitiesValid = true;
+            this.data.activities.forEach(function(act) {
+              allActivitiesValid = act._validationFunction() && allActivitiesValid;
+            });
+            if (!allActivitiesValid) {
+              invalids.push('Trip Activities');
+            }
+          }
+
+          // Validating Expenses
+          if (!this.sectionPermissions.expenses.hidden) {
+            var expensesAreValid = true;
+            this.data.expenses.forEach(function(exp) {
+              expensesAreValid = exp._validationFunction() && expensesAreValid;
+            });
+            if (!expensesAreValid) {
+              invalids.push('Expenses');
+            }
+          }
         }
 
-        // Validating Activities
-        var allActivitiesValid = true;
-        this.data.activities.forEach(function(act) {
-          allActivitiesValid = act._validationFunction() && allActivitiesValid;
-        });
-        if (!allActivitiesValid) {
-          invalids.push('Trip Activities');
-        }
+        if (invalids.length) {
 
-        // Validating Expenses
-        var expensesAreValid = true;
-        this.data.expenses.forEach(function(exp) {
-          expensesAreValid = exp._validationFunction() && expensesAreValid;
-        });
-        if (!expensesAreValid) {
-          invalids.push('Expenses');
-        }
-
-        if (!invalids.length || action.name === 'Save') {
-        // if (!invalids.length) { // for testing
-          this.fire('form-action', action);
-        } else {
           this.set('invalids', invalids);
           this.$.invalid_modal.open();
+
+        } else {
+
+          this.fire('form-action', action);
         }
       },
 
