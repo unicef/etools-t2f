@@ -49,8 +49,8 @@
   </style>
 
   <template>
-    <pdf-print id="pdfPrint" data="[[data]]" ></pdf-print>
-    <template is="dom-if" if="[[loadCSV]]">
+    <pdf-print id="pdfPrint" data="[[data]]" export-type="[[exportType]]" ></pdf-print>
+    <template is="dom-if" if="[[loadCSV]]" restamp>
       <etools-ajax download-csv handle-as="text" url="[[csvEndpoint]]" params="[[exportParams]]" on-success="_handleCSVData"></etools-ajax>
     </template>
 
@@ -101,10 +101,7 @@
           type: Boolean,
           value: false
         },
-        dataToPrint: {
-          type: Object,
-        },
-        printStyles: Object,
+        data: Object,
         exportParams: {
           type: Object
         },
@@ -119,6 +116,9 @@
         baseUrl: {
             type: String,
             value: null
+        },
+        exportType: {
+          type: String
         }
       },
       behaviors: [etoolsAppConfig.globals],
@@ -142,7 +142,7 @@
         a.download = 'csv_export_' + Date.now() + '.csv';
         a.click();
         window.URL.revokeObjectURL(a.href);
-        this.set('loadCSV', false);
+        this.loadCSV = false;
       }
     });
   </script>

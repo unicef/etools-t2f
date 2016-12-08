@@ -130,7 +130,8 @@
       <et2f-header title="Field monitoring"
         show-new-travel-button
         show-export-button
-        data-to-print="[[dataToPrint]]"
+        export-type="list"
+        data="[[data]]"
         export-params="[[ajaxParams]]"></et2f-header>
 
       <paper-card class="second-header horizontal layout center">
@@ -606,31 +607,6 @@
           }
         });
         this.set('data', data.data);
-        this._prepareExportData(data.data);
-      },
-      _prepareExportData: function(data) {
-        this.dataToPrint = {
-          margin: [0, 10],
-          table: {
-            widths: [101, 101, 101, 101, 101, 101, 101],
-            headerRows: 1,
-            body: []
-          }
-        };
-        if (data.length > 0) {
-          var tableHeader = Object.keys(data[0]).slice(0, 7).map(function(item) {
-            return item.replace(/_/g, ' ');
-          });
-          this.dataToPrint.table.body = data.map(function(item) {
-            return _.values(item).slice(0, 7).map(function(value) {
-              if (!value) {
-                return ' ';
-              }
-              return '' + value;
-            });
-          });
-          this.dataToPrint.table.body = [tableHeader].concat(this.dataToPrint.table.body);
-        }
       },
       searchKeyDown: function(e) {
 

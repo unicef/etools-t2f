@@ -24,6 +24,10 @@
         printStyles: {
           type: Object,
           computed: '_computeStyles(data)'
+        },
+        exportType: {
+          type: String,
+          value: 'list'
         }
       },
 
@@ -52,7 +56,7 @@
         };
       },
       printPDF: function() {
-        var dataToPrint = this._parseData(0);
+        var dataToPrint = this.exportType === 'list' ? this._parseDataForList() : this._parseDataForDetail();
         this.$.pdfMake.printPDF(dataToPrint);
       },
       _computeStoredData: function(incomingData) {
@@ -61,7 +65,33 @@
         }
         return JSON.parse(JSON.stringify(incomingData));
       },
-      _parseData: function() {
+      _parseDataForList: function() {
+        var data = this.data;
+        var dataToPrint = {
+          margin: [0, 10],
+          table: {
+            widths: [101, 101, 101, 101, 101, 101, 101],
+            headerRows: 1,
+            body: []
+          }
+        };
+        if (data.length > 0) {
+          var tableHeader = Object.keys(data[0]).slice(0, 7).map(function(item) {
+            return item.replace(/_/g, ' ');
+          });
+          dataToPrint.table.body = data.map(function(item) {
+            return _.values(item).slice(0, 7).map(function(value) {
+              if (!value) {
+                return ' ';
+              }
+              return '' + value;
+            });
+          });
+          dataToPrint.table.body = [tableHeader].concat(dataToPrint.table.body);
+        }
+        return dataToPrint;
+      },
+      _parseDataForDetail: function() {
 
         var data = this.storedData;
         var dataToPrint = [];
