@@ -107,7 +107,6 @@
       _handleStructure: function(event, data) {
         var dataKeys = Object.keys(data);
         dataKeys.forEach(function(key) {
-          data[key] = data[key].slice(0, 100);
           if (key === 'currencies') {
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id, short: obj.iso_4217};
