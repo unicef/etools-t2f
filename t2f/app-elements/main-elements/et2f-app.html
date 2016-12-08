@@ -21,11 +21,11 @@
 
 
     <etools-ajax endpoint="[[structureEndpoint]]"
-      on-success="_handleStructure" loading="{{structureLoading}}"></etools-ajax>
+      on-success="_handleStructure" loading="{{structureLoading}}"
+      caching-storage="dexie"></etools-ajax>
     <etools-ajax endpoint="[[permissionsEndpoint]]"
-      on-success="_handlePermissions" loading="{{permissionsLoading}}"></etools-ajax>
-    <etools-ajax endpoint="[[meEndpoint]]" loading="{{meLoading}}"
-      on-success="_handleMe" ></etools-ajax>
+      on-success="_handlePermissions" loading="{{permissionsLoading}}"
+      caching-storage="dexie"></etools-ajax>
 
 
 
@@ -103,10 +103,6 @@
         permissionsEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
-        },
-        meEndpoint: {
-          type: String,
-          value: etoolsAppConfig.endpoints.et2fMe
         }
       },
       _handleStructure: function(event, data) {
@@ -165,8 +161,8 @@
       _handleMe: function(e, data) {
         this.user = data;
       },
-      _computeLoading: function(structure, permissions, user, subLoading) {
-        return structure || permissions || user || subLoading;
+      _computeLoading: function(structure, permissions, subLoading) {
+        return structure || permissions || subLoading;
       }
 
     });

@@ -8,7 +8,7 @@ App global configuration
     'use strict';
 
     /* exported etoolsAjaxDefaultDexieDbPrefix */
-    var etoolsAjaxDefaultDexieDbPrefix = 'frontendTemplate';
+    var etoolsAjaxDefaultDexieDbPrefix = 't2f';
 
     var etoolsAppConfig = {
       // dexie js
@@ -54,9 +54,6 @@ App global configuration
         },
         et2fStateChange: {
           template: '/api/et2f/travels/<%=id%>/<%=status%>/'
-        },
-        et2fMe: {
-          url: '/api/et2f/me/'
         },
         et2fSaveAndSubmit: {
           url: '/api/et2f/travels/save_and_submit/'

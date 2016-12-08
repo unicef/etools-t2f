@@ -104,7 +104,7 @@
 
     </style>
 
-    <user-data permissions="{{permissions}}"></user-data>
+    <user-data permissions="{{permissions}}" user="{{user}}"></user-data>
 
     <app-location route="{{route}}"></app-location>
 
@@ -155,7 +155,7 @@
       <div id="mainContent">
         <template is="dom-if" id="privatePages" on-dom-change="_pagesStamped" if="{{permissions.loggedInDefault}}">
           <etools-loading active="[[loading]]" ></etools-loading>
-          <et2f-app route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}"></et2f-app>
+          <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}"></et2f-app>
         </template>
             <countries-dropdown id="countries"
           countries="[[countries]]"></countries-dropdown>

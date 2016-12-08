@@ -20,6 +20,10 @@
 
     var _setUserData = function(data) {
       _data.user = data || {};
+      //t2f specific values
+      _data.user.value = _data.user.id;
+      _data.user.label = _data.user.full_name;
+
       _data.permissions = {};
       var permissions = this.getAllPermissions();
 
@@ -73,7 +77,7 @@
         user: {
           type: Object,
           readOnly: true,
-          notify: true
+          notify: true,
         },
 
         permissions: {
