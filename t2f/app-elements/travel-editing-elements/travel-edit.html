@@ -42,7 +42,7 @@
 
 
 
-    <et2f-inbound-data loading="{{loading}}" route="{{route}}" et2f-data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]" data-to-serialize="[[incomingData]]"></et2f-inbound-data>
+    <et2f-inbound-data loading="{{detailLoading}}" route="{{route}}" et2f-data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]" data-to-serialize="[[incomingData]]"></et2f-inbound-data>
     <et2f-outbound-data id="outbound-data" form-errors="{{formErrors}}" data="[[data]]" travel-id="[[travelId]]" structure="[[structure]]" inbound-data="{{incomingData}}"></et2f-outbound-data>
     <ta-print id="taPrint" data="[[data]]"></ta-print>
 
@@ -99,6 +99,10 @@
         data: {
           type: Object,
           notify: true,
+        },
+        detailLoading: {
+          type: Boolean,
+          notify: true
         },
         structure: {
           type: Object,

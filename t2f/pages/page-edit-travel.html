@@ -33,7 +33,7 @@
 
       </app-header>
     </app-header-layout>
-    <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
+    <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" detail-loading="{{detailLoading}}" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
   </template>
 
   <script>
@@ -47,6 +47,10 @@
         route: {
           type: Object,
           notify: true,
+        },
+        detailLoading: {
+          type: Boolean,
+          notify: true
         }
       }
 

@@ -124,6 +124,7 @@
 
       <etools-ajax url="[[listEndPoint]]"
           params="{{ajaxParams}}"
+          loading="{{listLoading}}"
           on-success="handleListResponse">
       </etools-ajax>
 
@@ -242,6 +243,10 @@
         datalength: {
           type: Number,
           value: 0
+        },
+        listLoading: {
+          type: Boolean,
+          notify: true
         },
         showingResults: {
           type: String,

@@ -3,7 +3,6 @@
 <link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../../bower_components/etools-loading/etools-loading.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 
@@ -30,7 +29,6 @@
 
 
 
-    <etools-loading active="[[loading]]"></etools-loading>
     <iron-pages id="pages"
       selected="[[page]]"
       attr-for-selected="name"
@@ -40,12 +38,14 @@
         user="[[user]]"
         structure="[[structure]]"
         route="{{route}}"
-        refresh-data="{{refreshData}}">
+        refresh-data="{{refreshData}}"
+        list-loading="{{subLoading}}">
       </page-travel-list>
       <page-edit-travel fullbleed
         name="edit-travel"
         user="[[user]]"
         route="{{route}}"
+        detail-loading="{{subLoading}}"
         travel-id="[[subroute.path]]"
         et2f-permissions="[[et2fPermissions]]"
         structure="[[structure]]"></page-edit-travel>
@@ -88,7 +88,12 @@
         meLoading: Boolean,
         loading: {
           type: Boolean,
-          computed: '_computeLoading(structureLoading, permissionsLoading, meLoading)'
+          notify: true,
+          computed: '_computeLoading(structureLoading, permissionsLoading, meLoading, subLoading)',
+        },
+        subLoading: {
+          type: Boolean,
+          value: false
         },
         structureEndpoint: {
           type: String,
@@ -159,8 +164,8 @@
       _handleMe: function(e, data) {
         this.user = data;
       },
-      _computeLoading: function(structure, permissions, user) {
-        return structure && permissions && user;
+      _computeLoading: function(structure, permissions, user, subLoading) {
+        return structure || permissions || user || subLoading;
       }
 
     });

@@ -154,7 +154,8 @@
       <!-- Main content -->
       <div id="mainContent">
         <template is="dom-if" id="privatePages" on-dom-change="_pagesStamped" if="{{permissions.loggedInDefault}}">
-          <et2f-app route="{{route}}" page="[[page]]" subroute="[[subroute]]"></et2f-app>
+          <etools-loading active="[[loading]]" ></etools-loading>
+          <et2f-app route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}"></et2f-app>
         </template>
             <countries-dropdown id="countries"
           countries="[[countries]]"></countries-dropdown>
@@ -194,7 +195,6 @@
             type: Boolean,
             value: true
         },
-
         _toast: {
           type: Object,
           value: null
@@ -203,7 +203,9 @@
             type: Object,
             value: null
         },
-
+        loading: {
+          type: Boolean,
+        },
         _toastQueue: {
           type: Array,
           value: function() { return []; }

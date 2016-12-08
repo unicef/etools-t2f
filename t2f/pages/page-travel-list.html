@@ -31,6 +31,7 @@
         <travel-list user="[[user]]"
           structure="[[structure]]"
           route="{{route}}"
+          list-loading="{{listLoading}}"
           refresh-data="{{refreshData}}"
         ></travel-list>
       </app-header>
@@ -48,7 +49,12 @@
         },
         structure: Object,
         user: Object,
-        route: Object
+        route: Object,
+        listLoading: {
+          type: Boolean,
+          notify: true,
+          observer: '_warn'
+        }
       }
     });
   </script>
