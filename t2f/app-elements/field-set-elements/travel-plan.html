@@ -120,7 +120,7 @@
           options="[[structure.users]]"
           required$="[[computedPermission.traveler.required]]"
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Supervisor*"
@@ -132,7 +132,7 @@
           options="[[structure.users]]"
           required$="[[computedPermission.supervisor.required]]"
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Office*"
@@ -143,7 +143,7 @@
           options="[[structure.offices]]"
           required$="[[computedPermission.office.required]]"
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Section*"
@@ -154,7 +154,7 @@
           options="[[structure.sections]]"
           required$="[[computedPermission.section.required]]"
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
       </div>
 
@@ -165,7 +165,7 @@
           disabled="[[computedPermission.start_date.disabled]]"
           hidden$="[[computedPermission.start_date.hidden]]"
           required$="[[computedPermission.start_date.required]]"
-          auto-validate
+          auto-validate$="[[autoValidate]]"
           placeholder="select"
           date="{{baseDetails.start_date}}">
         </datepicker-input>
@@ -179,7 +179,7 @@
           error-message=""
           placeholder="select"
           date="{{baseDetails.end_date}}"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </datepicker-input>
 
         <etools-searchable-multiselection-menu label="Mode of travel*"
@@ -264,6 +264,10 @@
           type: Boolean,
           value: false
         },
+        autoValidate: {
+          type: Boolean,
+          computed: '_computeAutoValidate(baseDetails)'
+        },
         taRequiredDisabled: {
           type: Boolean,
           computed: '_computeDisableTaRequired(computedPermission.ta_required.disabled,' +
@@ -281,6 +285,11 @@
         '_setCheckboxes(baseDetails.*)',
         '_validDates(baseDetails.start_date, baseDetails.end_date)'
       ],
+
+      _computeAutoValidate: function(data) {
+          console.debug(data);
+          return data !== undefined && Object.keys(data).length > 0;
+      },
 
       validatePurpose: function() {
         this.$.purpose.validate();
