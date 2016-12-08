@@ -32,8 +32,13 @@
       height: 16px;
       color: var(--gray-mid);
     }
-    .act .textsec.heading{
+    .act .textsec.heading, .local-headings:hover .textsec.heading  {
       color: var(--gray-dark);
+    }
+    .local-headings:hover .down-icon[hidden]:not(.action-down-icon),
+    .local-headings:hover .up-icon:not([downhidden]) {
+      display: inline-block!important;
+      opacity: 1!important;
     }
   </style>
 
@@ -45,12 +50,15 @@
           <span class="textsec heading">[[item.label]]</span>
 
           <iron-icon
+            class$="down-icon [[isActionsDownIconClass(item)]]"
             icon="icons:arrow-downward"
             hidden$="[[_hidden(item.down, orderObj.reverse, orderObj.orderedBy)]]">
           </iron-icon>
 
           <iron-icon
+            class="up-icon"
             icon="icons:arrow-upward"
+            downhidden$="[[_hidden(item.down, orderObj.reverse, orderObj.orderedBy)]]"
             hidden$="[[_hidden(item.up, orderObj.reverse, orderObj.orderedBy)]]">
           </iron-icon>
 
@@ -90,6 +98,10 @@
         }
 
         return returnClass;
+      },
+
+      isActionsDownIconClass: function(item) {
+        return item.label === 'Actions' ? 'action-down-icon' : '';
       },
 
       _clickOnLabel: function(event) {
