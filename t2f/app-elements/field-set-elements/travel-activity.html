@@ -57,7 +57,7 @@
           value="{{activity.partner}}"
           required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Partnership"
@@ -68,7 +68,7 @@
           value="{{activity.partnership}}"
           required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
       </div>
 
@@ -126,10 +126,18 @@
           type: Object,
           value: {}
         },
+        autoValidate: {
+          type: Boolean,
+          computed: '_computeAutoValidate(activity)'
+        },
         activityValidationArray: {
           type: Array,
           notify: true
         }
+      },
+
+      _computeAutoValidate: function(activity) {
+          return activity !== undefined && Object.keys(activity).length > 0;
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],

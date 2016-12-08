@@ -45,7 +45,7 @@
           placeholder="select"
           required$="[[computedPermission.type.required]]"
           on-paper-dropdown-close="_validateType"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
         <paper-input label="Amount*"
@@ -56,7 +56,7 @@
           placeholder="eg.: 567.1234"
           value="{{expense.amount}}"
           required$="[[computedPermission.amount.required]]"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </paper-input>
 
         <etools-searchable-multiselection-menu label="Document currency*"
@@ -69,7 +69,7 @@
           placeholder="select"
           required$="[[computedPermission.document_currency.required]]"
           on-paper-dropdown-close="_validateDocCurr"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Accounting currency*"
@@ -82,7 +82,7 @@
           placeholder="select"
           required$="[[computedPermission.account_currency.required]]"
           on-paper-dropdown-close="_validateAccCurr"
-          auto-validate>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
       </div>
     </form>
@@ -100,11 +100,22 @@
           notify: true,
         },
 
+        autoValidate: {
+          type: Boolean,
+          computed: '_computeAutoValidate(expense)'
+        },
+
         structure: {
           type: Object,
           value: {}
         }
       },
+
+      _computeAutoValidate: function(data) {
+          return data !== undefined && Object.keys(data).length > 0;
+      },
+
+
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
