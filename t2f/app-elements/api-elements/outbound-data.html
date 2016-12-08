@@ -169,7 +169,6 @@
             </paper-button>
         </paper-dialog>
 
-        <etools-loading active="[[loading]]"></etools-loading>
 
 
         <template is="dom-if" if="[[postData]]">
@@ -223,6 +222,7 @@
           },
           loading: {
             type: Boolean,
+            notify: true,
             computed: '_computeLoading(postData, attachmentData)'
           },
           postData: {
