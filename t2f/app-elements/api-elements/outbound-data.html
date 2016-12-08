@@ -101,7 +101,8 @@
 
             <paper-button
               class="dialog-confirm-button"
-              on-click="_clearancesOnConfirm">
+              on-click="_clearancesOnConfirm"
+              disabled$="[[_areClearancesWrong(data.clearances.security_clearance, data.clearances.medical_clearance, data.clearances.security_course)]]">
                 Submit for approval
             </paper-button>
         </paper-dialog>
@@ -169,8 +170,6 @@
             </paper-button>
         </paper-dialog>
 
-
-
         <template is="dom-if" if="[[postData]]">
             <etools-ajax url="[[postEndpoint]]"
               body="[[serverData]]"
@@ -195,8 +194,6 @@
               on-success="_handleAttachmentPostSuccess"
               on-fail="_handlePostFail"></etools-ajax>
         </template>
-
-
     </template>
 
     <script>
@@ -274,6 +271,10 @@
 
         _computeLoading: function(post, attachment) {
           return post || attachment;
+        },
+
+        _areClearancesWrong: function(security_clearance, medical_clearance, security_course) {
+          return [security_clearance, medical_clearance, security_course].indexOf('not_requested') >= 0;
         },
 
         _processOutboundData: function(data) {
@@ -396,7 +397,6 @@
 
           delete self.serverData.status;
           delete self.serverData.cost_summary;
-
         },
 
         _processAttachmentData: function(attachments, deletedAttachments) {
@@ -410,7 +410,6 @@
           } else {
             this.deletedAttachments = [];
           }
-
         },
 
         doRequest: function(details) {
@@ -487,9 +486,9 @@
 
             save_and_submit: function() {
               self.set('data.clearances', {
-                medical_clearance: 'not_applicable',
-                security_clearance: 'not_applicable',
-                security_course: 'not_applicable'
+                medical_clearance: 'not_requested',
+                security_clearance: 'not_requested',
+                security_course: 'not_requested'
               });
 
               self._clearancesOnConfirm = function() {
