@@ -86,6 +86,16 @@
         <div class="underline"></div>
       </div>
 
+       <div class="layout horizontal row" hidden$="[[!ee]]">
+        <div class="flex-6 head">
+          Expected Expenses
+        </div>
+        <div class="flex-6 right-align curr">
+          {{ee}} {{currency.short}}
+        </div>
+        <div class="underline"></div>
+      </div>
+
       <div class="layout horizontal sum-row">
         <div class="flex-8">
         </div>
@@ -115,13 +125,15 @@
 
       _calculateTotal: function(costSummary) {
         if (costSummary.value) {
+          var ee = parseFloat(costSummary.preserved_expenses);
+          this.ee = Number.isNaN(ee) ? 0 : ee;
           var dsa = parseFloat(costSummary.value.dsa_total);
           this.dsa = Number.isNaN(dsa) ? 0 : dsa;
           var exp = parseFloat(costSummary.value.expenses_total);
           this.exp = Number.isNaN(exp) ? 0 : exp;
           var ded = parseFloat(costSummary.value.deductions_total);
           this.ded = Number.isNaN(ded) ? 0 : ded;
-          return (this.dsa + this.exp) - this.ded;
+          return (this.dsa + this.exp) - this.ded - this.ee;
         }
       }
     });
