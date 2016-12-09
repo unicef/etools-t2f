@@ -4,93 +4,94 @@
 <link rel="import" href="../../../bower_components/moment-element/moment-import.html">
 
 <dom-module id="datepicker-input">
-    <template>
-        <style >
-            :host {
-                display: block;
-                width:100%;
-            }
-            *[hidden] {
-                display: none;
-            }
-            paper-input {
-                --paper-input-container-disabled: {
-                  opacity: 1;
-                };
-                --paper-input-container-label: {
-                  color: var(--gray-light);
-                };
-                --paper-input-container-underline: {
-                  border-color: var(--gray-light);
-                };
-                width: calc( 100% - 24px );
-                margin-right:12px;
-                margin-left: 12px;
-            }
-        </style>
+  <template>
+    <style >
+      :host {
+        display: block;
+        width:100%;
+      }
+      *[hidden] {
+        display: none;
+      }
+      paper-input {
+        --paper-input-container-disabled: {
+          opacity: 1;
+        };
+        --paper-input-container-label: {
+          color: var(--gray-light);
+        };
+        --paper-input-container-underline: {
+          border-color: var(--gray-light);
+        };
+        --paper-input-container-color: var(--gray-light);
+        width: calc( 100% - 24px );
+        margin-right:12px;
+        margin-left: 12px;
+      }
+    </style>
 
-        <paper-input id="date-input"
-          readonly
-          label="[[label]]"
-          always-float-label
-          on-tap="_openCalendar"
-          value="{{prettyDate}}"
-          disabled$="[[disabled]]"
-          error-message="[[errorMessage]]"
-          required$="[[required]]"
-          placeholder="[[placeholder]]"
-          auto-validate$="[[autoValidate]]"
-          invalid$="[[invalid]]">
+    <paper-input id="date-input"
+      readonly
+      label="[[label]]"
+      always-float-label
+      on-tap="_openCalendar"
+      value="{{prettyDate}}"
+      disabled$="[[disabled]]"
+      error-message="[[errorMessage]]"
+      required$="[[required]]"
+      placeholder="[[placeholder]]"
+      auto-validate$="[[autoValidate]]"
+      invalid$="[[invalid]]">
 
-            <etools-datepicker-button no-init open="{{opened}}" suffix json-date="{{date}}" date="[[date]]"></etools-datepicker-button>
-        </paper-input>
+        <etools-datepicker-button no-init open="{{opened}}" suffix json-date="{{date}}" date="[[date]]"></etools-datepicker-button>
+    </paper-input>
 
-    </template>
+  </template>
 
-    <script>
-      Polymer({
-        is: 'datepicker-input',
-        properties: {
-          errorMessage: String,
-          required: Boolean,
-          placeholder: String,
-          autoValidate: Boolean,
-          invalid: Boolean,
-          label: {
-            type: String
-          },
-          date: {
-            notify: true
-          },
-          prettyDate: {
-            type: String,
-            computed: '_dateChanged(date)'
-          },
-          opened: {
-            type: Boolean,
-            value: false
-          },
-          disabled: {
-            type: Boolean,
-            value: false
-          }
+  <script>
+    Polymer({
+      is: 'datepicker-input',
+      properties: {
+        errorMessage: String,
+        required: Boolean,
+        placeholder: String,
+        autoValidate: Boolean,
+        invalid: Boolean,
+        label: {
+          type: String
         },
-        _dateChanged: function(date) {
-          if (date) {
-            /* global moment */
-            return moment(date).format('LL');
-          }
-          return date;
+        date: {
+          notify: true
         },
-        _openCalendar: function() {
-          if (this.disabled) {
-            return;
-          }
-          if (!this.opened) {
-            this.set('opened', true);
-          }
+        prettyDate: {
+          type: String,
+          computed: '_dateChanged(date)'
+        },
+        opened: {
+          type: Boolean,
+          value: false
+        },
+        disabled: {
+          type: Boolean,
+          value: false
         }
+      },
+      _dateChanged: function(date) {
+        if (date) {
+          /* global moment */
+          return moment(date).format('LL');
+        }
+        return date;
+      },
+      _openCalendar: function() {
+        if (this.disabled) {
+          return;
+        }
+        if (!this.opened) {
+          this.set('opened', true);
+        }
+      }
 
-      });
-    </script>
+    });
+  </script>
 </dom-module>
