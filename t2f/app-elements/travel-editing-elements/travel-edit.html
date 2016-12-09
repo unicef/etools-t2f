@@ -71,6 +71,9 @@
       <travel-attachments
         structure="[[structure]]"
         attachments-permission="[[travelPermissions.attachments]]"
+        is-international="[[data.baseDetails.international_travel]]"
+        completed-at="[[data.completed_at]]"
+        cancelled-at="[[data.cancelled_at]]"
         attachments="{{data.attachments}}"
         deleted-attachments="{{data.deletedAttachments}}"
         status="[[data.status]]"

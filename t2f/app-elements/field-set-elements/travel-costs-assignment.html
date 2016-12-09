@@ -38,12 +38,6 @@
           options="[[structure.wbs]]"
           label="WBS"
           value="{{costAssignment.wbs}}"></etools-searchable-multiselection-menu>
-        <paper-input class$="flex-2 custom-margin [[computedPermission.share.readOnly]]"
-          disabled="[[computedPermission.share.disabled]]"
-          hidden$="[[computedPermission.share.hidden]]"
-          label="Share(%)"
-          type="number"
-          value="{{costAssignment.share}}"></paper-input>
         <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.grant.readOnly]]"
           disabled="[[computedPermission.grant.disabled]]"
           hidden$="[[computedPermission.grant.hidden]]"
@@ -56,6 +50,12 @@
           options="[[structure.funds]]"
           label="Fund"
           value="{{costAssignment.fund}}"></etools-searchable-multiselection-menu>
+          <paper-input class$="flex-2 custom-margin [[computedPermission.share.readOnly]]"
+          disabled="[[computedPermission.share.disabled]]"
+          hidden$="[[computedPermission.share.hidden]]"
+          label="Share(%)"
+          type="number"
+          value="{{costAssignment.share}}"></paper-input>
       </div>
     </div>
   </template>

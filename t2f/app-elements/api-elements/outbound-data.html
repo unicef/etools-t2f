@@ -749,10 +749,11 @@
 
         _handleAttachmentPostSuccess: function(e, data) {
           this.deleteAttachmentEndpoint = undefined;
+          this.tempImboudData.attachments.push(data);
           if (this.attachments.length > 0 || this.deletedAttachments.length > 0) {
             this._doAttachmentUpload();
           } else {
-            this.set('inboundData', data);
+            this.set('inboundData', this.tempImboudData);
             this.attachmentData = false;
             this.attachmentsEndpoint = undefined;
             this.fire('travel-post-success', this.travelId);
@@ -763,6 +764,7 @@
         _handlePostSuccess: function(e, data) {
           this.postData = false;
           this.travelId = data.id;
+          this.tempImboudData = data;
           if (this.attachments.length > 0  || this.deletedAttachments.length > 0) {
             this._doAttachmentUpload();
           } else {

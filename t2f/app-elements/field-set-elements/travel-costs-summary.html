@@ -49,6 +49,9 @@
         color: var(--gray-dark);
         font-weight: 500;
       }
+      .italic {
+        font-style: italic;
+      }
       .sum-curr {
         padding-right: 24px;
       }
@@ -86,16 +89,6 @@
         <div class="underline"></div>
       </div>
 
-       <div class="layout horizontal row" hidden$="[[!ee]]">
-        <div class="flex-6 head">
-          Expected Expenses
-        </div>
-        <div class="flex-6 right-align curr">
-          {{ee}} {{currency.short}}
-        </div>
-        <div class="underline"></div>
-      </div>
-
       <div class="layout horizontal sum-row">
         <div class="flex-8">
         </div>
@@ -104,6 +97,16 @@
         </div>
       </div>
     </div>
+
+    <div class="layout horizontal row italic" >
+        <div class="flex-6 head">
+          Original Estimated Expenses
+        </div>
+        <div class="flex-6 right-align curr">
+          {{ee}} {{currency.short}}
+        </div>
+        <div class="underline"></div>
+      </div>
   </template>
 
   <script>

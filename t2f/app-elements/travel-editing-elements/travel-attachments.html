@@ -56,10 +56,13 @@
             </div>
 
             <travel-status
-                    user-type="[[userType]]"
+                    user-roles="[[userRoles]]"
                     status="[[status]]"
-                    cancelled-date="[[data.canceled_at]]"
-                    completed-date="[[data.completed_at]]">
+                    is-international="[[international_travel]]"
+                    scroll-top-margin="84"
+                    cancelled-date="[[canceled_at]]"
+                    completed-date="[[completed_at]]"
+                    on-validate="onValidate">
             </travel-status>
 
         </div>
@@ -80,7 +83,10 @@
             notify: true
           },
           status: String,
-          userType: String,
+          userRoles: String,
+          completedAt: Date,
+          cancelledAt: Date,
+          isInternational: Boolean,
           attachmentsPermission: {
             type: Object,
           }
