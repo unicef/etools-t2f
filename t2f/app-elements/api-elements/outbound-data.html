@@ -51,12 +51,15 @@
             text-align: center;
             margin-left: 10px;
         }
+
+        #rejection-modal, #cancel-modal {
+          width: 540px;
+        }
     </style>
 
     <template>
 
         <!-- Crearances dialog -->
-        <!-- we're working with the outbound data here, so no older value gets shown for now, although it gets stored -->
         <paper-dialog id="clearance-modal" opened="{{clearancesOpened}}" with-backdrop>
 
             <div class="dialog-heading">Travel authorization</div>
