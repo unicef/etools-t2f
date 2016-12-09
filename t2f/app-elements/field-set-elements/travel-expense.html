@@ -128,6 +128,10 @@
 
       _validateType: function(self) {
 
+        if (!computedPermission.type.required) {
+          return true;
+        }
+
         if (this.expense.type || self.expense.type) {
 
           this.$.type.removeAttribute('invalid');
@@ -142,6 +146,10 @@
 
       _validateDocCurr: function(self) {
 
+        if (!computedPermission.document_currency.required) {
+          return true;
+        }
+
         if (this.expense.document_currency || self.expense.document_currency) {
 
           this.$.curr1.removeAttribute('invalid');
@@ -155,6 +163,10 @@
       },
 
       _validateAccCurr: function(self) {
+
+        if (!computedPermission.account_currency.required) {
+          return true;
+        }
 
         if (this.expense.account_currency || self.expense.account_currency) {
 
