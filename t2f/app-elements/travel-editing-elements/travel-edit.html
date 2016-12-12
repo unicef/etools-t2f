@@ -11,7 +11,7 @@
 <link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-<link rel="import" href="../field-set-elements/travel-details.html">
+<link rel="import" href="travel-details.html">
 <link rel="import" href="./travel-attachments.html">
 <link rel="import" href="./travel-report.html">
 <link rel="import" href="../api-elements/inbound-data.html">
@@ -19,6 +19,7 @@
 <link rel="import" href="../pdf-export/ta-print.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
 <link rel="import" href="./form-errors.html">
+<link rel="import" href="../travel-status-box/travel-status.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -36,6 +37,9 @@
       #label-sec-clear, #label-med, #label-sec-course {
         display: inline-block;
         width: 220px;
+      }
+      .right-margin {
+        margin-right: 24px;
       }
     </style>
 
@@ -56,10 +60,11 @@
     </et2f-header>
 
     <form-errors errors="{{formErrors}}" error-selected="{{errorSelected}}"></form-errors>
-
-    <iron-pages selected="{{selected}}">
+    <div class="layout horizontal right-margin">
+    <iron-pages selected="{{selected}}" class="flex">
 
       <travel-details
+        id="travelDetails"
         scroll-to-fieldset="[[errorSelected]]"
         structure="[[structure]]"
         travel-permissions="[[travelPermissions]]"
@@ -90,6 +95,19 @@
         on-form-action="_handleFormAction">
       </travel-report>
     </iron-pages>
+
+      <travel-status
+        class=""
+        user-roles="[[userRoles]]"
+        status="[[data.status]]"
+        is-international="[[data.baseDetails.international_travel]]"
+        scroll-top-margin="84"
+        cancelled-date="[[data.canceled_at]]"
+        completed-date="[[data.completed_at]]"
+        on-validate="onValidate">
+      </travel-status>
+      </div>
+
   </template>
 
   <script>
@@ -243,6 +261,9 @@
        } else {
          this.$['outbound-data'].doRequest(details);
        }
+      },
+      onValidate: function(e, action) {
+        this.$.travelDetails.onValidate(e,action);
       }
 
     });

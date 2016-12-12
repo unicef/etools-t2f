@@ -11,19 +11,18 @@
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../travel-status-box/travel-status.html">
 <link rel="import" href="../../app-behaviors/permission-behavior.html">
-<link rel="import" href="travel-plan.html">
+<link rel="import" href="../field-set-elements/travel-plan.html">
 
-<link rel="import" href="travel-activity.html">
-<link rel="import" href="travel-itinerary.html">
-<link rel="import" href="travel-expense.html">
+<link rel="import" href="../field-set-elements/travel-activity.html">
+<link rel="import" href="../field-set-elements/travel-itinerary.html">
+<link rel="import" href="../field-set-elements/travel-expense.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 
-<link rel="import" href="../travel-status-box/travel-status.html">
-<link rel="import" href="travel-costs-assignment.html">
-<link rel="import" href="travel-deductions.html">
-<link rel="import" href="travel-costs-summary.html">
+<link rel="import" href="../field-set-elements/travel-costs-assignment.html">
+<link rel="import" href="../field-set-elements/travel-deductions.html">
+<link rel="import" href="../field-set-elements/travel-costs-summary.html">
 
 <link rel="import" href="../datepicker-input/datepicker-input.html">
 
@@ -296,16 +295,6 @@
           <travel-cost-summary cost-summary="[[data.cost_summary]]" currency="[[data.baseDetails.currency]]" structure="[[structure]]"></travel-cost-summary>
         </etools-repeatable-field-set>
       </div>
-
-      <travel-status
-        user-roles="[[userRoles]]"
-        status="[[data.status]]"
-        is-international="[[data.baseDetails.international_travel]]"
-        scroll-top-margin="84"
-        cancelled-date="[[data.canceled_at]]"
-        completed-date="[[data.completed_at]]"
-        on-validate="onValidate">
-      </travel-status>
     </div>
   </template>
 

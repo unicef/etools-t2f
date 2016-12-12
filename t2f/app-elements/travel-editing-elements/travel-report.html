@@ -4,7 +4,6 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
-<link rel="import" href="../travel-status-box/travel-status.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -76,15 +75,6 @@
           Save report
         </paper-button>
       </paper-material>
-
-      <travel-status
-        user-roles="[[userRoles]]"
-        status="[[data.status]]"
-        is-international="[[data.baseDetails.international_travel]]"
-        scroll-top-margin="84"
-        cancelled-date="[[data.canceled_at]]"
-        completed-date="[[data.completed_at]]">
-      </travel-status>
     </div>
 
   </template>
