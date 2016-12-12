@@ -12,7 +12,7 @@
 
 <dom-module id="list-pagination">
 
-  <style include="iron-flex shared-styles et2f-styles travel-list">
+  <style include="iron-flex shared-styles et2f-styles travel-list" is="custom-style">
     :host {
       display: block;
       margin-top: 0;
@@ -26,7 +26,7 @@
       };
       --paper-input-container-underline: {
         display: none;
-      }
+      };
     }
     .dropdown-content {
       background-color: white;
@@ -52,6 +52,12 @@
     span.textsec.lh {
       font-size: 12px;
     }
+    #item-nr-select {
+      --paper-input-container-input: {
+        font-size: 12px;
+        color: var(--gray-mid);
+      };
+    }
   </style>
 
   <template>
@@ -59,8 +65,16 @@
 
       <span class="textsec lh">Rows per page:</span>
 
-      <paper-dropdown-menu no-label-float vertical-align="bottom" horizontal-align="right">
-        <paper-listbox class="dropdown-content" on-iron-select="itemsNrChanged" selected="0">
+      <paper-dropdown-menu
+        id="item-nr-select"
+        no-label-float
+        vertical-align="bottom"
+        horizontal-align="right">
+
+        <paper-listbox
+          class="dropdown-content"
+          on-iron-select="itemsNrChanged"
+          selected="0">
 
           <template is="dom-repeat" items="[[rowSelection]]">
             <paper-item>[[item]]</paper-item>
