@@ -49,8 +49,11 @@
         color: var(--gray-dark);
         font-weight: 500;
       }
-      .italic {
-        font-style: italic;
+      .small_row {
+        font-size: 14px;
+        line-height: 48px;
+        font-weight: normal;
+        color: rgba(0,0,0,0.54);
       }
       .sum-curr {
         padding-right: 24px;
@@ -90,7 +93,8 @@
       </div>
 
       <div class="layout horizontal sum-row">
-        <div class="flex-8">
+        <div class="flex-8 layout horizontal head small_row" hidden$="[[!ee]]">
+            Original Estimated Expenses: {{ee}} {{currency.short}}
         </div>
         <div class="flex-4 yellow-box right-align sum-curr">
           {{total}} {{currency.short}}
@@ -98,14 +102,8 @@
       </div>
     </div>
 
-    <div class="layout horizontal row italic" hidden$="[[!ee]]">
-        <div class="flex-6 head">
-          Original Estimated Expenses
-        </div>
-        <div class="flex-6 right-align curr">
-          {{ee}} {{currency.short}}
-        </div>
-        <div class="underline"></div>
+    <div class="layout horizontal " >
+
       </div>
   </template>
 
@@ -128,7 +126,7 @@
 
       _calculateTotal: function(costSummary) {
         if (costSummary.value) {
-          var ee = parseFloat(costSummary.preserved_expenses);
+          var ee = parseFloat(costSummary.value.preserved_expenses);
           this.ee = Number.isNaN(ee) ? 0 : ee;
           var dsa = parseFloat(costSummary.value.dsa_total);
           this.dsa = Number.isNaN(dsa) ? 0 : dsa;
