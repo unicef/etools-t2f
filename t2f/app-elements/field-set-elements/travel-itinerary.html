@@ -27,61 +27,97 @@
           margin-bottom: 12px;
         };
         --paper-checkbox-margin: 12px;
-      };
+      }
+
+      .overnight-label {
+        line-height: 24px;
+        font-size: 16px;
+        color: var(--gray-dark);
+        padding-right: 8px;
+      }
     </style>
 
     <div class="layout vertical flex">
+
       <div class="layout horizontal">
-        <paper-input class$="flex-4 custom-margin [[computedPermission.origin.readOnly]]"
+
+        <paper-input label="From"
+          class$="flex-4 custom-margin [[computedPermission.origin.readOnly]]"
           disabled="[[computedPermission.origin.disabled]]"
           hidden$="[[computedPermission.origin.hidden]]"
-          label="From"
-          value="{{itinerary.origin}}"></paper-input>
-        <paper-input class$="flex-4 custom-margin [[computedPermission.destination.readOnly]]"
+          value="{{itinerary.origin}}"
+          placeholder="select">
+        </paper-input>
+
+        <paper-input label="To"
+          class$="flex-4 custom-margin [[computedPermission.destination.readOnly]]"
           disabled="[[computedPermission.destination.disabled]]"
           hidden$="[[computedPermission.destination.hidden]]"
-          label="To"
-          value="{{itinerary.destination}}"></paper-input>
-        <etools-searchable-multiselection-menu class$="flex-4 [[computedPermission.dsa_region.readOnly]]"
+          value="{{itinerary.destination}}"
+          placeholder="select">
+        </paper-input>
+
+        <etools-searchable-multiselection-menu label="DSA area"
+          class$="flex-4 [[computedPermission.dsa_region.readOnly]]"
           disabled="[[computedPermission.dsa_region.disabled]]"
           hidden$="[[computedPermission.dsa_region.hidden]]"
           options="[[structure.dsa_regions]]"
-          label="DSA area"
-          value="{{itinerary.dsa_region}}"></etools-searchable-multiselection-menu>
+          value="{{itinerary.dsa_region}}"
+          placeholder="select">
+        </etools-searchable-multiselection-menu>
       </div>
 
       <div class="layout horizontal">
-        <datepicker-input class$="flex-4 [[computedPermission.departure_date.readOnly]]"
+
+        <datepicker-input label="Departing"
+          class$="flex-4 [[computedPermission.departure_date.readOnly]]"
           disabled="[[computedPermission.departure_date.disabled]]"
           hidden$="[[computedPermission.departure_date.hidden]]"
           no-init
-          label="Departing"
-          date="{{itinerary.departure_date}}"></datepicker-input>
-        <datepicker-input class$="flex-4 [[computedPermission.arrival_date.readOnly]]"
+          date="{{itinerary.departure_date}}"
+          placeholder="select">
+        </datepicker-input>
+
+        <datepicker-input label="Arriving"
+          class$="flex-4 [[computedPermission.arrival_date.readOnly]]"
           disabled="[[computedPermission.arrival_date.disabled]]"
           hidden$="[[computedPermission.arrival_date.hidden]]"
-          label="Arriving"
-          date="{{itinerary.arrival_date}}"></datepicker-input>
+          date="{{itinerary.arrival_date}}"
+          placeholder="select">
+        </datepicker-input>
+
         <etools-searchable-multiselection-menu class$="flex-2 [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.travel_modes]]"
           label="Mode of  travel"
-          value="{{itinerary.mode_of_travel}}"></etools-searchable-multiselection-menu>
-        <paper-checkbox class$="flex-2 custom-margin self-end [[computedPermission.overnight_travel.readOnly]]"
-          disabled="[[computedPermission.overnight_travel.disabled]]"
-          hidden$="[[computedPermission.overnight_travel.hidden]]"
-          checked="{{itinerary.overnight_travel}}">Overnight travel?
-        </paper-checkbox>
+          value="{{itinerary.mode_of_travel}}"
+          placeholder="select">
+        </etools-searchable-multiselection-menu>
+
+        <div class="flex-2 custom-margin self-end layout horizontal">
+          <paper-checkbox
+            class$="[[computedPermission.overnight_travel.readOnly]]"
+            disabled="[[computedPermission.overnight_travel.disabled]]"
+            hidden$="[[computedPermission.overnight_travel.hidden]]"
+            checked="{{itinerary.overnight_travel}}">
+          </paper-checkbox>
+
+          <span class="flex self-center overnight-label">Overnight travel?</span>
+        </div>
       </div>
+
       <div class="layout horizontal" hidden$="[[hideAirline]]">
-        <etools-searchable-multiselection-menu class$="flex-8 [[computedPermission.airlines.readOnly]]"
+
+        <etools-searchable-multiselection-menu label="Add airline(s)"
+          class$="flex-8 [[computedPermission.airlines.readOnly]]"
           disabled="[[computedPermission.airlines.disabled]]"
           hidden$="[[computedPermission.airlines.hidden]]"
           options="[[structure.airlines]]"
-          label="Add airline(s)"
           multi
-          value="{{itinerary.airlines}}"></etools-searchable-multiselection-menu>
+          value="{{itinerary.airlines}}"
+          placeholder="select">
+        </etools-searchable-multiselection-menu>
         <div class="flex-4"></div>
       </div>
 
