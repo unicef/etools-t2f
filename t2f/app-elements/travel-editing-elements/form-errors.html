@@ -94,7 +94,7 @@
         }
       },
       _computeShowListExtension: function(errorList, limit) {
-        return errorList.length > limit;
+        return errorList.length < limit;
       },
       _computeShow: function(errorList) {
         return errorList.length > 0;

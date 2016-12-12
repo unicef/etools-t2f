@@ -764,6 +764,7 @@
         _handlePostSuccess: function(e, data) {
           this.postData = false;
           this.travelId = data.id;
+          this.set('formErrors', []);
           this.tempImboudData = data;
           if (this.attachments.length > 0  || this.deletedAttachments.length > 0) {
             this._doAttachmentUpload();
