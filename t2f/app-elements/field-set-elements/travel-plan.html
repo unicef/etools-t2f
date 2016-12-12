@@ -198,7 +198,7 @@
 
       <div class="layout horizontal">
 
-        <paper-input label="Estimated travel cost*"
+        <paper-input label="Estimated travel cost"
           class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
           disabled="[[computedPermission.estimated_travel_cost.disabled]]"
           hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
@@ -208,7 +208,7 @@
           value="{{baseDetails.estimated_travel_cost}}">
         </paper-input>
 
-        <etools-searchable-multiselection-menu label="Currency*"
+        <etools-searchable-multiselection-menu label="Currency"
           class$="flex-3 [[computedPermission.currency.readOnly]]"
           disabled="[[computedPermission.currency.disabled]]"
           hidden$="[[computedPermission.currency.hidden]]"
