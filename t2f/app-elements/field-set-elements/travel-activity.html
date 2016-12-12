@@ -79,7 +79,8 @@
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
           options="[[structure.results]]"
-          value="{{activity.result}}">
+          value="{{activity.result}}"
+          placeholder="select">
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Travel locations"
@@ -88,7 +89,8 @@
           hidden$="[[computedPermission.locations.hidden]]"
           options="[[structure.locations]]"
           multi
-          value="{{activity.locations}}">
+          value="{{activity.locations}}"
+          placeholder="select">
         </etools-searchable-multiselection-menu>
       </div>
 
@@ -98,7 +100,8 @@
           class$="flex-4 [[computedPermission.date.readOnly]]"
           disabled="[[computedPermission.date.disabled]]"
           hidden$="[[computedPermission.date.hidden]]"
-          date="{{activity.date}}">
+          date="{{activity.date}}"
+          placeholder="select">
         </datepicker-input>
 
         <paper-checkbox
