@@ -5,6 +5,7 @@
 <link rel="import" href="../styles/shared-styles.html">
 <link rel="import" href="../styles/et2f-styles.html">
 <link rel="import" href="../app-elements/travel-list-elements/travel-list.html">
+<link rel="import" href="../app-elements/page-header-element/page-header.html">
 
 
 <dom-module id="page-travel-list">
@@ -24,17 +25,16 @@
 
       <app-header fixed shadow>
 
-        <app-toolbar>
-          <paper-icon-button class="light" icon="menu" on-tap="openDrawer"></paper-icon-button>
-          <div main-title>eTools template</div>
-        </app-toolbar>
-        <travel-list user="[[user]]"
+       <page-header title="eT2F"></page-header>
+
+      </app-header>
+
+       <travel-list user="[[user]]"
           structure="[[structure]]"
           route="{{route}}"
           list-loading="{{listLoading}}"
           refresh-data="{{refreshData}}"
         ></travel-list>
-      </app-header>
     </app-header-layout>
 
   </template>

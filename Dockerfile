@@ -3,6 +3,7 @@ RUN apk update
 ADD bower.json /tmp
 ADD package.json /tmp
 WORKDIR /tmp
+RUN apk update
 RUN apk add git
 RUN npm install -g bower polymer-cli http-server
 RUN npm install
