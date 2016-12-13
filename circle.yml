@@ -13,7 +13,6 @@ dependencies:
     - docker build --rm=false -t unicef/etools-t2f-test:$CIRCLE_BRANCH --file docker-test .
     - mkdir -p ~/dockercache; docker save unicef/etools-t2f-test > ~/dockercache/t2ftest.tar; docker save unicef/etools-t2f > ~/dockercache/t2f.tar
 
-
 test:
    override:
      - docker run -it unicef/etools-t2f-test:$CIRCLE_BRANCH
