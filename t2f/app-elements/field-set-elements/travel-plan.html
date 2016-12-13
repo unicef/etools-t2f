@@ -202,10 +202,11 @@
           class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
           disabled="[[computedPermission.estimated_travel_cost.disabled]]"
           hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
-          pattern="^[0-9]+(\.[0-9]{1,4})?$"
+          pattern="^[0-9]+(\.[0-9]{1,2})?$"
           error-message="*number required"
-          placeholder="eg.: 567.1234"
-          value="{{baseDetails.estimated_travel_cost}}">
+          placeholder="eg.: 567.12"
+          value="{{baseDetails.estimated_travel_cost}}"
+          auto-validate>
         </paper-input>
 
         <etools-searchable-multiselection-menu label="Currency"
