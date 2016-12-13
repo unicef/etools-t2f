@@ -407,7 +407,7 @@
 
         var invalids = [];
 
-        if (['Save', 'Print TA', 'Cancel'].indexOf(action.name) < 0) {
+        if (['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0) {
 
           // Validating Trip plan
           if (!this.$.travel_plan._validateTravelPlan()) {
