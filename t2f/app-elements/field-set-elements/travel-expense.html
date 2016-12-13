@@ -52,11 +52,12 @@
           class$="flex-3 custom-margin [[computedPermission.amount.readOnly]]"
           disabled="[[computedPermission.amount.disabled]]"
           hidden$="[[computedPermission.amount.hidden]]"
-          pattern="^[0-9]+(\.[0-9]{1,4})?$"
-          placeholder="eg.: 567.1234"
+          pattern="^[0-9]+(\.[0-9]{1,2})?$"
+          placeholder="eg.: 567.12"
           value="{{expense.amount}}"
+          error-message="*number required"
           required$="[[computedPermission.amount.required]]"
-          auto-validate$="[[autoValidate]]">
+          auto-validate>
         </paper-input>
 
         <etools-searchable-multiselection-menu label="Document currency*"
