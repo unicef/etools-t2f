@@ -195,7 +195,7 @@
       },
 
       _computeTravelPermission: function(permissions, status, user, data) {
-        var travelRole ;
+        var travelRole;
         if (data.baseDetails.id) {
           if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
             travelRole = 'Traveler';
@@ -213,7 +213,7 @@
         if (forcedTravelRole) {
           travelRole = forcedTravelRole;
         }
-        var userTravelRoles = travelRole ? user.roles.concat(travelRole) : user.roles;
+        var userTravelRoles = travelRole ? user.t2f.roles.concat(travelRole) : user.roles;
         if (userTravelRoles.length > 0) {
           var userPermissions = {};
           var draft = permissions[userTravelRoles[0]][status];
