@@ -180,7 +180,21 @@
         }
       },
 
+      allEmpty: function() {
+        var allEmpty = !this.expense.type &&
+          !this.expense.amount &&
+          !this.expense.document_currency &&
+          !this.expense.account_currency;
+
+        console.log('allEmpty', allEmpty);
+        return allEmpty;
+      },
+
       validateExpense: function() {
+
+        if (this.allEmpty) {
+          return true;
+        }
 
         var typeValid = this._validateType(this);
         var accCurr = this._validateAccCurr(this);
