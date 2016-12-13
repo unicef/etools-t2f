@@ -137,7 +137,7 @@
               'endPoint': 'complete'
             },
             'planned': {
-              'name': 'To planned',
+              'name': 'Mark as planned',
               'endPoint': 'planned'
             },
             'printTa': {
@@ -312,8 +312,8 @@
                 'secondary': ['save_and_submit', 'printTa']
               },
               'Sent for payment': {
-                'primary': 'submitCertificate',
-                'secondary': ['printTa']
+                'primary': 'certify',
+                'secondary': ['submitCertificate', 'printTa', 'save']
               },
               'Certification submitted': {
                 'primary': 'printTa',
@@ -529,6 +529,52 @@
         internationalTravelPermissions: {
           type: Object,
           value: {
+            'God': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel']
+              },
+              'Submitted': {
+                'primary': 'approve',
+                'secondary': ['reject', 'save']
+              },
+              'Cancelled': {
+                'primary': 'planned',
+                'secondary': ['save', 'save_and_submit']
+              },
+              'Approved': {
+                'primary': 'save',
+                'secondary': ['sendForPayment']
+              },
+              'Rejected': {
+                'primary': 'planned',
+                'secondary': ['save', 'save_and_submit']
+              },
+              'Sent for payment': {
+                'primary': 'wentAsPlanned',
+                'secondary': ['submitCertificate', 'save']
+              },
+              'Certification submitted': {
+                'primary': 'approveCertificate',
+                'secondary': ['rejectCertificate']
+              },
+              'Certification rejected': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': 'save',
+                'secondary': ['certify']
+              },
+              'Certified': {
+                'primary': 'complete',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
             'Anyone': {
               'Planned': {
                 'primary': '',
@@ -645,8 +691,8 @@
                 'secondary': ['save_and_submit']
               },
               'Sent for payment': {
-                'primary': 'submitCertificate',
-                'secondary': []
+                'primary': 'certify',
+                'secondary': ['submitCertificate', 'save']
               },
               'Certification submitted': {
                 'primary': '',

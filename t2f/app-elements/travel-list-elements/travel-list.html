@@ -554,9 +554,9 @@
 
         this.push('availableFilters', pristineFilter);
 
-        this.set('usedFilters', this.usedFilters.filter(function(filter) {
-          return filter.name !== filterName;
-        }));
+        var indexToRemove = this.usedFilters.indexOf(e.model.item);
+
+        this.splice('usedFilters', indexToRemove, 1);
       },
       changeFilterValue: function(e) {
 
