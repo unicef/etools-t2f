@@ -20,82 +20,88 @@ var backendProxy = proxy(['/api','/users/api/'], {
   logLevel: 'debug'
 });
 
+var staticProxy = proxy(['/data','service-worker.js'], {
+  target: 'http://127.0.0.1:3000/', //change with own IP
+  changeOrigin: true,             // for vhosted sites, changes host header to match to target's host
+  logLevel: 'debug'
+});
+
 module.exports = {
-    "ui": {
-        "port": 3002,
-        "weinre": {
-            "port": 8080
+    'ui': {
+        'port': 3002,
+        'weinre': {
+            'port': 8080
         }
     },
-    "files": ['t2f/**/*'],
-    "watchOptions": {},
-    "server": false,
-    "proxy": 'localhost:3000',
-    "port": 3001,
-    "middleware": [backendProxy],
-    "serveStatic": [],
-    "ghostMode":false,
-    "logLevel": "info",
-    "logPrefix": "BS",
-    "logConnections": false,
-    "logFileChanges": true,
-    "logSnippet": true,
-    "rewriteRules": [],
-    "open": "local",
-    "browser": "default",
-    "cors": false,
-    "xip": false,
-    "hostnameSuffix": false,
-    "reloadOnRestart": false,
-    "notify": true,
-    "scrollProportionally": true,
-    "scrollThrottle": 0,
-    "scrollRestoreTechnique": "window.name",
-    "scrollElements": [],
-    "scrollElementMapping": [],
-    "reloadDelay": 0,
-    "reloadDebounce": 0,
-    "reloadThrottle": 0,
-    "plugins": [],
-    "injectChanges": true,
-    "startPath": null,
-    "minify": true,
-    "host": null,
-    "localOnly": false,
-    "codeSync": true,
-    "timestamps": true,
-    "clientEvents": [
-        "scroll",
-        "scroll:element",
-        "input:text",
-        "input:toggles",
-        "form:submit",
-        "form:reset",
-        "click"
+    'files': ['t2f/**/*'],
+    'watchOptions': {},
+    'server': false,
+    'proxy': 'localhost:3000',
+    'port': 3001,
+    'middleware': [backendProxy, staticProxy],
+    'serveStatic': [],
+    'ghostMode':false,
+    'logLevel': 'info',
+    'logPrefix': 'BS',
+    'logConnections': false,
+    'logFileChanges': true,
+    'logSnippet': true,
+    'rewriteRules': [],
+    'open': 'local',
+    'browser': 'default',
+    'cors': false,
+    'xip': false,
+    'hostnameSuffix': false,
+    'reloadOnRestart': false,
+    'notify': true,
+    'scrollProportionally': true,
+    'scrollThrottle': 0,
+    'scrollRestoreTechnique': 'window.name',
+    'scrollElements': [],
+    'scrollElementMapping': [],
+    'reloadDelay': 0,
+    'reloadDebounce': 0,
+    'reloadThrottle': 0,
+    'plugins': [],
+    'injectChanges': true,
+    'startPath': null,
+    'minify': true,
+    'host': null,
+    'localOnly': false,
+    'codeSync': true,
+    'timestamps': true,
+    'clientEvents': [
+        'scroll',
+        'scroll:element',
+        'input:text',
+        'input:toggles',
+        'form:submit',
+        'form:reset',
+        'click'
     ],
-    "socket": {
-        "socketIoOptions": {
-            "log": false
+    'socket': {
+        'socketIoOptions': {
+            'log': false
         },
-        "socketIoClientConfig": {
-            "reconnectionAttempts": 50
+        'socketIoClientConfig': {
+            'reconnectionAttempts': 50
         },
-        "path": "/browser-sync/socket.io",
-        "clientPath": "/browser-sync",
-        "namespace": "/browser-sync",
-        "clients": {
-            "heartbeatTimeout": 5000
+        'path': '/browser-sync/socket.io',
+        'clientPath': '/browser-sync',
+        'namespace': '/browser-sync',
+        'clients': {
+            'heartbeatTimeout': 5000
         }
     },
-    "tagNames": {
-        "less": "link",
-        "scss": "link",
-        "css": "link",
-        "jpg": "img",
-        "jpeg": "img",
-        "png": "img",
-        "svg": "img",
-        "gif": "img",
-        "js": "script"
+    'tagNames': {
+        'less': 'link',
+        'scss': 'link',
+        'css': 'link',
+        'jpg': 'img',
+        'jpeg': 'img',
+        'png': 'img',
+        'svg': 'img',
+        'gif': 'img',
+        'js': 'script'
     }
 };

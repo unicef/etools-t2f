@@ -161,9 +161,6 @@
           <etools-loading active="[[loading]]" ></etools-loading>
           <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}"></et2f-app>
         </template>
-            <countries-dropdown id="countries"
-          countries="[[countries]]"></countries-dropdown>
-
       </div>
 
     </app-drawer-layout>
@@ -177,10 +174,7 @@
       is: 'app-shell',
 
       properties: {
-
         routeData: Object,
-        countries: Array,
-
         page: {
           type: String,
           reflectToAttribute: true,
