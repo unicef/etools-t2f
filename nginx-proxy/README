@@ -4,6 +4,7 @@ Steps:
 - install nginx with brew:
 -- brew tap homebrew/nginx
 -- brew install nginx-full
+-- follow the onscreen description to run nginx on port 80
 - run nginx -c ~/ABSOLUTE/PATH/TO/ET2F/PROJECT/nginx-proxy/nginx.conf (absolute path to this file)
 - install docker
 -  enter the project directory
