@@ -27,11 +27,11 @@
       border-bottom: 1px solid rgba(0,0,0,.12);
       box-sizing: border-box;
     }
-    .heading-row {
+    .full-row, .heading-row {
       width: 100%;
     }
-    .heading-row:hover {
-      background-color: #f5f5f5;
+    .heading-row {
+      transition: background-color 0.15s ease;
     }
     .heading-row.grey-heading {
       background-color: var(--gray-lighter);
@@ -39,6 +39,9 @@
     .heading-row-detailed {
       background-color: #EEEEEE;
       height: 64px;
+    }
+    .full-row:hover .heading-row {
+      background-color: #f5f5f5;
     }
     .headings {
       display: block;
@@ -232,69 +235,74 @@
         </paper-button>
       </paper-dialog>
 
-      <div class$="heading-row clearfix layout horizontal [[_isGreyClass(data)]]">
+      <div class="full-row">
 
-        <div class$="headings textprim bold w60 [[_statusClass(data)]]">
-          <iron-icon
-            icon="icons:expand-more"
-            on-click="_toggleExpanded"
-            hidden$="[[_isDetailed(expanded)]]">
-          </iron-icon>
-          <iron-icon
-            icon="icons:expand-less"
-            on-click="_toggleExpanded"
-            hidden$="[[!_isDetailed(expanded)]]">
-          </iron-icon>
-        </div>
-        <div class="headings blue bold w13">
-          <a href="[[baseUrl]]edit-travel/{{data.id}}">[[data.reference_number]]</a>
-        </div>
-        <div class="headings textprim w13">[[data.traveler]]</div>
-        <div class="headings textprim w13">[[getOffice(data.office, offices)]]</div>
-        <div class="headings textprim w13">[[getSection(data.section, sections)]]</div>
-        <div class="headings textprim w11">[[data.start_date]]</div>
-        <div class="headings textprim w11">[[data.end_date]]</div>
-        <div class="headings textprim bold capital w23">
-          <div class$="statusdiv [[_statusClass(data)]]">
-            <span class="statusdivtext">[[_statusMapping(data.status)]]</span>
+        <!-- SIMPLE VIEW -->
+        <div class$="heading-row clearfix layout horizontal [[_isGreyClass(data)]]">
+
+          <div class$="headings textprim bold w60 [[_statusClass(data)]]">
+            <iron-icon
+              icon="icons:expand-more"
+              on-click="_toggleExpanded"
+              hidden$="[[_isDetailed(expanded)]]">
+            </iron-icon>
+            <iron-icon
+              icon="icons:expand-less"
+              on-click="_toggleExpanded"
+              hidden$="[[!_isDetailed(expanded)]]">
+            </iron-icon>
+          </div>
+          <div class="headings blue bold w13">
+            <a href="[[baseUrl]]edit-travel/{{data.id}}">[[data.reference_number]]</a>
+          </div>
+          <div class="headings textprim w13">[[data.traveler]]</div>
+          <div class="headings textprim w13">[[getOffice(data.office, offices)]]</div>
+          <div class="headings textprim w13">[[getSection(data.section, sections)]]</div>
+          <div class="headings textprim w11">[[data.start_date]]</div>
+          <div class="headings textprim w11">[[data.end_date]]</div>
+          <div class="headings textprim bold capital w23">
+            <div class$="statusdiv [[_statusClass(data)]]">
+              <span class="statusdivtext">[[_statusMapping(data.status)]]</span>
+            </div>
+          </div>
+          <div class="headings textsec w5">
+
+            <paper-menu-button horizontal-align="right" id="more-button">
+
+              <paper-icon-button icon="more-vert" class="dropdown-trigger">
+              </paper-icon-button>
+
+              <paper-menu class="dropdown-content">
+
+                <paper-item on-click="duplicate">
+                  <iron-icon icon="social:person-add"></iron-icon>
+                  <paper-item-body>Duplicate trip</paper-item-body>
+                </paper-item>
+
+                <paper-item on-click="addDriver">
+                  <iron-icon icon="maps:directions-car"></iron-icon>
+                  <paper-item-body>Add driver</paper-item-body>
+                </paper-item>
+
+              </paper-menu>
+            </paper-menu-button>
           </div>
         </div>
-        <div class="headings textsec w5">
 
-          <paper-menu-button horizontal-align="right" id="more-button">
+        <!-- EXPANDED VIEW -->
+        <div hidden$="[[!_isDetailed(expanded)]]" class="heading-row heading-row-detailed clearfix layout horizontal">
 
-            <paper-icon-button icon="more-vert" class="dropdown-trigger">
-            </paper-icon-button>
+          <div class$="headings textprim bold w60 [[_statusClass(data)]]"></div>
 
-            <paper-menu class="dropdown-content">
+          <div class="flex vertical around-justified layout">
+            <span class="flex detail-headings">Purpose of travel</span>
+            <span class="flex detail-text">[[data.purpose]]</span>
+          </div>
 
-              <paper-item on-click="duplicate">
-                <iron-icon icon="social:person-add"></iron-icon>
-                <paper-item-body>Duplicate trip</paper-item-body>
-              </paper-item>
-
-              <paper-item on-click="addDriver">
-                <iron-icon icon="maps:directions-car"></iron-icon>
-                <paper-item-body>Add driver</paper-item-body>
-              </paper-item>
-
-            </paper-menu>
-          </paper-menu-button>
+          <div class="headings textsec w5"></div>
         </div>
       </div>
 
-      <!-- EXPANDED VIEW -->
-      <div hidden$="[[!_isDetailed(expanded)]]" class="heading-row heading-row-detailed clearfix layout horizontal">
-
-        <div class$="headings textprim bold w60 [[_statusClass(data)]]"></div>
-
-        <div class="flex vertical around-justified layout">
-          <span class="flex detail-headings">Purpose of travel</span>
-          <span class="flex detail-text">[[data.purpose]]</span>
-        </div>
-
-        <div class="headings textsec w5"></div>
-      </div>
   </template>
 
   <script>
