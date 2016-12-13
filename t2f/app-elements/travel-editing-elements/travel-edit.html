@@ -214,7 +214,7 @@
           travelRole = forcedTravelRole;
         }
         var userTravelRoles = travelRole ? user.roles.concat(travelRole) : user.roles;
-
+        console.debug(travelRole);
         if (userTravelRoles.length > 0) {
           var userPermissions = {};
           var draft = permissions[userTravelRoles[0]][status];
@@ -264,7 +264,7 @@
        }
       },
       onValidate: function(e, action) {
-        this.$.travelDetails.onValidate(e, action);
+        this.$.travelDetails.doValidate(e, action);
       }
 
     });
