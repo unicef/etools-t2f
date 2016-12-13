@@ -40,7 +40,7 @@ module.exports = {
     'port': 3001,
     'middleware': [backendProxy, staticProxy],
     'serveStatic': [],
-    'ghostMode':false,
+    'ghostMode': false,
     'logLevel': 'info',
     'logPrefix': 'BS',
     'logConnections': false,

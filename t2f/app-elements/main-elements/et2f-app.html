@@ -104,12 +104,36 @@
         }
       },
       _handleStructure: function(event, data) {
-        var dataKeys = Object.keys(data);
-        dataKeys.forEach(function(key) {
-          if (key === 'currencies') {
+        var parsingFunctions = {
+          partners: function(key) {
+             data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, partnerships: []};
+            });
+          },
+          partnerships: function(key) {
+              data[key].forEach(function(partnership) {
+                data.partners.forEach(function(partner) {
+                  if (partner.value === partnership.partner) {
+                    partner.partnerships.push({
+                        label: partnership.name,
+                        value: partnership.id
+                    });
+                  }
+                });
+              });
+              delete data.partnerships;
+          },
+          currencies: function(key) {
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id, short: obj.iso_4217};
             });
+          }
+        };
+        var dataKeys = Object.keys(data).sort();
+        dataKeys.forEach(function(key) {
+          var parsingFunction = parsingFunctions[key];
+          if (parsingFunction) {
+            parsingFunction(key);
           } else {
             data[key] = data[key].map(function(obj) {
               return {label: obj.name || obj.full_name, value: obj.id};
@@ -153,9 +177,6 @@
         });
         Object.freeze(data);
         this.et2fPermissions = data;
-      },
-      _handleMe: function(e, data) {
-        this.user = data;
       },
       _computeLoading: function(structure, permissions, subLoading) {
 

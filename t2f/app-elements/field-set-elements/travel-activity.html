@@ -62,9 +62,9 @@
 
         <etools-searchable-multiselection-menu label="Partnership"
           class$="flex-4 [[computedPermission.partnership.readOnly]]"
-          disabled="[[computedPermission.partnership.disabled]]"
+          disabled="[[disablePartnerships]]"
           hidden$="[[computedPermission.partnership.hidden]]"
-          options="[[structure.partnerships]]"
+          options="[[partnerships]]"
           value="{{activity.partnership}}"
           required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           placeholder="select"
@@ -129,6 +129,14 @@
           type: Object,
           value: {}
         },
+        partnerships: {
+          type: Array,
+          value: []
+        },
+        disablePartnerships: {
+          type: Boolean,
+          computed: '_computeDisablePartnerships(partnerships, computedPermission.partnership.disabled)'
+        },
         autoValidate: {
           type: Boolean,
           computed: '_computeAutoValidate(activity)'
@@ -139,16 +147,27 @@
         }
       },
 
-      _computeAutoValidate: function(activity) {
-          return activity !== undefined && Object.keys(activity).length > 0;
-      },
-
       behaviors: [et2fBehaviors.PermissionLayer],
 
       observers: [
+        '_partnersObserver(activity.partner)',
         '_setCheckboxes(activity.*)',
         '_addValidationFunction(activity.*)'
       ],
+
+       _computeAutoValidate: function(activity) {
+          return activity !== undefined && Object.keys(activity).length > 0;
+      },
+
+      _computeDisablePartnerships: function(partnerships, permissionDisabled) {
+        return partnerships.length === 0 || permissionDisabled;
+      },
+
+      _partnersObserver: function(partners) {
+        if (partners) {
+          this.set('partnerships', partners.partnerships);
+        }
+      },
 
       _addValidationFunction: function(changed) {
 
