@@ -21,7 +21,10 @@
 
 
     <etools-ajax endpoint="[[structureEndpoint]]"
-      on-success="_handleStructure" loading="{{structureLoading}}"
+      on-success="_handleStructure"
+      loading="{{structureLoading}}"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
       ></etools-ajax>
     <etools-ajax endpoint="[[permissionsEndpoint]]"
       on-success="_handlePermissions" loading="{{permissionsLoading}}"
@@ -102,6 +105,9 @@
           type: String,
           value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
         }
+      },
+      _redirectToLogin: function() {
+        window.location.href = 'https://etools-dev.unicef.org/login/';
       },
       _handleStructure: function(event, data) {
         var parsingFunctions = {
