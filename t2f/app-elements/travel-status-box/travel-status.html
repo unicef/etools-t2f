@@ -405,15 +405,17 @@
             self.$['main-card'].style.position = 'fixed';
             self.$['main-card'].style.top = self.scrollTopMargin + 'px';
           } else {
-            self.$['main-card'].style.position = 'absolute';
-            self.$['main-card'].style.top = '0';
+            self.resetPosition();
           }
           if (self._previousOnScroll) {
             self._previousOnScroll();
           }
         };
       },
-
+      resetPosition: function() {
+        this.$['main-card'].style.position = 'absolute';
+        this.$['main-card'].style.top = '0';
+      },
       // '2016-11-17T13:53:13.839938Z' => '2016. 11. 17.'
       formatDate: function(dateStr) {
         return dateStr ? dateStr.split('T')[0].split('-').join('. ') + '.' : 'N.A.';

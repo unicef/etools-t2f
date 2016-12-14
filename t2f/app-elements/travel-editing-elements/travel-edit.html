@@ -99,6 +99,7 @@
     </iron-pages>
 
       <travel-status
+        id="travelStatus"
         user-roles="[[userRoles]]"
         data="[[data]]"
         scroll-top-margin="84"
@@ -181,7 +182,7 @@
           });
       },
       _routeObserver: function(route) {
-        this.showForm = false;
+        this.$.travelStatus.resetPosition();
         if (route.path && route.path.indexOf('edit-travel/-1') > -1) {
           this._loadDefault();
         }
