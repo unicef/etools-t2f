@@ -173,7 +173,8 @@
           <travel-plan id="travel_plan"
             base-details="{{data.baseDetails}}"
             permissions-matrix="[[travelPermissions.baseDetails]]"
-            structure="[[structure]]">
+            structure="[[structure]]"
+            user="[[user]]">
           </travel-plan>
         </etools-repeatable-field-set>
 
@@ -326,8 +327,8 @@
           type: String,
           observer: '_scrollTo'
         },
+        user: Object
       },
-
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
         var computed = {};
 

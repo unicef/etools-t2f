@@ -123,7 +123,11 @@
       properties: {
         activity: {
           type: Object,
-          notify: true
+          notify: true,
+        },
+        travelType: {
+          type: Object,
+          computed: '_computeTravelType(activity)',
         },
         structure: {
           type: Object,
@@ -150,10 +154,21 @@
       behaviors: [et2fBehaviors.PermissionLayer],
 
       observers: [
+        '_travelTypeObserver(activity.travel_type)',
         '_partnersObserver(activity.partner)',
         '_setCheckboxes(activity.*)',
         '_addValidationFunction(activity.*)'
       ],
+      _computeTravelType: function(travel_type) {
+       return travel_type;
+      },
+      _travelTypeObserver: function(newValue, oldValue) {
+          if (oldValue === undefined && newValue !== undefined && newValue !== '') {
+            this.set('activity.primary_traveler', true);
+          } else if (oldValue === undefined && newValue === undefined) {
+            this.set('activity.primary_traveler', false);
+          }
+      },
 
        _computeAutoValidate: function(activity) {
           return activity !== undefined && Object.keys(activity).length > 0;
@@ -166,7 +181,10 @@
       _partnersObserver: function(partners) {
         if (partners) {
           this.set('partnerships', partners.partnerships);
+        } else {
+          this.set('partnerships', []);
         }
+        this.set('activity.partnership', null)
       },
 
       _addValidationFunction: function(changed) {

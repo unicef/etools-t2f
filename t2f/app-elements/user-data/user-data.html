@@ -10,6 +10,8 @@
                  endpoint="[[endpoint]]"
                  on-success="_handleResponse"
                  on-fail="_handleError"
+                 on-unauthorized="_redirectToLogin"
+                  on-forbidden="_redirectToLogin"
                  caching-storage="dexie"></etools-ajax>
   </template>
 
@@ -109,6 +111,10 @@
           this._setUser(data.user);
           this._setPermissions(data.permissions);
         }
+      },
+
+       _redirectToLogin: function() {
+        window.location.href = 'https://etools-dev.unicef.org/login/';
       },
 
       _handleResponse: function(res) {

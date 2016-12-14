@@ -129,7 +129,7 @@
           class$="flex-3 [[computedPermission.supervisor.readOnly]]"
           disabled="[[computedPermission.supervisor.disabled]]"
           hidden$="[[computedPermission.supervisor.hidden]]"
-          options="[[structure.users]]"
+          options="[[usersButMe]]"
           required$="[[computedPermission.supervisor.required]]"
           placeholder="select"
           auto-validate$="[[autoValidate]]">
@@ -256,10 +256,15 @@
         baseDetails: {
           type: Object,
           value: {},
+          notify: true
         },
         structure: {
           type: Object,
           value: {}
+        },
+        usersButMe: {
+          type: Array,
+          computed: 'computeUsersButMe(structure.users, user)'
         },
         falseValue: {
           type: Boolean,
@@ -277,7 +282,8 @@
         modeInputTouched: {
           type: Boolean,
           computed: '_computeModeInputTouched(baseDetails.mode_of_travel)'
-        }
+        },
+        user: Object
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
@@ -370,6 +376,14 @@
         this.$['confirmation-modal'].close();
         this.set('baseDetails.international_travel', true);
         this.set('baseDetails.ta_required', false);
+      },
+
+      computeUsersButMe: function(users, user) {
+
+        // Filters out logged in user
+        return users.filter(function(actUser) {
+          return actUser.value !== user.value;
+        });
       }
     });
   </script>

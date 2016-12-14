@@ -71,7 +71,8 @@
         travel-permissions="[[travelPermissions]]"
         data="{{data}}"
         user-roles="[[userRoles]]"
-        on-form-action="_handleFormAction">
+        on-form-action="_handleFormAction"
+        user="[[user]]">
       </travel-details>
 
       <travel-attachments
@@ -98,13 +99,10 @@
     </iron-pages>
 
       <travel-status
-        class=""
+        id="travelStatus"
         user-roles="[[userRoles]]"
-        status="[[data.status]]"
-        is-international="[[data.baseDetails.international_travel]]"
+        data="[[data]]"
         scroll-top-margin="84"
-        cancelled-date="[[data.canceled_at]]"
-        completed-date="[[data.completed_at]]"
         on-validate="onValidate">
       </travel-status>
       </div>
@@ -118,6 +116,7 @@
         data: {
           type: Object,
           notify: true,
+          // observer: '_warn'
         },
         detailLoading: {
           type: Boolean,
@@ -183,7 +182,7 @@
           });
       },
       _routeObserver: function(route) {
-        this.showForm = false;
+        this.$.travelStatus.resetPosition();
         if (route.path && route.path.indexOf('edit-travel/-1') > -1) {
           this._loadDefault();
         }
@@ -240,7 +239,7 @@
                 }
               });
           });
-          console.debug('Current user roles: ', userTravelRoles);
+          // console.debug('Current user roles: ', userTravelRoles);
           this.set('userRoles', userTravelRoles);
           this.set('travelPermissions', {});
           this.set('travelPermissions', userPermissions);
