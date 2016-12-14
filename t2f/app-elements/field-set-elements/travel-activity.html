@@ -181,6 +181,8 @@
       _partnersObserver: function(partners) {
         if (partners) {
           this.set('partnerships', partners.partnerships);
+        } else {
+          this.set('partnerships', []);
         }
       },
 
