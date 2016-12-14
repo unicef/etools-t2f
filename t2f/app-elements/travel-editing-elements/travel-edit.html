@@ -71,7 +71,8 @@
         travel-permissions="[[travelPermissions]]"
         data="{{data}}"
         user-roles="[[userRoles]]"
-        on-form-action="_handleFormAction">
+        on-form-action="_handleFormAction"
+        user="[[user]]">
       </travel-details>
 
       <travel-attachments
@@ -240,7 +241,7 @@
                 }
               });
           });
-          console.debug('Current user roles: ', userTravelRoles);
+          // console.debug('Current user roles: ', userTravelRoles);
           this.set('userRoles', userTravelRoles);
           this.set('travelPermissions', {});
           this.set('travelPermissions', userPermissions);
