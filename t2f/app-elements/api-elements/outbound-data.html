@@ -2,6 +2,7 @@
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -55,6 +56,16 @@
         #rejection-modal, #cancel-modal {
           width: 540px;
         }
+
+        #certification-modal {
+          width: 720px;
+        }
+
+        .label-icon {
+          margin-top: 10px;
+          color: var(--gray-light);
+        }
+
     </style>
 
     <template>
@@ -163,7 +174,45 @@
               I acknowledge that UNICEF will review the changes to the originally authorised travel and calculate any monetary adjustment to the original travel payment.
             </paper-checkbox>
 
-            <paper-textarea label="Certification note" value="{{data.certification_note}}" char-counter maxlength="2500"></paper-textarea>
+            <div class="layout horizontal">
+
+              <paper-textarea label="Itinerary Deviations and Other Entitlement Changes"
+                value="{{data.certification_note}}"
+                class="flex"
+                char-counter
+                maxlength="2500">
+              </paper-textarea>
+
+              <iron-icon
+                id="label-icon-one"
+                class="label-icon"
+                icon="icons:help">
+              </iron-icon>
+
+              <paper-tooltip for="label-icon-one" position="left" animation-delay="0">
+                Short description of itinerary deviations with name of approving Manager and,<br>
+                details of any not previously anticipated free or subsidised accommodation,<br>
+                meals or transportation provided by UNICEF, a government or related institution,<br>
+                or an airline.</paper-tooltip>
+            </div>
+
+            <div class="layout horizontal">
+
+              <paper-textarea label="Miscellaneous expenses"
+                value="{{data.misc_expenses}}"
+                class="flex"
+                char-counter
+                maxlength="2500">
+              </paper-textarea>
+
+              <iron-icon
+                id="label-icon-two"
+                class="label-icon"
+                icon="icons:help">
+              </iron-icon>
+
+              <paper-tooltip for="label-icon-two" position="left" animation-delay="0">Please list attachments with reference numbers in the Attachments tab.</paper-tooltip>
+            </div>
 
             <paper-button
               class="dialog-confirm-button"
@@ -772,7 +821,7 @@
             this.set('inboundData', data);
             this.fire('travel-post-success', this.travelId);
           }
-        },
+        }
       });
     </script>
 </dom-module>
