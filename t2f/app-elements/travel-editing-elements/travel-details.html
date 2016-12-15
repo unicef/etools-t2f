@@ -85,6 +85,9 @@
       .note-text {
         color: var(--gray-dark);
       }
+      .note-text-first {
+        margin-bottom: 32px;
+      }
       .flag {
         position: absolute;
         top: -4px;
@@ -159,8 +162,11 @@
               </g>
             </g>
           </svg>
-          <div class="note-heading">CERTIFICATION NOTE</div>
-          <div class="note-text">[[data.certification_note]]</div>
+          <div class="note-heading">ITINERARY DEVIATIONS AND OTHER ENTITLEMENT CHANGES</div>
+          <div class="note-text note-text-first">[[data.certification_note]]</div>
+
+          <div class="note-heading">MISCELLANEOUS EXPENSES</div>
+          <div class="note-text">[[data.misc_expenses]]</div>
         </paper-material>
 
         <etools-repeatable-field-set title="Trip Plan"
