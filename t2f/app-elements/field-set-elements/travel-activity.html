@@ -155,8 +155,7 @@
 
       observers: [
         '_travelTypeObserver(activity.travel_type)',
-        '_partnersObserver(activity.partner)',
-        '_setCheckboxes(activity.*)',
+        '_activityObserver(activity.*)',
         '_addValidationFunction(activity.*)'
       ],
       _computeTravelType: function(travel_type) {
@@ -178,13 +177,18 @@
         return partnerships.length === 0 || permissionDisabled;
       },
 
-      _partnersObserver: function(partners) {
-        if (partners) {
-          this.set('partnerships', partners.partnerships);
+      _activityObserver: function(changed) {
+        var partner = changed.base.partner;
+        var partnership = changed.base.partnership;
+        console.log(partner, partnership);
+        if (partner) {
+          this.set('partnerships', partner.partnerships);
+          this.set('activity.partnership', partnership ? partnership : null);
         } else {
           this.set('partnerships', []);
+          this.set('activity.partnership', null);
         }
-        this.set('activity.partnership', null);
+
       },
 
       _addValidationFunction: function(changed) {
@@ -207,11 +211,6 @@
           return false;
         }
       },
-
-      _setCheckboxes: function(changed) {
-        this[changed.path] = changed.value;
-      },
-
       _progVisOrSpotCheck: function(travel_type) {
         return travel_type ?
           [19, 20].indexOf(travel_type.value) > -1 :
