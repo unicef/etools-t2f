@@ -180,7 +180,6 @@
       _activityObserver: function(changed) {
         var partner = changed.base.partner;
         var partnership = changed.base.partnership;
-        console.log(partner, partnership);
         if (partner) {
           this.set('partnerships', partner.partnerships);
           this.set('activity.partnership', partnership ? partnership : null);
