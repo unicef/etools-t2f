@@ -183,7 +183,6 @@
         if (partner) {
           this.set('partnerships', partner.partnerships);
           if (partnership && this.partnerships.find(function(partnerPartnership) {
-            console.log(partnerPartnership, partnership);
             return partnerPartnership.value === partnership.value;
           })) {
              this.set('activity.partnership', partnership);
