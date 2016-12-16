@@ -136,6 +136,21 @@
             </paper-button>
         </paper-dialog>
 
+        <!-- Certification rejection dialog -->
+        <paper-dialog id="cert-rejection-modal" opened="{{certRejectionOpened}}" with-backdrop>
+
+          <div class="dialog-heading">Reject certificate</div>
+          <div class="dialog-intro-text">Please specify reasons for rejecting this certification:</div>
+
+          <paper-textarea label="Rejection note" value="{{data.cert_rejection_note}}" char-counter maxlength="2500"></paper-textarea>
+
+          <paper-button
+            class="dialog-confirm-button"
+            on-click="_rejectCertOnConfirm">
+              Send rejection
+          </paper-button>
+        </paper-dialog>
+
         <!-- Cancellation dialog -->
         <paper-dialog id="cancel-modal" opened="{{cancellationOpened}}" with-backdrop>
 
@@ -696,18 +711,13 @@
 
             reject_certificate: function() {
 
-              self.generalModalAction = function() {
-                self.$['general-modal'].close();
+              self._rejectCertOnConfirm = function() {
+                self.$['cert-rejection-modal'].close();
+
                 endpointConfig.status = 'reject_certificate';
                 doPost();
               };
-
-              self.set('generalModal', {
-                opened: true,
-                heading: 'Reject certificate',
-                text: 'Are you sure you want to reject the certification provided for this travel?',
-                buttonText: 'Reject certificate'
-              });
+              self.certRejectionOpened = true;
             },
 
             certify: function() {

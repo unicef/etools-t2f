@@ -151,6 +151,21 @@
           <div class="note-text">[[data.rejection_note]]</div>
         </paper-material>
 
+        <!-- Certification rejection note -->
+        <paper-material class="note reject" elevation="1" hidden$="[[_hideCertRejectionNote(data)]]">
+          <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
+            <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g class="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                <g transform="translate(80.000000, 226.000000)">
+                  <polygon points="16 0 40 0 40 49 28 39 16 49"></polygon>
+                </g>
+              </g>
+            </g>
+          </svg>
+          <div class="note-heading">CERTIFICATION REJECTION NOTE</div>
+          <div class="note-text">[[data.cert_rejection_note]]</div>
+        </paper-material>
+
         <!-- Certification note -->
         <paper-material class="note reject" elevation="1" hidden$="[[_hideCertificationNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
@@ -407,6 +422,10 @@
 
       _hideRejectionNote: function(data) {
         return data.status !== 'Rejected' || data.rejection_note.length === 0;
+      },
+
+      _hideCertRejectionNote: function(data) {
+        return data.status !== 'Certification rejected' || data.cert_rejection_note.length === 0;
       },
 
       _hideCertificationNote: function(data) {
