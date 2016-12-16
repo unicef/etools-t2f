@@ -73,6 +73,7 @@
           class$="flex-4 [[computedPermission.departure_date.readOnly]]"
           disabled="[[computedPermission.departure_date.disabled]]"
           hidden$="[[computedPermission.departure_date.hidden]]"
+          time-picker
           no-init
           date="{{itinerary.departure_date}}"
           placeholder="select">
@@ -82,6 +83,7 @@
           class$="flex-4 [[computedPermission.arrival_date.readOnly]]"
           disabled="[[computedPermission.arrival_date.disabled]]"
           hidden$="[[computedPermission.arrival_date.hidden]]"
+          time-picker
           date="{{itinerary.arrival_date}}"
           placeholder="select">
         </datepicker-input>

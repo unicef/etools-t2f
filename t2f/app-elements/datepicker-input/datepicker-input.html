@@ -2,6 +2,9 @@
 <link rel="import" href="../../../bower_components/etools-datepicker/etools-datepicker-button.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/moment-element/moment-import.html">
+<link rel="import" href="../../../bower_components/paper-time-picker/paper-time-picker.html">
+<link rel="import" href="../../../bower_components/paper-time-picker/paper-time-picker-dialog-style.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 
 <dom-module id="datepicker-input">
   <template>
@@ -43,8 +46,16 @@
       auto-validate$="[[autoValidate]]"
       invalid$="[[invalid]]">
 
-        <etools-datepicker-button no-init open="{{opened}}" suffix json-date="{{date}}" date="[[date]]"></etools-datepicker-button>
+        <etools-datepicker-button no-init open="{{opened}}" format="[[format]]" suffix json-date="{{date}}" date="[[date]]"></etools-datepicker-button>
     </paper-input>
+
+ <paper-dialog id="timePickerDialog" modal class="paper-time-picker-dialog" on-iron-overlay-closed="_timeChanged" >
+  <paper-time-picker time="{{time}}" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
+  <div class="buttons">
+    <paper-button dialog-confirm>OK</paper-button>
+  </div>
+</paper-dialog>
+
 
   </template>
 
@@ -56,38 +67,72 @@
         required: Boolean,
         placeholder: String,
         autoValidate: Boolean,
+        timePicker: {
+          type: Boolean,
+          value: false
+        },
+        format: {
+          type: String,
+          computed: '_computeFormat(timePicker)'
+        },
         invalid: Boolean,
         label: {
           type: String
         },
         date: {
-          notify: true
+          notify: true,
+          observer: '_computeInitialTime'
+        },
+        time: {
+          type: String,
         },
         prettyDate: {
           type: String,
-          computed: '_dateChanged(date)'
+          computed: '_dateChanged(date, format)'
         },
         opened: {
           type: Boolean,
-          value: false
+          value: false,
+          observer: '_openTimeSelector'
         },
         disabled: {
           type: Boolean,
           value: false
         }
       },
-      _dateChanged: function(date) {
+      _openTimeSelector: function(newValue, old) {
+        if (old === true && newValue === false && this.timePicker) {
+          this.$.timePickerDialog.open();
+        }
+      },
+      _computeInitialTime: function(date) {
+        if (date) {
+          var time =  moment(date).format('hh:mm');
+          this.set('time', time);
+        }
+      },
+      _timeChanged: function() {
+        var mom = moment(this.date);
+        var min = parseInt(this.minute, 10);
+        var hour = parseInt(this.hour, 10);
+        mom.hour(hour);
+        mom.minute(min);
+        this.set('date', mom.toDate());
+      },
+      _computeFormat: function(timePicker) {
+        return timePicker ? 'LLL' : 'LL';
+      },
+      _dateChanged: function(date, format) {
         if (date) {
           /* global moment */
-          return moment(date).format('LL');
+          return moment(date).format(format);
         }
         return date;
       },
       _openCalendar: function() {
         if (this.disabled) {
           return;
-        }
-        if (!this.opened) {
+        } else if (!this.opened) {
           this.set('opened', true);
         }
       }
