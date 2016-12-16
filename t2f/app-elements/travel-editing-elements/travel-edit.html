@@ -212,7 +212,7 @@
         if (forcedTravelRole) {
           travelRole = forcedTravelRole;
         }
-        var userTravelRoles = travelRole ? user.t2f.roles.concat(travelRole) : user.roles;
+        var userTravelRoles = travelRole ? user.t2f.roles.concat(travelRole) : user.t2f.roles;
         if (userTravelRoles.length > 0) {
           var userPermissions = {};
           var draft = permissions[userTravelRoles[0]][status];
