@@ -428,7 +428,8 @@
       },
       gotBackId: function(e, payload) {
         // console.warn('Navigate to:', payload.id);
-        this.set('route.path', '/edit-travel/' + payload.id  + '/');
+        var path = this.route.path.replace('travel-list', 'edit-travel/' + payload.id  + '/');
+        this.set('route.path', path);
       },
       _isGreyClass: function(data) {
         return data.status === 'cancelled' ? 'grey-heading' : '';
