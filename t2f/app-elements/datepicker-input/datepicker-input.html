@@ -34,6 +34,11 @@
       paper-time-picker {
         --default-primary-color: var(--et2f-primary);
       }
+      etools-datepicker-button {
+        --etools-datepicker-btn: {
+          color: var(--gray-mid);
+        };
+      }
     </style>
 
     <paper-input id="date-input"
@@ -52,7 +57,7 @@
       <etools-datepicker-button no-init open="{{opened}}" format="[[format]]" suffix json-date="{{date}}" date="[[date]]"></etools-datepicker-button>
     </paper-input>
 
-     <paper-dialog id="timePickerDialog" modal class="paper-time-picker-dialog" on-iron-overlay-closed="_timeChanged">
+    <paper-dialog id="timePickerDialog" modal class="paper-time-picker-dialog" on-iron-overlay-closed="_timeChanged">
 
       <paper-time-picker time="{{time}}" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
 
