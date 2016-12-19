@@ -15,45 +15,50 @@
     <style include="shared-styles et2f-styles iron-flex" is="custom-style">
 
         .dialog-heading {
-            font-size: 20px;
-            color: var(--gray-dark);
-            font-weight: 500;
+          font-size: 20px;
+          color: var(--gray-dark);
+          font-weight: 500;
         }
 
         .dialog-intro-text {
-            color: var(--gray-mid);
-            font-size: 16px;
-            margin-bottom: 24px;
+          color: var(--gray-mid);
+          font-size: 16px;
+          margin-bottom: 24px;
         }
 
         .row-container {
-            width: 250px;
+          width: 250px;
         }
 
         .small-column-heading {
-            font-size: 12px;
-            font-weight: 500;
-            text-align: center;
+          font-size: 12px;
+          font-weight: 500;
+          text-align: center;
         }
 
         .dialog-confirm-button {
-            color: var(--et2f-primary);
-            font-weight: 500;
-            height: 40px;
-            float: right;
+          color: var(--et2f-primary);
+          font-weight: 500;
+          height: 40px;
+          float: right;
         }
         .dialog-confirm-button[disabled] {
-            color: var(--gray-mid);
-            background-color: white;
-            cursor: not-allowed;
+          color: var(--gray-mid);
+          background-color: white;
+          cursor: not-allowed;
         }
 
         paper-radio-button {
-            text-align: center;
-            margin-left: 10px;
+          text-align: center;
+          margin-left: 10px;
         }
 
-        #rejection-modal, #cancel-modal {
+        .scrollable {
+          max-height: 350px;
+          overflow: scroll;
+        }
+
+        #rejection-modal, #cancel-modal, #cert-rejection-modal {
           width: 540px;
         }
 
@@ -65,7 +70,6 @@
           margin-top: 10px;
           color: var(--gray-light);
         }
-
     </style>
 
     <template>
@@ -127,7 +131,9 @@
             <div class="dialog-heading">Reject travel</div>
             <div class="dialog-intro-text">Please specify reasons for rejecting this travel:</div>
 
-            <paper-textarea label="Rejection note" value="{{data.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
+            <div class="scrollable">
+              <paper-textarea label="Rejection note" value="{{data.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
+            </div>
 
             <paper-button
               class="dialog-confirm-button"
@@ -142,7 +148,9 @@
           <div class="dialog-heading">Reject certificate</div>
           <div class="dialog-intro-text">Please specify reasons for rejecting this certification:</div>
 
-          <paper-textarea label="Rejection note" value="{{data.cert_rejection_note}}" char-counter maxlength="2500"></paper-textarea>
+          <div class="scrollable">
+            <paper-textarea label="Rejection note" value="{{data.cert_rejection_note}}" char-counter maxlength="2500"></paper-textarea>
+          </div>
 
           <paper-button
             class="dialog-confirm-button"
@@ -157,7 +165,9 @@
             <div class="dialog-heading">Cancel travel</div>
             <div class="dialog-intro-text">Please specify reasons for cancelling this travel:</div>
 
-            <paper-textarea label="Cancellation note" value="{{data.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
+            <div class="scrollable">
+              <paper-textarea label="Cancellation note" value="{{data.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
+            </div>
 
             <paper-button
               class="dialog-confirm-button"
@@ -189,45 +199,49 @@
               I acknowledge that UNICEF will review the changes to the originally authorised travel and calculate any monetary adjustment to the original travel payment.
             </paper-checkbox>
 
-            <div class="layout horizontal">
+            <div class="scrollable">
 
-              <paper-textarea label="Itinerary Deviations and Other Entitlement Changes"
-                value="{{data.certification_note}}"
-                class="flex"
-                char-counter
-                maxlength="2500">
-              </paper-textarea>
+              <div class="layout horizontal">
 
-              <iron-icon
-                id="label-icon-one"
-                class="label-icon"
-                icon="icons:help">
-              </iron-icon>
+                <paper-textarea label="Itinerary Deviations and Other Entitlement Changes"
+                  value="{{data.certification_note}}"
+                  class="flex"
+                  char-counter
+                  maxlength="2500">
+                </paper-textarea>
 
-              <paper-tooltip for="label-icon-one" position="left" animation-delay="0">
-                Short description of itinerary deviations with name of approving Manager and,<br>
-                details of any not previously anticipated free or subsidised accommodation,<br>
-                meals or transportation provided by UNICEF, a government or related institution,<br>
-                or an airline.</paper-tooltip>
+                <iron-icon
+                  id="label-icon-one"
+                  class="label-icon"
+                  icon="icons:help">
+                </iron-icon>
+
+                <paper-tooltip for="label-icon-one" position="left" animation-delay="0">
+                  Short description of itinerary deviations with name of approving Manager and,<br>
+                  details of any not previously anticipated free or subsidised accommodation,<br>
+                  meals or transportation provided by UNICEF, a government or related institution,<br>
+                  or an airline.</paper-tooltip>
+              </div>
+
+              <div class="layout horizontal">
+
+                <paper-textarea label="Miscellaneous expenses"
+                  value="{{data.misc_expenses}}"
+                  class="flex"
+                  char-counter
+                  maxlength="2500">
+                </paper-textarea>
+
+                <iron-icon
+                  id="label-icon-two"
+                  class="label-icon"
+                  icon="icons:help">
+                </iron-icon>
+
+                <paper-tooltip for="label-icon-two" position="left" animation-delay="0">Please list attachments with reference numbers in the Attachments tab.</paper-tooltip>
+              </div>
             </div>
 
-            <div class="layout horizontal">
-
-              <paper-textarea label="Miscellaneous expenses"
-                value="{{data.misc_expenses}}"
-                class="flex"
-                char-counter
-                maxlength="2500">
-              </paper-textarea>
-
-              <iron-icon
-                id="label-icon-two"
-                class="label-icon"
-                icon="icons:help">
-              </iron-icon>
-
-              <paper-tooltip for="label-icon-two" position="left" animation-delay="0">Please list attachments with reference numbers in the Attachments tab.</paper-tooltip>
-            </div>
 
             <paper-button
               class="dialog-confirm-button"
@@ -816,7 +830,6 @@
             this.attachmentData = false;
             this.attachmentsEndpoint = undefined;
             this.fire('travel-post-success', this.travelId);
-
           }
         },
 
