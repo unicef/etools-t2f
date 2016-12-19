@@ -116,17 +116,27 @@
         var errorList = [];
         if (errors) {
           Object.keys(errors).forEach(function(category) {
-            errors[category].forEach(function(field) {
-              Object.keys(field).forEach(function(errors) {
-                field[errors].forEach(function(message) {
+            if (errors[category] instanceof Array) {
+              errors[category].forEach(function(message) {
                   errorList.push({
                     fieldSet: category,
-                    field: errors,
+                    field: '',
                     error: message
+                  });
+              });
+            } else {
+              errors[category].forEach(function(field) {
+                Object.keys(field).forEach(function(errors) {
+                  field[errors].forEach(function(message) {
+                    errorList.push({
+                      fieldSet: category,
+                      field: errors,
+                      error: message
+                    });
                   });
                 });
               });
-            });
+          }
           });
         }
         return errorList;

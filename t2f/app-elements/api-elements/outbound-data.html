@@ -839,6 +839,7 @@
 
         _handlePostFail: function(event, i) {
           this.set('formErrors', i.request.detail.request.xhr.response);
+          console.error('Api call failed: ', i.request.detail.request.xhr.response);
           this.postData = false;
           this.attachmentData = false;
           this.deleteAttachmentEndpoint = undefined;
