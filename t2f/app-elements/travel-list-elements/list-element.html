@@ -13,6 +13,7 @@
 <link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -153,20 +154,24 @@
       color: white;
     }
     .dialog-heading {
-        font-size: 20px;
-        color: var(--gray-dark);
-        font-weight: 500;
+      font-size: 20px;
+      padding-top: 8px;
+      color: var(--gray-dark);
+      font-weight: 500;
     }
     .dialog-intro-text {
-        color: var(--gray-mid);
-        font-size: 16px;
-        margin-bottom: 24px;
+      color: var(--gray-mid);
+      font-size: 16px;
+      margin-bottom: 24px;
     }
     .dialog-confirm-button {
-        color: var(--et2f-primary);
-        font-weight: 500;
-        height: 40px;
-        float: right;
+      color: var(--et2f-primary);
+      font-weight: 500;
+      height: 40px;
+      float: right;
+    }
+    .dismiss-dialog-button {
+      cursor: pointer;
     }
   </style>
 
@@ -186,21 +191,16 @@
         with-backdrop
         class="layout vertical">
 
-        <div class="dialog-heading">Duplicate travel</div>
+        <div class="dialog-head-container layout horizontal">
+          <div class="dialog-heading flex">Duplicate travel</div>
+          <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+        </div>
+
         <div class="dialog-intro-text">Please select the person to share this trips activities with</div>
-
-        <paper-dropdown-menu label="Select traveler" class="filter-dropdown">
-
-          <paper-listbox class="dropdown-content">
-            <template is="dom-repeat" items="[[users]]">
-
-              <paper-item on-click="duplicationSetTraveler">
-                [[item.label]]
-              </paper-item>
-
-            </template>
-          </paper-listbox>
-        </paper-dropdown-menu>
+        <etools-searchable-multiselection-menu label="Select traveler" class="filter-dropdown"
+        options="[[users]]"
+        on-value-change="duplicationSetTraveler">
+        </etools-searchable-multiselection-menu>
 
         <paper-button class="dialog-confirm-button self-end" on-click="duplicateConfirm">
           DUPLICATE TRAVEL
@@ -214,21 +214,17 @@
         with-backdrop
         class="layout vertical">
 
-        <div class="dialog-heading">Add driver</div>
+        <div class="dialog-head-container layout horizontal">
+          <div class="dialog-heading flex">Add driver</div>
+          <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+        </div>
+
         <div class="dialog-intro-text">Please select the driver to share this travel plans itinerary with</div>
 
-        <paper-dropdown-menu label="Select driver" class="filter-dropdown">
-
-          <paper-listbox class="dropdown-content">
-            <template is="dom-repeat" items="[[users]]">
-
-              <paper-item on-click="addDriverSetTraveler">
-                [[item.label]]
-              </paper-item>
-
-            </template>
-          </paper-listbox>
-        </paper-dropdown-menu>
+        <etools-searchable-multiselection-menu label="Select traveler" class="filter-dropdown"
+        options="[[users]]"
+        on-value-change="addDriverSetTraveler">
+        </etools-searchable-multiselection-menu>
 
         <paper-button class="dialog-confirm-button" on-click="addDriverConfirm">
           ADD DRIVER
@@ -401,7 +397,6 @@
 
         this.set('enhancedNewTravelBody', {traveler: traveler});
         this.set('enhancedNewTravelUrl', '/api/t2f/travels/' + travel + '/duplicate_travel/');
-        // TODO will it call only once?
       },
       addDriverConfirm: function() {
         if (!this.addDriverTravelerId) {
@@ -411,23 +406,19 @@
 
         var traveler = this.addDriverTravelerId;
         var travel = this.data.id;
-        console.log('confirmed addDriver, user#', traveler);
-        console.log('confirmed addDriver, travel#', travel);
 
         this.set('hackAroundId', travel);
 
         this.set('enhancedNewTravelBody', {traveler: traveler});
         this.set('enhancedNewTravelUrl', '/api/t2f/travels/' + travel + '/add_driver/');
-        // TODO will it call only once?
       },
       duplicationSetTraveler: function(e) {
-        this.set('duplicationTravelerId', e.model.item.value);
+        this.set('duplicationTravelerId', e.detail.selectedValues.value);
       },
       addDriverSetTraveler: function(e) {
-        this.set('addDriverTravelerId', e.model.item.value);
+        this.set('addDriverTravelerId', e.detail.selectedValues.value);
       },
       gotBackId: function(e, payload) {
-        // console.warn('Navigate to:', payload.id);
         var path = this.route.path.replace('travel-list', 'edit-travel/' + payload.id  + '/');
         this.set('route.path', path);
       },

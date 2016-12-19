@@ -37,7 +37,10 @@
       }
     </style>
 
-    <div class="layout vertical flex">
+    <form
+      is="iron-form"
+      id="itinerary_form"
+      class="layout vertical flex">
 
       <div class="layout horizontal">
 
@@ -46,6 +49,8 @@
           disabled="[[computedPermission.origin.disabled]]"
           hidden$="[[computedPermission.origin.hidden]]"
           value="{{itinerary.origin}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.origin.required]]"
           placeholder="departing destination">
         </paper-input>
 
@@ -54,6 +59,8 @@
           disabled="[[computedPermission.destination.disabled]]"
           hidden$="[[computedPermission.destination.hidden]]"
           value="{{itinerary.destination}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.destination.required]]"
           placeholder="arrival destination">
         </paper-input>
 
@@ -63,6 +70,8 @@
           hidden$="[[computedPermission.dsa_region.hidden]]"
           options="[[structure.dsa_regions]]"
           value="{{itinerary.dsa_region}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.dsa_region.required]]"
           placeholder="select">
         </etools-searchable-multiselection-menu>
       </div>
@@ -76,15 +85,20 @@
           time-picker
           no-init
           date="{{itinerary.departure_date}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.departure_date.required]]"
           placeholder="select">
         </datepicker-input>
 
         <datepicker-input label="Arriving"
+          id="arrival_date"
           class$="flex-4 [[computedPermission.arrival_date.readOnly]]"
           disabled="[[computedPermission.arrival_date.disabled]]"
           hidden$="[[computedPermission.arrival_date.hidden]]"
           time-picker
           date="{{itinerary.arrival_date}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.arrival_date.required]]"
           placeholder="select">
         </datepicker-input>
 
@@ -94,6 +108,8 @@
           options="[[structure.travel_modes]]"
           label="Mode of  travel"
           value="{{itinerary.mode_of_travel}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.mode_of_travel.required]]"
           placeholder="select">
         </etools-searchable-multiselection-menu>
 
@@ -123,7 +139,7 @@
         <div class="flex-4"></div>
       </div>
 
-    </div>
+    </form>
 
   </template>
 
@@ -139,6 +155,10 @@
           type: Object,
           value: {}
         },
+         autoValidate: {
+          type: Boolean,
+          computed: '_computeAutoValidate(itinerary)'
+        },
         hideAirline: {
           type: Boolean,
           computed: '_computeHideAirline(itinerary.mode_of_travel)'
@@ -147,10 +167,13 @@
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
-      observers: ['_setCheckboxes(baseDetails.*)'],
+      observers: ['_itineraryObserver(itinerary.*)', '_validDates(itinerary.departure_date, itinerary.arrival_date)'],
+      _computeAutoValidate: function(itinerary) {
+          return itinerary !== undefined && Object.keys(itinerary).length > 0;
+      },
 
-      _setCheckboxes: function(changed) {
-        this[changed.path] = changed.value;
+      _itineraryObserver: function(changed) {
+        this._addValidationFunction(changed);
       },
 
       _computeHideAirline: function(modeOfTravel) {
@@ -158,7 +181,42 @@
           return modeOfTravel.label !== 'Plane';
         }
         return true;
-      }
+      },
+      _validDates: function(start_date, end_date) {
+
+        if (!start_date && !end_date) {
+          return false;
+        }
+
+        var start = new Date(start_date);
+        var end = new Date(end_date);
+
+        if (end <= start) {
+          this.$.arrival_date.setAttribute('error-message', '*should be bigger than departing');
+          this.$.arrival_date.invalid = true;
+          return false;
+        } else {
+          this.$.arrival_date.setAttribute('error-message', '');
+          this.$.arrival_date.invalid = false;
+          return true;
+        }
+      },
+      validateItinerary: function() {
+        var keys = Object.keys(this.itinerary);
+        if (keys.length === 0) {
+          return true;
+        }
+        var dates = this._validDates(this.itinerary.departure_date, this.itinerary.arrival_date);
+        var formValidations = this.$.itinerary_form.validate();
+
+        return dates && formValidations;
+      },
+      _addValidationFunction: function(changed) {
+
+        if (!changed.base._validationFunction) {
+          this.set('itinerary._validationFunction', this.validateItinerary.bind(this, changed.base));
+        }
+      },
     });
   </script>
 </dom-module>

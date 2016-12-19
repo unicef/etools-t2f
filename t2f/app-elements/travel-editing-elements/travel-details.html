@@ -5,6 +5,7 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
@@ -35,8 +36,12 @@
       }
       .dialog-heading {
           font-size: 20px;
+          padding-top: 8px;
           color: var(--gray-dark);
           font-weight: 500;
+      }
+      .dismiss-dialog-button {
+        cursor: pointer;
       }
       .dialog-intro-text {
           color: var(--gray-mid);
@@ -107,7 +112,10 @@
 
         <paper-dialog id="invalid_modal" with-backdrop>
 
-          <div class="dialog-heading">Warning</div>
+          <div class="dialog-head-container layout horizontal">
+            <div class="dialog-heading flex">Warning</div>
+            <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+          </div>
           <div class="dialog-intro-text">You are not allowed to take this action, until you have missing, or badly formatted information in the following fields:</div>
 
           <template is="dom-repeat" items="[[invalids]]">
@@ -149,6 +157,21 @@
           </svg>
           <div class="note-heading">REJECTION NOTE</div>
           <div class="note-text">[[data.rejection_note]]</div>
+        </paper-material>
+
+        <!-- Certification rejection note -->
+        <paper-material class="note reject" elevation="1" hidden$="[[_hideCertRejectionNote(data)]]">
+          <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
+            <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g class="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                <g transform="translate(80.000000, 226.000000)">
+                  <polygon points="16 0 40 0 40 49 28 39 16 49"></polygon>
+                </g>
+              </g>
+            </g>
+          </svg>
+          <div class="note-heading">CERTIFICATION REJECTION NOTE</div>
+          <div class="note-text">[[data.cert_rejection_note]]</div>
         </paper-material>
 
         <!-- Certification note -->
@@ -279,7 +302,8 @@
 
             <travel-cost-assignment permissions-matrix="[[travelPermissions.cost_assignments]]"
               cost-assignment="{{item}}"
-              structure="[[structure]]">
+              structure="[[structure]]"
+              invalid-shares="[[_invalidShares(data.cost_assignments.*)]]">
             </travel-cost-assignment>
 
           </template>
@@ -333,6 +357,7 @@
           type: String,
           observer: '_scrollTo'
         },
+        percentagesSum: Number,
         user: Object
       },
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
@@ -409,12 +434,20 @@
         return data.status !== 'Rejected' || data.rejection_note.length === 0;
       },
 
+      _hideCertRejectionNote: function(data) {
+        return data.status !== 'Certification rejected' || data.cert_rejection_note.length === 0;
+      },
+
       _hideCertificationNote: function(data) {
         return data.status !== 'Certification submitted';
       },
+      _validateItinerarySize: function() {
+        return this.data.itinerary.length > 0 &&
+            Object.keys(this.data.itinerary[0]).length > 0;
+      },
 
       doValidate: function(e, action) {
-
+        var self = this;
         var invalids = [];
 
         if (['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0) {
@@ -424,26 +457,27 @@
             invalids.push('Trip Plan');
           }
 
-          // Validating Activities
-          if (!this.sectionPermissions.activities.hidden) {
-            var allActivitiesValid = true;
-            this.data.activities.forEach(function(act) {
-              allActivitiesValid = act._validationFunction() && allActivitiesValid;
-            });
-            if (!allActivitiesValid) {
-              invalids.push('Trip Activities');
-            }
-          }
+          var toValidate = ['Activities', 'Expenses', 'Itinerary'];
 
-          // Validating Expenses
-          if (!this.sectionPermissions.expenses.hidden) {
-            var expensesAreValid = true;
-            this.data.expenses.forEach(function(exp) {
-              expensesAreValid = exp._validationFunction() && expensesAreValid;
-            });
-            if (!expensesAreValid) {
-              invalids.push('Expenses');
+          toValidate.forEach(function(area) {
+            var fieldSet = area.toLowerCase();
+            if (!self.data[fieldSet].hidden) {
+              var result = true;
+              self.data[fieldSet].forEach(function(field) {
+                result = field._validationFunction() && result;
+              });
+              if (!result) {
+                invalids.push(area);
+              }
+              if (fieldSet === 'itinerary' && self._validateItinerarySize()) {
+                invalids.push('Itinerary must have at least one entry');
+              }
             }
+          });
+
+          // Checking Cost Assignment validity
+          if (this.percentagesSum !== 100) {
+            invalids.push('Cost assignment');
           }
         }
 
@@ -460,8 +494,23 @@
 
       closeInvalidModal: function() {
         this.$.invalid_modal.close();
-      }
+      },
 
+      _invalidShares: function(changed) { // data.cost_assignments.*
+        if (!(this.data.cost_assignments instanceof Array)) {
+          return false;
+        }
+
+        var percentagesSum = this.data.cost_assignments.reduce(function(ret, ass) {
+          return ret + +ass.share;
+        }, 0);
+
+        this.set('percentagesSum', percentagesSum);
+
+        var invalid = Number.isNaN(percentagesSum) ? false : percentagesSum !== 100;
+
+        return invalid;
+      }
     });
   </script>
 </dom-module>

@@ -14,6 +14,7 @@
 <dom-module id="travel-cost-assignment">
   <template>
     <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+
       :host {
         display: block;
         width: 100%;
@@ -29,11 +30,6 @@
         --paper-checkbox-margin: 12px;
       }
 
-      paper-input[label="Share(%)*"] {
-        --paper-input-container-input: {
-          text-align: right;
-        };
-      }
     </style>
 
     <div class="layout vertical flex">
@@ -43,6 +39,7 @@
         <etools-searchable-multiselection-menu label="WBS*"
           class$="flex-4 [[computedPermission.wbs.readOnly]]"
           options="[[structure.wbs]]"
+          empty-value
           value="{{costAssignment.wbs}}"
           disabled="[[computedPermission.wbs.disabled]]"
           hidden$="[[computedPermission.wbs.hidden]]"
@@ -55,6 +52,7 @@
           value="{{costAssignment.grant}}"
           disabled="[[computedPermission.grant.disabled]]"
           hidden$="[[computedPermission.grant.hidden]]"
+          empty-value
           placeholder="select">
         </etools-searchable-multiselection-menu>
 
@@ -63,6 +61,7 @@
           options="[[structure.funds]]"
           value="{{costAssignment.fund}}"
           disabled="[[computedPermission.fund.disabled]]"
+          empty-value
           hidden$="[[computedPermission.fund.hidden]]"
           placeholder="select">
         </etools-searchable-multiselection-menu>
@@ -73,10 +72,12 @@
           disabled="[[computedPermission.share.disabled]]"
           hidden$="[[computedPermission.share.hidden]]"
           type="number"
-          step="1"
           min="0"
           max="100"
-          placeholder="add">
+          step="1"
+          pattern="^(100|([1-9]{0,1})?([0-9]{0,1})?)$"
+          placeholder="add"
+          invalid="[[invalidShares]]">
           <span suffix>%</span>
         </paper-input>
       </div>
@@ -94,6 +95,10 @@
         structure: {
           type: Object,
           value: {}
+        },
+        invalidShares: {
+          type: Boolean,
+          value: false
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
