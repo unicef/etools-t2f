@@ -86,14 +86,14 @@
 
       <div class="layout horizontal">
 
-        <paper-checkbox class$="flex custom-margin [[computedPermission.ta_required.readOnly]]"
+        <paper-checkbox class$="flex-3 custom-margin [[computedPermission.ta_required.readOnly]]"
           hidden$="[[computedPermission.ta_required.hidden]]"
           checked="{{baseDetails.ta_required}}"
           disabled="[[taRequiredDisabled]]"
           >TA required?
         </paper-checkbox>
 
-        <paper-checkbox class$="flex custom-margin [[computedPermission.international_travel.readOnly]]"
+        <paper-checkbox class$="flex-3 custom-margin [[computedPermission.international_travel.readOnly]]"
           disabled="[[computedPermission.international_travel.disabled]]"
           hidden$="[[computedPermission.international_travel.hidden]]"
           toggles="[[falseValue]]"
@@ -102,11 +102,10 @@
           >International travel?
         </paper-checkbox>
 
-        <div class="flex layout horizontal center">
+        <div class="flex-6 layout horizontal center">
           <span class$="standalone [[computedPermission.reference_number.readOnly]]"
             hidden$="[[computedPermission.reference_number.hidden]]">Reference #: [[baseDetails.reference_number]]</span>
         </div>
-        <div class="flex"></div>
       </div>
 
       <div class="layout horizontal">
