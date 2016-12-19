@@ -13,6 +13,7 @@
 <link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -196,19 +197,10 @@
         </div>
 
         <div class="dialog-intro-text">Please select the person to share this trips activities with</div>
-
-        <paper-dropdown-menu label="Select traveler" class="filter-dropdown">
-
-          <paper-listbox class="dropdown-content">
-            <template is="dom-repeat" items="[[users]]">
-
-              <paper-item on-click="duplicationSetTraveler">
-                [[item.label]]
-              </paper-item>
-
-            </template>
-          </paper-listbox>
-        </paper-dropdown-menu>
+        <etools-searchable-multiselection-menu label="Select traveler" class="filter-dropdown"
+        options="[[users]]"
+        on-value-change="duplicationSetTraveler">
+        </etools-searchable-multiselection-menu>
 
         <paper-button class="dialog-confirm-button self-end" on-click="duplicateConfirm">
           DUPLICATE TRAVEL
@@ -229,18 +221,10 @@
 
         <div class="dialog-intro-text">Please select the driver to share this travel plans itinerary with</div>
 
-        <paper-dropdown-menu label="Select driver" class="filter-dropdown">
-
-          <paper-listbox class="dropdown-content">
-            <template is="dom-repeat" items="[[users]]">
-
-              <paper-item on-click="addDriverSetTraveler">
-                [[item.label]]
-              </paper-item>
-
-            </template>
-          </paper-listbox>
-        </paper-dropdown-menu>
+        <etools-searchable-multiselection-menu label="Select traveler" class="filter-dropdown"
+        options="[[users]]"
+        on-value-change="addDriverSetTraveler">
+        </etools-searchable-multiselection-menu>
 
         <paper-button class="dialog-confirm-button" on-click="addDriverConfirm">
           ADD DRIVER
@@ -429,10 +413,10 @@
         this.set('enhancedNewTravelUrl', '/api/t2f/travels/' + travel + '/add_driver/');
       },
       duplicationSetTraveler: function(e) {
-        this.set('duplicationTravelerId', e.model.item.value);
+        this.set('duplicationTravelerId', e.detail.selectedValues.value);
       },
       addDriverSetTraveler: function(e) {
-        this.set('addDriverTravelerId', e.model.item.value);
+        this.set('addDriverTravelerId', e.detail.selectedValues.value);
       },
       gotBackId: function(e, payload) {
         var path = this.route.path.replace('travel-list', 'edit-travel/' + payload.id  + '/');

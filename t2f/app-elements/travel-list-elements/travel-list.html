@@ -12,6 +12,7 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="./list-element.html">
 <link rel="import" href="./list-header.html">
@@ -157,20 +158,10 @@
 
             <div class="layout horizontal">
 
-              <paper-dropdown-menu label="Select [[item.name]]" class="filter-dropdown">
-
-                <paper-listbox class="dropdown-content">
-                  <template is="dom-repeat" items="[[item.selection]]" as="filter">
-
-                    <paper-item
-                      on-click="changeFilterValue"
-                      item="[[item.filterName]]">
-                      [[filter.label]]
-                    </paper-item>
-
-                  </template>
-                </paper-listbox>
-              </paper-dropdown-menu>
+               <etools-searchable-multiselection-menu label="Select [[item.name]]" class="filter-dropdown"
+                options="[[item.selection]]"
+                on-value-change="changeFilterValue">
+              </etools-searchable-multiselection-menu>
 
               <div class="filter-reset-button" on-click="removeFilter">X</div>
             </div>
@@ -559,12 +550,10 @@
         this.splice('usedFilters', indexToRemove, 1);
       },
       changeFilterValue: function(e) {
-
         var key = e.model.item.filterName;
-        var value = e.model.filter.value;
+        var value = e.detail.selectedValues.value;
         var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
         oldParams[key] = value;
-
         this.set('ajaxParams', oldParams);
       },
       _changeParamsOrder: function(orderObj, old) {
