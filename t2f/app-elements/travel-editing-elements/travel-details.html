@@ -302,7 +302,8 @@
 
             <travel-cost-assignment permissions-matrix="[[travelPermissions.cost_assignments]]"
               cost-assignment="{{item}}"
-              structure="[[structure]]">
+              structure="[[structure]]"
+              invalid-shares="[[_invalidShares(data.cost_assignments.*)]]">
             </travel-cost-assignment>
 
           </template>
@@ -356,6 +357,7 @@
           type: String,
           observer: '_scrollTo'
         },
+        percentagesSum: Number,
         user: Object
       },
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
@@ -472,6 +474,11 @@
               invalids.push('Expenses');
             }
           }
+
+          // Checking Cost Assignment validity
+          if (this.percentagesSum !== 100) {
+            invalids.push('Cost assignment');
+          }
         }
 
         if (invalids.length) {
@@ -487,8 +494,20 @@
 
       closeInvalidModal: function() {
         this.$.invalid_modal.close();
-      }
+      },
 
+      _invalidShares: function(changed) { // data.cost_assignments.*
+
+        var percentagesSum = this.data.cost_assignments.reduce(function(ret, ass) {
+          return ret + +ass.share;
+        }, 0);
+
+        this.set('percentagesSum', percentagesSum);
+
+        var invalid = Number.isNaN(percentagesSum) ? false : percentagesSum !== 100;
+
+        return invalid;
+      }
     });
   </script>
 </dom-module>

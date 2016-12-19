@@ -14,6 +14,7 @@
 <dom-module id="travel-cost-assignment">
   <template>
     <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+
       :host {
         display: block;
         width: 100%;
@@ -29,11 +30,6 @@
         --paper-checkbox-margin: 12px;
       }
 
-      paper-input[label="Share(%)*"] {
-        --paper-input-container-input: {
-          text-align: right;
-        };
-      }
     </style>
 
     <div class="layout vertical flex">
@@ -73,10 +69,12 @@
           disabled="[[computedPermission.share.disabled]]"
           hidden$="[[computedPermission.share.hidden]]"
           type="number"
-          step="1"
           min="0"
           max="100"
-          placeholder="add">
+          step="1"
+          pattern="^(100|([1-9]{0,1})?([0-9]{0,1})?)$"
+          placeholder="add"
+          invalid="[[invalidShares]]">
           <span suffix>%</span>
         </paper-input>
       </div>
@@ -94,6 +92,10 @@
         structure: {
           type: Object,
           value: {}
+        },
+        invalidShares: {
+          type: Boolean,
+          value: false
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
