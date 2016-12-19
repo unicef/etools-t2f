@@ -43,6 +43,7 @@
         <etools-searchable-multiselection-menu label="WBS*"
           class$="flex-4 [[computedPermission.wbs.readOnly]]"
           options="[[structure.wbs]]"
+          empty-value
           value="{{costAssignment.wbs}}"
           disabled="[[computedPermission.wbs.disabled]]"
           hidden$="[[computedPermission.wbs.hidden]]"
@@ -55,6 +56,7 @@
           value="{{costAssignment.grant}}"
           disabled="[[computedPermission.grant.disabled]]"
           hidden$="[[computedPermission.grant.hidden]]"
+          empty-value
           placeholder="select">
         </etools-searchable-multiselection-menu>
 
@@ -63,6 +65,7 @@
           options="[[structure.funds]]"
           value="{{costAssignment.fund}}"
           disabled="[[computedPermission.fund.disabled]]"
+          empty-value
           hidden$="[[computedPermission.fund.hidden]]"
           placeholder="select">
         </etools-searchable-multiselection-menu>
