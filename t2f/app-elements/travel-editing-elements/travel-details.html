@@ -5,6 +5,7 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
@@ -35,8 +36,12 @@
       }
       .dialog-heading {
           font-size: 20px;
+          padding-top: 8px;
           color: var(--gray-dark);
           font-weight: 500;
+      }
+      .dismiss-dialog-button {
+        cursor: pointer;
       }
       .dialog-intro-text {
           color: var(--gray-mid);
@@ -107,7 +112,10 @@
 
         <paper-dialog id="invalid_modal" with-backdrop>
 
-          <div class="dialog-heading">Warning</div>
+          <div class="dialog-head-container layout horizontal">
+            <div class="dialog-heading flex">Warning</div>
+            <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+          </div>
           <div class="dialog-intro-text">You are not allowed to take this action, until you have missing, or badly formatted information in the following fields:</div>
 
           <template is="dom-repeat" items="[[invalids]]">
