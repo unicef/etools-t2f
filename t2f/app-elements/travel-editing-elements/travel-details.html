@@ -302,7 +302,8 @@
 
             <travel-cost-assignment permissions-matrix="[[travelPermissions.cost_assignments]]"
               cost-assignment="{{item}}"
-              structure="[[structure]]">
+              structure="[[structure]]"
+              invalid-shares="[[_invalidShares(data.cost_assignments.*)]]">
             </travel-cost-assignment>
 
           </template>
@@ -356,6 +357,7 @@
           type: String,
           observer: '_scrollTo'
         },
+        percentagesSum: Number,
         user: Object
       },
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
@@ -445,7 +447,7 @@
       },
 
       doValidate: function(e, action) {
-
+        var self = this;
         var invalids = [];
 
         if (['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0) {
@@ -455,24 +457,28 @@
             invalids.push('Trip Plan');
           }
 
-          var toValidate = ['Activites', 'Expenses', 'Itinerary'];
+          var toValidate = ['Activities', 'Expenses', 'Itinerary'];
 
           toValidate.forEach(function(area) {
             var fieldSet = area.toLowerCase();
-            if (!this.data[fieldSet].hidden) {
+            if (!self.data[fieldSet].hidden) {
               var result = true;
-              this.data[fieldSet].forEach(function(field) {
+              self.data[fieldSet].forEach(function(field) {
                 result = field._validationFunction() && result;
               });
               if (!result) {
                 invalids.push(area);
               }
-              if (fieldSet === 'itinerary' && this._validateItinerarySize()) {
+              if (fieldSet === 'itinerary' && self._validateItinerarySize()) {
                 invalids.push('Itinerary must have at least one entry');
               }
             }
           });
 
+          // Checking Cost Assignment validity
+          if (this.percentagesSum !== 100) {
+            invalids.push('Cost assignment');
+          }
         }
 
         if (invalids.length) {
@@ -488,8 +494,23 @@
 
       closeInvalidModal: function() {
         this.$.invalid_modal.close();
-      }
+      },
 
+      _invalidShares: function(changed) { // data.cost_assignments.*
+        if (!(this.data.cost_assignments instanceof Array)) {
+          return false;
+        }
+
+        var percentagesSum = this.data.cost_assignments.reduce(function(ret, ass) {
+          return ret + +ass.share;
+        }, 0);
+
+        this.set('percentagesSum', percentagesSum);
+
+        var invalid = Number.isNaN(percentagesSum) ? false : percentagesSum !== 100;
+
+        return invalid;
+      }
     });
   </script>
 </dom-module>
