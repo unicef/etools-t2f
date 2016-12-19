@@ -147,7 +147,7 @@
         },
         autoValidate: {
           type: Boolean,
-          computed: '_computeAutoValidate(activity)'
+          computed: '_computeAutoValidate(itinerary)'
         },
         activityValidationArray: {
           type: Array,
@@ -160,7 +160,6 @@
       observers: [
         '_travelTypeObserver(activity.travel_type)',
         '_activityObserver(activity.*)',
-        '_addValidationFunction(activity.*)'
       ],
       _computeTravelType: function(travel_type) {
        return travel_type;
@@ -182,6 +181,7 @@
       },
 
       _activityObserver: function(changed) {
+        this._addValidationFunction(changed);
         var partner = changed.base.partner;
         var partnership = changed.base.partnership;
         if (partner) {
@@ -201,7 +201,6 @@
       },
 
       _addValidationFunction: function(changed) {
-
         if (!changed.base._validationFunction) {
           this.set('activity._validationFunction', this._validateActivities.bind(this, changed.base));
         }
