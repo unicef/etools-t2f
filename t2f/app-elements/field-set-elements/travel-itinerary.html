@@ -80,6 +80,7 @@
         </datepicker-input>
 
         <datepicker-input label="Arriving"
+          id="arrival_date"
           class$="flex-4 [[computedPermission.arrival_date.readOnly]]"
           disabled="[[computedPermission.arrival_date.disabled]]"
           hidden$="[[computedPermission.arrival_date.hidden]]"
@@ -147,7 +148,7 @@
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
-      observers: ['_setCheckboxes(baseDetails.*)'],
+      observers: ['_setCheckboxes(baseDetails.*)', '_validDates(itinerary.departure_date, itinerary.arrival_date)'],
 
       _setCheckboxes: function(changed) {
         this[changed.path] = changed.value;
@@ -158,6 +159,29 @@
           return modeOfTravel.label !== 'Plane';
         }
         return true;
+      },
+      _validDates: function(start_date, end_date) {
+
+        if (!start_date && !end_date) {
+          return false;
+        }
+
+        var start = new Date(start_date);
+        var end = new Date(end_date);
+
+        if (end <= start) {
+          this.$.arrival_date.setAttribute('error-message', '*should be bigger than departing');
+          this.$.arrival_date.invalid = true;
+          return false;
+        } else {
+          this.$.arrival_date.setAttribute('error-message', '');
+          this.$.arrival_date.invalid = false;
+          return true;
+        }
+      },
+      validateItinerary: function() {
+        var dates = this._validDates(this.itinerary.departure_date, this.itinerary.arrival_date);
+        return dates;
       }
     });
   </script>
