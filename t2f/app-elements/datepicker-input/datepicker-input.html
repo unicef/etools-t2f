@@ -90,8 +90,7 @@
           type: String
         },
         date: {
-          notify: true,
-          observer: '_dateObserver'
+          notify: true
         },
         time: {
           type: String,
@@ -109,17 +108,20 @@
           value: false
         }
       },
-      observers: ['_dateChanged(date, format)'],
+      observers: ['_dateChanged(date, format)', '_dateObserver(date.*)'],
       _openTimeSelector: function(newValue, old) {
         if (old === true && newValue === false && this.timePicker) {
           this.$.timePickerDialog.open();
         }
       },
-      _dateObserver: function(date) {
+      _dateObserver: function(changed) {
+        //this prevent the date to be null, the component like undefined but not null
+        var date = changed.base;
         if (date) {
           var time =  moment(date).format('hh:mm');
           this.set('time', time);
         } else {
+          this.set('date', undefined);
           this.set('prettyDate', undefined);
         }
       },

@@ -443,7 +443,7 @@
       },
       _validateItinerarySize: function() {
         return this.data.itinerary.length > 0 &&
-            Object.keys(this.data.itinerary[0]).length > 0;
+            Object.keys(this.data.itinerary[0]).length > 7;
       },
 
       doValidate: function(e, action) {
@@ -451,15 +451,7 @@
         // this.fire('form-action', action); // to debug the backend validation
         var invalids = [];
 
-        if (['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0) {
-
-          // Validating Trip plan
-          if (!this.$.travel_plan._validateTravelPlan()) {
-            invalids.push('Trip Plan');
-          }
-
-          var toValidate = ['Activities', 'Expenses', 'Itinerary'];
-
+        function fieldSetValidation(toValidate) {
           toValidate.forEach(function(area) {
             var fieldSet = area.toLowerCase();
             if (!self.data[fieldSet].hidden) {
@@ -470,17 +462,27 @@
               if (!result) {
                 invalids.push(area);
               }
-              if (fieldSet === 'itinerary' && self._validateItinerarySize()) {
-                invalids.push('Itinerary must have at least one entry');
-              }
             }
           });
-
-          // Checking Cost Assignment validity
-          if (this.percentagesSum !== 100) {
-            invalids.push('Cost assignment');
-          }
         }
+
+        if (['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0) {
+          // Validating Trip plan
+            if (!this.$.travel_plan._validateTravelPlan()) {
+              invalids.push('Trip Plan');
+            }
+            var toValidate = ['Activities', 'Expenses'];
+            fieldSetValidation(toValidate);
+
+            // Checking Cost Assignment validity
+            if (this.percentagesSum !== 100) {
+              invalids.push('Cost assignment');
+            }
+          }
+
+          if (!self._validateItinerarySize()) {
+            invalids.push('Itinerary must have at least one entry');
+          }
 
         if (invalids.length) {
 
