@@ -183,13 +183,12 @@
         return true;
       },
       _validDates: function(start_date, end_date) {
-
         if (!start_date && !end_date) {
           return false;
         }
 
-        var start = new Date(start_date);
-        var end = new Date(end_date);
+        var start = new Date(start_date).getTime();
+        var end = new Date(end_date).getTime();
         if (end <= start) {
           this.$.arrival_date.setAttribute('error-message', '*should be bigger than departing');
           this.$.arrival_date.invalid = true;

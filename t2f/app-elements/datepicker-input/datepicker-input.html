@@ -115,7 +115,7 @@
         }
       },
       _dateObserver: function(changed) {
-        //this prevent the date to be null, the component like undefined but not null
+        //this prevent the date to be null, the component like undefined but not null;
         var date = changed.base;
         if (date) {
           var time =  moment(date).format('hh:mm');
@@ -131,7 +131,9 @@
         var hour = parseInt(this.hour, 10);
         mom.hour(hour);
         mom.minute(min);
+        this.set('date', undefined);
         this.set('date', mom.toDate());
+        // this.fire('time-updated', {date: mom.toDate()});
       },
       _computeFormat: function(timePicker) {
         return timePicker ? 'LLL' : 'LL';
