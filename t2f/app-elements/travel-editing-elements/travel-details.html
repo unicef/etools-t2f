@@ -498,12 +498,14 @@
       },
 
       _invalidShares: function(changed) { // data.cost_assignments.*
-        if (!(this.data.cost_assignments instanceof Array)) {
+        if (!(this.data.cost_assignments instanceof Array) || this.data.cost_assignments.every(function(el) {
+          return el.share === undefined;
+        })) {
           return false;
         }
 
         var percentagesSum = this.data.cost_assignments.reduce(function(ret, ass) {
-          return ret + (+ass.share);
+          return ret + (Number.isNaN(+ass.share) ? 0 : (+ass.share));
         }, 0);
 
         this.set('percentagesSum', percentagesSum);
