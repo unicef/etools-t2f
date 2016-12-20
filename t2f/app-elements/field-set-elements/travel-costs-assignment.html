@@ -36,37 +36,40 @@
 
       <div class="layout horizontal">
 
-        <etools-searchable-multiselection-menu label="WBS*"
+        <etools-searchable-multiselection-menu label="WBS"
           class$="flex-4 [[computedPermission.wbs.readOnly]]"
           options="[[structure.wbs]]"
           empty-value
           value="{{costAssignment.wbs}}"
           disabled="[[computedPermission.wbs.disabled]]"
           hidden$="[[computedPermission.wbs.hidden]]"
-          placeholder="select">
+          placeholder="select"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Grant*"
+        <etools-searchable-multiselection-menu label="Grant"
           class$="flex-3 [[computedPermission.grant.readOnly]]"
           options="[[structure.grants]]"
           value="{{costAssignment.grant}}"
           disabled="[[computedPermission.grant.disabled]]"
           hidden$="[[computedPermission.grant.hidden]]"
           empty-value
-          placeholder="select">
+          placeholder="select"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Fund*"
+        <etools-searchable-multiselection-menu label="Fund"
           class$="flex-3 [[computedPermission.fund.readOnly]]"
           options="[[structure.funds]]"
           value="{{costAssignment.fund}}"
           disabled="[[computedPermission.fund.disabled]]"
           empty-value
           hidden$="[[computedPermission.fund.hidden]]"
-          placeholder="select">
+          placeholder="select"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <paper-input label="Share(%)*"
+        <paper-input label="Share(%)"
           class$="flex-2 custom-margin [[computedPermission.share.readOnly]]"
           value="{{costAssignment.share}}"
           disabled="[[computedPermission.share.disabled]]"
@@ -77,7 +80,8 @@
           step="1"
           pattern="^(100|([1-9]{0,1})?([0-9]{0,1})?)$"
           placeholder="add"
-          invalid="[[invalidShares]]">
+          invalid="[[invalidShares]]"
+          starred>
           <span suffix>%</span>
         </paper-input>
       </div>

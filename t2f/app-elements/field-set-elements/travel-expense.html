@@ -35,7 +35,7 @@
 
       <div class="layout horizontal">
 
-        <etools-searchable-multiselection-menu label="Travel expense type*"
+        <etools-searchable-multiselection-menu label="Travel expense type"
           id="type"
           class$="flex-3 [[computedPermission.type.readOnly]]"
           disabled="[[computedPermission.type.disabled]]"
@@ -46,10 +46,11 @@
           placeholder="select"
           required$="[[computedPermission.type.required]]"
           on-paper-dropdown-close="_validateType"
-          auto-validate$="[[autoValidate]]">
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <paper-input label="Amount*"
+        <paper-input label="Amount"
           class$="flex-3 custom-margin [[computedPermission.amount.readOnly]]"
           disabled="[[computedPermission.amount.disabled]]"
           hidden$="[[computedPermission.amount.hidden]]"
@@ -58,10 +59,11 @@
           value="{{expense.amount}}"
           error-message="*number required"
           required$="[[computedPermission.amount.required]]"
-          auto-validate>
+          auto-validate
+          starred>
         </paper-input>
 
-        <etools-searchable-multiselection-menu label="Document currency*"
+        <etools-searchable-multiselection-menu label="Document currency"
           id="curr1"
           class$="flex-3 [[computedPermission.document_currency.readOnly]]"
           disabled="[[computedPermission.document_currency.disabled]]"
@@ -72,10 +74,11 @@
           placeholder="select"
           required$="[[computedPermission.document_currency.required]]"
           on-paper-dropdown-close="_validateDocCurr"
-          auto-validate$="[[autoValidate]]">
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Accounting currency*"
+        <etools-searchable-multiselection-menu label="Accounting currency"
           id="curr2"
           class$="flex-3 [[computedPermission.account_currency.readOnly]]"
           disabled="[[computedPermission.account_currency.disabled]]"
@@ -86,7 +89,8 @@
           placeholder="select"
           required$="[[computedPermission.account_currency.required]]"
           on-paper-dropdown-close="_validateAccCurr"
-          auto-validate$="[[autoValidate]]">
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
       </div>
     </form>

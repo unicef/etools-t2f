@@ -79,9 +79,6 @@
         };
         --paper-checkbox-margin: 12px 8px 12px 12px;
       }
-      paper-checkbox.readonly {
-        /* If theres design for it, write this! */
-      }
 
       /* TEXTAREA, INPUT */
       etools-searchable-multiselection-menu, paper-input, paper-textarea, paper-dropdown-menu {
@@ -104,7 +101,6 @@
       }
 
       paper-input.readonly, paper-textarea.readonly {
-        /* More styles will come here, once designs ready */
         --paper-input-container-underline: {
           display: none;
         };
@@ -113,6 +109,12 @@
       paper-radio-button {
         --paper-radio-button-unchecked-color: var(--gray-mid);
         --paper-radio-button-checked-color: var(--et2f-primary);
+      }
+
+      * /deep/ *[starred] /deep/ label::after {
+        content: " *";
+        font-weight: bold;
+        color: var(--et2f-error);
       }
 
     </style>
