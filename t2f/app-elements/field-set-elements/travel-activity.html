@@ -37,7 +37,7 @@
 
       <div class="layout horizontal">
 
-        <etools-searchable-multiselection-menu label="Trip type*"
+        <etools-searchable-multiselection-menu label="Trip type"
           id="trip_type"
           class$="flex-4 [[computedPermission.travel_type.readOnly]]"
           disabled="[[computedPermission.travel_type.disabled]]"
@@ -47,7 +47,8 @@
           value="{{activity.travel_type}}"
           required$="[[computedPermission.travel_type.required]]"
           placeholder="select"
-          on-paper-dropdown-close="_validateType">
+          on-paper-dropdown-close="_validateType"
+          starred>
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Partner"

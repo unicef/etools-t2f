@@ -110,7 +110,7 @@
 
       <div class="layout horizontal">
 
-        <etools-searchable-multiselection-menu label="Traveler*"
+        <etools-searchable-multiselection-menu label="Traveler"
           id="travel_input"
           value="{{baseDetails.traveler}}"
           class$="flex-3 [[computedPermission.traveler.readOnly]]"
@@ -120,10 +120,11 @@
           empty-value
           required$="[[computedPermission.traveler.required]]"
           placeholder="select"
-          auto-validate$="[[autoValidate]]">
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Supervisor*"
+        <etools-searchable-multiselection-menu label="Supervisor"
           id="supervisor_input"
           value="{{baseDetails.supervisor}}"
           class$="flex-3 [[computedPermission.supervisor.readOnly]]"
@@ -133,10 +134,12 @@
           options="[[usersButMe]]"
           required$="[[computedPermission.supervisor.required]]"
           placeholder="select"
-          auto-validate$="[[autoValidate]]">
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Office*"
+        <etools-searchable-multiselection-menu label="Office"
+          id="office_input"
           value="{{baseDetails.office}}"
           class$="flex-3 [[computedPermission.office.readOnly]]"
           disabled="[[computedPermission.office.disabled]]"
@@ -145,10 +148,12 @@
           options="[[structure.offices]]"
           required$="[[computedPermission.office.required]]"
           placeholder="select"
-          auto-validate$="[[autoValidate]]">
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Section*"
+        <etools-searchable-multiselection-menu label="Section"
+          id="section_input"
           value="{{baseDetails.section}}"
           class$="flex-3 [[computedPermission.section.readOnly]]"
           disabled="[[computedPermission.section.disabled]]"
@@ -157,23 +162,25 @@
           options="[[structure.sections]]"
           required$="[[computedPermission.section.required]]"
           placeholder="select"
-          auto-validate$="[[autoValidate]]">
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
       </div>
 
       <div class="layout horizontal">
 
-        <datepicker-input label="Start Date*"
+        <datepicker-input label="Start Date"
           class$="flex-3 [[computedPermission.start_date.readOnly]]"
           disabled="[[computedPermission.start_date.disabled]]"
           hidden$="[[computedPermission.start_date.hidden]]"
           required$="[[computedPermission.start_date.required]]"
           auto-validate$="[[autoValidate]]"
           placeholder="select"
-          date="{{baseDetails.start_date}}">
+          date="{{baseDetails.start_date}}"
+          starred>
         </datepicker-input>
 
-        <datepicker-input label="End Date*"
+        <datepicker-input label="End Date"
           id="end_date"
           class$="flex-3 [[computedPermission.end_date.readOnly]]"
           disabled="[[computedPermission.end_date.disabled]]"
@@ -182,10 +189,11 @@
           error-message=""
           placeholder="select"
           date="{{baseDetails.end_date}}"
-          auto-validate$="[[autoValidate]]">
+          auto-validate$="[[autoValidate]]"
+          starred>
         </datepicker-input>
 
-        <etools-searchable-multiselection-menu label="Mode of travel*"
+        <etools-searchable-multiselection-menu label="Mode of travel"
           id="mode_of_travel"
           class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
@@ -195,7 +203,8 @@
           multi
           on-paper-dropdown-close="_validateMode"
           required$="[[computedPermission.mode_of_travel.required]]"
-          placeholder="select">
+          placeholder="select"
+          starred>
         </etools-searchable-multiselection-menu>
       </div>
 
@@ -227,7 +236,7 @@
 
       <div class="layout horizontal">
 
-        <paper-textarea label="Purpose of travel*"
+        <paper-textarea label="Purpose of travel"
           id="purpose"
           class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
           disabled="[[computedPermission.purpose.disabled]]"
@@ -236,7 +245,8 @@
           char-counter maxlength="120"
           placeholder="brief explanation"
           value="{{baseDetails.purpose}}"
-          on-blur="validatePurpose">
+          on-blur="validatePurpose"
+          starred>
         </paper-textarea>
       </div>
 
