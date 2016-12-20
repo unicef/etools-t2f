@@ -502,7 +502,7 @@
         }
 
         var percentagesSum = this.data.cost_assignments.reduce(function(ret, ass) {
-          return ret + ass.share;
+          return ret + (+ass.share);
         }, 0);
 
         this.set('percentagesSum', percentagesSum);
