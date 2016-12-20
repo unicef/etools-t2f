@@ -12,6 +12,7 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="./list-element.html">
 <link rel="import" href="./list-header.html">
@@ -43,7 +44,7 @@
 
     .second-header {
       min-height: 84px;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
     .second-header paper-input {
       --paper-input-container: {
@@ -62,6 +63,10 @@
       color: var(--gray-dark);
       font-size: 16px;
       margin-right: 8px;
+    }
+
+    .data-table {
+      margin-bottom: 24px;
     }
 
     .data-table .data-card-heading {
@@ -124,13 +129,15 @@
 
       <etools-ajax url="[[listEndPoint]]"
           params="{{ajaxParams}}"
+          loading="{{listLoading}}"
           on-success="handleListResponse">
       </etools-ajax>
 
-      <et2f-header title="Field monitoring"
+      <et2f-header title="Trip management"
         show-new-travel-button
         show-export-button
-        data-to-print="[[dataToPrint]]"
+        export-type="list"
+        data="[[data]]"
         export-params="[[ajaxParams]]"></et2f-header>
 
       <paper-card class="second-header horizontal layout center">
@@ -151,20 +158,10 @@
 
             <div class="layout horizontal">
 
-              <paper-dropdown-menu label="Select [[item.name]]" class="filter-dropdown">
-
-                <paper-listbox class="dropdown-content">
-                  <template is="dom-repeat" items="[[item.selection]]" as="filter">
-
-                    <paper-item
-                      on-click="changeFilterValue"
-                      item="[[item.filterName]]">
-                      [[filter.label]]
-                    </paper-item>
-
-                  </template>
-                </paper-listbox>
-              </paper-dropdown-menu>
+               <etools-searchable-multiselection-menu label="Select [[item.name]]" class="filter-dropdown"
+                options="[[item.selection]]"
+                on-value-change="changeFilterValue">
+              </etools-searchable-multiselection-menu>
 
               <div class="filter-reset-button" on-click="removeFilter">X</div>
             </div>
@@ -241,6 +238,10 @@
         datalength: {
           type: Number,
           value: 0
+        },
+        listLoading: {
+          type: Boolean,
+          notify: true
         },
         showingResults: {
           type: String,
@@ -452,7 +453,7 @@
           {
             name: 'Travel type',
             filterName: 'f_travel_type',
-            selection: structure.mode_of_travel
+            selection: structure.travel_types
           },
           {
             name: 'Status',
@@ -544,17 +545,15 @@
 
         this.push('availableFilters', pristineFilter);
 
-        this.set('usedFilters', this.usedFilters.filter(function(filter) {
-          return filter.name !== filterName;
-        }));
+        var indexToRemove = this.usedFilters.indexOf(e.model.item);
+
+        this.splice('usedFilters', indexToRemove, 1);
       },
       changeFilterValue: function(e) {
-
         var key = e.model.item.filterName;
-        var value = e.model.filter.value;
+        var value = e.detail.selectedValues.value;
         var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
         oldParams[key] = value;
-
         this.set('ajaxParams', oldParams);
       },
       _changeParamsOrder: function(orderObj, old) {
@@ -566,6 +565,7 @@
         var backup = JSON.parse(JSON.stringify(this.ajaxParams));
         backup.page = 1;
         backup.reverse = orderObj.reverse;
+        backup.sort_by = this.labelLib[orderObj.orderedBy];
         this.set('ajaxParams', backup);
       },
       _changeParamsPages: function(pages, old) {
@@ -605,31 +605,6 @@
           }
         });
         this.set('data', data.data);
-        this._prepareExportData(data.data);
-      },
-      _prepareExportData: function(data) {
-        this.dataToPrint = {
-          margin: [0, 10],
-          table: {
-            widths: [101, 101, 101, 101, 101, 101, 101],
-            headerRows: 1,
-            body: []
-          }
-        };
-        if (data.length > 0) {
-          var tableHeader = Object.keys(data[0]).slice(0, 7).map(function(item) {
-            return item.replace(/_/g, ' ');
-          });
-          this.dataToPrint.table.body = data.map(function(item) {
-            return _.values(item).slice(0, 7).map(function(value) {
-              if (!value) {
-                return ' ';
-              }
-              return '' + value;
-            });
-          });
-          this.dataToPrint.table.body = [tableHeader].concat(this.dataToPrint.table.body);
-        }
       },
       searchKeyDown: function(e) {
 

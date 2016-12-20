@@ -7,6 +7,7 @@
 
 
 <link rel="import" href="../app-elements/travel-editing-elements/travel-edit.html">
+<link rel="import" href="../app-elements/page-header-element/page-header.html">
 
 <link rel="import" href="../styles/shared-styles.html">
 
@@ -26,14 +27,11 @@
 
       <app-header fixed shadow>
 
-        <app-toolbar>
-          <paper-icon-button class="light" icon="menu" on-tap="openDrawer"></paper-icon-button>
-          <div main-title>eTools template</div>
-        </app-toolbar>
+        <page-header title="Trip Management"></page-header>
 
       </app-header>
     </app-header-layout>
-    <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
+    <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" detail-loading="{{detailLoading}}" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
   </template>
 
   <script>
@@ -47,6 +45,10 @@
         route: {
           type: Object,
           notify: true,
+        },
+        detailLoading: {
+          type: Boolean,
+          notify: true
         }
       }
 

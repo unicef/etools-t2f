@@ -8,7 +8,7 @@ App global configuration
     'use strict';
 
     /* exported etoolsAjaxDefaultDexieDbPrefix */
-    var etoolsAjaxDefaultDexieDbPrefix = 'frontendTemplate';
+    var etoolsAjaxDefaultDexieDbPrefix = 't2f';
 
     var etoolsAppConfig = {
       // dexie js
@@ -32,41 +32,38 @@ App global configuration
           cachingKey: 'countries'
         },
         et2fStaticData: {
-          url: '/api/et2f/static_data/',
+          url: '/api/t2f/static_data/',
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
           cachingKey: 'et2f_static_data'
         },
         et2fPermissionsMatrix: {
-          url: '/api/et2f/permission_matrix/',
+          url: '/api/t2f/permission_matrix/',
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
           cachingKey: 'et2f_permissions'
         },
         et2fTravelDetail: {
-          template: '/api/et2f/travels/<%=id%>/',
+          template: '/api/t2f/travels/<%=id%>/',
 //          cachingKeyTemplate: 'et2f_travel_detail_<%=id%>',
 //          exp: 60 * 1000
         },
         et2fTravelAttachments: {
-          template: '/api/et2f/travels/<%=id%>/attachments/',
+          template: '/api/t2f/travels/<%=id%>/attachments/',
         },
         et2fTravelAttachmentDetail: {
-          template: '/api/et2f/travels/<%=id%>/attachments/<%=itemId%>/',
+          template: '/api/t2f/travels/<%=id%>/attachments/<%=itemId%>/',
         },
         et2fStateChange: {
-          template: '/api/et2f/travels/<%=id%>/<%=status%>/'
-        },
-        et2fMe: {
-          url: '/api/et2f/me/'
+          template: '/api/t2f/travels/<%=id%>/<%=status%>/'
         },
         et2fSaveAndSubmit: {
-          url: '/api/et2f/travels/save_and_submit/'
+          url: '/api/t2f/travels/save_and_submit/'
         },
         et2fTravelList: {
-          url: '/api/et2f/travels/'
+          url: '/api/t2f/travels/'
         },
 
         et2fCSVListExport: {
-          url: '/api/et2f/travels/export/'
+          url: '/api/t2f/travels/export/'
         }
       },
 

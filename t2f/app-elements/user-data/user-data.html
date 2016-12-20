@@ -10,6 +10,8 @@
                  endpoint="[[endpoint]]"
                  on-success="_handleResponse"
                  on-fail="_handleError"
+                 on-unauthorized="_redirectToLogin"
+                  on-forbidden="_redirectToLogin"
                  caching-storage="dexie"></etools-ajax>
   </template>
 
@@ -20,6 +22,10 @@
 
     var _setUserData = function(data) {
       _data.user = data || {};
+      //t2f specific values
+      _data.user.value = _data.user.id;
+      _data.user.label = _data.user.full_name;
+
       _data.permissions = {};
       var permissions = this.getAllPermissions();
 
@@ -73,7 +79,7 @@
         user: {
           type: Object,
           readOnly: true,
-          notify: true
+          notify: true,
         },
 
         permissions: {
@@ -105,6 +111,10 @@
           this._setUser(data.user);
           this._setPermissions(data.permissions);
         }
+      },
+
+       _redirectToLogin: function() {
+        window.location.href = 'https://etools-dev.unicef.org/login/';
       },
 
       _handleResponse: function(res) {

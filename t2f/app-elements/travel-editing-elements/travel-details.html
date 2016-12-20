@@ -5,25 +5,25 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../travel-status-box/travel-status.html">
 <link rel="import" href="../../app-behaviors/permission-behavior.html">
-<link rel="import" href="travel-plan.html">
+<link rel="import" href="../field-set-elements/travel-plan.html">
 
-<link rel="import" href="travel-activity.html">
-<link rel="import" href="travel-itinerary.html">
-<link rel="import" href="travel-expense.html">
+<link rel="import" href="../field-set-elements/travel-activity.html">
+<link rel="import" href="../field-set-elements/travel-itinerary.html">
+<link rel="import" href="../field-set-elements/travel-expense.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 
-<link rel="import" href="../travel-status-box/travel-status.html">
-<link rel="import" href="travel-costs-assignment.html">
-<link rel="import" href="travel-deductions.html">
-<link rel="import" href="travel-costs-summary.html">
+<link rel="import" href="../field-set-elements/travel-costs-assignment.html">
+<link rel="import" href="../field-set-elements/travel-deductions.html">
+<link rel="import" href="../field-set-elements/travel-costs-summary.html">
 
 <link rel="import" href="../datepicker-input/datepicker-input.html">
 
@@ -36,8 +36,12 @@
       }
       .dialog-heading {
           font-size: 20px;
+          padding-top: 8px;
           color: var(--gray-dark);
           font-weight: 500;
+      }
+      .dismiss-dialog-button {
+        cursor: pointer;
       }
       .dialog-intro-text {
           color: var(--gray-mid);
@@ -66,11 +70,6 @@
       .orange-header {
         --repeatable-items-header-bg: var(--et2f-warning);
       }
-      travel-status {
-        margin-top: 24px;
-        margin-right: 24px;
-      }
-
       .note {
         margin: 24px;
         padding: 24px 24px 24px 64px;
@@ -91,6 +90,9 @@
       .note-text {
         color: var(--gray-dark);
       }
+      .note-text-first {
+        margin-bottom: 32px;
+      }
       .flag {
         position: absolute;
         top: -4px;
@@ -110,7 +112,10 @@
 
         <paper-dialog id="invalid_modal" with-backdrop>
 
-          <div class="dialog-heading">Warning</div>
+          <div class="dialog-head-container layout horizontal">
+            <div class="dialog-heading flex">Warning</div>
+            <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+          </div>
           <div class="dialog-intro-text">You are not allowed to take this action, until you have missing, or badly formatted information in the following fields:</div>
 
           <template is="dom-repeat" items="[[invalids]]">
@@ -154,6 +159,21 @@
           <div class="note-text">[[data.rejection_note]]</div>
         </paper-material>
 
+        <!-- Certification rejection note -->
+        <paper-material class="note reject" elevation="1" hidden$="[[_hideCertRejectionNote(data)]]">
+          <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
+            <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+              <g class="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
+                <g transform="translate(80.000000, 226.000000)">
+                  <polygon points="16 0 40 0 40 49 28 39 16 49"></polygon>
+                </g>
+              </g>
+            </g>
+          </svg>
+          <div class="note-heading">CERTIFICATION REJECTION NOTE</div>
+          <div class="note-text">[[data.cert_rejection_note]]</div>
+        </paper-material>
+
         <!-- Certification note -->
         <paper-material class="note reject" elevation="1" hidden$="[[_hideCertificationNote(data)]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
@@ -165,8 +185,11 @@
               </g>
             </g>
           </svg>
-          <div class="note-heading">CERTIFICATION NOTE</div>
-          <div class="note-text">[[data.certification_note]]</div>
+          <div class="note-heading">ITINERARY DEVIATIONS AND OTHER ENTITLEMENT CHANGES</div>
+          <div class="note-text note-text-first">[[data.certification_note]]</div>
+
+          <div class="note-heading">MISCELLANEOUS EXPENSES</div>
+          <div class="note-text">[[data.misc_expenses]]</div>
         </paper-material>
 
         <etools-repeatable-field-set title="Trip Plan"
@@ -179,17 +202,18 @@
           <travel-plan id="travel_plan"
             base-details="{{data.baseDetails}}"
             permissions-matrix="[[travelPermissions.baseDetails]]"
-            structure="[[structure]]">
+            structure="[[structure]]"
+            user="[[user]]">
           </travel-plan>
         </etools-repeatable-field-set>
 
         <etools-repeatable-field-set title="Trip Activities"
+          id="activities"
           model="{{data.activities}}"
           hide-plus="[[!sectionPermissions.activities.edit]]"
           allow-copy="[[sectionPermissions.activities.edit]]"
           show-counter
           elevation="1"
-            id="activities"
           open="[[sectionPermissions.activities.open]]"
           hidden$="[[sectionPermissions.activities.hidden]]">
 
@@ -214,6 +238,7 @@
           hide-plus="[[!sectionPermissions.itinerary.edit]]"
           allow-copy="[[sectionPermissions.itinerary.edit]]"
           elevation="1"
+          show-counter
           open="[[sectionPermissions.itinerary.open]]"
           hidden$="[[sectionPermissions.itinerary.hidden]]">
 
@@ -240,7 +265,7 @@
           <div class="layout vertical flex">
 
             <travel-deductions
-              disabled="[[!sectionPermissions.deductions.open]]"
+              disabled="[[!sectionPermissions.deductions.edit]]"
               itinerary="[[data.itinerary]]"
               deductions="{{data.deductions}}"
               permissions-matrix="[[travelPermissions.deductions]]">
@@ -277,7 +302,8 @@
 
             <travel-cost-assignment permissions-matrix="[[travelPermissions.cost_assignments]]"
               cost-assignment="{{item}}"
-              structure="[[structure]]">
+              structure="[[structure]]"
+              invalid-shares="[[_invalidShares(data.cost_assignments.*)]]">
             </travel-cost-assignment>
 
           </template>
@@ -296,16 +322,6 @@
           <travel-cost-summary cost-summary="[[data.cost_summary]]" currency="[[data.baseDetails.currency]]" structure="[[structure]]"></travel-cost-summary>
         </etools-repeatable-field-set>
       </div>
-
-      <travel-status
-        user-roles="[[userRoles]]"
-        status="[[data.status]]"
-        is-international="[[data.baseDetails.international_travel]]"
-        scroll-top-margin="84"
-        cancelled-date="[[data.canceled_at]]"
-        completed-date="[[data.completed_at]]"
-        on-validate="onValidate">
-      </travel-status>
     </div>
   </template>
 
@@ -341,13 +357,17 @@
           type: String,
           observer: '_scrollTo'
         },
+        percentagesSum: Number,
+        user: Object
       },
-
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
         var computed = {};
 
         var collapsedStatus = {
           'Traveler': {
+            'Planned': ['deductions', 'expenses'],
+            'Submitted': ['deductions', 'expenses'],
+            'Canceled': ['deductions', 'expenses'],
             'Sent for payment': ['deductions', 'expenses', 'cost_assignments'],
             'Certification submitted': ['deductions', 'expenses', 'cost_assignments'],
             'Certification approved': ['deductions', 'expenses', 'cost_assignments'],
@@ -414,50 +434,84 @@
         return data.status !== 'Rejected' || data.rejection_note.length === 0;
       },
 
+      _hideCertRejectionNote: function(data) {
+        return data.status !== 'Certification rejected' || data.cert_rejection_note.length === 0;
+      },
+
       _hideCertificationNote: function(data) {
         return data.status !== 'Certification submitted';
       },
+      _validateItinerarySize: function() {
+        return this.data.itinerary.length > 0 &&
+            Object.keys(this.data.itinerary[0]).length > 0;
+      },
 
-      onValidate: function(e, action) {
-
+      doValidate: function(e, action) {
+        var self = this;
+        // this.fire('form-action', action); // to debug the backend validation
         var invalids = [];
 
-        // Validating Trip plan
-        if (!this.$.travel_plan._validateTravelPlan()) {
-          invalids.push('Trip Plan');
+        if (['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0) {
+
+          // Validating Trip plan
+          if (!this.$.travel_plan._validateTravelPlan()) {
+            invalids.push('Trip Plan');
+          }
+
+          var toValidate = ['Activities', 'Expenses', 'Itinerary'];
+
+          toValidate.forEach(function(area) {
+            var fieldSet = area.toLowerCase();
+            if (!self.data[fieldSet].hidden) {
+              var result = true;
+              self.data[fieldSet].forEach(function(field) {
+                result = field._validationFunction() && result;
+              });
+              if (!result) {
+                invalids.push(area);
+              }
+              if (fieldSet === 'itinerary' && self._validateItinerarySize()) {
+                invalids.push('Itinerary must have at least one entry');
+              }
+            }
+          });
+
+          // Checking Cost Assignment validity
+          if (this.percentagesSum !== 100) {
+            invalids.push('Cost assignment');
+          }
         }
 
-        // Validating Activities
-        var allActivitiesValid = true;
-        this.data.activities.forEach(function(act) {
-          allActivitiesValid = act._validationFunction() && allActivitiesValid;
-        });
-        if (!allActivitiesValid) {
-          invalids.push('Trip Activities');
-        }
+        if (invalids.length) {
 
-        // Validating Expenses
-        var expensesAreValid = true;
-        this.data.expenses.forEach(function(exp) {
-          expensesAreValid = exp._validationFunction() && expensesAreValid;
-        });
-        if (!expensesAreValid) {
-          invalids.push('Expenses');
-        }
-
-        if (!invalids.length || action.name === 'Save') {
-        // if (!invalids.length) { // for testing
-          this.fire('form-action', action);
-        } else {
           this.set('invalids', invalids);
           this.$.invalid_modal.open();
+
+        } else {
+
+          this.fire('form-action', action);
         }
       },
 
       closeInvalidModal: function() {
         this.$.invalid_modal.close();
-      }
+      },
 
+      _invalidShares: function(changed) { // data.cost_assignments.*
+        if (!(this.data.cost_assignments instanceof Array)) {
+          return false;
+        }
+
+        var percentagesSum = this.data.cost_assignments.reduce(function(ret, ass) {
+          return ret + (+ass.share);
+        }, 0);
+
+        this.set('percentagesSum', percentagesSum);
+
+        var invalid = Number.isNaN(percentagesSum) ? false : percentagesSum !== 100;
+
+        return invalid;
+      }
     });
   </script>
 </dom-module>

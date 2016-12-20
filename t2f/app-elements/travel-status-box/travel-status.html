@@ -139,7 +139,8 @@
     }
     .vertline {
       margin: 7px 12px;
-      border-left: 1px solid #BDBDBD;
+      border-left: 2px solid var(--gray-light);
+      transform: translate(-1px,0);
     }
   </style>
 
@@ -200,7 +201,7 @@
           </div>
 
           <div class="card-actions">
-            <form-actions-button user-roles="[[userRoles]]" status="[[status]]" is-international="[[isInternational]]" >
+            <form-actions-button user-roles="[[userRoles]]" status="[[status]]" data="[[data]]" >
             </form-actions-button>
           </div>
         </template>
@@ -258,7 +259,7 @@
           </div>
 
           <div class="card-actions">
-            <form-actions-button user-roles="[[userRoles]]" status="[[status]]" is-international="[[isInternational]]" >
+            <form-actions-button user-roles="[[userRoles]]" status="[[status]]" data="[[data]]" >
             </form-actions-button>
           </div>
         </template>
@@ -282,7 +283,7 @@
           </div>
 
           <div class="card-actions">
-            <form-actions-button user-roles="[[userRoles]]" status="[[status]]" is-international="[[isInternational]]" >
+            <form-actions-button user-roles="[[userRoles]]" status="[[status]]" data="[[data]]" >
             </form-actions-button>
           </div>
         </template>
@@ -304,7 +305,7 @@
           </div>
 
           <div class="card-actions">
-            <form-actions-button user-roles="[[userRoles]]" is-international="[[isInternational]]" status="[[status]]">
+            <form-actions-button user-roles="[[userRoles]]" data="[[data]]" status="[[status]]">
             </form-actions-button>
           </div>
         </template>
@@ -324,8 +325,8 @@
           type: String,
           reflectToAttribute: true
         },
-        isInternational: {
-          type: Boolean,
+        data: {
+          type: Object
         },
         cancelledDate: String,
         completedDate: String,
@@ -337,6 +338,7 @@
           value: 0
         }
       },
+      observers: ['_parseData(data.*)'],
 
       firstStatuses: ['Planned', 'Submitted', 'Approved', 'Rejected', 'Sent for payment'],
 
@@ -346,6 +348,15 @@
         'Certification rejected',
         'Certification approved'
       ],
+
+      _parseData: function(changed) {
+        var data = changed.base;
+        if (data) {
+        this.set('status', data.status);
+        this.set('cancelledDate', data.canceled_at);
+        this.set('completedDate', data.completed_at);
+        }
+      },
 
       _getHeading: function(status) {
         return this.secondStatuses.indexOf(status) >= 0 ? 'Certification' : 'Travel status';
@@ -394,15 +405,17 @@
             self.$['main-card'].style.position = 'fixed';
             self.$['main-card'].style.top = self.scrollTopMargin + 'px';
           } else {
-            self.$['main-card'].style.position = 'absolute';
-            self.$['main-card'].style.top = '0';
+            self.resetPosition();
           }
           if (self._previousOnScroll) {
             self._previousOnScroll();
           }
         };
       },
-
+      resetPosition: function() {
+        this.$['main-card'].style.position = 'absolute';
+        this.$['main-card'].style.top = '0';
+      },
       // '2016-11-17T13:53:13.839938Z' => '2016. 11. 17.'
       formatDate: function(dateStr) {
         return dateStr ? dateStr.split('T')[0].split('-').join('. ') + '.' : 'N.A.';

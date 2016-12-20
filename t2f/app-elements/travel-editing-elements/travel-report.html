@@ -4,7 +4,6 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 
-<link rel="import" href="../travel-status-box/travel-status.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -66,7 +65,7 @@
         <paper-textarea
           label="Add your report here*"
           char-counter
-          maxlength="5000"
+          maxlength="200000"
           value="{{reportString}}"
           disabled="[[!reportPermission.edit]]"
           hidden$="[[!reportPermission.view]]">
@@ -76,13 +75,6 @@
           Save report
         </paper-button>
       </paper-material>
-
-      <travel-status
-        user-type="[[userType]]"
-        status="[[data.status]]"
-        cancelled-date="[[data.canceled_at]]"
-        completed-date="[[data.completed_at]]">
-      </travel-status>
     </div>
 
   </template>
@@ -101,7 +93,8 @@
           type: Object,
           notify: true
         },
-        userType: String,
+        status: String,
+        userRoles: String,
         reportPermission: {
           type: Object,
         }

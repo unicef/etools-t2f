@@ -137,7 +137,7 @@
               'endPoint': 'complete'
             },
             'planned': {
-              'name': 'To planned',
+              'name': 'Mark as planned',
               'endPoint': 'planned'
             },
             'printTa': {
@@ -172,7 +172,7 @@
               },
               'Sent for payment': {
                 'primary': 'wentAsPlanned',
-                'secondary': ['submitCertificate', 'printTa']
+                'secondary': ['submitCertificate', 'printTa', 'save']
               },
               'Certification submitted': {
                 'primary': 'approveCertificate',
@@ -249,8 +249,8 @@
                 'secondary': ['save_and_submit', 'cancel']
               },
               'Submitted': {
-                'primary': 'cancel',
-                'secondary': []
+                'primary': 'save',
+                'secondary': ['cancel']
               },
               'Cancelled': {
                 'primary': 'planned',
@@ -258,14 +258,14 @@
               },
               'Approved': {
                 'primary': 'printTa',
-                'secondary': []
+                'secondary': ['save']
               },
               'Rejected': {
                 'primary': 'planned',
                 'secondary': ['save_and_submit', 'printTa']
               },
               'Sent for payment': {
-                'primary': 'certify',
+                'primary': 'wentAsPlanned',
                 'secondary': ['submitCertificate', 'save', 'printTa']
               },
               'Certification submitted': {
@@ -305,15 +305,15 @@
               },
               'Approved': {
                 'primary': 'printTa',
-                'secondary': []
+                'secondary': ['save']
               },
               'Rejected': {
                 'primary': 'planned',
                 'secondary': ['save_and_submit', 'printTa']
               },
               'Sent for payment': {
-                'primary': 'submitCertificate',
-                'secondary': ['printTa']
+                'primary': 'wentAsPlanned',
+                'secondary': ['submitCertificate', 'printTa', 'save']
               },
               'Certification submitted': {
                 'primary': 'printTa',
@@ -529,6 +529,52 @@
         internationalTravelPermissions: {
           type: Object,
           value: {
+            'God': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel']
+              },
+              'Submitted': {
+                'primary': 'approve',
+                'secondary': ['reject', 'save']
+              },
+              'Cancelled': {
+                'primary': 'planned',
+                'secondary': ['save', 'save_and_submit']
+              },
+              'Approved': {
+                'primary': 'save',
+                'secondary': ['sendForPayment']
+              },
+              'Rejected': {
+                'primary': 'planned',
+                'secondary': ['save', 'save_and_submit']
+              },
+              'Sent for payment': {
+                'primary': 'wentAsPlanned',
+                'secondary': ['submitCertificate', 'save']
+              },
+              'Certification submitted': {
+                'primary': 'approveCertificate',
+                'secondary': ['rejectCertificate']
+              },
+              'Certification rejected': {
+                'primary': 'submitCertificate',
+                'secondary': []
+              },
+              'Certification approved': {
+                'primary': 'save',
+                'secondary': ['certify']
+              },
+              'Certified': {
+                'primary': 'complete',
+                'secondary': []
+              },
+              'Completed': {
+                'primary': '',
+                'secondary': []
+              }
+            },
             'Anyone': {
               'Planned': {
                 'primary': '',
@@ -582,15 +628,15 @@
                 'secondary': ['save_and_submit', 'cancel']
               },
               'Submitted': {
-                'primary': 'cancel',
-                'secondary': []
+                'primary': 'save',
+                'secondary': ['cancel']
               },
               'Cancelled': {
                 'primary': 'planned',
                 'secondary': ['save_and_submit']
               },
               'Approved': {
-                'primary': '',
+                'primary': 'save',
                 'secondary': []
               },
               'Rejected': {
@@ -637,7 +683,7 @@
                 'secondary': ['save_and_submit']
               },
               'Approved': {
-                'primary': '',
+                'primary': 'save',
                 'secondary': []
               },
               'Rejected': {
@@ -645,8 +691,8 @@
                 'secondary': ['save_and_submit']
               },
               'Sent for payment': {
-                'primary': 'submitCertificate',
-                'secondary': []
+                'primary': 'certify',
+                'secondary': ['submitCertificate', 'save']
               },
               'Certification submitted': {
                 'primary': '',
@@ -862,13 +908,8 @@
         userRoles: {
           type: Array,
         },
-        status: {
-          type: String,
-        },
         actions: {
-          type: Object,
-          computed: '_computeActions(actList, permissions, status,' +
-            ' userRoles, isInternational, internationalTravelPermissions)'
+          type: Object
         },
         show: {
           type: Boolean,
@@ -878,20 +919,29 @@
           type: Boolean,
           computed: '_showSecondary(actions)'
         },
-        isInternational: {
-          type: Boolean,
-          value: false
+        data: {
+          type: Object
         }
       },
+      observers: ['_computeActions(actList, permissions, internationalTravelPermissions, data.*, userRoles)'],
+
       _buttonGreyClass: function(actions) {
         return (actions.primary &&
                 actions.primary.name === 'Cancel' &&
                 !this._showSecondary(actions)) ?
                   'grey' : '';
       },
-      _computeActions: function(actList, permissions, status, userRoles,
-        isInternational, internationalTravelPermissions) {
+      _computeActions: function(actList, permissions,
+        internationalTravelPermissions, data, userRoles) {
+        if (!data.base || !data.base.baseDetails) {
+          return;
+        }
+        var isInternational = data.base.baseDetails.is_international;
+        var status = data.base.status;
+        var taRequired = data.base.baseDetails.ta_required;
+
         var lib = isInternational ?  internationalTravelPermissions : permissions;
+
         userRoles.reverse();
         var mainActions = userRoles.reduce(function(result, role) {
             var primary = lib[role][status].primary;
@@ -907,13 +957,20 @@
           return result.concat(secondary);
         }, mainActions);
 
+        if (taRequired === false) {
+          var notTaKeys = ['save', 'cancel'];
+          allActions = allActions.filter(function(action) {
+            return notTaKeys.indexOf(action) > -1;
+          });
+        }
         var availableActions = {
           primary: actList[allActions.shift()],
           secondary: allActions.map(function(action) {
             return actList[action];
           })
         };
-        return availableActions;
+
+        this.set('actions', availableActions);
       },
       _showAtAll: function(actions) {
 

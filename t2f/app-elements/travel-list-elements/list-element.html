@@ -13,6 +13,7 @@
 <link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -24,11 +25,14 @@
       display: block;
       padding: 0;
       margin: 0;
-      border-bottom: 1px solid rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(0,0,0,.12);
       box-sizing: border-box;
     }
-    .heading-row {
+    .full-row, .heading-row {
       width: 100%;
+    }
+    .heading-row {
+      transition: background-color 0.15s ease;
     }
     .heading-row.grey-heading {
       background-color: var(--gray-lighter);
@@ -36,6 +40,9 @@
     .heading-row-detailed {
       background-color: #EEEEEE;
       height: 64px;
+    }
+    .full-row:hover .heading-row {
+      background-color: #f5f5f5;
     }
     .headings {
       display: block;
@@ -101,9 +108,9 @@
       font-size: 13px;
       line-height: 32px;
       text-align: center;
-      -moz-box-shadow: inset 0 -1px 0 var(--gray-light);
-      -webkit-box-shadow: inset 0 -1px 0 var(--gray-light);
-      box-shadow: inset 0 -1px 0 var(--gray-light);
+      -moz-box-shadow: inset 0 -1px 0 rgba(0,0,0,.12);
+      -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,.12);
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,.12);
     }
     #more-button {
       --paper-menu-button: {
@@ -147,20 +154,24 @@
       color: white;
     }
     .dialog-heading {
-        font-size: 20px;
-        color: var(--gray-dark);
-        font-weight: 500;
+      font-size: 20px;
+      padding-top: 8px;
+      color: var(--gray-dark);
+      font-weight: 500;
     }
     .dialog-intro-text {
-        color: var(--gray-mid);
-        font-size: 16px;
-        margin-bottom: 24px;
+      color: var(--gray-mid);
+      font-size: 16px;
+      margin-bottom: 24px;
     }
     .dialog-confirm-button {
-        color: var(--et2f-primary);
-        font-weight: 500;
-        height: 40px;
-        float: right;
+      color: var(--et2f-primary);
+      font-weight: 500;
+      height: 40px;
+      float: right;
+    }
+    .dismiss-dialog-button {
+      cursor: pointer;
     }
   </style>
 
@@ -180,21 +191,16 @@
         with-backdrop
         class="layout vertical">
 
-        <div class="dialog-heading">Duplicate travel</div>
+        <div class="dialog-head-container layout horizontal">
+          <div class="dialog-heading flex">Duplicate travel</div>
+          <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+        </div>
+
         <div class="dialog-intro-text">Please select the person to share this trips activities with</div>
-
-        <paper-dropdown-menu label="Select traveler" class="filter-dropdown">
-
-          <paper-listbox class="dropdown-content">
-            <template is="dom-repeat" items="[[users]]">
-
-              <paper-item on-click="duplicationSetTraveler">
-                [[item.label]]
-              </paper-item>
-
-            </template>
-          </paper-listbox>
-        </paper-dropdown-menu>
+        <etools-searchable-multiselection-menu label="Select traveler" class="filter-dropdown"
+        options="[[users]]"
+        on-value-change="duplicationSetTraveler">
+        </etools-searchable-multiselection-menu>
 
         <paper-button class="dialog-confirm-button self-end" on-click="duplicateConfirm">
           DUPLICATE TRAVEL
@@ -208,90 +214,91 @@
         with-backdrop
         class="layout vertical">
 
-        <div class="dialog-heading">Add driver</div>
+        <div class="dialog-head-container layout horizontal">
+          <div class="dialog-heading flex">Add driver</div>
+          <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+        </div>
+
         <div class="dialog-intro-text">Please select the driver to share this travel plans itinerary with</div>
 
-        <paper-dropdown-menu label="Select driver" class="filter-dropdown">
-
-          <paper-listbox class="dropdown-content">
-            <template is="dom-repeat" items="[[users]]">
-
-              <paper-item on-click="addDriverSetTraveler">
-                [[item.label]]
-              </paper-item>
-
-            </template>
-          </paper-listbox>
-        </paper-dropdown-menu>
+        <etools-searchable-multiselection-menu label="Select traveler" class="filter-dropdown"
+        options="[[users]]"
+        on-value-change="addDriverSetTraveler">
+        </etools-searchable-multiselection-menu>
 
         <paper-button class="dialog-confirm-button" on-click="addDriverConfirm">
           ADD DRIVER
         </paper-button>
       </paper-dialog>
 
-      <div class$="heading-row clearfix layout horizontal [[_isGreyClass(data)]]">
+      <div class="full-row">
 
-        <div class$="headings textprim bold w60 [[_statusClass(data)]]">
-          <iron-icon
-            icon="icons:expand-more"
-            on-click="_toggleExpanded"
-            hidden$="[[_isDetailed(expanded)]]">
-          </iron-icon>
-          <iron-icon
-            icon="icons:expand-less"
-            on-click="_toggleExpanded"
-            hidden$="[[!_isDetailed(expanded)]]">
-          </iron-icon>
-        </div>
-        <div class="headings blue bold w13">
-          <a href="[[baseUrl]]edit-travel/{{data.id}}">[[data.reference_number]]</a>
-        </div>
-        <div class="headings textprim w13">[[data.traveler]]</div>
-        <div class="headings textprim w13">[[getOffice(data.office, offices)]]</div>
-        <div class="headings textprim w13">[[getSection(data.section, sections)]]</div>
-        <div class="headings textprim w11">[[data.start_date]]</div>
-        <div class="headings textprim w11">[[data.end_date]]</div>
-        <div class="headings textprim bold capital w23">
-          <div class$="statusdiv [[_statusClass(data)]]">
-            <span class="statusdivtext">[[_statusMapping(data.status)]]</span>
+        <!-- SIMPLE VIEW -->
+        <div class$="heading-row clearfix layout horizontal [[_isGreyClass(data)]]">
+
+          <div class$="headings textprim bold w60 [[_statusClass(data)]]">
+            <iron-icon
+              icon="icons:expand-more"
+              on-click="_toggleExpanded"
+              hidden$="[[_isDetailed(expanded)]]">
+            </iron-icon>
+            <iron-icon
+              icon="icons:expand-less"
+              on-click="_toggleExpanded"
+              hidden$="[[!_isDetailed(expanded)]]">
+            </iron-icon>
+          </div>
+          <div class="headings blue bold w13">
+            <a href="[[baseUrl]]edit-travel/{{data.id}}">[[data.reference_number]]</a>
+          </div>
+          <div class="headings textprim w13">[[data.traveler]]</div>
+          <div class="headings textprim w13">[[getOffice(data.office, offices)]]</div>
+          <div class="headings textprim w13">[[getSection(data.section, sections)]]</div>
+          <div class="headings textprim w11">[[data.start_date]]</div>
+          <div class="headings textprim w11">[[data.end_date]]</div>
+          <div class="headings textprim bold capital w23">
+            <div class$="statusdiv [[_statusClass(data)]]">
+              <span class="statusdivtext">[[_statusMapping(data.status)]]</span>
+            </div>
+          </div>
+          <div class="headings textsec w5">
+
+            <paper-menu-button horizontal-align="right" id="more-button">
+
+              <paper-icon-button icon="more-vert" class="dropdown-trigger">
+              </paper-icon-button>
+
+              <paper-menu class="dropdown-content">
+
+                <paper-item on-click="duplicate">
+                  <iron-icon icon="social:person-add"></iron-icon>
+                  <paper-item-body>Duplicate trip</paper-item-body>
+                </paper-item>
+
+                <paper-item on-click="addDriver">
+                  <iron-icon icon="maps:directions-car"></iron-icon>
+                  <paper-item-body>Add driver</paper-item-body>
+                </paper-item>
+
+              </paper-menu>
+            </paper-menu-button>
           </div>
         </div>
-        <div class="headings textsec w5">
 
-          <paper-menu-button horizontal-align="right" id="more-button">
+        <!-- EXPANDED VIEW -->
+        <div hidden$="[[!_isDetailed(expanded)]]" class="heading-row heading-row-detailed clearfix layout horizontal">
 
-            <paper-icon-button icon="more-vert" class="dropdown-trigger">
-            </paper-icon-button>
+          <div class$="headings textprim bold w60 [[_statusClass(data)]]"></div>
 
-            <paper-menu class="dropdown-content">
+          <div class="flex vertical around-justified layout">
+            <span class="flex detail-headings">Purpose of travel</span>
+            <span class="flex detail-text">[[data.purpose]]</span>
+          </div>
 
-              <paper-item on-click="duplicate">
-                <iron-icon icon="social:person-add"></iron-icon>
-                <paper-item-body>Duplicate trip</paper-item-body>
-              </paper-item>
-
-              <paper-item on-click="addDriver">
-                <iron-icon icon="maps:directions-car"></iron-icon>
-                <paper-item-body>Add driver</paper-item-body>
-              </paper-item>
-
-            </paper-menu>
-          </paper-menu-button>
+          <div class="headings textsec w5"></div>
         </div>
       </div>
 
-      <!-- EXPANDED VIEW -->
-      <div hidden$="[[!_isDetailed(expanded)]]" class="heading-row heading-row-detailed clearfix layout horizontal">
-
-        <div class$="headings textprim bold w60 [[_statusClass(data)]]"></div>
-
-        <div class="flex vertical around-justified layout">
-          <span class="flex detail-headings">Purpose of travel</span>
-          <span class="flex detail-text">[[data.purpose]]</span>
-        </div>
-
-        <div class="headings textsec w5"></div>
-      </div>
   </template>
 
   <script>
@@ -389,8 +396,7 @@
         this.set('hackAroundId', travel);
 
         this.set('enhancedNewTravelBody', {traveler: traveler});
-        this.set('enhancedNewTravelUrl', '/api/et2f/travels/' + travel + '/duplicate_travel/');
-        // TODO will it call only once?
+        this.set('enhancedNewTravelUrl', '/api/t2f/travels/' + travel + '/duplicate_travel/');
       },
       addDriverConfirm: function() {
         if (!this.addDriverTravelerId) {
@@ -400,24 +406,21 @@
 
         var traveler = this.addDriverTravelerId;
         var travel = this.data.id;
-        console.log('confirmed addDriver, user#', traveler);
-        console.log('confirmed addDriver, travel#', travel);
 
         this.set('hackAroundId', travel);
 
         this.set('enhancedNewTravelBody', {traveler: traveler});
-        this.set('enhancedNewTravelUrl', '/api/et2f/travels/' + travel + '/add_driver/');
-        // TODO will it call only once?
+        this.set('enhancedNewTravelUrl', '/api/t2f/travels/' + travel + '/add_driver/');
       },
       duplicationSetTraveler: function(e) {
-        this.set('duplicationTravelerId', e.model.item.value);
+        this.set('duplicationTravelerId', e.detail.selectedValues.value);
       },
       addDriverSetTraveler: function(e) {
-        this.set('addDriverTravelerId', e.model.item.value);
+        this.set('addDriverTravelerId', e.detail.selectedValues.value);
       },
       gotBackId: function(e, payload) {
-        // console.warn('Navigate to:', payload.id);
-        this.set('route.path', '/edit-travel/' + payload.id  + '/');
+        var path = this.route.path.replace('travel-list', 'edit-travel/' + payload.id  + '/');
+        this.set('route.path', path);
       },
       _isGreyClass: function(data) {
         return data.status === 'cancelled' ? 'grey-heading' : '';

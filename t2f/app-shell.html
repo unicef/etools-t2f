@@ -14,7 +14,7 @@
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
-<link rel="import" href="../bower_components/etools-loading/etools-loading.html">
+<link rel="import" href="../bower_components/etools-loading/etools-loading-behavior.html">
 
 <link rel="import" href="app-config/etools-app-config.html">
 <link rel="import" href="app-elements/user-data/user-data.html">
@@ -102,9 +102,13 @@
         z-index:1001;
       }
 
+      #mainContent {
+        min-height: 100%;
+      }
+
     </style>
 
-    <user-data permissions="{{permissions}}"></user-data>
+    <user-data permissions="{{permissions}}" user="{{user}}"></user-data>
 
     <app-location route="{{route}}"></app-location>
 
@@ -130,7 +134,7 @@
           <div class="nav-menu">
             <iron-selector selected="[[page]]" attr-for-selected="name" selectable="side-bar-item" role="navigation">
               <template is="dom-if" if="{{permissions.loggedInDefault}}">
-                  <side-bar-item name="travel-list" icon="description" href="[[baseUrl]]travel-list"></side-bar-item>
+                  <side-bar-item name="trips" icon="description" href="[[baseUrl]]travel-list"></side-bar-item>
                   <div class="divider"></div>
               </template>
               <!-- Permissions example: only display settings if the user has permission -->
@@ -154,11 +158,8 @@
       <!-- Main content -->
       <div id="mainContent">
         <template is="dom-if" id="privatePages" on-dom-change="_pagesStamped" if="{{permissions.loggedInDefault}}">
-          <et2f-app route="{{route}}" page="[[page]]" subroute="[[subroute]]"></et2f-app>
+          <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}"></et2f-app>
         </template>
-            <countries-dropdown id="countries"
-          countries="[[countries]]"></countries-dropdown>
-
       </div>
 
     </app-drawer-layout>
@@ -172,10 +173,7 @@
       is: 'app-shell',
 
       properties: {
-
         routeData: Object,
-        countries: Array,
-
         page: {
           type: String,
           reflectToAttribute: true,
@@ -194,7 +192,6 @@
             type: Boolean,
             value: true
         },
-
         _toast: {
           type: Object,
           value: null
@@ -203,7 +200,11 @@
             type: Object,
             value: null
         },
-
+        loading: {
+          type: Boolean,
+          value: false,
+          observer: '_loadingObserver'
+        },
         _toastQueue: {
           type: Array,
           value: function() { return []; }
@@ -214,7 +215,7 @@
         }
       },
 
-      behaviors: [etoolsAppConfig.globals],
+      behaviors: [etoolsAppConfig.globals, etoolsBehaviors.LoadingBehavior],
       observers: [
         '_routePageChanged(routeData.page)',
         '_permissionsPagesStamped(permissions, _pagesAvailable)'
@@ -248,6 +249,15 @@
         this.$.drawer.toggle();
       },
 
+      _loadingObserver: function(loading) {
+        if (loading) {
+          this.loadingEl = this.createLoading('Loading data');
+          this.loadingEl.active = true;
+        } else if (!loading && this.loadingEl) {
+          this.removeLoading(this.loadingEl);
+        }
+      },
+
       queueToast: function(e, detail) {
         if (!this._toast) {
           this._toast = document.createElement('paper-toast');
@@ -272,7 +282,6 @@
 
       _routePageChanged: function(page) {
         if (this._pagesAvailable || (['settings', 'etc'].indexOf(page) !== -1)) {
-            console.log('setting page', page);
             this.page = page || 'travel-list';
         } else {
             console.log('No permissions yet or page hasn\'t stampped', page);

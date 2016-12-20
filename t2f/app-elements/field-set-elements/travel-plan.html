@@ -86,14 +86,14 @@
 
       <div class="layout horizontal">
 
-        <paper-checkbox class$="flex custom-margin [[computedPermission.ta_required.readOnly]]"
+        <paper-checkbox class$="flex-3 custom-margin [[computedPermission.ta_required.readOnly]]"
           hidden$="[[computedPermission.ta_required.hidden]]"
           checked="{{baseDetails.ta_required}}"
           disabled="[[taRequiredDisabled]]"
           >TA required?
         </paper-checkbox>
 
-        <paper-checkbox class$="flex custom-margin [[computedPermission.international_travel.readOnly]]"
+        <paper-checkbox class$="flex-3 custom-margin [[computedPermission.international_travel.readOnly]]"
           disabled="[[computedPermission.international_travel.disabled]]"
           hidden$="[[computedPermission.international_travel.hidden]]"
           toggles="[[falseValue]]"
@@ -102,75 +102,85 @@
           >International travel?
         </paper-checkbox>
 
-        <div class="flex layout horizontal center">
+        <div class="flex-6 layout horizontal center">
           <span class$="standalone [[computedPermission.reference_number.readOnly]]"
             hidden$="[[computedPermission.reference_number.hidden]]">Reference #: [[baseDetails.reference_number]]</span>
         </div>
-        <div class="flex"></div>
       </div>
 
       <div class="layout horizontal">
 
-        <etools-searchable-multiselection-menu label="Traveler*"
+        <etools-searchable-multiselection-menu label="Traveler"
           id="travel_input"
           value="{{baseDetails.traveler}}"
           class$="flex-3 [[computedPermission.traveler.readOnly]]"
           disabled="[[computedPermission.traveler.disabled]]"
           hidden$="[[computedPermission.traveler.hidden]]"
           options="[[structure.users]]"
+          empty-value
           required$="[[computedPermission.traveler.required]]"
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Supervisor*"
+        <etools-searchable-multiselection-menu label="Supervisor"
           id="supervisor_input"
           value="{{baseDetails.supervisor}}"
           class$="flex-3 [[computedPermission.supervisor.readOnly]]"
           disabled="[[computedPermission.supervisor.disabled]]"
           hidden$="[[computedPermission.supervisor.hidden]]"
-          options="[[structure.users]]"
+          empty-value
+          options="[[usersButMe]]"
           required$="[[computedPermission.supervisor.required]]"
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Office*"
+        <etools-searchable-multiselection-menu label="Office"
+          id="office_input"
           value="{{baseDetails.office}}"
           class$="flex-3 [[computedPermission.office.readOnly]]"
           disabled="[[computedPermission.office.disabled]]"
           hidden$="[[computedPermission.office.hidden]]"
+          empty-value
           options="[[structure.offices]]"
           required$="[[computedPermission.office.required]]"
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Section*"
+        <etools-searchable-multiselection-menu label="Section"
+          id="section_input"
           value="{{baseDetails.section}}"
           class$="flex-3 [[computedPermission.section.readOnly]]"
           disabled="[[computedPermission.section.disabled]]"
           hidden$="[[computedPermission.section.hidden]]"
+          empty-value
           options="[[structure.sections]]"
           required$="[[computedPermission.section.required]]"
           placeholder="select"
-          auto-validate>
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
       </div>
 
       <div class="layout horizontal">
 
-        <datepicker-input label="Start Date*"
+        <datepicker-input label="Start Date"
           class$="flex-3 [[computedPermission.start_date.readOnly]]"
           disabled="[[computedPermission.start_date.disabled]]"
           hidden$="[[computedPermission.start_date.hidden]]"
           required$="[[computedPermission.start_date.required]]"
-          auto-validate
+          auto-validate$="[[autoValidate]]"
           placeholder="select"
-          date="{{baseDetails.start_date}}">
+          date="{{baseDetails.start_date}}"
+          starred>
         </datepicker-input>
 
-        <datepicker-input label="End Date*"
+        <datepicker-input label="End Date"
           id="end_date"
           class$="flex-3 [[computedPermission.end_date.readOnly]]"
           disabled="[[computedPermission.end_date.disabled]]"
@@ -179,10 +189,11 @@
           error-message=""
           placeholder="select"
           date="{{baseDetails.end_date}}"
-          auto-validate>
+          auto-validate$="[[autoValidate]]"
+          starred>
         </datepicker-input>
 
-        <etools-searchable-multiselection-menu label="Mode of travel*"
+        <etools-searchable-multiselection-menu label="Mode of travel"
           id="mode_of_travel"
           class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
@@ -192,26 +203,29 @@
           multi
           on-paper-dropdown-close="_validateMode"
           required$="[[computedPermission.mode_of_travel.required]]"
-          placeholder="select">
+          placeholder="select"
+          starred>
         </etools-searchable-multiselection-menu>
       </div>
 
       <div class="layout horizontal">
 
-        <paper-input label="Estimated travel cost*"
+        <paper-input label="Estimated travel cost"
           class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
           disabled="[[computedPermission.estimated_travel_cost.disabled]]"
           hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
-          pattern="^[0-9]+(\.[0-9]{1,4})?$"
+          pattern="^[0-9]+(\.[0-9]{1,2})?$"
           error-message="*number required"
-          placeholder="eg.: 567.1234"
-          value="{{baseDetails.estimated_travel_cost}}">
+          placeholder="eg.: 567.12"
+          value="{{baseDetails.estimated_travel_cost}}"
+          auto-validate>
         </paper-input>
 
-        <etools-searchable-multiselection-menu label="Currency*"
+        <etools-searchable-multiselection-menu label="Currency"
           class$="flex-3 [[computedPermission.currency.readOnly]]"
           disabled="[[computedPermission.currency.disabled]]"
           hidden$="[[computedPermission.currency.hidden]]"
+          empty-value
           options="[[structure.currencies]]"
           value="{{baseDetails.currency}}"
           placeholder="select">
@@ -222,7 +236,7 @@
 
       <div class="layout horizontal">
 
-        <paper-textarea label="Purpose of travel*"
+        <paper-textarea label="Purpose of travel"
           id="purpose"
           class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
           disabled="[[computedPermission.purpose.disabled]]"
@@ -231,7 +245,8 @@
           char-counter maxlength="120"
           placeholder="brief explanation"
           value="{{baseDetails.purpose}}"
-          on-blur="validatePurpose">
+          on-blur="validatePurpose"
+          starred>
         </paper-textarea>
       </div>
 
@@ -255,14 +270,23 @@
         baseDetails: {
           type: Object,
           value: {},
+          notify: true
         },
         structure: {
           type: Object,
           value: {}
         },
+        usersButMe: {
+          type: Array,
+          computed: 'computeUsersButMe(structure.users, user)'
+        },
         falseValue: {
           type: Boolean,
           value: false
+        },
+        autoValidate: {
+          type: Boolean,
+          computed: '_computeAutoValidate(baseDetails)'
         },
         taRequiredDisabled: {
           type: Boolean,
@@ -272,7 +296,8 @@
         modeInputTouched: {
           type: Boolean,
           computed: '_computeModeInputTouched(baseDetails.mode_of_travel)'
-        }
+        },
+        user: Object
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
@@ -281,6 +306,10 @@
         '_setCheckboxes(baseDetails.*)',
         '_validDates(baseDetails.start_date, baseDetails.end_date)'
       ],
+
+      _computeAutoValidate: function(data) {
+          return data !== undefined && Object.keys(data).length > 0;
+      },
 
       validatePurpose: function() {
         this.$.purpose.validate();
@@ -361,6 +390,14 @@
         this.$['confirmation-modal'].close();
         this.set('baseDetails.international_travel', true);
         this.set('baseDetails.ta_required', false);
+      },
+
+      computeUsersButMe: function(users, user) {
+
+        // Filters out logged in user
+        return users.filter(function(actUser) {
+          return actUser.value !== user.value;
+        });
       }
     });
   </script>

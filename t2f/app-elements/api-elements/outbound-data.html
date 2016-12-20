@@ -2,7 +2,9 @@
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
@@ -14,52 +16,78 @@
     <style include="shared-styles et2f-styles iron-flex" is="custom-style">
 
         .dialog-heading {
-            font-size: 20px;
-            color: var(--gray-dark);
-            font-weight: 500;
+          font-size: 20px;
+          padding-top: 8px;
+          color: var(--gray-dark);
+          font-weight: 500;
         }
 
         .dialog-intro-text {
-            color: var(--gray-mid);
-            font-size: 16px;
-            margin-bottom: 24px;
+          color: var(--gray-mid);
+          font-size: 16px;
+          margin-bottom: 24px;
         }
 
         .row-container {
-            width: 250px;
+          width: 250px;
         }
 
         .small-column-heading {
-            font-size: 12px;
-            font-weight: 500;
-            text-align: center;
+          font-size: 12px;
+          font-weight: 500;
+          text-align: center;
         }
 
         .dialog-confirm-button {
-            color: var(--et2f-primary);
-            font-weight: 500;
-            height: 40px;
-            float: right;
+          color: var(--et2f-primary);
+          font-weight: 500;
+          height: 40px;
+          float: right;
         }
         .dialog-confirm-button[disabled] {
-            color: var(--gray-mid);
-            background-color: white;
-            cursor: not-allowed;
+          color: var(--gray-mid);
+          background-color: white;
+          cursor: not-allowed;
         }
 
         paper-radio-button {
-            text-align: center;
-            margin-left: 10px;
+          text-align: center;
+          margin-left: 10px;
+        }
+
+        .scrollable {
+          max-height: 350px;
+          overflow: scroll;
+        }
+
+        #rejection-modal, #cancel-modal, #cert-rejection-modal {
+          width: 540px;
+        }
+
+        #certification-modal {
+          width: 720px;
+        }
+
+        .label-icon {
+          margin-top: 10px;
+          color: var(--gray-light);
+        }
+
+        .dismiss-dialog-button {
+          cursor: pointer;
         }
     </style>
 
     <template>
 
         <!-- Crearances dialog -->
-        <!-- we're working with the outbound data here, so no older value gets shown for now, although it gets stored -->
         <paper-dialog id="clearance-modal" opened="{{clearancesOpened}}" with-backdrop>
 
-            <div class="dialog-heading">Travel authorization</div>
+            <div class="dialog-head-container layout horizontal">
+              <div class="dialog-heading flex">Travel authorization</div>
+              <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+            </div>
+
             <div class="dialog-intro-text">Before you submit this trip for approval, please answer the questions below.</div>
 
             <div class="layout vertical">
@@ -101,7 +129,8 @@
 
             <paper-button
               class="dialog-confirm-button"
-              on-click="_clearancesOnConfirm">
+              on-click="_clearancesOnConfirm"
+              disabled$="[[_areClearancesWrong(data.clearances.security_clearance, data.clearances.medical_clearance, data.clearances.security_course)]]">
                 Submit for approval
             </paper-button>
         </paper-dialog>
@@ -109,10 +138,15 @@
         <!-- Rejection dialog -->
         <paper-dialog id="rejection-modal" opened="{{rejectionOpened}}" with-backdrop>
 
-            <div class="dialog-heading">Reject travel</div>
+            <div class="dialog-head-container layout horizontal">
+              <div class="dialog-heading flex">Reject travel</div>
+              <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+            </div>
             <div class="dialog-intro-text">Please specify reasons for rejecting this travel:</div>
 
-            <paper-textarea label="Rejection note" value="{{data.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
+            <div class="scrollable">
+              <paper-textarea label="Rejection note" value="{{data.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
+            </div>
 
             <paper-button
               class="dialog-confirm-button"
@@ -121,13 +155,38 @@
             </paper-button>
         </paper-dialog>
 
+        <!-- Certification rejection dialog -->
+        <paper-dialog id="cert-rejection-modal" opened="{{certRejectionOpened}}" with-backdrop>
+
+          <div class="dialog-head-container layout horizontal">
+            <div class="dialog-heading flex">Reject certificate</div>
+            <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+          </div>
+          <div class="dialog-intro-text">Please specify reasons for rejecting this certification:</div>
+
+          <div class="scrollable">
+            <paper-textarea label="Rejection note" value="{{data.cert_rejection_note}}" char-counter maxlength="2500"></paper-textarea>
+          </div>
+
+          <paper-button
+            class="dialog-confirm-button"
+            on-click="_rejectCertOnConfirm">
+              Send rejection
+          </paper-button>
+        </paper-dialog>
+
         <!-- Cancellation dialog -->
         <paper-dialog id="cancel-modal" opened="{{cancellationOpened}}" with-backdrop>
 
-            <div class="dialog-heading">Cancel travel</div>
+            <div class="dialog-head-container layout horizontal">
+              <div class="dialog-heading flex">Cancel travel</div>
+              <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+            </div>
             <div class="dialog-intro-text">Please specify reasons for cancelling this travel:</div>
 
-            <paper-textarea label="Cancellation note" value="{{data.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
+            <div class="scrollable">
+              <paper-textarea label="Cancellation note" value="{{data.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
+            </div>
 
             <paper-button
               class="dialog-confirm-button"
@@ -139,7 +198,10 @@
         <!-- General dialog -->
         <paper-dialog id="general-modal" opened="{{generalModal.opened}}" with-backdrop>
 
-            <div class="dialog-heading">[[generalModal.heading]]</div>
+            <div class="dialog-head-container layout horizontal">
+              <div class="dialog-heading flex">[[generalModal.heading]]</div>
+              <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+            </div>
             <div class="dialog-intro-text">[[generalModal.text]]</div>
 
             <paper-button
@@ -152,14 +214,59 @@
         <!-- Certification dialog -->
         <paper-dialog id="certification-modal" opened="{{certificationOpened}}" with-backdrop>
 
-            <div class="dialog-heading">Certify travel</div>
+            <div class="dialog-head-container layout horizontal">
+              <div class="dialog-heading flex">Certify travel</div>
+              <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+            </div>
             <div class="dialog-intro-text">Please specify the differences between the travel plan and the actual travel:</div>
 
             <paper-checkbox checked="{{certificationChecked}}">
               I acknowledge that UNICEF will review the changes to the originally authorised travel and calculate any monetary adjustment to the original travel payment.
             </paper-checkbox>
 
-            <paper-textarea label="Cancellation note" value="{{data.certification_note}}" char-counter maxlength="2500"></paper-textarea>
+            <div class="scrollable">
+
+              <div class="layout horizontal">
+
+                <paper-textarea label="Itinerary Deviations and Other Entitlement Changes"
+                  value="{{data.certification_note}}"
+                  class="flex"
+                  char-counter
+                  maxlength="2500">
+                </paper-textarea>
+
+                <iron-icon
+                  id="label-icon-one"
+                  class="label-icon"
+                  icon="icons:help">
+                </iron-icon>
+
+                <paper-tooltip for="label-icon-one" position="left" animation-delay="0">
+                  Short description of itinerary deviations with name of approving Manager and,<br>
+                  details of any not previously anticipated free or subsidised accommodation,<br>
+                  meals or transportation provided by UNICEF, a government or related institution,<br>
+                  or an airline.</paper-tooltip>
+              </div>
+
+              <div class="layout horizontal">
+
+                <paper-textarea label="Miscellaneous expenses"
+                  value="{{data.misc_expenses}}"
+                  class="flex"
+                  char-counter
+                  maxlength="2500">
+                </paper-textarea>
+
+                <iron-icon
+                  id="label-icon-two"
+                  class="label-icon"
+                  icon="icons:help">
+                </iron-icon>
+
+                <paper-tooltip for="label-icon-two" position="left" animation-delay="0">Please list attachments with reference numbers in the Attachments tab.</paper-tooltip>
+              </div>
+            </div>
+
 
             <paper-button
               class="dialog-confirm-button"
@@ -168,9 +275,6 @@
                 Certify travel
             </paper-button>
         </paper-dialog>
-
-        <etools-loading active="[[loading]]"></etools-loading>
-
 
         <template is="dom-if" if="[[postData]]">
             <etools-ajax url="[[postEndpoint]]"
@@ -196,8 +300,6 @@
               on-success="_handleAttachmentPostSuccess"
               on-fail="_handlePostFail"></etools-ajax>
         </template>
-
-
     </template>
 
     <script>
@@ -223,6 +325,7 @@
           },
           loading: {
             type: Boolean,
+            notify: true,
             computed: '_computeLoading(postData, attachmentData)'
           },
           postData: {
@@ -274,6 +377,10 @@
 
         _computeLoading: function(post, attachment) {
           return post || attachment;
+        },
+
+        _areClearancesWrong: function(security_clearance, medical_clearance, security_course) {
+          return [security_clearance, medical_clearance, security_course].indexOf('not_requested') >= 0;
         },
 
         _processOutboundData: function(data) {
@@ -352,6 +459,28 @@
               if (Object.keys(data[serverKey][0]).length === 0) {
                 delete self.serverData[serverKey];
               }
+
+              // Preventing sending "empty" activity,
+              //   which would otherwise fail on backend validation
+              if (serverKey === 'activities' &&
+                data.activities.length === 1 &&
+                Object.keys(data.activities[0]).length === 1 &&
+                Object.keys(data.activities[0])[0] === 'locations' &&
+                data.activities[0].locations.length === 0) {
+
+                delete self.serverData.activities;
+              }
+
+              // Preventing sending "empty" itinerary,
+              //   which would otherwise fail on backend validation
+              if (serverKey === 'itinerary' &&
+                data.itinerary.length === 1 &&
+                Object.keys(data.itinerary[0]).length === 1 &&
+                Object.keys(data.itinerary[0])[0] === 'airlines' &&
+                data.itinerary[0].airlines.length === 0) {
+
+                delete self.serverData.itinerary;
+              }
             }
             if (self.serverData[serverKey]) {
               self.serverData[serverKey] = data[serverKey];
@@ -374,7 +503,6 @@
 
           delete self.serverData.status;
           delete self.serverData.cost_summary;
-
         },
 
         _processAttachmentData: function(attachments, deletedAttachments) {
@@ -388,7 +516,6 @@
           } else {
             this.deletedAttachments = [];
           }
-
         },
 
         doRequest: function(details) {
@@ -465,9 +592,9 @@
 
             save_and_submit: function() {
               self.set('data.clearances', {
-                medical_clearance: 'not_applicable',
-                security_clearance: 'not_applicable',
-                security_course: 'not_applicable'
+                medical_clearance: 'not_requested',
+                security_clearance: 'not_requested',
+                security_course: 'not_requested'
               });
 
               self._clearancesOnConfirm = function() {
@@ -623,18 +750,13 @@
 
             reject_certificate: function() {
 
-              self.generalModalAction = function() {
-                self.$['general-modal'].close();
+              self._rejectCertOnConfirm = function() {
+                self.$['cert-rejection-modal'].close();
+
                 endpointConfig.status = 'reject_certificate';
                 doPost();
               };
-
-              self.set('generalModal', {
-                opened: true,
-                heading: 'Reject certificate',
-                text: 'Are you sure you want to reject the certification provided for this travel?',
-                buttonText: 'Reject certificate'
-              });
+              self.certRejectionOpened = true;
             },
 
             certify: function() {
@@ -717,6 +839,7 @@
 
         _handlePostFail: function(event, i) {
           this.set('formErrors', i.request.detail.request.xhr.response);
+          console.error('Api call failed: ', i.request.detail.request.xhr.response);
           this.postData = false;
           this.attachmentData = false;
           this.deleteAttachmentEndpoint = undefined;
@@ -725,27 +848,29 @@
 
         _handleAttachmentPostSuccess: function(e, data) {
           this.deleteAttachmentEndpoint = undefined;
+          this.tempImboudData.attachments.push(data);
           if (this.attachments.length > 0 || this.deletedAttachments.length > 0) {
             this._doAttachmentUpload();
           } else {
-            this.set('inboundData', data);
+            this.set('inboundData', this.tempImboudData);
             this.attachmentData = false;
             this.attachmentsEndpoint = undefined;
             this.fire('travel-post-success', this.travelId);
-
           }
         },
 
         _handlePostSuccess: function(e, data) {
           this.postData = false;
           this.travelId = data.id;
+          this.set('formErrors', []);
+          this.tempImboudData = data;
           if (this.attachments.length > 0  || this.deletedAttachments.length > 0) {
             this._doAttachmentUpload();
           } else {
             this.set('inboundData', data);
             this.fire('travel-post-success', this.travelId);
           }
-        },
+        }
       });
     </script>
 </dom-module>

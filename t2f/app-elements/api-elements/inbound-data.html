@@ -1,6 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
-<link rel="import" href="../../../bower_components/etools-loading/etools-loading.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
 
 
@@ -10,7 +9,6 @@
     <etools-ajax url="[[travelUrl]]"
       on-success="_handleData" loading="{{loading}}"></etools-ajax>
 
-    <etools-loading active="[[loading]]"></etools-loading>
 
   </template>
 
@@ -39,7 +37,6 @@
         loading: {
           type: Boolean,
           notify: true,
-          value: false
         },
         listen: {
           type: Boolean,
@@ -77,6 +74,9 @@
         var self = this;
 
         function convertDate(item) {
+          if (!item) {
+            return;
+          }
           var date = new Date(item);
           return date;
         }
@@ -141,8 +141,10 @@
             }
           },
           rejection_note: 'rejection_note',
+          cert_rejection_note: 'cert_rejection_note',
           cancellation_note: 'cancellation_note',
           certification_note: 'certification_note',
+          misc_expenses: 'misc_expenses',
           canceled_at: 'canceled_at',
           completed_at: 'completed_at',
           cost_summary: {}
@@ -171,8 +173,10 @@
           'expenses',
           'clearances',
           'rejection_note',
+          'cert_rejection_note',
           'cancellation_note',
           'certification_note',
+          'misc_expenses',
           'canceled_at',
           'completed_at',
           'cancellation_date',

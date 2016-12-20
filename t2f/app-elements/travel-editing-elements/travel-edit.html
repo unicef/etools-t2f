@@ -11,7 +11,7 @@
 <link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-<link rel="import" href="../field-set-elements/travel-details.html">
+<link rel="import" href="travel-details.html">
 <link rel="import" href="./travel-attachments.html">
 <link rel="import" href="./travel-report.html">
 <link rel="import" href="../api-elements/inbound-data.html">
@@ -19,6 +19,7 @@
 <link rel="import" href="../pdf-export/ta-print.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
 <link rel="import" href="./form-errors.html">
+<link rel="import" href="../travel-status-box/travel-status.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -37,17 +38,19 @@
         display: inline-block;
         width: 220px;
       }
+      travel-status {
+        margin-top: 24px;
+        margin-right: 24px;
+      }
     </style>
 
-
-
-
-    <et2f-inbound-data loading="{{loading}}" route="{{route}}" et2f-data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]" data-to-serialize="[[incomingData]]"></et2f-inbound-data>
-    <et2f-outbound-data id="outbound-data" form-errors="{{formErrors}}" data="[[data]]" travel-id="[[travelId]]" structure="[[structure]]" inbound-data="{{incomingData}}"></et2f-outbound-data>
+    <et2f-inbound-data loading="{{detailLoading}}" route="{{route}}" et2f-data="{{data}}" travel-id="[[travelId]]" structure="[[structure]]" data-to-serialize="[[incomingData]]"></et2f-inbound-data>
+    <et2f-outbound-data loading="{{detailLoading}}" id="outbound-data" form-errors="{{formErrors}}" data="[[data]]" travel-id="[[travelId]]" structure="[[structure]]" inbound-data="{{incomingData}}"></et2f-outbound-data>
     <ta-print id="taPrint" data="[[data]]"></ta-print>
 
     <et2f-header title="Edit travel plan"
-      data=[[data]]
+      data="[[data]]"
+      export-type='details'
       show-new-travel-button="true">
       <paper-tabs scrollable
         selected="{{selected}}">
@@ -58,21 +61,26 @@
     </et2f-header>
 
     <form-errors errors="{{formErrors}}" error-selected="{{errorSelected}}"></form-errors>
-
-    <iron-pages selected="{{selected}}">
+    <div class="layout horizontal">
+    <iron-pages selected="{{selected}}" class="flex">
 
       <travel-details
+        id="travelDetails"
         scroll-to-fieldset="[[errorSelected]]"
         structure="[[structure]]"
         travel-permissions="[[travelPermissions]]"
         data="{{data}}"
         user-roles="[[userRoles]]"
-        on-form-action="_handleFormAction">
+        on-form-action="_handleFormAction"
+        user="[[user]]">
       </travel-details>
 
       <travel-attachments
         structure="[[structure]]"
         attachments-permission="[[travelPermissions.attachments]]"
+        is-international="[[data.baseDetails.international_travel]]"
+        completed-at="[[data.completed_at]]"
+        cancelled-at="[[data.cancelled_at]]"
         attachments="{{data.attachments}}"
         deleted-attachments="{{data.deletedAttachments}}"
         status="[[data.status]]"
@@ -89,6 +97,16 @@
         on-form-action="_handleFormAction">
       </travel-report>
     </iron-pages>
+
+      <travel-status
+        id="travelStatus"
+        user-roles="[[userRoles]]"
+        data="[[data]]"
+        scroll-top-margin="84"
+        on-validate="onValidate">
+      </travel-status>
+      </div>
+
   </template>
 
   <script>
@@ -97,6 +115,11 @@
       properties: {
         data: {
           type: Object,
+          notify: true,
+          // observer: '_warn'
+        },
+        detailLoading: {
+          type: Boolean,
           notify: true,
         },
         structure: {
@@ -159,7 +182,7 @@
           });
       },
       _routeObserver: function(route) {
-        this.showForm = false;
+        this.$.travelStatus.resetPosition();
         if (route.path && route.path.indexOf('edit-travel/-1') > -1) {
           this._loadDefault();
         }
@@ -171,7 +194,7 @@
       },
 
       _computeTravelPermission: function(permissions, status, user, data) {
-        var travelRole ;
+        var travelRole;
         if (data.baseDetails.id) {
           if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
             travelRole = 'Traveler';
@@ -189,8 +212,7 @@
         if (forcedTravelRole) {
           travelRole = forcedTravelRole;
         }
-        var userTravelRoles = travelRole ? user.roles.concat(travelRole) : user.roles;
-
+        var userTravelRoles = travelRole ? user.t2f.roles.concat(travelRole) : user.t2f.roles;
         if (userTravelRoles.length > 0) {
           var userPermissions = {};
           var draft = permissions[userTravelRoles[0]][status];
@@ -217,6 +239,7 @@
                 }
               });
           });
+          // console.debug('Current user roles: ', userTravelRoles);
           this.set('userRoles', userTravelRoles);
           this.set('travelPermissions', {});
           this.set('travelPermissions', userPermissions);
@@ -238,6 +261,9 @@
        } else {
          this.$['outbound-data'].doRequest(details);
        }
+      },
+      onValidate: function(e, action) {
+        this.$.travelDetails.doValidate(e, action);
       }
 
     });

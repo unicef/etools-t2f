@@ -14,6 +14,7 @@
 <dom-module id="travel-cost-assignment">
   <template>
     <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+
       :host {
         display: block;
         width: 100%;
@@ -28,34 +29,61 @@
         };
         --paper-checkbox-margin: 12px;
       }
+
     </style>
 
     <div class="layout vertical flex">
+
       <div class="layout horizontal">
-        <etools-searchable-multiselection-menu class$="flex-4 [[computedPermission.wbs.readOnly]]"
+
+        <etools-searchable-multiselection-menu label="WBS"
+          class$="flex-4 [[computedPermission.wbs.readOnly]]"
+          options="[[structure.wbs]]"
+          empty-value
+          value="{{costAssignment.wbs}}"
           disabled="[[computedPermission.wbs.disabled]]"
           hidden$="[[computedPermission.wbs.hidden]]"
-          options="[[structure.wbs]]"
-          label="WBS"
-          value="{{costAssignment.wbs}}"></etools-searchable-multiselection-menu>
-        <paper-input class$="flex-2 custom-margin [[computedPermission.share.readOnly]]"
-          disabled="[[computedPermission.share.disabled]]"
-          hidden$="[[computedPermission.share.hidden]]"
-          label="Share(%)"
-          type="number"
-          value="{{costAssignment.share}}"></paper-input>
-        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.grant.readOnly]]"
+          placeholder="select"
+          starred>
+        </etools-searchable-multiselection-menu>
+
+        <etools-searchable-multiselection-menu label="Grant"
+          class$="flex-3 [[computedPermission.grant.readOnly]]"
+          options="[[structure.grants]]"
+          value="{{costAssignment.grant}}"
           disabled="[[computedPermission.grant.disabled]]"
           hidden$="[[computedPermission.grant.hidden]]"
-          label="Grant"
-          options="[[structure.grants]]"
-          value="{{costAssignment.grant}}"></etools-searchable-multiselection-menu>
-        <etools-searchable-multiselection-menu class$="flex-3 [[computedPermission.fund.readOnly]]"
-          disabled="[[computedPermission.fund.disabled]]"
-          hidden$="[[computedPermission.fund.hidden]]"
+          empty-value
+          placeholder="select"
+          starred>
+        </etools-searchable-multiselection-menu>
+
+        <etools-searchable-multiselection-menu label="Fund"
+          class$="flex-3 [[computedPermission.fund.readOnly]]"
           options="[[structure.funds]]"
-          label="Fund"
-          value="{{costAssignment.fund}}"></etools-searchable-multiselection-menu>
+          value="{{costAssignment.fund}}"
+          disabled="[[computedPermission.fund.disabled]]"
+          empty-value
+          hidden$="[[computedPermission.fund.hidden]]"
+          placeholder="select"
+          starred>
+        </etools-searchable-multiselection-menu>
+
+        <paper-input label="Share(%)"
+          class$="flex-2 custom-margin [[computedPermission.share.readOnly]]"
+          value="{{costAssignment.share}}"
+          disabled="[[computedPermission.share.disabled]]"
+          hidden$="[[computedPermission.share.hidden]]"
+          type="number"
+          min="0"
+          max="100"
+          step="1"
+          pattern="^(100|([1-9]{0,1})?([0-9]{0,1})?)$"
+          placeholder="add"
+          invalid="[[invalidShares]]"
+          starred>
+          <span suffix>%</span>
+        </paper-input>
       </div>
     </div>
   </template>
@@ -71,6 +99,10 @@
         structure: {
           type: Object,
           value: {}
+        },
+        invalidShares: {
+          type: Boolean,
+          value: false
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],

@@ -35,54 +35,62 @@
 
       <div class="layout horizontal">
 
-        <etools-searchable-multiselection-menu label="Travel expense type*"
+        <etools-searchable-multiselection-menu label="Travel expense type"
           id="type"
           class$="flex-3 [[computedPermission.type.readOnly]]"
           disabled="[[computedPermission.type.disabled]]"
           hidden$="[[computedPermission.type.hidden]]"
+          empty-value
           options="[[structure.expense_types]]"
           value="{{expense.type}}"
           placeholder="select"
           required$="[[computedPermission.type.required]]"
           on-paper-dropdown-close="_validateType"
-          auto-validate>
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <paper-input label="Amount*"
+        <paper-input label="Amount"
           class$="flex-3 custom-margin [[computedPermission.amount.readOnly]]"
           disabled="[[computedPermission.amount.disabled]]"
           hidden$="[[computedPermission.amount.hidden]]"
-          pattern="^[0-9]+(\.[0-9]{1,4})?$"
-          placeholder="eg.: 567.1234"
+          pattern="^[0-9]+(\.[0-9]{1,2})?$"
+          placeholder="eg.: 567.12"
           value="{{expense.amount}}"
+          error-message="*number required"
           required$="[[computedPermission.amount.required]]"
-          auto-validate>
+          auto-validate
+          starred>
         </paper-input>
 
-        <etools-searchable-multiselection-menu label="Document currency*"
+        <etools-searchable-multiselection-menu label="Document currency"
           id="curr1"
           class$="flex-3 [[computedPermission.document_currency.readOnly]]"
           disabled="[[computedPermission.document_currency.disabled]]"
           hidden$="[[computedPermission.document_currency.hidden]]"
+          empty-value
           options="[[structure.currencies]]"
           value="{{expense.document_currency}}"
           placeholder="select"
           required$="[[computedPermission.document_currency.required]]"
           on-paper-dropdown-close="_validateDocCurr"
-          auto-validate>
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Accounting currency*"
+        <etools-searchable-multiselection-menu label="Accounting currency"
           id="curr2"
           class$="flex-3 [[computedPermission.account_currency.readOnly]]"
           disabled="[[computedPermission.account_currency.disabled]]"
           hidden$="[[computedPermission.account_currency.hidden]]"
+          empty-value
           options="[[structure.currencies]]"
           value="{{expense.account_currency}}"
           placeholder="select"
           required$="[[computedPermission.account_currency.required]]"
           on-paper-dropdown-close="_validateAccCurr"
-          auto-validate>
+          auto-validate$="[[autoValidate]]"
+          starred>
         </etools-searchable-multiselection-menu>
       </div>
     </form>
@@ -100,10 +108,19 @@
           notify: true,
         },
 
+        autoValidate: {
+          type: Boolean,
+          computed: '_computeAutoValidate(expense)'
+        },
+
         structure: {
           type: Object,
           value: {}
         }
+      },
+
+      _computeAutoValidate: function(data) {
+          return data !== undefined && Object.keys(data).length > 0;
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
@@ -119,6 +136,10 @@
 
       _validateType: function(self) {
 
+        if (!this.computedPermission.type.required) {
+          return true;
+        }
+
         if (this.expense.type || self.expense.type) {
 
           this.$.type.removeAttribute('invalid');
@@ -132,6 +153,10 @@
       },
 
       _validateDocCurr: function(self) {
+
+        if (!this.computedPermission.document_currency.required) {
+          return true;
+        }
 
         if (this.expense.document_currency || self.expense.document_currency) {
 
@@ -147,6 +172,10 @@
 
       _validateAccCurr: function(self) {
 
+        if (!this.computedPermission.account_currency.required) {
+          return true;
+        }
+
         if (this.expense.account_currency || self.expense.account_currency) {
 
           this.$.curr2.removeAttribute('invalid');
@@ -159,7 +188,20 @@
         }
       },
 
+      allEmpty: function() {
+        var allEmpty = !this.expense.type &&
+          !this.expense.amount &&
+          !this.expense.document_currency &&
+          !this.expense.account_currency;
+
+        return allEmpty;
+      },
+
       validateExpense: function() {
+
+        if (this.allEmpty) {
+          return true;
+        }
 
         var typeValid = this._validateType(this);
         var accCurr = this._validateAccCurr(this);

@@ -3,7 +3,6 @@
 <link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../../bower_components/etools-loading/etools-loading.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 
@@ -22,15 +21,17 @@
 
 
     <etools-ajax endpoint="[[structureEndpoint]]"
-      on-success="_handleStructure" loading="{{structureLoading}}"></etools-ajax>
+      on-success="_handleStructure"
+      loading="{{structureLoading}}"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      ></etools-ajax>
     <etools-ajax endpoint="[[permissionsEndpoint]]"
-      on-success="_handlePermissions" loading="{{permissionsLoading}}"></etools-ajax>
-    <etools-ajax endpoint="[[meEndpoint]]" loading="{{meLoading}}"
-      on-success="_handleMe" ></etools-ajax>
+      on-success="_handlePermissions" loading="{{permissionsLoading}}"
+      ></etools-ajax>
 
 
 
-    <etools-loading active="[[loading]]"></etools-loading>
     <iron-pages id="pages"
       selected="[[page]]"
       attr-for-selected="name"
@@ -40,12 +41,14 @@
         user="[[user]]"
         structure="[[structure]]"
         route="{{route}}"
-        refresh-data="{{refreshData}}">
+        refresh-data="{{refreshData}}"
+        list-loading="{{subLoading}}">
       </page-travel-list>
       <page-edit-travel fullbleed
         name="edit-travel"
         user="[[user]]"
         route="{{route}}"
+        detail-loading="{{subLoading}}"
         travel-id="[[subroute.path]]"
         et2f-permissions="[[et2fPermissions]]"
         structure="[[structure]]"></page-edit-travel>
@@ -85,10 +88,14 @@
         },
         structureLoading: Boolean,
         permissionsLoading: Boolean,
-        meLoading: Boolean,
         loading: {
           type: Boolean,
-          computed: '_computeLoading(structureLoading, permissionsLoading, meLoading)'
+          notify: true,
+          computed: '_computeLoading(structureLoading, permissionsLoading, subLoading)',
+        },
+        subLoading: {
+          type: Boolean,
+          value: false
         },
         structureEndpoint: {
           type: String,
@@ -97,20 +104,44 @@
         permissionsEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
-        },
-        meEndpoint: {
-          type: String,
-          value: etoolsAppConfig.endpoints.et2fMe
         }
       },
+      _redirectToLogin: function() {
+        window.location.href = 'https://etools-dev.unicef.org/login/';
+      },
       _handleStructure: function(event, data) {
-        var dataKeys = Object.keys(data);
-        dataKeys.forEach(function(key) {
-          // data[key] = data[key].length > 100 ? data[key].splice(0, 99) : data[key];
-          if (key === 'currencies') {
+        var parsingFunctions = {
+          partners: function(key) {
+             data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, partnerships: []};
+            });
+          },
+          partnerships: function(key) {
+              data[key].forEach(function(partnership) {
+                data.partners.forEach(function(partner) {
+                  if (partner.value === partnership.partner) {
+                    partner.partnerships.push({
+                        label: partnership.name,
+                        value: partnership.id
+                    });
+                  }
+                });
+              });
+             data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id};
+            });
+          },
+          currencies: function(key) {
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id, short: obj.iso_4217};
             });
+          }
+        };
+        var dataKeys = Object.keys(data).sort();
+        dataKeys.forEach(function(key) {
+          var parsingFunction = parsingFunctions[key];
+          if (parsingFunction) {
+            parsingFunction(key);
           } else {
             data[key] = data[key].map(function(obj) {
               return {label: obj.name || obj.full_name, value: obj.id};
@@ -118,7 +149,6 @@
           }
 
         });
-
         Object.freeze(data);
         this.set('structure', data);
       },
@@ -156,11 +186,9 @@
         Object.freeze(data);
         this.et2fPermissions = data;
       },
-      _handleMe: function(e, data) {
-        this.user = data;
-      },
-      _computeLoading: function(structure, permissions, user) {
-        return structure && permissions && user;
+      _computeLoading: function(structure, permissions, subLoading) {
+
+        return structure || permissions || subLoading;
       }
 
     });
