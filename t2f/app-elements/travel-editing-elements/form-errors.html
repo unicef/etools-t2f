@@ -116,27 +116,25 @@
         var errorList = [];
         if (errors) {
           Object.keys(errors).forEach(function(category) {
-            if (errors[category] instanceof Array) {
-              errors[category].forEach(function(message) {
+              errors[category].forEach(function(field) {
+                if (!(field instanceof Object)) {
                   errorList.push({
                     fieldSet: category,
                     field: '',
-                    error: message
+                    error: field
                   });
-              });
-            } else {
-              errors[category].forEach(function(field) {
-                Object.keys(field).forEach(function(errors) {
-                  field[errors].forEach(function(message) {
-                    errorList.push({
-                      fieldSet: category,
-                      field: errors,
-                      error: message
+                } else {
+                  Object.keys(field).forEach(function(errors) {
+                    field[errors].forEach(function(message) {
+                      errorList.push({
+                        fieldSet: category,
+                        field: errors,
+                        error: message
+                      });
                     });
                   });
-                });
+                }
               });
-          }
           });
         }
         return errorList;

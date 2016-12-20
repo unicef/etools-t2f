@@ -448,6 +448,7 @@
 
       doValidate: function(e, action) {
         var self = this;
+        // this.fire('form-action', action); // to debug the backend validation
         var invalids = [];
 
         if (['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0) {
