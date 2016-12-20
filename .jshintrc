@@ -24,6 +24,7 @@
     "URLSearchParams": true,
     "et2fBehaviors": true,
     "baseUrl": true,
-    "pdfMake": true
+    "pdfMake": true,
+    "etoolsBehaviors": true
   }
 }

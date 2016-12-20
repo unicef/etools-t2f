@@ -91,14 +91,13 @@
         },
         date: {
           notify: true,
-          observer: '_computeInitialTime'
+          observer: '_dateObserver'
         },
         time: {
           type: String,
         },
         prettyDate: {
           type: String,
-          computed: '_dateChanged(date, format)'
         },
         opened: {
           type: Boolean,
@@ -110,15 +109,19 @@
           value: false
         }
       },
+      observers: ['_dateChanged(date, format)'],
       _openTimeSelector: function(newValue, old) {
         if (old === true && newValue === false && this.timePicker) {
           this.$.timePickerDialog.open();
         }
       },
-      _computeInitialTime: function(date) {
+      _dateObserver: function(date) {
         if (date) {
           var time =  moment(date).format('hh:mm');
           this.set('time', time);
+        } else {
+          this.set('date', undefined);
+          this.set('prettyDate', undefined);
         }
       },
       _timeChanged: function() {
@@ -133,11 +136,12 @@
         return timePicker ? 'LLL' : 'LL';
       },
       _dateChanged: function(date, format) {
+        var prettyDate = date;
         if (date) {
           /* global moment */
-          return moment(date).format(format);
+          prettyDate =  moment(date).format(format);
         }
-        return date;
+       this.set('prettyDate', prettyDate);
       },
       _openCalendar: function() {
         if (this.disabled) {
