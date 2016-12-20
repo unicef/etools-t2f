@@ -190,7 +190,6 @@
 
         var start = new Date(start_date);
         var end = new Date(end_date);
-        console.log(start, end);
         if (end <= start) {
           this.$.arrival_date.setAttribute('error-message', '*should be bigger than departing');
           this.$.arrival_date.invalid = true;

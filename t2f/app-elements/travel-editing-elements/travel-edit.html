@@ -60,7 +60,7 @@
       </paper-tabs>
     </et2f-header>
 
-    <form-errors errors="{{formErrors}}" error-selected="{{errorSelected}}"></form-errors>
+    <form-errors id="apierrors" errors="{{formErrors}}" error-selected="{{errorSelected}}"></form-errors>
     <div class="layout horizontal">
     <iron-pages selected="{{selected}}" class="flex">
 
@@ -158,6 +158,10 @@
           notify: true,
           observer: '_routeObserver'
         },
+        formErrors: {
+          type: Object,
+          observer: '_formErrorObserver'
+        }
 
       },
       observers: [
@@ -180,6 +184,13 @@
             attachments: [],
             status: 'Planned'
           });
+      },
+      _formErrorObserver: function(newValue, old) {
+          if (newValue) {
+            this.async(function() {
+              window.scrollTo(1, 1);
+            });
+          }
       },
       _routeObserver: function(route) {
         this.$.travelStatus.resetPosition();
