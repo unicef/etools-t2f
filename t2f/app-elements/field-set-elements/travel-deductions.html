@@ -125,6 +125,9 @@
       recalcDeductions: function(itineraryObserver, deductions, deductionsCalculated) {
         var start = this._calculateStartingDate(itineraryObserver.base);
         var end = this._calculateEndDate(itineraryObserver.base);
+        if (start === undefined || end === undefined) {
+          return;
+        }
         var calculated = deductionsCalculated;
 
         if (this.startDate !== start || this.endDate !== end) {
