@@ -51,9 +51,9 @@
   <template>
 
     <template is="dom-if" if="[[show]]">
-      <paper-button raised class$="layout horizontal [[_buttonGreyClass(actions)]]">
+      <paper-button raised class$="layout horizontal [[_buttonGreyClass(actions)]]" on-tap="_clickPrimary">
 
-        <div on-click="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
+        <div  class="flex main-btn-part">[[actions.primary.name]]</div>
 
         <template is="dom-if" if="[[showDropdown]]">
           <paper-menu-button horizontal-align="right">
