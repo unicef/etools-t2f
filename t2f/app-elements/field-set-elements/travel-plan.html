@@ -7,7 +7,7 @@
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
-<link rel="import" href="../datepicker-input/datepicker-input.html">
+<link rel="import" href="../datepicker-input/date-time-picker-input.html">
 <link rel="import" href="../et2f-file-upload/et2f-file-upload.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
@@ -169,7 +169,7 @@
 
       <div class="layout horizontal">
 
-        <datepicker-input label="Start Date"
+        <date-time-picker-input label="Start Date"
           class$="flex-3 [[computedPermission.start_date.readOnly]]"
           disabled="[[computedPermission.start_date.disabled]]"
           hidden$="[[computedPermission.start_date.hidden]]"
@@ -178,9 +178,9 @@
           placeholder="select"
           date="{{baseDetails.start_date}}"
           starred>
-        </datepicker-input>
+        </date-time-picker-input>
 
-        <datepicker-input label="End Date"
+        <date-time-picker-input label="End Date"
           id="end_date"
           class$="flex-3 [[computedPermission.end_date.readOnly]]"
           disabled="[[computedPermission.end_date.disabled]]"
@@ -191,7 +191,7 @@
           date="{{baseDetails.end_date}}"
           auto-validate$="[[autoValidate]]"
           starred>
-        </datepicker-input>
+        </date-time-picker-input>
 
         <etools-searchable-multiselection-menu label="Mode of travel"
           id="mode_of_travel"

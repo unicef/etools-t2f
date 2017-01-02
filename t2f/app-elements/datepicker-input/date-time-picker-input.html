@@ -1,0 +1,176 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+
+<link rel="import" href="../../../bower_components/moment-element/moment-import.html">
+<link rel="import" href="../../../bower_components/paper-date-picker/paper-date-picker.html">
+<link rel="import" href="../../../bower_components/paper-time-picker/paper-time-picker.html">
+
+
+<dom-module id="date-time-picker-input">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width:100%;
+      }
+      *[hidden] {
+        display: none;
+      }
+      paper-input {
+        cursor: pointer;
+        --paper-input-container-disabled: {
+          opacity: 1;
+        };
+        --paper-input-container-label: {
+          color: var(--gray-light);
+        };
+        --paper-input-container-underline: {
+          border-color: var(--gray-light);
+        };
+        --paper-input-container-color: var(--gray-light);
+        width: calc( 100% - 24px );
+        margin-right:12px;
+        margin-left: 12px;
+      }
+      paper-time-picker {
+        --default-primary-color: var(--et2f-primary);
+      }
+      paper-date-picker {
+        --default-primary-color: var(--et2f-primary);
+      }
+      iron-icon {
+        color: var(--gray-mid);
+      }
+      .no-margin {
+        padding:0 !important;
+         margin: 0 !important;
+      }
+    </style>
+
+    <paper-input id="date-input"
+      readonly
+      label="[[label]]"
+      always-float-label
+      on-tap="_openCalendar"
+      value="{{prettyDate}}"
+      disabled$="[[disabled]]"
+      error-message="[[errorMessage]]"
+      required$="[[required]]"
+      placeholder="[[placeholder]]"
+      auto-validate$="[[autoValidate]]"
+      invalid$="[[invalid]]">
+
+      <iron-icon suffix icon="date-range" ></iron-icon>
+    </paper-input>
+
+    <paper-dialog id="timePickerDialog" modal on-iron-overlay-closed="_setNewDate">
+      <div class="flex layout horizontal no-margin">
+        <paper-date-picker date="{{internalDate}}" force-narrow ></paper-date-picker>
+        <template is="dom-if" if="[[timePicker]]">
+          <paper-time-picker force-narrow time="[[time]]" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
+        </template>
+      </div>
+      <div class="buttons">
+
+        <paper-button dialog-confirm>OK</paper-button>
+      </div>
+    </paper-dialog>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'date-time-picker-input',
+      properties: {
+        errorMessage: String,
+        required: Boolean,
+        placeholder: String,
+        autoValidate: Boolean,
+        timePicker: {
+          type: Boolean,
+          value: false
+        },
+        format: {
+          type: String,
+          computed: '_computeFormat(timePicker)'
+        },
+        invalid: Boolean,
+        label: {
+          type: String
+        },
+        date: {
+          notify: true
+        },
+        internalDate: {
+          type: Date,
+        },
+        time: {
+          type: String,
+        },
+        prettyDate: {
+          type: String,
+        },
+        opened: {
+          type: Boolean,
+          value: false,
+        },
+        disabled: {
+          type: Boolean,
+          value: false
+        }
+      },
+      observers: ['_dateChanged(date.*, format)', '_dateObserver(date.*)'],
+      _dateObserver: function(changed) {
+        var date = changed.base;
+        if (!date) {
+          return;
+        }
+        if (!this.internalDate) {
+         this._updateComponentState(date);
+        } else {
+          if (date.getTime() !== this.internalDate.getTime()) {
+            this._updateComponentState(date);
+          }
+        }
+      },
+      _updateComponentState: function(date) {
+         date = new Date(date);
+          this.set('internalDate', date);
+          var time =  moment(date).format('hh:mm');
+          this.set('time', time);
+      },
+      _computeFormat: function(timePicker) {
+        return timePicker ? 'LLL' : 'LL';
+      },
+      _dateChanged: function(changed, format) {
+        var date = changed.base;
+        console.log(date);
+        var prettyDate = date;
+        if (date) {
+          /* global moment */
+          prettyDate =  moment(date).format(format);
+        }
+       this.set('prettyDate', prettyDate);
+      },
+      _openCalendar: function() {
+        if (this.disabled) {
+          return;
+        } else if (!this.opened) {
+           this.$.timePickerDialog.open();
+        }
+      },
+      _setNewDate: function() {
+        var date = moment(this.internalDate);
+        if (this.timePicker) {
+          date.hour(this.hour);
+          date.minute(this.minute);
+        }
+        this.set('date', date.toDate());
+      }
+
+    });
+  </script>
+</dom-module>

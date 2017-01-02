@@ -6,7 +6,7 @@
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="../travel-status-box/travel-status.html">
-<link rel="import" href="../datepicker-input/datepicker-input.html">
+<link rel="import" href="../datepicker-input/date-time-picker-input.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -78,19 +78,18 @@
 
       <div class="layout horizontal">
 
-        <datepicker-input label="Departing"
+        <date-time-picker-input label="Departing"
           class$="flex-4 [[computedPermission.departure_date.readOnly]]"
           disabled="[[computedPermission.departure_date.disabled]]"
           hidden$="[[computedPermission.departure_date.hidden]]"
           time-picker
-          no-init
           date="{{itinerary.departure_date}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.departure_date.required]]"
           placeholder="select">
-        </datepicker-input>
+        </date-time-picker-input>
 
-        <datepicker-input label="Arriving"
+        <date-time-picker-input label="Arriving"
           id="arrival_date"
           class$="flex-4 [[computedPermission.arrival_date.readOnly]]"
           disabled="[[computedPermission.arrival_date.disabled]]"
@@ -100,7 +99,7 @@
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.arrival_date.required]]"
           placeholder="select">
-        </datepicker-input>
+        </date-time-picker-input>
 
         <etools-searchable-multiselection-menu class$="flex-2 [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
