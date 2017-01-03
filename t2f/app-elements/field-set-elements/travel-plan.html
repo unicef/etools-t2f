@@ -7,7 +7,7 @@
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
-<link rel="import" href="../datepicker-input/datepicker-input.html">
+<link rel="import" href="../datepicker-input/date-time-picker-input.html">
 <link rel="import" href="../et2f-file-upload/et2f-file-upload.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
@@ -169,7 +169,7 @@
 
       <div class="layout horizontal">
 
-        <datepicker-input label="Start Date"
+        <date-time-picker-input label="Start Date"
           class$="flex-3 [[computedPermission.start_date.readOnly]]"
           disabled="[[computedPermission.start_date.disabled]]"
           hidden$="[[computedPermission.start_date.hidden]]"
@@ -178,20 +178,20 @@
           placeholder="select"
           date="{{baseDetails.start_date}}"
           starred>
-        </datepicker-input>
+        </date-time-picker-input>
 
-        <datepicker-input label="End Date"
+        <date-time-picker-input label="End Date"
           id="end_date"
+          min-date=[[baseDetails.start_date]]
           class$="flex-3 [[computedPermission.end_date.readOnly]]"
-          disabled="[[computedPermission.end_date.disabled]]"
+          disabled="[[endDateDisabled]]"
           hidden$="[[computedPermission.end_date.hidden]]"
           required$="[[computedPermission.end_date.required]]"
-          error-message=""
           placeholder="select"
           date="{{baseDetails.end_date}}"
           auto-validate$="[[autoValidate]]"
           starred>
-        </datepicker-input>
+        </date-time-picker-input>
 
         <etools-searchable-multiselection-menu label="Mode of travel"
           id="mode_of_travel"
@@ -297,14 +297,18 @@
           type: Boolean,
           computed: '_computeModeInputTouched(baseDetails.mode_of_travel)'
         },
+        endDateDisabled: {
+          type: Boolean,
+          computed: '_computeDisableEndDate(computedPermission.end_date.disabled,' +
+            ' baseDetails.*)',
+        },
         user: Object
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
       observers: [
-        '_setCheckboxes(baseDetails.*)',
-        '_validDates(baseDetails.start_date, baseDetails.end_date)'
+        '_setCheckboxes(baseDetails.*)'
       ],
 
       _computeAutoValidate: function(data) {
@@ -315,33 +319,16 @@
         this.$.purpose.validate();
       },
 
-      _validDates: function(start_date, end_date) {
-
-        if (!start_date && !end_date) {
-          return false;
-        }
-
-        var start = new Date(start_date);
-        var end = new Date(end_date);
-
-        if (end <= start) {
-          this.$.end_date.setAttribute('error-message', '*should be bigger than start');
-          this.$.end_date.invalid = true;
-          return false;
-        } else {
-          this.$.end_date.setAttribute('error-message', '');
-          this.$.end_date.invalid = false;
-          return true;
-        }
+      _computeDisableEndDate: function(permission, changed) {
+        return permission || !changed.base.start_date;
       },
 
       _validateTravelPlan: function() {
 
         var modeValid = this._validateMode();
-        var dateValid = this._validDates(this.baseDetails.start_date, this.baseDetails.end_date);
         var formValid = this.$.travel_plan_form.validate();
 
-        return modeValid && dateValid && formValid;
+        return modeValid && formValid;
       },
 
       _validateMode: function() {

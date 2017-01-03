@@ -193,7 +193,6 @@
             return new Date(a.date) - new Date(b.date);
           });
         this.set('deductionsCalculated', true);
-        console.log(JSON.parse(JSON.stringify(deductions)));
         this.set('deductions', deductions);
 
       },
