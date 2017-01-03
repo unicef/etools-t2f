@@ -442,8 +442,10 @@
         return data.status !== 'Certification submitted';
       },
       _validateItinerarySize: function() {
-        return this.data.itinerary.length > 0 &&
-            Object.keys(this.data.itinerary[0]).length > 7;
+        if (this.data.itinerary.length === 0) {
+          return false;
+        }
+        return this.data.itinerary[0]._validationFunction(true);
       },
 
       doValidate: function(e, action) {
@@ -480,8 +482,12 @@
             }
           }
 
-          if (!self._validateItinerarySize()) {
-            invalids.push('Itinerary must have at least one entry');
+          if (action.name === 'Save') {
+            fieldSetValidation(['Itinerary']);
+
+            if (!self._validateItinerarySize()) {
+              invalids.push('Itinerary must have at least one entry');
+            }
           }
 
         if (invalids.length) {

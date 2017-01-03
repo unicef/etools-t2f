@@ -187,9 +187,9 @@
         }
         return true;
       },
-      validateItinerary: function() {
+      validateItinerary: function(validateEmpty) {
         var keys = Object.keys(this.itinerary);
-        if (keys.length === 0) {
+        if (keys.length === 0 && !validateEmpty) {
           return true;
         }
        return this.$.itinerary_form.validate();
@@ -197,7 +197,7 @@
       _addValidationFunction: function(changed) {
 
         if (!changed.base._validationFunction) {
-          this.set('itinerary._validationFunction', this.validateItinerary.bind(this, changed.base));
+          this.set('itinerary._validationFunction', this.validateItinerary.bind(this));
         }
       },
       _computeDisableArrivalDate: function(permission, changed) {
