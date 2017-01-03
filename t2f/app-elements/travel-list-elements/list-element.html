@@ -69,6 +69,10 @@
     .bold {
       font-weight: 500;
     }
+    .element-link {
+      height:100%;
+      display:block;
+    }
     .capital {
       text-transform: capitalize;
     }
@@ -249,7 +253,7 @@
             </iron-icon>
           </div>
           <div class="headings blue bold w13">
-            <a href="[[baseUrl]]edit-travel/{{data.id}}">[[data.reference_number]]</a>
+            <a href="[[baseUrl]]edit-travel/{{data.id}}" class="element-link">[[data.reference_number]]</a>
           </div>
           <div class="headings textprim w13">[[data.traveler]]</div>
           <div class="headings textprim w13">[[getOffice(data.office, offices)]]</div>

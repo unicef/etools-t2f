@@ -7,7 +7,7 @@
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="../travel-status-box/travel-status.html">
-<link rel="import" href="../datepicker-input/datepicker-input.html">
+<link rel="import" href="../datepicker-input/date-time-picker-input.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -101,13 +101,13 @@
 
       <div class="layout horizontal">
 
-        <datepicker-input label="When"
+        <date-time-picker-input label="When"
           class$="flex-4 [[computedPermission.date.readOnly]]"
           disabled="[[computedPermission.date.disabled]]"
           hidden$="[[computedPermission.date.hidden]]"
           date="{{activity.date}}"
           placeholder="select">
-        </datepicker-input>
+        </date-time-picker-input>
 
         <paper-checkbox
           class$="flex-8 custom-margin self-end [[computedPermission.primary_traveler.readOnly]]"

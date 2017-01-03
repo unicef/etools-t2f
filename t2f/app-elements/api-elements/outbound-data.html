@@ -416,6 +416,12 @@
             });
           }
 
+          function emptyCollectionPurging(collection) {
+            return collection.filter(function(item) {
+                return Object.keys(item).length > 0;
+            });
+          }
+
           function handleObject(obj) {
             if (!obj) {return;}
             var keys = Object.keys(obj);
@@ -440,13 +446,15 @@
             arr.forEach(function(obj) {
               handleObject(obj);
             });
+            arr = emptyCollectionPurging(arr);
+            return arr;
           }
 
           var dataKeys = Object.keys(data);
 
           dataKeys.forEach(function(fieldSet) {
             if (data[fieldSet] instanceof Array) {
-              handleArray(data[fieldSet]);
+              data[fieldSet] = handleArray(data[fieldSet]);
             } else if (typeof data[fieldSet] === 'object') {
               handleObject(data[fieldSet]);
             }
@@ -486,17 +494,17 @@
               self.serverData[serverKey] = data[serverKey];
             }
           });
-
           var leftoverKeys = Object.keys(data);
           leftoverKeys.forEach(function(key) {
-            if (data[key]) {
-              if (typeof(data[key]) === 'object') {
-                var innerKeys = Object.keys(data[key]);
+            var value = data[key];
+            if (value) {
+              if (typeof(value) === 'object' && !Array.isArray(value)) {
+                var innerKeys = Object.keys(value);
                 innerKeys.forEach(function(innerKey) {
-                  self.serverData[innerKey] = data[key][innerKey];
+                  self.serverData[innerKey] = value[innerKey];
                 });
               } else {
-                self.serverData[key] = data[key];
+                self.serverData[key] = value;
               }
             }
           });
