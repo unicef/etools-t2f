@@ -37,6 +37,7 @@
       attr-for-selected="name"
       fallback-selection="not-found"
       role="main">
+
       <page-travel-list name="travel-list"
         user="[[user]]"
         structure="[[structure]]"
@@ -44,6 +45,15 @@
         refresh-data="{{refreshData}}"
         list-loading="{{subLoading}}">
       </page-travel-list>
+
+      <page-action-points-list name="action-points-list"
+        user="[[user]]"
+        structure="[[structure]]"
+        route="{{route}}"
+        refresh-data="{{refreshData}}"
+        list-loading="{{subLoading}}">
+      </page-action-points-list>
+
       <page-edit-travel fullbleed
         name="edit-travel"
         user="[[user]]"
