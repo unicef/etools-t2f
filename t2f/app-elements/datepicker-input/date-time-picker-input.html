@@ -48,6 +48,10 @@
         padding:0 !important;
         margin: 0 !important;
       }
+      .error {
+        padding:24px !important;
+        color: var(--et2f-error);
+      }
     </style>
 
     <paper-input id="date-input"
@@ -72,7 +76,7 @@
           <paper-time-picker force-narrow time="[[time]]" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
         </template>
       </div>
-      <div class="flex layout horizontal no-margin" hidden$="[[!dialogButtonDisabled]]">
+      <div class="flex layout horizontal no-margin error" hidden$="[[!dialogButtonDisabled]]">
         Please select a time greater or equal than: [[prettyMinDate]]
       </div>
       <div class="buttons">
