@@ -92,9 +92,10 @@
         <date-time-picker-input label="Arriving"
           id="arrival_date"
           class$="flex-4 [[computedPermission.arrival_date.readOnly]]"
-          disabled="[[computedPermission.arrival_date.disabled]]"
+          disabled="[[arrivalDateDisabled]]"
           hidden$="[[computedPermission.arrival_date.hidden]]"
           time-picker
+          min-date="[[itinerary.departure_date]]"
           date="{{itinerary.arrival_date}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.arrival_date.required]]"
@@ -154,19 +155,24 @@
           type: Object,
           value: {}
         },
-         autoValidate: {
+        autoValidate: {
           type: Boolean,
           computed: '_computeAutoValidate(itinerary)'
         },
         hideAirline: {
           type: Boolean,
           computed: '_computeHideAirline(itinerary.mode_of_travel)'
-        }
+        },
+        arrivalDateDisabled: {
+          type: Boolean,
+          computed: '_computeDisableArrivalDate(computedPermission.departure_date.disabled,' +
+            ' itinerary.*)',
+        },
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
-      observers: ['_itineraryObserver(itinerary.*)', '_validDates(itinerary.departure_date, itinerary.arrival_date)'],
+      observers: ['_itineraryObserver(itinerary.*)'],
       _computeAutoValidate: function(itinerary) {
           return itinerary !== undefined && Object.keys(itinerary).length > 0;
       },
@@ -181,38 +187,21 @@
         }
         return true;
       },
-      _validDates: function(start_date, end_date) {
-        if (!start_date && !end_date) {
-          return false;
-        }
-
-        var start = new Date(start_date).getTime();
-        var end = new Date(end_date).getTime();
-        if (end <= start) {
-          this.$.arrival_date.setAttribute('error-message', '*should be bigger than departing');
-          this.$.arrival_date.invalid = true;
-          return false;
-        } else {
-          this.$.arrival_date.setAttribute('error-message', '');
-          this.$.arrival_date.invalid = false;
-          return true;
-        }
-      },
       validateItinerary: function() {
         var keys = Object.keys(this.itinerary);
         if (keys.length === 0) {
           return true;
         }
-        var dates = this._validDates(this.itinerary.departure_date, this.itinerary.arrival_date);
-        var formValidations = this.$.itinerary_form.validate();
-
-        return dates && formValidations;
+       return this.$.itinerary_form.validate();
       },
       _addValidationFunction: function(changed) {
 
         if (!changed.base._validationFunction) {
           this.set('itinerary._validationFunction', this.validateItinerary.bind(this, changed.base));
         }
+      },
+      _computeDisableArrivalDate: function(permission, changed) {
+        return permission || !changed.base.departure_date;
       },
     });
   </script>

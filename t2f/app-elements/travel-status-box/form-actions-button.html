@@ -42,6 +42,8 @@
     .main-btn-part {
       text-align: center;
       font-weight: 500;
+      line-height: 34px;
+      height:100%;
     }
     .dropdown-content, .dropdown-content paper-item {
       background-color: white;
@@ -51,9 +53,9 @@
   <template>
 
     <template is="dom-if" if="[[show]]">
-      <paper-button raised class$="layout horizontal [[_buttonGreyClass(actions)]]" on-tap="_clickPrimary">
+      <paper-button raised class$="layout horizontal [[_buttonGreyClass(actions)]]">
 
-        <div  class="flex main-btn-part">[[actions.primary.name]]</div>
+        <div  on-tap="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
 
         <template is="dom-if" if="[[showDropdown]]">
           <paper-menu-button horizontal-align="right">

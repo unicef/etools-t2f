@@ -46,7 +46,7 @@
       }
       .no-margin {
         padding:0 !important;
-         margin: 0 !important;
+        margin: 0 !important;
       }
     </style>
 
@@ -60,7 +60,6 @@
       error-message="[[errorMessage]]"
       required$="[[required]]"
       placeholder="[[placeholder]]"
-      auto-validate$="[[autoValidate]]"
       invalid$="[[invalid]]">
 
       <iron-icon suffix icon="date-range" ></iron-icon>
@@ -68,36 +67,48 @@
 
     <paper-dialog id="timePickerDialog" modal on-iron-overlay-closed="_setNewDate">
       <div class="flex layout horizontal no-margin">
-        <paper-date-picker date="{{internalDate}}" force-narrow ></paper-date-picker>
+        <paper-date-picker date="{{internalDate}}" min-date="[[calculatedMinDate]]" force-narrow ></paper-date-picker>
         <template is="dom-if" if="[[timePicker]]">
           <paper-time-picker force-narrow time="[[time]]" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
         </template>
       </div>
+      <div class="flex layout horizontal no-margin" hidden$="[[!dialogButtonDisabled]]">
+        Please select a time greater or equal than: [[prettyMinDate]]
+      </div>
       <div class="buttons">
-
-        <paper-button dialog-confirm>OK</paper-button>
+        <paper-button disabled="[[dialogButtonDisabled]]" dialog-confirm>OK</paper-button>
       </div>
     </paper-dialog>
 
   </template>
 
   <script>
+    /* global moment */
     Polymer({
       is: 'date-time-picker-input',
       properties: {
-        errorMessage: String,
+        errorMessage: {
+          type: String,
+          reflectToAttribute: true,
+        },
         required: Boolean,
         placeholder: String,
-        autoValidate: Boolean,
+        autoValidate: {
+          type: Boolean,
+        },
         timePicker: {
           type: Boolean,
-          value: false
+          value: false,
+          observer: '_computeFormat'
         },
         format: {
           type: String,
-          computed: '_computeFormat(timePicker)'
+          value: 'LL'
         },
-        invalid: Boolean,
+        invalid: {
+          type: Boolean,
+          value: false
+        },
         label: {
           type: String
         },
@@ -120,46 +131,82 @@
         disabled: {
           type: Boolean,
           value: false
+        },
+        minDate: {
+          type: Date,
+          observer: '_minDateChanged'
+        },
+        calculatedMinDate: {
+          type: Date,
+          computed: '_calculateMinDateCalculated(minDate)'
+        },
+        dialogButtonDisabled: {
+          type: Boolean,
+          value: false,
+          computed: '_computeDisabledOkButton(minDate, internalDate, hour, minute)'
         }
       },
-      observers: ['_dateChanged(date.*, format)', '_dateObserver(date.*)'],
+      observers: ['_dateObserver(date.*)'],
       _dateObserver: function(changed) {
         var date = changed.base;
         if (!date) {
+          this.set('prettyDate', undefined);
+          this.$['date-input'].invalid = false;
           return;
         }
         if (!this.internalDate) {
          this._updateComponentState(date);
-        } else {
-          if (date.getTime() !== this.internalDate.getTime()) {
+        } else if (date.getTime() !== this.internalDate.getTime()) {
             this._updateComponentState(date);
-          }
         }
+        this.set('prettyDate', moment(date).format(this.format));
       },
       _updateComponentState: function(date) {
-         date = new Date(date);
+          date = new Date(date);
           this.set('internalDate', date);
           var time =  moment(date).format('hh:mm');
           this.set('time', time);
       },
       _computeFormat: function(timePicker) {
-        return timePicker ? 'LLL' : 'LL';
+        this.set('format', timePicker ? 'LLL' : 'LL');
       },
       _dateChanged: function(changed, format) {
         var date = changed.base;
-        console.log(date);
         var prettyDate = date;
         if (date) {
-          /* global moment */
           prettyDate =  moment(date).format(format);
         }
        this.set('prettyDate', prettyDate);
+      },
+
+      _calculateMinDateCalculated: function(date) {
+        if (date) {
+          date = moment(new Date(date));
+          date.subtract(1, 'days');
+          this.set('prettyMinDate', date.format(this.format));
+          return date.toDate();
+        }
+      },
+      _computeDisabledOkButton: function(minDate, internalDate, hour, minute) {
+        internalDate = moment(internalDate);
+        internalDate.hour(this.hour);
+        internalDate.minute(this.minute);
+        minDate = moment(minDate);
+        return minDate.isAfter(internalDate);
+
       },
       _openCalendar: function() {
         if (this.disabled) {
           return;
         } else if (!this.opened) {
            this.$.timePickerDialog.open();
+        }
+      },
+      _minDateChanged: function(newDate, oldDate) {
+        newDate = moment(newDate);
+        oldDate = moment(oldDate);
+        if (newDate.isAfter(oldDate)) {
+          this.set('date', undefined);
         }
       },
       _setNewDate: function() {
