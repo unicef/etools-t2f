@@ -56,6 +56,7 @@
 
     <paper-input id="date-input"
       readonly
+      on-focus="_onFocus"
       label="[[label]]"
       always-float-label
       on-tap="_openCalendar"
@@ -205,6 +206,9 @@
         } else if (!this.opened) {
            this.$.timePickerDialog.open();
         }
+      },
+      _onFocus: function() {
+        this._openCalendar();
       },
       _minDateChanged: function(newDate, oldDate) {
         newDate = moment(newDate);
