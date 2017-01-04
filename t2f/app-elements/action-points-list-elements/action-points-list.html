@@ -215,6 +215,15 @@
           </action-points-list-element>
         </template>
 
+        <!-- JUST FOR TEST -->
+        <action-points-list-element
+          data="[[item]]"
+          route="{{route}}"
+          users="[[structure.users]]"
+          offices="[[structure.offices]]"
+          sections="[[structure.sections]]">
+        </action-points-list-element>
+
         <action-points-list-pagination
             id="list-pagination"
             maxnr="{{datalength}}"
@@ -338,113 +347,14 @@
       _computeFilters: function(structure) {
         return [
           {
-            name: 'Traveler',
-            filterName: 'f_traveler',
+            name: 'Responsible person',
+            filterName: 'f_responsible',
             selection: structure.users
           },
           {
-            name: 'Supervisor',
-            filterName: 'f_supervisor',
+            name: 'Assigned By',
+            filterName: 'f_assigned',
             selection: structure.users
-          },
-          {
-            name: 'Year',
-            filterName: 'f_year',
-            selection: [
-              {
-                label: '2015',
-                value: 2015
-              },
-              {
-                label: '2016',
-                value: 2016
-              },
-              {
-                label: '2017',
-                value: 2017
-              },
-              {
-                label: '2018',
-                value: 2018
-              },
-              {
-                label: '2019',
-                value: 2019
-              },
-              {
-                label: '2020',
-                value: 2020
-              }
-            ]
-          },
-          {
-            name: 'Month',
-            filterName: 'f_month',
-            selection: [
-              {
-                label: 'January',
-                value: 0
-              },
-              {
-                label: 'February',
-                value: 1
-              },
-              {
-                label: 'March',
-                value: 2
-              },
-              {
-                label: 'April',
-                value: 3
-              },
-              {
-                label: 'May',
-                value: 4
-              },
-              {
-                label: 'Juny',
-                value: 5
-              },
-              {
-                label: 'July',
-                value: 6
-              },
-              {
-                label: 'August',
-                value: 7
-              },
-              {
-                label: 'September',
-                value: 8
-              },
-              {
-                label: 'October',
-                value: 9
-              },
-              {
-                label: 'November',
-                value: 10
-              },
-              {
-                label: 'December',
-                value: 11
-              }
-            ]
-          },
-          {
-            name: 'Office',
-            filterName: 'f_office',
-            selection: structure.offices
-          },
-          {
-            name: 'Section',
-            filterName: 'f_section',
-            selection: structure.sections
-          },
-          {
-            name: 'Travel type',
-            filterName: 'f_travel_type',
-            selection: structure.travel_types
           },
           {
             name: 'Status',
@@ -463,16 +373,6 @@
                 value: 'completed'
               }
             ]
-          },
-          {
-            name: 'Partner',
-            filterName: 'f_partner',
-            selection: structure.partners
-          },
-          {
-            name: 'Results',
-            filterName: 'f_cp_output',
-            selection: structure.results
           }
         ];
       },
@@ -544,12 +444,13 @@
         return start + ' - ' + end + ' of ' + datalength;
       },
       labelLib: {
-        'Action Point #': 'action_point',
-        'Trip Reference #': 'trip_reference',
+        'Action Point #': 'action_point_number',
+        'Trip Reference #': 'trip_reference_number',
         'Description': 'description',
         'Due Date': 'due_date',
-        'Responsible Person': 'responsible',
+        'Responsible Person': 'person_responsible',
         'Assigned By': 'assigned_by',
+        // ?????
         'Status': 'status',
       },
       handleListResponse: function(event, data) {
