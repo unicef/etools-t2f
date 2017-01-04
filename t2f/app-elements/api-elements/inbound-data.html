@@ -151,7 +151,7 @@
           cost_summary: {},
           action_points: {
             due_date: convertDate,
-            completed_date: convertDate,
+            completed_at: convertDate,
             person_responsible: 'users',
             status: 'action_point_status'
           }
@@ -190,7 +190,8 @@
           'completion_date',
           'attachments',
           'cost_summary',
-          'report'
+          'report',
+          'action_points'
         ];
 
         var dataKeys = Object.keys(incomingData).filter(function(key) {

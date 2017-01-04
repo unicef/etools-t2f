@@ -102,13 +102,13 @@
         </etools-searchable-multiselection-menu>
 
         <date-time-picker-input label="Completed Date"
-          class$="flex-3 [[computedPermission.completed_date.readOnly]]"
+          class$="flex-3 [[computedPermission.completed_at.readOnly]]"
           disabled="[[endDateDisabled]]"
-          hidden$="[[computedPermission.completed_date.hidden]]"
+          hidden$="[[computedPermission.completed_at.hidden]]"
           required="[[completedDateRequired]]"
           starred$="[[completedDateRequired]]"
           placeholder="select"
-          date="{{actionPoints.completed_date}}">
+          date="{{actionPoints.completed_at}}">
         </date-time-picker-input>
 
       </div>
@@ -150,11 +150,11 @@
         },
         completedDateRequired: {
           type: Boolean,
-          computed: '_computeCompletedDateRequired(computedPermission.completed_date.required, actionPoints.status)'
+          computed: '_computeCompletedDateRequired(computedPermission.completed_at.required, actionPoints.status)'
         },
         actionTakenRequired: {
           type: Boolean,
-          computed: '_computeActionTakenRequired(computedPermission.completed_date.required, actionPoints.*)'
+          computed: '_computeActionTakenRequired(computedPermission.actions_taken.required, actionPoints.*)'
         }
       },
       observers: [

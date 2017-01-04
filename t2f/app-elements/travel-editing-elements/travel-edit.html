@@ -375,11 +375,14 @@
         invalids.details = this.$.travelDetails.doValidate(action);
         invalids.report = this.$.travelReport.doValidate(action);
 
+        invalids.details = invalids.details ? invalids.details : false;
+        invalids.report = invalids.report ? invalids.report : false;
+
         if (invalids.details.length > 0 || invalids.report.length > 0) {
           this.set('invalids', invalids);
           this.$.invalid_modal.open();
         } else {
-          this._handleFormAction(e, action);
+          this._handleFormAction(action);
         }
       }
 
