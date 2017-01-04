@@ -11,7 +11,7 @@
                  on-success="_handleResponse"
                  on-fail="_handleError"
                  on-unauthorized="_redirectToLogin"
-                  on-forbidden="_redirectToLogin"
+                 on-forbidden="_redirectToLogin"
                  caching-storage="dexie"></etools-ajax>
   </template>
 
@@ -114,7 +114,7 @@
       },
 
        _redirectToLogin: function() {
-        window.location.href = 'https://etools-dev.unicef.org/login/';
+        window.location.href = '/login/';
       },
 
       _handleResponse: function(res) {
