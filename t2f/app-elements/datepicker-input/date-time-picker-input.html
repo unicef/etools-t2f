@@ -67,18 +67,21 @@
       placeholder="[[placeholder]]"
       invalid$="[[invalid]]">
 
-      <iron-icon suffix icon="date-range" ></iron-icon>
+      <iron-icon prefix icon="date-range" ></iron-icon>
     </paper-input>
 
     <paper-dialog id="timePickerDialog" modal on-iron-overlay-closed="_setNewDate">
       <div class="flex layout horizontal no-margin">
-        <paper-date-picker date="{{internalDate}}" min-date="[[calculatedMinDate]]" force-narrow ></paper-date-picker>
+        <paper-date-picker date="{{internalDate}}" min-date="[[calculatedMinDate]]" max-date="[[calculatedMaxDate]]" force-narrow ></paper-date-picker>
         <template is="dom-if" if="[[timePicker]]">
           <paper-time-picker force-narrow time="[[time]]" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
         </template>
       </div>
-      <div class="flex layout horizontal no-margin error" hidden$="[[!dialogButtonDisabled]]">
-        Please select a time greater or equal than: [[prettyMinDate]]
+      <div class="flex layout horizontal no-margin error" hidden$="[[!showMinDateWarning]]">
+        Please select a date-time greater or equal than: [[prettyMinDate]]
+      </div>
+      <div class="flex layout horizontal no-margin error" hidden$="[[!showMaxDateWarning]]">
+         Please select a date-time less or equal than: [[prettyMaxDate]]
       </div>
       <div class="buttons">
         <paper-button disabled="[[dialogButtonDisabled]]" dialog-confirm>OK</paper-button>
@@ -145,10 +148,28 @@
           type: Date,
           computed: '_calculateMinDateCalculated(minDate)'
         },
+        showMinDateWarning: {
+          type: Boolean,
+          value: false,
+          computed: '_computeShowMinDateWarning(minDate, internalDate, hour, minute)'
+        },
+        maxDate: {
+          type: Date,
+          observer: '_maxDateChanged'
+        },
+        calculatedMaxDate: {
+          type: Date,
+          computed: '_calculateMaxDateCalculated(maxDate)'
+        },
+        showMaxDateWarning: {
+          type: Boolean,
+          value: false,
+          computed: '_computeShowMaxDateWarning(maxDate, internalDate, hour, minute)'
+        },
         dialogButtonDisabled: {
           type: Boolean,
           value: false,
-          computed: '_computeDisabledOkButton(minDate, internalDate, hour, minute)'
+          computed: '_computeDisabledOkButton(showMinDateWarning, showMaxDateWarning)'
         }
       },
       observers: ['_dateObserver(date.*)'],
@@ -192,13 +213,31 @@
           return date.toDate();
         }
       },
-      _computeDisabledOkButton: function(minDate, internalDate, hour, minute) {
+      _calculateMaxDateCalculated: function(date) {
+        if (date) {
+          date = moment(new Date(date));
+          date.add(1, 'days');
+          this.set('prettyMaxDate', date.format(this.format));
+          return date.toDate();
+        }
+      },
+      _computeShowMinDateWarning: function(minDate, internalDate, hour, minute) {
         internalDate = moment(internalDate);
         internalDate.hour(this.hour);
         internalDate.minute(this.minute);
         minDate = moment(minDate);
         return minDate.isAfter(internalDate);
 
+      },
+      _computeShowMaxDateWarning: function(maxDate, internalDate, hour, minute) {
+        internalDate = moment(internalDate);
+        internalDate.hour(this.hour);
+        internalDate.minute(this.minute);
+        maxDate = moment(maxDate);
+        return maxDate.isBefore(internalDate);
+      },
+      _computeDisabledOkButton: function(minDateWarning, maxDateWarning) {
+        return minDateWarning || maxDateWarning;
       },
       _openCalendar: function() {
         if (this.disabled) {
@@ -210,10 +249,17 @@
       _onFocus: function() {
         this._openCalendar();
       },
-      _minDateChanged: function(newDate, oldDate) {
+      _minDateChanged: function(newDate) {
         newDate = moment(newDate);
-        oldDate = moment(oldDate);
+        var oldDate = moment(this.internalDate);
         if (newDate.isAfter(oldDate)) {
+          this.set('date', undefined);
+        }
+      },
+      _maxDateChanged: function(newDate) {
+        newDate = moment(newDate);
+        var oldDate = moment(this.internalDate);
+        if (newDate.isBefore(oldDate)) {
           this.set('date', undefined);
         }
       },

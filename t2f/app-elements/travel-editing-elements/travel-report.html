@@ -3,7 +3,10 @@
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 
+
+<link rel="import" href="../field-set-elements/action-point.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -18,11 +21,17 @@
 
     .container {
       padding: 24px;
+      margin-right: 24px;§
     }
 
     paper-material {
       padding: 0;
-      margin-right: 24px;
+    }
+
+    etools-repeatable-field-set {
+      --repeatable-items-collapse-container: {
+        background: #FFF;
+      };
     }
 
     .card-heading {
@@ -67,14 +76,39 @@
           char-counter
           maxlength="200000"
           value="{{reportString}}"
-          disabled="[[!reportPermission.edit]]"
-          hidden$="[[!reportPermission.view]]">
+          disabled="[[!permissions.report.edit]]"
+          hidden$="[[!permissions.report.view]]">
         </paper-textarea>
 
-        <paper-button raised on-click="saveReport" disabled="[[!reportPermission.edit]]">
+        <paper-button raised on-click="saveReport" disabled="[[!permission.report.edit]]">
           Save report
         </paper-button>
       </paper-material>
+    </div>
+
+    <div class="container layout horizontal">
+       <etools-repeatable-field-set title="Action Points"
+          id="action-points"
+          model="{{data.action_points}}"
+          hide-plus="[[!permissions.action_points.edit]]"
+          show-counter
+          elevation="1"
+          hidden$="[[!permissions.action_points.view]]">
+
+          <template
+            is="dom-repeat"
+            items="{{data.action_points}}"
+            strip-whitespace>
+
+            <action-point
+            action-points="{{item}}"
+            structure="{{structure}}"
+            permissions-matrix="[[permissions.action_points]]">
+
+            </action-point>
+
+          </template>
+        </etools-repeatable-field-set>
     </div>
 
   </template>
@@ -87,7 +121,7 @@
       properties: {
         reportString: {
           type: String,
-          observer: 'setReportToData'
+          observer: '_setReportToData'
         },
         data: {
           type: Object,
@@ -95,17 +129,29 @@
         },
         status: String,
         userRoles: String,
-        reportPermission: {
+        structure: Object,
+        permissions: {
           type: Object,
-        }
+        },
       },
 
-      setReportToData: function() {
+      _setReportToData: function() {
         this.set('data.report', this.reportString);
       },
 
       saveReport: function() {
         this.fire('form-action', {endPoint: 'save'});
+      },
+      doValidate: function(action) {
+        var invalids = [];
+        var result = true;
+        this.data.action_points.forEach(function(ap) {
+          result = result && ap._validationFunction();
+        });
+        if (!result) {
+          invalids.push('Action Points');
+        }
+        return invalids;
       }
     });
   </script>
