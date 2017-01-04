@@ -145,6 +145,9 @@
       doValidate: function(action) {
         var invalids = [];
         var result = true;
+        if (!this.data.action_points) {
+          return result;
+        }
         this.data.action_points.forEach(function(ap) {
           result = result && ap._validationFunction();
         });
