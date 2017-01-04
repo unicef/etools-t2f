@@ -367,6 +367,7 @@
         this.$.invalid_modal.close();
       },
       onValidate: function(e, action) {
+        this.set('invalids', {});
         var invalids = {
           details: [],
           report: []
@@ -375,8 +376,8 @@
         invalids.details = this.$.travelDetails.doValidate(action);
         invalids.report = this.$.travelReport.doValidate(action);
 
-        invalids.details = invalids.details ? invalids.details : false;
-        invalids.report = invalids.report ? invalids.report : false;
+        invalids.details = invalids.details.length > 0 ? invalids.details : false;
+        invalids.report = invalids.report.length > 0 ? invalids.report : false;
 
         if (invalids.details.length > 0 || invalids.report.length > 0) {
           this.set('invalids', invalids);
