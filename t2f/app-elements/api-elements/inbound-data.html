@@ -148,7 +148,13 @@
           misc_expenses: 'misc_expenses',
           canceled_at: 'canceled_at',
           completed_at: 'completed_at',
-          cost_summary: {}
+          cost_summary: {},
+          action_points: {
+            due_date: convertDate,
+            completed_at: convertDate,
+            person_responsible: 'users',
+            status: 'action_point_status'
+          }
         };
 
         var statusLib = {
@@ -184,7 +190,8 @@
           'completion_date',
           'attachments',
           'cost_summary',
-          'report'
+          'report',
+          'action_points'
         ];
 
         var dataKeys = Object.keys(incomingData).filter(function(key) {

@@ -46,12 +46,6 @@
           font-size: 16px;
           margin-bottom: 24px;
       }
-      .missing-action {
-        color: var(--et2f-warning);
-        text-align: center;
-        font-size: 16px;
-        font-weight: 500;
-      }
       .dialog-confirm-button {
           color: var(--et2f-primary);
           font-weight: 500;
@@ -107,25 +101,6 @@
     <div class="horizontal layout">
 
       <div class="flex">
-
-        <paper-dialog id="invalid_modal" with-backdrop>
-
-          <div class="dialog-head-container layout horizontal">
-            <div class="dialog-heading flex">Warning</div>
-            <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
-          </div>
-          <div class="dialog-intro-text">You are not allowed to take this action, until you have missing, or badly formatted information in the following fields:</div>
-
-          <template is="dom-repeat" items="[[invalids]]">
-            <div class="missing-action">[[item]]</div>
-          </template>
-
-          <paper-button
-            class="dialog-confirm-button"
-            on-click="closeInvalidModal">
-              I understand
-          </paper-button>
-        </paper-dialog>
 
         <!-- Cancellation note -->
         <paper-material class="note cancel" elevation="1" hidden$="[[_hideCancelNote(data)]]">
@@ -446,7 +421,7 @@
         return this.data.itinerary[0]._validationFunction(true);
       },
 
-      doValidate: function(e, action) {
+      doValidate: function(action) {
         var self = this;
         // this.fire('form-action', action); // to debug the backend validation
         var invalids = [];
@@ -487,20 +462,7 @@
               invalids.push('Itinerary must have at least one entry');
             }
           }
-
-        if (invalids.length) {
-
-          this.set('invalids', invalids);
-          this.$.invalid_modal.open();
-
-        } else {
-
-          this.fire('form-action', action);
-        }
-      },
-
-      closeInvalidModal: function() {
-        this.$.invalid_modal.close();
+          return invalids;
       },
 
       _invalidShares: function(changed) { // data.cost_assignments.*

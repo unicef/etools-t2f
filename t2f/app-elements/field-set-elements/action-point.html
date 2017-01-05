@@ -1,0 +1,198 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import" href="../datepicker-input/date-time-picker-input.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="action-point">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+      .custom-margin {
+        --paper-input-container: {
+          height: auto;
+          margin-left: 12px;
+          margin-right: 12px;
+          margin-bottom: 12px;
+        };
+        --paper-checkbox-margin: 12px;
+      }
+      span.standalone {
+        color: var(--gray-dark);
+        font-size: 16px;
+        padding-left: 12px;
+      }
+    </style>
+
+    <form
+      is="iron-form"
+      id="action_point_form"
+      class="layout vertical flex">
+
+      <div class="layout horizontal">
+
+         <paper-input label="Description"
+          class$="flex-3 custom-margin [[computedPermission.description.readOnly]]"
+          disabled="[[computedPermission.description.disabled]]"
+          hidden$="[[computedPermission.description.hidden]]"
+          required="[[computedPermission.description.required]]"
+          starred$="[[computedPermission.description.required]]"
+          placeholder="description"
+          value="{{actionPoints.description}}">
+        </paper-input>
+
+      </div>
+
+      <div class="layout horizontal">
+
+        <date-time-picker-input label="Due date"
+          class$="flex-3 [[computedPermission.due_date.readOnly]]"
+          disabled="[[computedPermission.due_date.disabled]]"
+          hidden$="[[computedPermission.due_date.hidden]]"
+          required="[[computedPermission.due_date.required]]"
+          starred$="[[computedPermission.due_date.required]]"
+          max-date="[[today]]"
+          placeholder="select"
+          date="{{actionPoints.due_date}}">
+        </date-time-picker-input>
+
+        <etools-searchable-multiselection-menu label="Person responsible"
+          value="{{actionPoints.person_responsible}}"
+          class$="flex-3 [[computedPermission.person_responsible.readOnly]]"
+          disabled="[[computedPermission.person_responsible.disabled]]"
+          hidden$="[[computedPermission.person_responsible.hidden]]"
+          required="[[computedPermission.person_responsible.required]]"
+          starred$="[[computedPermission.person_responsible.required]]"
+          options="[[structure.users]]"
+          empty-value
+          placeholder="select">
+        </etools-searchable-multiselection-menu>
+
+        <paper-checkbox class$="flex-3 custom-margin self-end[[computedPermission.follow_up.readOnly]]"
+          hidden$="[[computedPermission.follow_up.hidden]]"
+          checked="{{actionPoints.follow_up}}">
+          Follow up?
+        </paper-checkbox>
+
+      </div>
+
+      <div class="layout horizontal">
+
+        <etools-searchable-multiselection-menu label="Status"
+          class$="flex-6 [[computedPermission.status.readOnly]]"
+          disabled="[[computedPermission.status.disabled]]"
+          hidden$="[[computedPermission.status.hidden]]"
+          required="[[computedPermission.status.required]]"
+          starred$="[[computedPermission.status.required]]"
+          options="[[structure.action_point_status]]"
+          value="{{actionPoints.status}}"
+          empty-value
+          placeholder="select">
+        </etools-searchable-multiselection-menu>
+
+        <date-time-picker-input label="Completed Date"
+          class$="flex-3 [[computedPermission.completed_at.readOnly]]"
+          disabled="[[endDateDisabled]]"
+          hidden$="[[computedPermission.completed_at.hidden]]"
+          required="[[completedDateRequired]]"
+          starred$="[[completedDateRequired]]"
+          placeholder="select"
+          date="{{actionPoints.completed_at}}">
+        </date-time-picker-input>
+
+      </div>
+
+
+      <div class="layout horizontal">
+
+        <paper-textarea label="Actions taken"
+          class$="flex-12 custom-margin [[computedPermission.actions_taken.readOnly]]"
+          disabled="[[computedPermission.actions_taken.disabled]]"
+          hidden$="[[computedPermission.actions_taken.hidden]]"
+          required="[[actionTakenRequired]]"
+          starred$="[[actionTakenRequired]]"
+          placeholder="actions taken"
+          value="{{actionPoints.actions_taken}}">
+        </paper-textarea>
+
+      </div>
+
+    </form>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'action-point',
+      properties: {
+        actionPoints: {
+          type: Object,
+          value: {},
+          notify: true
+        },
+        structure: {
+          type: Object,
+        },
+        user: Object,
+        today: {
+          type: Date,
+          value: new Date()
+        },
+        completedDateRequired: {
+          type: Boolean,
+          computed: '_computeCompletedDateRequired(computedPermission.completed_at.required, actionPoints.status)'
+        },
+        actionTakenRequired: {
+          type: Boolean,
+          computed: '_computeActionTakenRequired(computedPermission.actions_taken.required, actionPoints.*)'
+        }
+      },
+      observers: [
+        '_computeStatusDefaultValue(actionPoints.*, structure.action_point_status)',
+        '_addValidationFunction(actionPoints.*)'
+      ],
+      behaviors: [et2fBehaviors.PermissionLayer],
+      _computeStatusDefaultValue: function(actionPoints, structure) {
+        var status = actionPoints.base.status;
+        if (!status && Object.keys(actionPoints.base).length > 1) {
+          this.set('actionPoints.status', structure.find(function(item) {
+            return item.label === 'Open';
+          }));
+        }
+      },
+      _computeCompletedDateRequired: function(permissions, status) {
+        return permissions && status.label === 'Completed';
+      },
+      _computeActionTakenRequired: function(permissions, actionPointsChanged) {
+        var status = actionPointsChanged.base.status;
+        var completedDate = actionPointsChanged.base.completed_date;
+        return permissions && ((status && status.label === 'Completed') || completedDate !== undefined);
+      },
+      _validateActionPoint: function() {
+        var aps = this.actionPoints;
+        var keys = Object.keys(aps);
+        if (keys.length > 1) {
+         return this.$.action_point_form.validate();
+        }
+        return true;
+      },
+      _addValidationFunction: function(actionPointsChanged) {
+        var actionPoints = actionPointsChanged.base;
+        if (!actionPoints._validationFunction) {
+          actionPoints._validationFunction = this._validateActionPoint.bind(this);
+        }
+      }
+
+    });
+  </script>
+</dom-module>

@@ -159,6 +159,13 @@
           }
 
         });
+        data.action_point_status = [
+          {label: 'Open', value: 0},
+          {label: 'On-going', value: 1},
+          {label: 'Completed', value: 2},
+          {label: 'Cancelled', value: 3}
+        ];
+
         Object.freeze(data);
         this.set('structure', data);
       },
@@ -173,7 +180,8 @@
           'clearances',
           'cost_summary',
           'report',
-          'attachments'
+          'attachments',
+          'action_points'
         ];
         Object.keys(data).forEach(function(role) {
           if (!data[role]) {
