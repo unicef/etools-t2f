@@ -158,16 +158,21 @@
         }
       },
       observers: [
-        '_computeStatusDefaultValue(actionPoints.*, structure.action_point_status)',
-        '_addValidationFunction(actionPoints.*)'
+        '_computeDefaultValues(actionPoints.*, structure.action_point_status, user)',
+        '_addValidationFunction(actionPoints.*)',
       ],
       behaviors: [et2fBehaviors.PermissionLayer],
-      _computeStatusDefaultValue: function(actionPoints, structure) {
+      _computeDefaultValues: function(actionPoints, structure, user) {
         var status = actionPoints.base.status;
         if (!status && Object.keys(actionPoints.base).length > 1) {
-          this.set('actionPoints.status', structure.find(function(item) {
+          this.actionPoints.status = structure.find(function(item) {
             return item.label === 'Open';
-          }));
+          });
+          if (!actionPoints.base.assigned_by) {
+            this.actionPoints.assigned_by = user.value;
+          }
+          this.notifyPath('actionPoints.status');
+          this.notifyPath('actionPoints.assigned_by');
         }
       },
       _computeCompletedDateRequired: function(permissions, status) {
@@ -191,7 +196,7 @@
         if (!actionPoints._validationFunction) {
           actionPoints._validationFunction = this._validateActionPoint.bind(this);
         }
-      }
+      },
 
     });
   </script>

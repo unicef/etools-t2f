@@ -103,7 +103,8 @@
             <action-point
             action-points="{{item}}"
             structure="{{structure}}"
-            permissions-matrix="[[permissions.action_points]]">
+            permissions-matrix="[[permissions.action_points]]"
+            user="[[user]]">
 
             </action-point>
 
@@ -133,6 +134,7 @@
         permissions: {
           type: Object,
         },
+        user: Object
       },
 
       _setReportToData: function() {
