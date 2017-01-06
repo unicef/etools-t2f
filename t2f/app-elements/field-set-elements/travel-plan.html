@@ -302,7 +302,9 @@
           computed: '_computeDisableEndDate(computedPermission.end_date.disabled,' +
             ' baseDetails.*)',
         },
-        user: Object
+        user: {
+          type: Object,
+        }
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
