@@ -52,6 +52,13 @@
         travel-id="[[subroute.path]]"
         et2f-permissions="[[et2fPermissions]]"
         structure="[[structure]]"></page-edit-travel>
+      <page-invoices-list name="invoices-list"
+        user="[[user]]"
+        structure="[[structure]]"
+        route="{{route}}"
+        refresh-data="{{refreshData}}"
+        list-loading="{{subLoading}}">
+      </page-invoices-list>
       <page-not-found name="not-found"></page-not-found>
     </iron-pages>
 
