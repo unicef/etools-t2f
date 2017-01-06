@@ -51,7 +51,7 @@
           value="{{itinerary.origin}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.origin.required]]"
-          placeholder="departing destination">
+          placeholder="place of departure">
         </paper-input>
 
         <paper-input label="To"
@@ -61,10 +61,10 @@
           value="{{itinerary.destination}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.destination.required]]"
-          placeholder="arrival destination">
+          placeholder="place of arrival">
         </paper-input>
 
-        <etools-searchable-multiselection-menu label="DSA area"
+        <etools-searchable-multiselection-menu label="DSA Area"
           class$="flex-4 [[computedPermission.dsa_region.readOnly]]"
           disabled="[[computedPermission.dsa_region.disabled]]"
           hidden$="[[computedPermission.dsa_region.hidden]]"
@@ -78,7 +78,7 @@
 
       <div class="layout horizontal">
 
-        <date-time-picker-input label="Departing"
+        <date-time-picker-input label="Departure Date"
           class$="flex-4 [[computedPermission.departure_date.readOnly]]"
           disabled="[[computedPermission.departure_date.disabled]]"
           hidden$="[[computedPermission.departure_date.hidden]]"
@@ -89,7 +89,7 @@
           placeholder="select">
         </date-time-picker-input>
 
-        <date-time-picker-input label="Arriving"
+        <date-time-picker-input label="Arrival Date"
           id="arrival_date"
           class$="flex-4 [[computedPermission.arrival_date.readOnly]]"
           disabled="[[arrivalDateDisabled]]"
@@ -106,7 +106,7 @@
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.travel_modes]]"
-          label="Mode of  travel"
+          label="Mode of  Travel"
           value="{{itinerary.mode_of_travel}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.mode_of_travel.required]]"
@@ -121,13 +121,13 @@
             checked="{{itinerary.overnight_travel}}">
           </paper-checkbox>
 
-          <span class="flex self-center overnight-label">Overnight travel?</span>
+          <span class="flex self-center overnight-label">Overnight Travel</span>
         </div>
       </div>
 
       <div class="layout horizontal" hidden$="[[hideAirline]]">
 
-        <etools-searchable-multiselection-menu label="Add airline(s)"
+        <etools-searchable-multiselection-menu label="Airline(s)"
           class$="flex-8 [[computedPermission.airlines.readOnly]]"
           disabled="[[computedPermission.airlines.disabled]]"
           hidden$="[[computedPermission.airlines.hidden]]"

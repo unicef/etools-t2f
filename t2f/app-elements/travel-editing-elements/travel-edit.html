@@ -130,22 +130,22 @@
     </paper-dialog>
 
 
-    <et2f-header title="Edit travel plan"
+    <et2f-header title="Edit Trip"
       data="[[data]]"
       export-type='details'
       show-new-travel-button="true">
       <paper-tabs scrollable
         selected="{{selected}}">
         <paper-tab error$="[[invalids.details]]">
-          TRAVEL DETAILS
+          DETAILS
+          <iron-icon icon="warning"></iron-icon>
+        </paper-tab>
+         <paper-tab error$="[[invalids.report]]">
+          REPORT
           <iron-icon icon="warning"></iron-icon>
         </paper-tab>
         <paper-tab>
-          ATTACHMENTS
-        </paper-tab>
-        <paper-tab error$="[[invalids.report]]">
-          REPORT
-          <iron-icon icon="warning"></iron-icon>
+          ATTACHMENTS &#38; NOTES
         </paper-tab>
       </paper-tabs>
     </et2f-header>
@@ -164,6 +164,17 @@
         user="[[user]]">
       </travel-details>
 
+       <travel-report
+        id="travelReport"
+        structure="[[structure]]"
+        permissions="[[travelPermissions]]"
+        data="{{data}}"
+        report-string="[[data.report]]"
+        user-roles="[[userRoles]]"
+        user="[[user]]"
+        on-form-action="_handleFormAction">
+      </travel-report>
+
       <travel-attachments
         structure="[[structure]]"
         attachments-permission="[[travelPermissions.attachments]]"
@@ -177,16 +188,6 @@
         on-form-action="_handleFormAction">
       </travel-attachments>
 
-      <travel-report
-        id="travelReport"
-        structure="[[structure]]"
-        permissions="[[travelPermissions]]"
-        data="{{data}}"
-        report-string="[[data.report]]"
-        user-roles="[[userRoles]]"
-        user="[[user]]"
-        on-form-action="_handleFormAction">
-      </travel-report>
     </iron-pages>
 
       <travel-status
