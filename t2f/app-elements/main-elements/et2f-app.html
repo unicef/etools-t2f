@@ -59,7 +59,6 @@
   </template>
 
   <script>
-
     Polymer({
 
       is: 'et2f-app',
@@ -110,24 +109,34 @@
         window.location.href = '/login/';
       },
       _handleStructure: function(event, data) {
+
+        function fillDependenceis(child, parent, parentKey) {
+          data[child].forEach(function(childItem) {
+            data[parent].forEach(function(parentItem) {
+              if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
+                parentItem[child] = [];
+              }
+              var parentId = parentItem.id || parentItem.value;
+              var childId = childItem.id || childItem.value;
+              if (parentId === childItem[parentKey]) {
+                parentItem[child].push({
+                    label: childItem.name,
+                    value: childId
+                });
+              }
+            });
+          });
+        }
+
         var parsingFunctions = {
-          partners: function(key) {
+          partner: function(key) {
              data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, partnerships: []};
+              return {label: obj.name, value: obj.id, partnerships: obj.partnerships};
             });
           },
           partnerships: function(key) {
-              data[key].forEach(function(partnership) {
-                data.partners.forEach(function(partner) {
-                  if (partner.value === partnership.partner) {
-                    partner.partnerships.push({
-                        label: partnership.name,
-                        value: partnership.id
-                    });
-                  }
-                });
-              });
-             data[key] = data[key].map(function(obj) {
+            fillDependenceis(key, 'partners', 'partner');
+            data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id};
             });
           },
@@ -135,7 +144,24 @@
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id, short: obj.iso_4217};
             });
-          }
+          },
+          wbs: function(key) {
+             data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, grants: obj.grants};
+            });
+          },
+          grants: function(key) {
+            fillDependenceis(key, 'wbs', 'wbs');
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, funds: obj.funds};
+            });
+          },
+          funds: function(key) {
+            fillDependenceis('funds', 'grants', 'grant');
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id};
+            });
+          },
         };
         var dataKeys = Object.keys(data).sort();
         dataKeys.forEach(function(key) {
@@ -155,7 +181,6 @@
           {label: 'Completed', value: 2},
           {label: 'Cancelled', value: 3}
         ];
-
         Object.freeze(data);
         this.set('structure', data);
       },

@@ -48,9 +48,9 @@
 
         <etools-searchable-multiselection-menu label="Grant"
           class$="flex-3 [[computedPermission.grant.readOnly]]"
-          options="[[structure.grants]]"
+          options="[[grantOptions]]"
           value="{{costAssignment.grant}}"
-          disabled="[[computedPermission.grant.disabled]]"
+          disabled="[[disableGrant]]"
           hidden$="[[computedPermission.grant.hidden]]"
           empty-value
           placeholder="select"
@@ -59,9 +59,9 @@
 
         <etools-searchable-multiselection-menu label="Fund"
           class$="flex-3 [[computedPermission.fund.readOnly]]"
-          options="[[structure.funds]]"
+          options="[[fundOptions]]"
           value="{{costAssignment.fund}}"
-          disabled="[[computedPermission.fund.disabled]]"
+          disabled="[[disableFund]]"
           empty-value
           hidden$="[[computedPermission.fund.hidden]]"
           placeholder="select"
@@ -71,7 +71,7 @@
         <paper-input label="Share(%)"
           class$="flex-2 custom-margin [[computedPermission.share.readOnly]]"
           value="{{costAssignment.share}}"
-          disabled="[[computedPermission.share.disabled]]"
+          disabled="[[disableShare]]"
           hidden$="[[computedPermission.share.hidden]]"
           type="number"
           min="0"
@@ -102,9 +102,55 @@
         invalidShares: {
           type: Boolean,
           value: false
+        },
+        disableGrant: {
+          type: Boolean,
+          value: true,
+          computed: '_computeDisableGrant(computedPermission.grant.disabled, costAssignment.wbs)'
+        },
+        disableFund: {
+          type: Boolean,
+          value: true,
+          computed: '_computeDisableFund(computedPermission.grant.disabled, costAssignment.grant)'
+        },
+        disableShare: {
+          type: Boolean,
+          value: true,
+          computed: '_computeDisableShare(computedPermission.share.disabled, costAssignment.fund)'
+        },
+        grantOptions: {
+          type: Array,
+          computed: '_computeGrantOptions(structure.grants, costAssignment.wbs)',
+        },
+        fundOptions: {
+          type: Array,
+          computed: '_computeFundOptions(structure.funds, costAssignment.grant)',
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
+      _computeDisableGrant: function(permission, wbs) {
+        return permission || wbs.grants === [];
+      },
+      _computeDisableFund: function(permission, grant) {
+        return permission || grant.funds === [];
+      },
+      _computeDisableShare: function(permission, fund) {
+        return permission || !fund;
+      },
+      _computeGrantOptions: function(grants, wbs) {
+         return grants.filter(function(grant) {
+            return wbs.grants.some(function(item) {
+              return item.value === grant.value;
+            });
+         });
+      },
+      _computeFundOptions: function(funds, grant) {
+         return funds.filter(function(fund) {
+            return grant.funds.some(function(item) {
+              return item.value === fund.value;
+            });
+         });
+      }
     });
   </script>
 </dom-module>
