@@ -422,8 +422,19 @@
                 return Object.keys(item).length > 0;
             });
           }
+          function valueForServer(item, key, fieldSet) {
+            var result = item;
+            if (typeof item === 'object') {
+              result = item.value;
+            }
+            // console.debug(fieldSet + ' ---> ' + key);
+            if (fieldSet === 'action_points' && key === 'status') {
+              return item.label.toLowerCase();
+            }
+            return result;
+          }
 
-          function handleObject(obj) {
+          function handleObject(obj, fieldSet) {
             if (!obj) {return;}
             var keys = Object.keys(obj);
             keys.forEach(function(key) {
@@ -431,21 +442,21 @@
                 delete obj[key];
               }
               if (obj[key] && !(obj[key] instanceof Array)) {
-                obj[key] = typeof obj[key] === 'object' ?  obj[key].value : obj[key];
+                obj[key] = valueForServer(obj[key], key, fieldSet);
               }
               if (obj[key] && obj[key] instanceof Array) {
                 obj[key] = obj[key].map(function(item) {
-                  return typeof item === 'object' ? item.value : item;
+                  return valueForServer(item, key, fieldSet);
                 });
               }
             });
           }
 
-          function handleArray(arr) {
+          function handleArray(arr, fieldSet) {
             arr = duplicateIdPurging(arr);
             arr = emptyIdPurging(arr);
             arr.forEach(function(obj) {
-              handleObject(obj);
+              handleObject(obj, fieldSet);
             });
             arr = emptyCollectionPurging(arr);
             return arr;
@@ -455,9 +466,9 @@
 
           dataKeys.forEach(function(fieldSet) {
             if (data[fieldSet] instanceof Array) {
-              data[fieldSet] = handleArray(data[fieldSet]);
+              data[fieldSet] = handleArray(data[fieldSet], fieldSet);
             } else if (typeof data[fieldSet] === 'object') {
-              handleObject(data[fieldSet]);
+              handleObject(data[fieldSet], fieldSet);
             }
           });
 
