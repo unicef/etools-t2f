@@ -120,36 +120,44 @@
         },
         grantOptions: {
           type: Array,
-          computed: '_computeGrantOptions(structure.grants, costAssignment.wbs)',
+          computed: '_computeGrantOptions(structure.grants, costAssignment.wbs.*)',
         },
         fundOptions: {
           type: Array,
-          computed: '_computeFundOptions(structure.funds, costAssignment.grant)',
+          computed: '_computeFundOptions(structure.funds, costAssignment.grant.*)',
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
       _computeDisableGrant: function(permission, wbs) {
-        return permission || wbs.grants === [];
+        return permission || !(wbs && wbs.grants !== []);
       },
       _computeDisableFund: function(permission, grant) {
-        return permission || grant.funds === [];
+        return permission || !(grant && grant.funds !== []);
       },
       _computeDisableShare: function(permission, fund) {
         return permission || !fund;
       },
       _computeGrantOptions: function(grants, wbs) {
-         return grants.filter(function(grant) {
-            return wbs.grants.some(function(item) {
-              return item.value === grant.value;
-            });
-         });
+        this.set('costAssignment.grant', null);
+        if (wbs && wbs.base) {
+           wbs = wbs.base;
+           return grants.filter(function(grant) {
+              return wbs.grants.some(function(item) {
+                return item.value === grant.value;
+              });
+           });
+       }
       },
       _computeFundOptions: function(funds, grant) {
-         return funds.filter(function(fund) {
-            return grant.funds.some(function(item) {
-              return item.value === fund.value;
-            });
-         });
+         this.set('costAssignment.fund', null);
+         if (grant && grant.base) {
+           grant = grant.base;
+           return funds.filter(function(fund) {
+              return grant.funds.some(function(item) {
+                return item.value === fund.value;
+              });
+           });
+         }
       }
     });
   </script>

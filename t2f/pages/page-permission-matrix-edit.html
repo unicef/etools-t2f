@@ -1,0 +1,145 @@
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+
+
+
+
+
+
+<dom-module id="page-permission-matrix-edit">
+
+  <style include="">
+    :host {
+      display: block;
+    }
+    td {
+      width:150px;
+      display:inline-block;
+      border: 1px solid black;
+    }
+    textarea {
+      width:80%;
+      display:block;
+    }
+  </style>
+
+  <template>
+
+    <button on-tap="_download">Download</button>
+    <template is="dom-repeat" items="[[permissionRoles]]" as="role">
+      <h2 on-tap="_openRole">{{role}}</h2>
+      <iron-collapse id$="collapseRole_[[role]]">
+        <template is="dom-repeat" items="[[permissionStatus]]" as="status">
+          <h3 on-tap="_openStatus">{{status}}</h3>
+          <iron-collapse id$="collapseStatus_[[role]]_[[status]]">
+            <table>
+              <template is="dom-repeat" items="[[_computeSection(role,status)]]" as="section">
+                <tr>
+                  <td>
+                    <div>{{section}}</div>
+                    <input type="checkbox" value="v" checked="[[_checked('view',role,status,section)]]" on-change="_setView">V</input>
+                    <input type="checkbox" checked="[[_checked('edit',role,status,section)]]" on-change="_setEdit">E</input>
+                  </td>
+                  <template is="dom-repeat" items="[[_computeField(role,status,section)]]" as="field">
+                    <td>
+                      <div>{{field}}</div>
+                      <input type="checkbox" checked="[[_checked('view',role,status,section, field)]]" on-change="_setView">V</input>
+                      <input type="checkbox" checked="[[_checked('edit',role,status,section, field)]]" on-change="_setEdit">E</input>
+                     </td>
+                  </template>
+                </tr>
+              </template>
+            </table>
+          </iron-collapse>
+        </template>
+      </iron-collapse>
+    </template>
+    <textarea id="importArea"></textarea>
+    <button on-tap="_import">Import</button>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'page-permission-matrix-edit',
+      properties: {
+        et2fPermissions: {
+          type: Object
+        },
+        permissionRoles: {
+          type: Array,
+          computed: '_computeRoles(et2fPermissions)'
+        },
+        permissionStatus: {
+          type: Array,
+          computed: '_computeStatus(et2fPermissions)'
+        }
+      },
+      _computeRoles: function(perm) {
+        return Object.keys(perm);
+      },
+      _computeStatus: function(perm) {
+        if (perm && perm.God) {
+          return Object.keys(perm.God);
+        }
+      },
+      _computeSection: function(role, status) {
+        return Object.keys(this.et2fPermissions[role][status]);
+      },
+      _computeField: function(role, status, section) {
+        var result = Object.keys(this.et2fPermissions[role][status][section]);
+        return result.filter(function(it) {
+          return ['id', 'view', 'edit'].indexOf(it) === -1;
+        });
+      },
+      _checked: function(type, role, status, section, field) {
+        if (!field) {
+          return this.et2fPermissions[role][status][section][type];
+        }
+        return this.et2fPermissions[role][status][section][field][type];
+      },
+      _setView: function(event) {
+       this._setCheckbox(event, 'view');
+      },
+      _setEdit: function(event) {
+        this._setCheckbox(event, 'edit');
+      },
+      _setCheckbox: function(event, type) {
+        event = event.model;
+        var value = this.et2fPermissions[event.role][event.status][event.section];
+        var setString = 'et2fPermissions.' + event.role + '.' + event.status + '.' + event.section;
+        if (event.field) {
+          setString += '.' + event.field;
+          value = value[event.field];
+        }
+        setString += '.' + type;
+        value = value[type];
+        this.set(setString, !value);
+      },
+      _openRole: function(e) {
+        this.$$('#collapseRole_' + e.model.role).toggle();
+      },
+      _openStatus: function(e) {
+        this.$$('#collapseStatus_' + e.model.role + '_' + e.model.status).toggle();
+      },
+      _download: function() {
+        var data = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.et2fPermissions));
+        var a = document.createElement('a');
+        a.href =  'data:' + data;
+        a.download = 'permission_matrix_' + Date.now() + '.json';
+        a.click();
+        window.URL.revokeObjectURL(a.href);
+      },
+      _import: function() {
+        var value = this.$.importArea.value;
+        if (value) {
+          var localOne = localStorage.getItem('et2f_permissions');
+          localOne.detail = JSON.parse(value);
+          localStorage.setItem('et2f_permissions', JSON.stringify(localOne));
+        }
+      }
+
+    });
+  </script>
+</dom-module>
