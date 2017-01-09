@@ -41,7 +41,7 @@
     }
 
     action-point {
-      padding: 0 24px;
+      padding: 24px;
       width: calc(100% - 48px);
     }
   </style>
@@ -110,11 +110,11 @@
           if (structureData) {
             actionPoint[key] = self._processLib(structureData, data[key]);
           } else {
-            actionPoint[key] = data[key]
+            actionPoint[key] = data[key];
           }
         });
-        console.log(actionPoint);
-        this.set('actionPoint', {})
+
+        this.set('actionPoint', {});
         this.set('actionPoint', actionPoint);
       }
     });
