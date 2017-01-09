@@ -7,6 +7,7 @@
 
 <link rel="import" href="../../app-behaviors/permission-behavior.html">
 <link rel="import" href="../field-set-elements/action-point.html">
+<link rel="import" href="../et2f-header/et2f-header.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -49,6 +50,8 @@
   <template>
     <etools-ajax url="[[actionPointUrl]]"
       on-success="_handleData" loading="{{loading}}"></etools-ajax>
+
+    <et2f-header title="[[actionPoint.action_point_number]]"></et2f-header>
     <div class="container layout horizontal">
 
       <paper-material class="flex" elevation="1">
@@ -89,7 +92,6 @@
         actionPointUrl: {
           type: String,
           computed: '_computeUrl(actionPointId)',
-          observer: '_warn'
         }
       },
       behaviors: [et2fBehaviors.ApiBehavior],

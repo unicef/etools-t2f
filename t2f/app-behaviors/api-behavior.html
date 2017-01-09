@@ -11,7 +11,12 @@
       var date = new Date(item);
       return date;
     },
-
+    _truncateNumber: function(item) {
+      if (!item) {
+        return;
+      }
+      return '' + parseFloat(item).toFixed(2);
+    },
     _multiFieldConversion: function(subField, fieldName, fieldSet) {
       var self = this;
       if (fieldSet instanceof Array) {
@@ -23,7 +28,6 @@
       }
     },
     _processLib: function(structureData, value) {
-      // console.log(this.structure, structureData)
       if (typeof structureData  === 'function') {
         return structureData(value);
       }
@@ -98,6 +102,14 @@
             completed_at: this._convertDate,
             person_responsible: 'users',
             status: 'action_point_status'
+          },
+          invoice: {
+            currency: 'currencies',
+            items: {
+              wbs: 'wbs',
+              grant: 'grants',
+              fund: 'funds'
+            }
           }
         }
       };

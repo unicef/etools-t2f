@@ -1,0 +1,238 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+
+<link rel="import" href="../../app-behaviors/permission-behavior.html">
+<link rel="import" href="../field-set-elements/action-point.html">
+<link rel="import" href="../et2f-header/et2f-header.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="show-invoice-detail">
+
+  <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+    :host {
+      display: block;
+      width: 100%;
+    }
+    paper-material {
+      padding: 0;
+      margin:24px;
+    }
+
+
+    .card-heading {
+      font-size: 20px;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      height: 48px;
+      line-height: 48px;
+      color: white;
+      background-color: var(--et2f-sec-blue);
+      text-align: center;
+    }
+    .underline {
+      padding: 0 24px;
+      box-shadow: 0 1px 0 0 rgba(0,0,0,0.12);
+    }
+    .element {
+      padding:24px;
+      font-family: Roboto;
+    }
+
+    .element label {
+      font-family: Roboto;
+      font-size: 12px;
+      line-height: 16px;
+      color: var(--gray-light);
+      margin-bottom:4px;
+    }
+
+    .element div {
+      font-size: 16px;
+      line-height: 24px;
+      color: var(--gray-dark);
+    }
+
+    h5 {
+      margin-left:24px;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      color: var(--gray-light);
+    }
+
+  </style>
+
+  <template>
+
+    <etools-ajax
+      url="[[invoiceUrl]]"
+      on-success="_handleData"
+      loading="{{loading}}">
+    </etools-ajax>
+
+    <et2f-header title="[[invoice.reference_number]]"></et2f-header>
+    <div class="container layout horizontal">
+
+      <paper-material class="flex" elevation="1">
+
+        <div class="card-heading">
+          Invoice Details
+        </div>
+        <div class="layout vertical">
+          <div class="layout horizontal underline">
+
+            <div class="flex-3 element layout vertical">
+              <label>Business Area</label>
+              <div>{{invoice.business_area}}</div>
+            </div>
+
+            <div class="flex-3 element layout vertical">
+              <label>TA Number</label>
+              <div>{{invoice.ta_number}}</div>
+            </div>
+
+            <div class="flex-3 element layout vertical">
+              <label>Vendor Number</label>
+              <div>{{invoice.vendor_number}}</div>
+            </div>
+
+            <div class="flex-3 layout vertical">
+            </div>
+
+          </div>
+
+           <div class="layout horizontal underline">
+
+           <div class="flex-3 element layout vertical">
+              <label>Currency</label>
+              <div>{{invoice.currency.short}}</div>
+            </div>
+
+            <div class="flex-3 element layout vertical">
+              <label>Amount</label>
+              <div>{{invoice.amount}}</div>
+            </div>
+
+            <div class="flex-6 element layout vertical">
+            </div>
+
+          </div>
+
+           <div class="layout horizontal underline">
+
+            <div class="flex-3 element layout vertical">
+              <label>VISION FI Doc</label>
+              <div>{{invoice.vision_fi_id}}</div>
+            </div>
+
+            <div class="flex-3 element layout vertical">
+              <label>Status</label>
+              <div>{{invoice.status}}</div>
+            </div>
+
+            <div class="flex-6 element layout vertical">
+              <label>Message</label>
+              <div>{{invoice.message}}</div>
+            </div>
+          </div>
+
+          <div class="layout vertical">
+            <h5> COST ASSIGNMENT</h5>
+
+            <template is="dom-repeat" items="[[invoice.items]]">
+
+              <div class="layout horizontal underline">
+
+                <div class="flex-3 element layout vertical">
+                  <label>WBS</label>
+                  <div>{{item.wbs.label}}</div>
+                </div>
+
+                <div class="flex-2 element layout vertical">
+                  <label>Grant</label>
+                  <div>{{item.grant.label}}</div>
+                </div>
+
+                <div class="flex-2 element layout vertical">
+                  <label>Fund</label>
+                  <div>{{item.fund.label}}</div>
+                </div>
+
+                <div class="flex-2 element layout vertical">
+                  <label>Amount</label>
+                  <div>{{item.amount}}</div>
+                </div>
+              </div>
+
+            </template>
+          </div>
+        </div>
+      </paper-material>
+    </div>
+
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'show-invoice-detail',
+
+      properties: {
+        invoiceId: {
+          type: String,
+        },
+        structure: Object,
+        user: Object,
+        invoiceUrl: {
+          type: String,
+          computed: '_computeUrl(invoiceId)',
+        }
+      },
+      behaviors: [et2fBehaviors.ApiBehavior],
+      _computeUrl: function(actionPointId) {
+        var innerActionPointId = actionPointId ? ('' + actionPointId).replace(/\//g, '') : null;
+        if (this.listen && innerActionPointId && innerActionPointId !== '-1') {
+          return etoolsAppConfig.globals.computeTemplate('et2fInvoiceDetail', {
+            id: innerActionPointId
+          }).url;
+        }
+      },
+      _handleData: function(e, data) {
+        var self = this;
+        var invoice = {};
+        var lib = self._structureLib().value.invoice;
+        Object.keys(data).forEach(function(key) {
+          var structureData = lib[key];
+          if (key !== 'items') {
+            if (structureData) {
+              invoice[key] = self._processLib(structureData, data[key]);
+            } else {
+              invoice[key] = data[key];
+            }
+          } else {
+            var innerKeys = null;
+            invoice.items = data.items.map(function(item) {
+              innerKeys = innerKeys ? innerKeys : Object.keys(item);
+              innerKeys.forEach(function(innerKey) {
+                var innerStructureData = structureData[innerKey];
+                if (innerStructureData) {
+                  item[innerKey] = self._processLib(innerStructureData, item[innerKey]);
+                }
+              });
+              return item;
+            });
+          }
+        });
+        this.set('invoice', {});
+        this.set('invoice', invoice);
+      }
+    });
+  </script>
+</dom-module>
