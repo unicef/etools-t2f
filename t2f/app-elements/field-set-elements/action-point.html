@@ -56,7 +56,7 @@
 
       <div class="layout horizontal">
 
-        <date-time-picker-input label="Due date"
+        <date-time-picker-input label="Due Date"
           class$="flex-3 [[computedPermission.due_date.readOnly]]"
           disabled="[[computedPermission.due_date.disabled]]"
           hidden$="[[computedPermission.due_date.hidden]]"
@@ -67,7 +67,7 @@
           date="{{actionPoints.due_date}}">
         </date-time-picker-input>
 
-        <etools-searchable-multiselection-menu label="Person responsible"
+        <etools-searchable-multiselection-menu label="Responsible Person"
           value="{{actionPoints.person_responsible}}"
           class$="flex-3 [[computedPermission.person_responsible.readOnly]]"
           disabled="[[computedPermission.person_responsible.disabled]]"
@@ -82,7 +82,7 @@
         <paper-checkbox class$="flex-3 custom-margin self-end[[computedPermission.follow_up.readOnly]]"
           hidden$="[[computedPermission.follow_up.hidden]]"
           checked="{{actionPoints.follow_up}}">
-          Follow up?
+          Follow Up
         </paper-checkbox>
 
       </div>
@@ -116,7 +116,7 @@
 
       <div class="layout horizontal">
 
-        <paper-textarea label="Actions taken"
+        <paper-textarea label="Actions Taken"
           class$="flex-12 custom-margin [[computedPermission.actions_taken.readOnly]]"
           disabled="[[computedPermission.actions_taken.disabled]]"
           hidden$="[[computedPermission.actions_taken.hidden]]"
@@ -197,7 +197,6 @@
           actionPoints._validationFunction = this._validateActionPoint.bind(this);
         }
       },
-
     });
   </script>
 </dom-module>

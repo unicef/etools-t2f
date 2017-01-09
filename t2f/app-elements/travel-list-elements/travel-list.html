@@ -133,7 +133,7 @@
           on-success="handleListResponse">
       </etools-ajax>
 
-      <et2f-header title="Trip management"
+      <et2f-header title="List of Trips"
         show-new-travel-button
         show-export-button
         export-type="list"
@@ -188,7 +188,7 @@
         </div>
 
         <div class="toggle-hidden-div horizontal layout center">
-          <span>Show canceled</span>
+          <span>Show Canceled</span>
           <paper-toggle-button
               id="show-hidden-toggle"
               on-change="_changeShowHidden"
@@ -199,7 +199,7 @@
 
       <paper-card class="data-table">
 
-        <span class="textprim data-card-heading">{{showingResults}} results to show</span>
+        <span class="textprim data-card-heading">{{showingResults}} trips</span>
 
         <list-header id="list-header" data="[[headings]]" order-obj="{{orderObj}}">
         </list-header>
@@ -268,11 +268,11 @@
             },
             {
               'size': 11,
-              'label': 'Start date'
+              'label': 'Start Date'
             },
             {
               'size': 11,
-              'label': 'End date'
+              'label': 'End Date'
             },
             {
               'size': 23,
@@ -357,6 +357,81 @@
             selection: structure.users
           },
           {
+            name: 'Office',
+            filterName: 'f_office',
+            selection: structure.offices
+          },
+          {
+            name: 'Section',
+            filterName: 'f_section',
+            selection: structure.sections
+          },
+          {
+            name: 'Status',
+            filterName: 'f_status',
+            selection: [
+              {
+                label: 'Planned',
+                value: 'planned'
+              },
+              {
+                label: 'Submitted',
+                value: 'submitted'
+              },
+              {
+                label: 'Rejected',
+                value: 'rejected'
+              },
+              {
+                label: 'Approved',
+                value: 'approved'
+              },
+              {
+                label: 'Cancelled',
+                value: 'cancelled'
+              },
+              {
+                label: 'Sent for payment',
+                value: 'sent_for_payment'
+              },
+              {
+                label: 'Certification submitted',
+                value: 'certification_submitted'
+              },
+              {
+                label: 'Certification approved',
+                value: 'certification_approved'
+              },
+              {
+                label: 'Certification rejected',
+                value: 'certification_rejected'
+              },
+              {
+                label: 'Certified',
+                value: 'certified'
+              },
+              {
+                label: 'Completed',
+                value: 'completed'
+              }
+            ]
+          },
+           {
+            name: 'Travel Type',
+            filterName: 'f_travel_type',
+            selection: structure.travel_types
+          },
+          {
+            name: 'Partner',
+            filterName: 'f_partner',
+            selection: structure.partners
+          },
+          {
+            name: 'Results',
+            filterName: 'f_cp_output',
+            selection: structure.results
+          },
+          {
             name: 'Year',
             filterName: 'f_year',
             selection: [
@@ -439,81 +514,6 @@
                 value: 11
               }
             ]
-          },
-          {
-            name: 'Office',
-            filterName: 'f_office',
-            selection: structure.offices
-          },
-          {
-            name: 'Section',
-            filterName: 'f_section',
-            selection: structure.sections
-          },
-          {
-            name: 'Travel type',
-            filterName: 'f_travel_type',
-            selection: structure.travel_types
-          },
-          {
-            name: 'Status',
-            filterName: 'f_status',
-            selection: [
-              {
-                label: 'Planned',
-                value: 'planned'
-              },
-              {
-                label: 'Submitted',
-                value: 'submitted'
-              },
-              {
-                label: 'Rejected',
-                value: 'rejected'
-              },
-              {
-                label: 'Approved',
-                value: 'approved'
-              },
-              {
-                label: 'Cancelled',
-                value: 'cancelled'
-              },
-              {
-                label: 'Sent for payment',
-                value: 'sent_for_payment'
-              },
-              {
-                label: 'Certification submitted',
-                value: 'certification_submitted'
-              },
-              {
-                label: 'Certification approved',
-                value: 'certification_approved'
-              },
-              {
-                label: 'Certification rejected',
-                value: 'certification_rejected'
-              },
-              {
-                label: 'Certified',
-                value: 'certified'
-              },
-              {
-                label: 'Completed',
-                value: 'completed'
-              }
-            ]
-          },
-          {
-            name: 'Partner',
-            filterName: 'f_partner',
-            selection: structure.partners
-          },
-          {
-            name: 'Results',
-            filterName: 'f_cp_output',
-            selection: structure.results
           }
         ];
       },

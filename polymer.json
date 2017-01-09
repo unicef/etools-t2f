@@ -4,7 +4,8 @@
   "fragments": [
     "t2f/pages/page-not-found.html",
     "t2f/pages/page-edit-travel.html",
-    "t2f/pages/page-travel-list.html"
+    "t2f/pages/page-travel-list.html",
+    "t2f/pages/page-permission-matrix-edit.html"
   ],
   "sourceGlobs": [
    "t2f/**/*",
