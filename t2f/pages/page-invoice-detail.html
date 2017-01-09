@@ -6,14 +6,14 @@
 
 
 
-<link rel="import" href="../app-elements/travel-editing-elements/travel-edit.html">
+<link rel="import" href="../app-elements/travel-editing-elements/show-invoice-detail.html">
 <link rel="import" href="../app-elements/page-header-element/page-header.html">
 
 <link rel="import" href="../styles/shared-styles.html">
 
 
 
-<dom-module id="page-edit-travel">
+<dom-module id="page-invoice-detail">
 
   <style include="shared-styles">
     :host {
@@ -30,15 +30,18 @@
         <page-header title=""></page-header>
 
       </app-header>
+
     </app-header-layout>
-    <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" detail-loading="{{detailLoading}}" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
+    <show-invoice-detail invoice-id="[[invoiceId]]" structure="[[structure]]" permissions="[[et2fPermissions]]"></show-invoice-detail>
   </template>
 
   <script>
     Polymer({
-      is: 'page-edit-travel',
+      is: 'page-invoice-detail',
       properties: {
-        travelId: String,
+        invoiceId: {
+          type: String,
+        },
         et2fPermissions: Object,
         structure: Object,
         user: Object,
@@ -46,10 +49,6 @@
           type: Object,
           notify: true,
         },
-        detailLoading: {
-          type: Boolean,
-          notify: true
-        }
       }
 
     });

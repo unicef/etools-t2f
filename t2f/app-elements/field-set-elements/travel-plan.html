@@ -90,7 +90,7 @@
           hidden$="[[computedPermission.ta_required.hidden]]"
           checked="{{baseDetails.ta_required}}"
           disabled="[[taRequiredDisabled]]"
-          >TA required?
+          >TA Required
         </paper-checkbox>
 
         <paper-checkbox class$="flex-3 custom-margin [[computedPermission.international_travel.readOnly]]"
@@ -99,7 +99,7 @@
           toggles="[[falseValue]]"
           checked="[[baseDetails.international_travel]]"
           on-tap="_openDialog"
-          >International travel?
+          >International Trip
         </paper-checkbox>
 
         <div class="flex-6 layout horizontal center">
@@ -221,7 +221,7 @@
           auto-validate>
         </paper-input>
 
-        <etools-searchable-multiselection-menu label="Currency"
+        <etools-searchable-multiselection-menu label="Currency of TA"
           class$="flex-3 [[computedPermission.currency.readOnly]]"
           disabled="[[computedPermission.currency.disabled]]"
           hidden$="[[computedPermission.currency.hidden]]"
@@ -236,7 +236,7 @@
 
       <div class="layout horizontal">
 
-        <paper-textarea label="Purpose of travel"
+        <paper-textarea label="Purpose of Trip"
           id="purpose"
           class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
           disabled="[[computedPermission.purpose.disabled]]"
@@ -252,11 +252,11 @@
 
       <div class="layout horizontal">
 
-        <paper-textarea label="Additional notes"
+        <paper-textarea label="Additional Notes"
           class$="flex-12 custom-margin [[computedPermission.additional_note.readOnly]]"
           disabled="[[computedPermission.additional_note.disabled]]"
           hidden$="[[computedPermission.additional_note.hidden]]"
-          placeholder="more details"
+          placeholder="Provide any other additional notes about the trip here"
           value="{{baseDetails.additional_note}}">
         </paper-textarea>
       </div>

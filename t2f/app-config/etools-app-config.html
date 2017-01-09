@@ -36,6 +36,11 @@ App global configuration
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
           cachingKey: 'et2f_static_data'
         },
+        et2fVendorList: {
+          url: '/api/t2f/vendor_numbers/',
+          exp: 30 * 60 * 1000,
+          cachingKey: 'vendor_numbers'
+        },
         et2fPermissionsMatrix: {
           url: '/api/t2f/permission_matrix/',
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
@@ -45,6 +50,12 @@ App global configuration
           template: '/api/t2f/travels/<%=id%>/',
 //          cachingKeyTemplate: 'et2f_travel_detail_<%=id%>',
 //          exp: 60 * 1000
+        },
+        et2fActionPointDetail: {
+          template: '/api/t2f/action_points/<%=id%>/',
+        },
+        et2fInvoiceDetail: {
+          template: '/api/t2f/invoices/<%=id%>/',
         },
         et2fTravelAttachments: {
           template: '/api/t2f/travels/<%=id%>/attachments/',
@@ -61,12 +72,23 @@ App global configuration
         et2fTravelList: {
           url: '/api/t2f/travels/'
         },
+
+        // ET2F Action points endpoints
         et2fActionPointList: {
           url: '/api/t2f/action_points/'
         },
         et2fActionPointDetail: {
           template: '/api/t2f/action_points/<%=id%>/'
         },
+
+        // ET2F Invoices endpoints
+        et2fInvoiceList: {
+          url: '/api/t2f/invoices/'
+        },
+        et2fInvoiceDetail: {
+          template: '/api/t2f/invoices/<%=id%>/'
+        },
+
         et2fCSVListExport: {
           url: '/api/t2f/travels/export/'
         }

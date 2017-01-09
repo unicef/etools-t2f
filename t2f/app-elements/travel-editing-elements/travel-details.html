@@ -103,7 +103,7 @@
       <div class="flex">
 
         <!-- Cancellation note -->
-        <paper-material class="note cancel" elevation="1" hidden$="[[_hideCancelNote(data)]]">
+        <paper-material class="note cancel" elevation="1" hidden$="[[hideCancelNote]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g class="cancel-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
@@ -118,7 +118,7 @@
         </paper-material>
 
         <!-- Rejection note -->
-        <paper-material class="note reject" elevation="1" hidden$="[[_hideRejectionNote(data)]]">
+        <paper-material class="note reject" elevation="1" hidden$="[[hideRejectionNote]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
             <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g class="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
@@ -133,7 +133,7 @@
         </paper-material>
 
         <!-- Certification rejection note -->
-        <paper-material class="note reject" elevation="1" hidden$="[[_hideCertRejectionNote(data)]]">
+        <paper-material class="note reject" elevation="1" hidden$="[[hideCertRejectionNote]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
             <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g class="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
@@ -148,7 +148,7 @@
         </paper-material>
 
         <!-- Certification note -->
-        <paper-material class="note reject" elevation="1" hidden$="[[_hideCertificationNote(data)]]">
+        <paper-material class="note reject" elevation="1" hidden$="[[hideCertificationNote]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g class="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
@@ -165,7 +165,7 @@
           <div class="note-text">[[data.misc_expenses]]</div>
         </paper-material>
 
-        <etools-repeatable-field-set title="Trip Plan"
+        <etools-repeatable-field-set title="Overview"
           hide-plus
           show-counter="[[false]]"
           model="[1]"
@@ -282,7 +282,7 @@
           </template>
         </etools-repeatable-field-set>
 
-        <etools-repeatable-field-set title="Cost summary"
+        <etools-repeatable-field-set title="Cost Summary"
           id="cost_summary"
           hide-vertical-divider
           class="orange-header"
@@ -331,7 +331,27 @@
           observer: '_scrollTo'
         },
         percentagesSum: Number,
-        user: Object
+        user: Object,
+        hideCancelNote: {
+          type: Boolean,
+          value: true,
+          computed: '_computeHideCancelNote(data)'
+        },
+        hideRejectionNote: {
+          type: Boolean,
+          value: true,
+          computed: '_computeHideRejectionNote(data)'
+        },
+        hideCertRejectionNote: {
+          type: Boolean,
+          value: true,
+          computed: '_computeideCertRejectionNote(data)'
+        },
+        hideCertificationNote: {
+          type: Boolean,
+          value: true,
+          computed: '_computeHideCertificationNote(data)'
+        }
       },
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
         var computed = {};
@@ -399,19 +419,19 @@
         this.$[fieldset].scrollIntoView();
       },
 
-      _hideCancelNote: function(data) {
+      _computeHideCancelNote: function(data) {
         return data.status !== 'Cancelled' || data.cancellation_note.length === 0;
       },
 
-      _hideRejectionNote: function(data) {
+      _computeHideRejectionNote: function(data) {
         return data.status !== 'Rejected' || data.rejection_note.length === 0;
       },
 
-      _hideCertRejectionNote: function(data) {
+      _computeideCertRejectionNote: function(data) {
         return data.status !== 'Certification rejected' || data.cert_rejection_note.length === 0;
       },
 
-      _hideCertificationNote: function(data) {
+      _computeHideCertificationNote: function(data) {
         return data.status !== 'Certification submitted';
       },
       _validateItinerarySize: function() {

@@ -1,0 +1,120 @@
+<script>
+
+
+  var ApiBehavior = {
+    properties: {
+    },
+    _convertDate: function(item) {
+      if (!item) {
+        return;
+      }
+      var date = new Date(item);
+      return date;
+    },
+    _truncateNumber: function(item) {
+      if (!item) {
+        return;
+      }
+      return '' + parseFloat(item).toFixed(2);
+    },
+    _multiFieldConversion: function(subField, fieldName, fieldSet) {
+      var self = this;
+      if (fieldSet instanceof Array) {
+        return fieldSet.map(function(field) {
+          return self.structure[fieldName].find(function(item) {
+            return item[subField] === field;
+          });
+        });
+      }
+    },
+    _processLib: function(structureData, value) {
+      if (typeof structureData  === 'function') {
+        return structureData(value);
+      }
+      return this.structure[structureData].find(function(item) {
+        return item.value === value;
+      });
+
+    },
+    _structureLib: function() {
+      return {
+        type: Object,
+        value: {
+          baseDetails: {
+            traveler: 'users',
+            supervisor: 'users',
+            office: 'offices',
+            section: 'sections',
+            start_date: this._convertDate,
+            end_date: this._convertDate,
+            mode_of_travel: this._multiFieldConversion.bind(this, 'value', 'travel_modes'),
+            currency: 'currencies'
+          },
+          activities: {
+            locations: this._multiFieldConversion.bind(this, 'value', 'locations'),
+            travel_type: 'travel_types',
+            partner: 'partners',
+            partnership: 'partnerships',
+            result: 'results',
+            date: this._convertDate
+          },
+          itinerary: {
+            airlines: this._multiFieldConversion.bind(this, 'value', 'airlines'),
+            mode_of_travel: 'travel_modes',
+            dsa_region: 'dsa_regions',
+            departure_date: this._convertDate,
+            arrival_date: this._convertDate,
+          },
+          expenses: {
+            type: 'expense_types',
+            document_currency: 'currencies',
+            account_currency: 'currencies'
+          },
+          clearances: {},
+          deductions: {},
+          cost_assignments: {
+            wbs: 'wbs',
+            grant: 'grants',
+            fund: 'funds'
+          },
+          attachments: {
+            type: function(value) {
+              var list = [
+                {value: 0, label: 'Report'},
+                {value: 1, label: 'Document'},
+                {value: 3, label: 'Image'}
+              ];
+              return list.find(function(item) {
+                return item.label === value;
+              });
+            }
+          },
+          rejection_note: 'rejection_note',
+          cert_rejection_note: 'cert_rejection_note',
+          cancellation_note: 'cancellation_note',
+          certification_note: 'certification_note',
+          misc_expenses: 'misc_expenses',
+          canceled_at: 'canceled_at',
+          completed_at: 'completed_at',
+          cost_summary: {},
+          action_points: {
+            due_date: this._convertDate,
+            completed_at: this._convertDate,
+            person_responsible: 'users',
+            status: 'action_point_status'
+          },
+          invoice: {
+            currency: 'currencies',
+            items: {
+              wbs: 'wbs',
+              grant: 'grants',
+              fund: 'funds'
+            }
+          }
+        }
+      };
+    }
+  };
+  window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
+  window.et2fBehaviors.ApiBehavior = ApiBehavior;
+</script>

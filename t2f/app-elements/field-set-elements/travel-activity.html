@@ -37,7 +37,7 @@
 
       <div class="layout horizontal">
 
-        <etools-searchable-multiselection-menu label="Trip type"
+        <etools-searchable-multiselection-menu label="Trip Type"
           id="trip_type"
           class$="flex-4 [[computedPermission.travel_type.readOnly]]"
           disabled="[[computedPermission.travel_type.disabled]]"
@@ -87,7 +87,7 @@
           placeholder="select">
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Travel locations"
+        <etools-searchable-multiselection-menu label="Location(s)"
           class$="flex-8 [[computedPermission.locations.readOnly]]"
           disabled="[[computedPermission.locations.disabled]]"
           hidden$="[[computedPermission.locations.hidden]]"
@@ -101,7 +101,7 @@
 
       <div class="layout horizontal">
 
-        <date-time-picker-input label="When"
+        <date-time-picker-input label="Date of Visit"
           class$="flex-4 [[computedPermission.date.readOnly]]"
           disabled="[[computedPermission.date.disabled]]"
           hidden$="[[computedPermission.date.hidden]]"

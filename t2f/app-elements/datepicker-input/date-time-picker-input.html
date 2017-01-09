@@ -52,10 +52,16 @@
         padding:24px !important;
         color: var(--et2f-error);
       }
+      .readOnly {
+        --paper-input-container-underline: {
+          border-bottom: 0px solid black !important;
+        }
+      }
     </style>
 
     <paper-input id="date-input"
       readonly
+      class$="[[innerClass]]"
       on-focus="_onFocus"
       label="[[label]]"
       always-float-label
@@ -84,7 +90,7 @@
          Please select a date-time less or equal than: [[prettyMaxDate]]
       </div>
       <div class="buttons">
-        <paper-button disabled="[[dialogButtonDisabled]]" dialog-confirm>OK</paper-button>
+        <paper-button disabled="[[dialogButtonDisabled]]" autofocus dialog-confirm>OK</paper-button>
       </div>
     </paper-dialog>
 
@@ -101,6 +107,7 @@
         },
         required: Boolean,
         placeholder: String,
+        innerClass: String,
         autoValidate: {
           type: Boolean,
         },

@@ -6,14 +6,14 @@
 
 
 
-<link rel="import" href="../app-elements/travel-editing-elements/travel-edit.html">
+<link rel="import" href="../app-elements/travel-editing-elements/show-action-point.html">
 <link rel="import" href="../app-elements/page-header-element/page-header.html">
 
 <link rel="import" href="../styles/shared-styles.html">
 
 
 
-<dom-module id="page-edit-travel">
+<dom-module id="page-action-point">
 
   <style include="shared-styles">
     :host {
@@ -27,18 +27,21 @@
 
       <app-header fixed shadow>
 
-        <page-header title=""></page-header>
+        <page-header title="Action Point"></page-header>
 
       </app-header>
+
     </app-header-layout>
-    <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" detail-loading="{{detailLoading}}" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
+    <show-action-point action-point-id="[[actionPointId]]" structure="[[structure]]" permissions="[[et2fPermissions]]"></show-action-point>
   </template>
 
   <script>
     Polymer({
-      is: 'page-edit-travel',
+      is: 'page-action-point',
       properties: {
-        travelId: String,
+        actionPointId: {
+          type: String,
+        },
         et2fPermissions: Object,
         structure: Object,
         user: Object,
@@ -46,10 +49,6 @@
           type: Object,
           notify: true,
         },
-        detailLoading: {
-          type: Boolean,
-          notify: true
-        }
       }
 
     });
