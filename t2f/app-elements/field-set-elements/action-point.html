@@ -38,6 +38,18 @@
           border-bottom: 0px solid black !important;
         }
       }
+      .tripReference {
+        --paper-input-container-input: {
+          color: var(--et2f-primary);
+          font-weight: 500;
+        };
+      }
+      .alignCheckbox {
+        height:56px;
+      }
+      .viewSpacing {
+        margin:12px, 0;
+      }
     </style>
 
   <template is="dom-if" if="[[!viewMode]]">
@@ -138,15 +150,15 @@
 
     <template is="dom-if" if="[[viewMode]]">
 
-      <div class="layout horizontal">
+      <div class="layout horizontal viewSpacing">
         <paper-input label="Trip Reference"
-          class="flex-3 custom-margin readOnly"
+          class="flex-3 custom-margin readOnly tripReference"
           disabled
           value="[[actionPoints.trip_reference_number]]"></paper-input>
          <div class="flex-9"></div>
       </div>
 
-      <div class="layout horizontal">
+      <div class="layout horizontal viewSpacing">
         <paper-input label="Description"
             class="flex-8 custom-margin readOnly"
             disabled
@@ -161,7 +173,7 @@
           </date-time-picker-input>
       </div>
 
-      <div class="layout horizontal">
+      <div class="layout horizontal viewSpacing">
         <paper-input label="Responsible Person"
           disabled
           class="flex-4 custom-margin readOnly"
@@ -173,14 +185,14 @@
          disabled
          value="asd"></paper-input>
 
-        <paper-checkbox class="flex-4 custom-margin self-end"
+        <paper-checkbox class="flex-4 custom-margin self-end alignCheckbox"
             checked="{{actionPoints.follow_up}}">
             Follow Up
         </paper-checkbox>
 
       </div>
 
-       <div class="layout horizontal">
+       <div class="layout horizontal viewSpacing">
 
           <paper-textarea label="Actions Taken"
             class="flex-12 custom-margin"
@@ -189,7 +201,7 @@
 
        </div>
 
-       <div class="layout horizontal">
+       <div class="layout horizontal viewSpacing">
 
           <date-time-picker-input label="Completed Date"
             class="flex-3"
