@@ -77,7 +77,7 @@
       text-transform: capitalize;
     }
     .w60 iron-icon {
-      margin-left: 10px;
+      margin-left: 12px;
       color: var(--gray-mid);
     }
   </style>
@@ -103,12 +103,12 @@
           </div>
 
           <div class="headings blue bold w23">
-            <a href="[[baseUrl]]edit-travel/{{data.id}}" class="element-link">[[data.reference_number]]</a>
+            <a href="[[baseUrl]]invoices/{{data.id}}" class="element-link">[[data.reference_number]]</a>
           </div>
           <div class="headings textprim w13">[[data.vendor_number]]</div>
           <div class="headings textprim w13">[[data.ta_number]]</div>
-          <div class="headings textprim w13">[[data.status]]</div>
-          <div class="headings textprim w13">[[data.currency]]</div>
+          <div class="headings textprim w13 capital">[[data.status]]</div>
+          <div class="headings textprim w13">[[getCurrency(data.currency, currencies)]]</div>
           <div class="headings textprim w13">[[data.amount]]</div>
           <div class="headings textprim w13">[[data.vision_fi_id]]</div>
 
@@ -140,8 +140,7 @@
           type: Object,
           observer: '_resetExpanded'
         },
-        offices: Object,
-        sections: Object,
+        currencies: Object,
         users: {
           type: Object
         },
@@ -149,15 +148,15 @@
           type: Boolean,
           value: false
         },
-        enhancedNewTravelUrl: String,
-        enhancedNewTravelBody: String,
         route: Object,
         baseUrl: {
           type: String,
           value: null
         }
       },
+
       behaviors: [etoolsAppConfig.globals],
+
       attached: function() {
         this.baseUrl = this.basePath;
       },
@@ -174,24 +173,23 @@
       _toggleExpanded: function() {
         this.set('expanded', !this.expanded);
       },
+
       _isDetailed: function(expanded) {
         return expanded;
       },
+
       _resetExpanded: function() {
         this.set('expanded', false);
       },
+
       _isGreyClass: function(data) {
         return data.status === 'cancelled' ? 'grey-heading' : '';
       },
-      getOffice: function(id, offices) {
-        return (offices.filter(function(office) {
-          return office.value === id;
-        })[0] || {label: 'N.A.'}).label;
-      },
-      getSection: function(id, sections) {
-        return (sections.filter(function(section) {
-          return section.value === id;
-        })[0] || {label: 'N.A.'}).label;
+
+      getCurrency: function(id, currencies) {
+        return (currencies.filter(function(currency) {
+          return currency.value === id;
+        })[0]).label;
       }
     });
   </script>

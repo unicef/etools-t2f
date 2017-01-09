@@ -37,11 +37,9 @@
     .background {
       background-color: var(--gray-lighter);
     }
-
     et2f-header {
       margin-bottom: 12px;
     }
-
     .second-header {
       min-height: 84px;
       margin-bottom: 12px;
@@ -64,11 +62,9 @@
       font-size: 16px;
       margin-right: 8px;
     }
-
     .data-table {
       margin-bottom: 24px;
     }
-
     .data-table .data-card-heading {
       display: block;
       font-size: 20px;
@@ -76,7 +72,6 @@
       font-weight: 500;
       line-height: 64px;
     }
-
     #add-filter-container {
       border-left: 2px solid var(--gray-lighter);
       margin-left: 16px;
@@ -105,7 +100,6 @@
       text-align: center;
       cursor: pointer;
     }
-
     .w5 {
       width: 5%;
     }
@@ -199,16 +193,15 @@
             data="[[item]]"
             route="{{route}}"
             users="[[structure.users]]"
-            offices="[[structure.offices]]"
-            sections="[[structure.sections]]">
+            currencies="[[structure.currencies]]">
           </invoices-list-element>
         </template>
 
         <invoices-list-pagination
-            id="list-pagination"
-            maxnr="{{datalength}}"
-            pages="{{pages}}"
-            showing-results="{{showingResults}}">
+          id="list-pagination"
+          maxnr="{{datalength}}"
+          pages="{{pages}}"
+          showing-results="{{showingResults}}">
         </invoices-list-pagination>
       </paper-card>
     </div>
@@ -216,7 +209,9 @@
 
   <script type="text/javascript">
     Polymer({
+
       is: 'invoices-list',
+
       properties: {
         data: {
           type: Array,
@@ -291,11 +286,6 @@
           value: '',
           observer: '_searchStringChanged'
         },
-        showHidden: {
-          type: Boolean,
-          value: false,
-          observer: '_showHiddenChanged'
-        },
         ajaxParams: {
           type: Object,
           value: {
@@ -303,8 +293,7 @@
             reverse: true,
             page: 1,
             page_size: 10,
-            search: '',
-            show_hidden: false
+            search: ''
           }
         },
         refreshData: {
@@ -333,173 +322,32 @@
       _computeFilters: function(structure) {
         return [
           {
-            name: 'Traveler',
-            filterName: 'f_traveler',
-            selection: structure.users
-          },
-          {
-            name: 'Supervisor',
-            filterName: 'f_supervisor',
-            selection: structure.users
-          },
-          {
-            name: 'Year',
-            filterName: 'f_year',
+            name: 'Vendor number',
+            filterName: 'f_vendor_number',
             selection: [
               {
-                label: '2015',
-                value: 2015
-              },
-              {
-                label: '2016',
-                value: 2016
-              },
-              {
-                label: '2017',
-                value: 2017
-              },
-              {
-                label: '2018',
-                value: 2018
-              },
-              {
-                label: '2019',
-                value: 2019
-              },
-              {
-                label: '2020',
-                value: 2020
+                label: 'data N.A.',
+                value: undefined
               }
             ]
-          },
-          {
-            name: 'Month',
-            filterName: 'f_month',
-            selection: [
-              {
-                label: 'January',
-                value: 0
-              },
-              {
-                label: 'February',
-                value: 1
-              },
-              {
-                label: 'March',
-                value: 2
-              },
-              {
-                label: 'April',
-                value: 3
-              },
-              {
-                label: 'May',
-                value: 4
-              },
-              {
-                label: 'Juny',
-                value: 5
-              },
-              {
-                label: 'July',
-                value: 6
-              },
-              {
-                label: 'August',
-                value: 7
-              },
-              {
-                label: 'September',
-                value: 8
-              },
-              {
-                label: 'October',
-                value: 9
-              },
-              {
-                label: 'November',
-                value: 10
-              },
-              {
-                label: 'December',
-                value: 11
-              }
-            ]
-          },
-          {
-            name: 'Office',
-            filterName: 'f_office',
-            selection: structure.offices
-          },
-          {
-            name: 'Section',
-            filterName: 'f_section',
-            selection: structure.sections
-          },
-          {
-            name: 'Travel type',
-            filterName: 'f_travel_type',
-            selection: structure.travel_types
           },
           {
             name: 'Status',
             filterName: 'f_status',
             selection: [
               {
-                label: 'Planned',
-                value: 'planned'
+                label: 'Success',
+                value: 'success'
               },
               {
-                label: 'Submitted',
-                value: 'submitted'
+                label: 'Failed',
+                value: 'failed'
               },
               {
-                label: 'Rejected',
-                value: 'rejected'
-              },
-              {
-                label: 'Approved',
-                value: 'approved'
-              },
-              {
-                label: 'Cancelled',
-                value: 'cancelled'
-              },
-              {
-                label: 'Sent for payment',
-                value: 'sent_for_payment'
-              },
-              {
-                label: 'Certification submitted',
-                value: 'certification_submitted'
-              },
-              {
-                label: 'Certification approved',
-                value: 'certification_approved'
-              },
-              {
-                label: 'Certification rejected',
-                value: 'certification_rejected'
-              },
-              {
-                label: 'Certified',
-                value: 'certified'
-              },
-              {
-                label: 'Completed',
-                value: 'completed'
+                label: 'Processing',
+                value: 'processing'
               }
             ]
-          },
-          {
-            name: 'Partner',
-            filterName: 'f_partner',
-            selection: structure.partners
-          },
-          {
-            name: 'Results',
-            filterName: 'f_cp_output',
-            selection: structure.results
           }
         ];
       },
