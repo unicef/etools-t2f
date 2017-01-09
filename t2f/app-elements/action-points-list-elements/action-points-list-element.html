@@ -87,23 +87,23 @@
       <div class="full-row">
 
         <!-- SIMPLE VIEW -->
-        <div class$="heading-row clearfix layout horizontal [[_isGreyClass(data)]]">
+        <div class="heading-row clearfix layout horizontal">
 
           <div class="w20"></div>
 
           <div class="headings blue bold w13">
-            <a href="[[baseUrl]]edit-travel/{{data.id}}">Action point #</a>
+            <a href="[[baseUrl]]edit-travel/{{data.id}}">[[data.action_point_number]]</a>
           </div>
 
           <div class="headings blue bold w13">
-            <a href="[[baseUrl]]edit-travel/{{data.id}}">Trip ref nr#</a>
+            <a href="[[baseUrl]]edit-travel/{{data.id}}">[[data.trip_reference_number]]</a>
           </div>
 
-          <div class="headings textprim w23 description">Descr. text, now just lorem ipsum thing wrote here for the sake of seeing how it will really look...</div>
-          <div class="headings textprim w9">Due date</div>
-          <div class="headings textprim w15">Resp.person id mapped</div>
-          <div class="headings textprim w15">Ass.person id mapped</div>
-          <div class="headings textprim w9">bind![[_statusMapping('open')]]</div>
+          <div class="headings textprim w23 description">[[data.description]]</div>
+          <div class="headings textprim w9">[[data.due_date]]</div>
+          <div class="headings textprim w15">[[getUser(data.person_responsible, users)]]</div>
+          <div class="headings textprim w15">[[getUser(data.assigned_by, users)]]</div>
+          <div class="headings textprim w9">[[_statusMapping(data.status)]]</div>
         </div>
       </div>
 
@@ -118,13 +118,9 @@
         data: {
           type: Object
         },
-        offices: Object,
-        sections: Object,
         users: {
           type: Object
         },
-        enhancedNewTravelUrl: String,
-        enhancedNewTravelBody: String,
         route: Object,
         baseUrl: {
           type: String,
@@ -146,11 +142,12 @@
         return statusLib[status];
       },
 
-      getOffice: function(id, offices) {
-        return (offices.filter(function(office) {
-          return office.value === id;
-        })[0] || {label: 'N.A.'}).label;
-      },
+      getUser: function(id, users) {
+
+        return users.filter(function(user) {
+          return user.value === id;
+        })[0].label;
+      }
     });
   </script>
 </dom-module>

@@ -215,15 +215,6 @@
           </action-points-list-element>
         </template>
 
-        <!-- JUST FOR TEST -->
-        <action-points-list-element
-          data="[[item]]"
-          route="{{route}}"
-          users="[[structure.users]]"
-          offices="[[structure.offices]]"
-          sections="[[structure.sections]]">
-        </action-points-list-element>
-
         <action-points-list-pagination
             id="list-pagination"
             maxnr="{{datalength}}"
@@ -362,15 +353,18 @@
             selection: [
               {
                 label: 'Open',
-                value: 'open'
+                value: 0,
+                apiValue: 'open'
               },
               {
                 label: 'On-going',
-                value: 'on-going'
+                value: 1,
+                apiValue: 'on-going'
               },
               {
                 label: 'Completed',
-                value: 'completed'
+                value: 2,
+                apiValue: 'completed'
               }
             ]
           }
@@ -409,8 +403,16 @@
         this.splice('usedFilters', indexToRemove, 1);
       },
       changeFilterValue: function(e) {
+
         var key = e.model.item.filterName;
         var value = e.detail.selectedValues.value;
+
+        if (key === 'f_status') {
+          value = this._computeFilters(this.structure)[2].selection.filter(function(item) {
+            return item.value == value;
+          })[0].apiValue;
+        }
+
         var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
         oldParams[key] = value;
         this.set('ajaxParams', oldParams);
