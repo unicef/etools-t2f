@@ -1,0 +1,122 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+
+<link rel="import" href="../../app-behaviors/permission-behavior.html">
+<link rel="import" href="../field-set-elements/action-point.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="show-action-point">
+
+  <style include="shared-styles et2f-styles iron-flex">
+    :host {
+      display: block;
+      width: 100%;
+    }
+
+    .container {
+      padding: 24px;
+      margin-right: 24px;
+    }
+
+    paper-material {
+      padding: 0;
+    }
+
+
+    .card-heading {
+      font-size: 20px;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      height: 48px;
+      line-height: 48px;
+      color: white;
+      background-color: var(--et2f-sec-blue);
+      text-align: center;
+    }
+
+    action-point {
+      padding: 0 24px;
+      width: calc(100% - 48px);
+    }
+  </style>
+
+  <template>
+    <etools-ajax url="[[actionPointUrl]]"
+      on-success="_handleData" loading="{{loading}}"></etools-ajax>
+    <div class="container layout horizontal">
+
+      <paper-material class="flex" elevation="1">
+
+        <div class="card-heading">
+          Action Point
+        </div>
+
+        <action-point
+          view-mode
+          action-points="{{actionPoint}}"
+          structure="{{structure}}"
+          permissions-matrix="[[permissions.action_points]]"
+          user="[[user]]">
+
+        </action-point>
+      </paper-material>
+    </div>
+
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'show-action-point',
+
+      properties: {
+        data: {
+          type: Object,
+          notify: true
+        },
+        actionPointId: {
+          type: String,
+        },
+        structure: Object,
+        user: Object,
+        actionPointUrl: {
+          type: String,
+          computed: '_computeUrl(actionPointId)',
+          observer: '_warn'
+        }
+      },
+      behaviors: [et2fBehaviors.ApiBehavior],
+      _computeUrl: function(actionPointId) {
+        var innerActionPointId = actionPointId ? ('' + actionPointId).replace(/\//g, '') : null;
+        if (this.listen && innerActionPointId && innerActionPointId !== '-1') {
+          return etoolsAppConfig.globals.computeTemplate('et2fActionPointDetail', {
+            id: innerActionPointId
+          }).url;
+        }
+      },
+      _handleData: function(e, data) {
+        var self = this;
+        var actionPoint = {};
+        var lib = self._structureLib().value.action_points;
+        Object.keys(data).forEach(function(key) {
+          var structureData = lib[key];
+          if (structureData) {
+            actionPoint[key] = self._processLib(structureData, data[key]);
+          } else {
+            actionPoint[key] = data[key]
+          }
+        });
+        console.log(actionPoint);
+        this.set('actionPoint', {})
+        this.set('actionPoint', actionPoint);
+      }
+    });
+  </script>
+</dom-module>

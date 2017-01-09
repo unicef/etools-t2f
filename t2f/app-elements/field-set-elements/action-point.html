@@ -33,108 +33,184 @@
         font-size: 16px;
         padding-left: 12px;
       }
+      .readOnly {
+        --paper-input-container-underline: {
+          border-bottom: 0px solid black !important;
+        }
+      }
     </style>
 
+  <template is="dom-if" if="[[!viewMode]]">
     <form
       is="iron-form"
       id="action_point_form"
       class="layout vertical flex">
+        <div class="layout horizontal">
+
+           <paper-input label="Description"
+            class$="flex-3 custom-margin [[computedPermission.description.readOnly]]"
+            disabled="[[computedPermission.description.disabled]]"
+            hidden$="[[computedPermission.description.hidden]]"
+            required="[[computedPermission.description.required]]"
+            starred$="[[computedPermission.description.required]]"
+            placeholder="description"
+            value="{{actionPoints.description}}">
+          </paper-input>
+
+        </div>
+
+        <div class="layout horizontal">
+
+          <date-time-picker-input label="Due Date"
+            class$="flex-3 [[computedPermission.due_date.readOnly]]"
+            disabled="[[computedPermission.due_date.disabled]]"
+            hidden$="[[computedPermission.due_date.hidden]]"
+            required="[[computedPermission.due_date.required]]"
+            starred$="[[computedPermission.due_date.required]]"
+            max-date="[[today]]"
+            placeholder="select"
+            date="{{actionPoints.due_date}}">
+          </date-time-picker-input>
+
+          <etools-searchable-multiselection-menu label="Responsible Person"
+            value="{{actionPoints.person_responsible}}"
+            class$="flex-3 [[computedPermission.person_responsible.readOnly]]"
+            disabled="[[computedPermission.person_responsible.disabled]]"
+            hidden$="[[computedPermission.person_responsible.hidden]]"
+            required="[[computedPermission.person_responsible.required]]"
+            starred$="[[computedPermission.person_responsible.required]]"
+            options="[[structure.users]]"
+            empty-value
+            placeholder="select">
+          </etools-searchable-multiselection-menu>
+
+          <paper-checkbox class$="flex-3 custom-margin self-end[[computedPermission.follow_up.readOnly]]"
+            hidden$="[[computedPermission.follow_up.hidden]]"
+            checked="{{actionPoints.follow_up}}">
+            Follow Up
+          </paper-checkbox>
+
+        </div>
+
+        <div class="layout horizontal">
+
+          <etools-searchable-multiselection-menu label="Status"
+            class$="flex-6 [[computedPermission.status.readOnly]]"
+            disabled="[[computedPermission.status.disabled]]"
+            hidden$="[[computedPermission.status.hidden]]"
+            required="[[computedPermission.status.required]]"
+            starred$="[[computedPermission.status.required]]"
+            options="[[structure.action_point_status]]"
+            value="{{actionPoints.status}}"
+            empty-value
+            placeholder="select">
+          </etools-searchable-multiselection-menu>
+
+          <date-time-picker-input label="Completed Date"
+            class$="flex-3 [[computedPermission.completed_at.readOnly]]"
+            disabled="[[endDateDisabled]]"
+            hidden$="[[computedPermission.completed_at.hidden]]"
+            required="[[completedDateRequired]]"
+            starred$="[[completedDateRequired]]"
+            placeholder="select"
+            date="{{actionPoints.completed_at}}">
+          </date-time-picker-input>
+
+        </div>
+
+
+        <div class="layout horizontal">
+
+          <paper-textarea label="Actions Taken"
+            class$="flex-12 custom-margin [[computedPermission.actions_taken.readOnly]]"
+            disabled="[[computedPermission.actions_taken.disabled]]"
+            hidden$="[[computedPermission.actions_taken.hidden]]"
+            required="[[actionTakenRequired]]"
+            starred$="[[actionTakenRequired]]"
+            placeholder="actions taken"
+            value="{{actionPoints.actions_taken}}">
+          </paper-textarea>
+
+        </div>
+
+      </form>
+    </template>
+
+    <template is="dom-if" if="[[viewMode]]">
 
       <div class="layout horizontal">
-
-         <paper-input label="Description"
-          class$="flex-3 custom-margin [[computedPermission.description.readOnly]]"
-          disabled="[[computedPermission.description.disabled]]"
-          hidden$="[[computedPermission.description.hidden]]"
-          required="[[computedPermission.description.required]]"
-          starred$="[[computedPermission.description.required]]"
-          placeholder="description"
-          value="{{actionPoints.description}}">
-        </paper-input>
-
+        <paper-input label="Trip Reference"
+          class="flex-3 custom-margin readOnly"
+          disabled
+          value="[[actionPoints.trip_reference_number]]"></paper-input>
+         <div class="flex-9"></div>
       </div>
 
       <div class="layout horizontal">
+        <paper-input label="Description"
+            class="flex-8 custom-margin readOnly"
+            disabled
+            value="{{actionPoints.description}}">
+          </paper-input>
 
-        <date-time-picker-input label="Due Date"
-          class$="flex-3 [[computedPermission.due_date.readOnly]]"
-          disabled="[[computedPermission.due_date.disabled]]"
-          hidden$="[[computedPermission.due_date.hidden]]"
-          required="[[computedPermission.due_date.required]]"
-          starred$="[[computedPermission.due_date.required]]"
-          max-date="[[today]]"
-          placeholder="select"
-          date="{{actionPoints.due_date}}">
-        </date-time-picker-input>
+          <date-time-picker-input label="Due Date"
+            inner-class="readOnly"
+            class="flex-4 readOnly"
+            disabled
+            date="{{actionPoints.due_date}}">
+          </date-time-picker-input>
+      </div>
 
-        <etools-searchable-multiselection-menu label="Responsible Person"
-          value="{{actionPoints.person_responsible}}"
-          class$="flex-3 [[computedPermission.person_responsible.readOnly]]"
-          disabled="[[computedPermission.person_responsible.disabled]]"
-          hidden$="[[computedPermission.person_responsible.hidden]]"
-          required="[[computedPermission.person_responsible.required]]"
-          starred$="[[computedPermission.person_responsible.required]]"
-          options="[[structure.users]]"
-          empty-value
-          placeholder="select">
-        </etools-searchable-multiselection-menu>
+      <div class="layout horizontal">
+        <paper-input label="Responsible Person"
+          disabled
+          class="flex-4 custom-margin readOnly"
+          value="[[actionPoints.person_responsible.label]]">
+         </paper-input>
 
-        <paper-checkbox class$="flex-3 custom-margin self-end[[computedPermission.follow_up.readOnly]]"
-          hidden$="[[computedPermission.follow_up.hidden]]"
-          checked="{{actionPoints.follow_up}}">
-          Follow Up
+        <paper-input label="Assigned by"
+         class="flex-4 custom-margin readOnly"
+         disabled
+         value="asd"></paper-input>
+
+        <paper-checkbox class="flex-4 custom-margin self-end"
+            checked="{{actionPoints.follow_up}}">
+            Follow Up
         </paper-checkbox>
 
       </div>
 
-      <div class="layout horizontal">
+       <div class="layout horizontal">
 
-        <etools-searchable-multiselection-menu label="Status"
-          class$="flex-6 [[computedPermission.status.readOnly]]"
-          disabled="[[computedPermission.status.disabled]]"
-          hidden$="[[computedPermission.status.hidden]]"
-          required="[[computedPermission.status.required]]"
-          starred$="[[computedPermission.status.required]]"
-          options="[[structure.action_point_status]]"
-          value="{{actionPoints.status}}"
-          empty-value
-          placeholder="select">
-        </etools-searchable-multiselection-menu>
+          <paper-textarea label="Actions Taken"
+            class="flex-12 custom-margin"
+            value="{{actionPoints.actions_taken}}">
+          </paper-textarea>
 
-        <date-time-picker-input label="Completed Date"
-          class$="flex-3 [[computedPermission.completed_at.readOnly]]"
-          disabled="[[endDateDisabled]]"
-          hidden$="[[computedPermission.completed_at.hidden]]"
-          required="[[completedDateRequired]]"
-          starred$="[[completedDateRequired]]"
-          placeholder="select"
-          date="{{actionPoints.completed_at}}">
-        </date-time-picker-input>
+       </div>
 
-      </div>
+       <div class="layout horizontal">
 
+          <date-time-picker-input label="Completed Date"
+            class="flex-3"
+            date="{{actionPoints.completed_at}}">
+          </date-time-picker-input>
 
-      <div class="layout horizontal">
+          <div class="flex-9"></div>
 
-        <paper-textarea label="Actions Taken"
-          class$="flex-12 custom-margin [[computedPermission.actions_taken.readOnly]]"
-          disabled="[[computedPermission.actions_taken.disabled]]"
-          hidden$="[[computedPermission.actions_taken.hidden]]"
-          required="[[actionTakenRequired]]"
-          starred$="[[actionTakenRequired]]"
-          placeholder="actions taken"
-          value="{{actionPoints.actions_taken}}">
-        </paper-textarea>
+        </div>
 
-      </div>
-
-    </form>
+    </template>
   </template>
 
   <script>
     Polymer({
       is: 'action-point',
       properties: {
+        viewMode: {
+          type: Boolean,
+          value: false
+        },
         actionPoints: {
           type: Object,
           value: {},
