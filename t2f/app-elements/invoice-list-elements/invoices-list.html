@@ -121,16 +121,22 @@
     <div class="background">
 
       <etools-ajax url="[[listEndPoint]]"
-          params="{{ajaxParams}}"
-          loading="{{listLoading}}"
-          on-success="handleListResponse">
+        params="{{ajaxParams}}"
+        loading="{{listLoading}}"
+        on-success="handleListResponse">
+      </etools-ajax>
+
+      <etools-ajax url="[[vendorEndPoint]]"
+        loading="{{listLoading}}"
+        on-success="handleVendors">
       </etools-ajax>
 
       <et2f-header title="Invoices"
         show-export-button
         export-type="list"
         data="[[data]]"
-        export-params="[[ajaxParams]]"></et2f-header>
+        export-params="[[ajaxParams]]">
+      </et2f-header>
 
       <paper-card class="second-header horizontal layout center">
 
@@ -150,7 +156,8 @@
 
             <div class="layout horizontal">
 
-              <etools-searchable-multiselection-menu label="Select [[item.name]]" class="filter-dropdown"
+              <etools-searchable-multiselection-menu label="Select [[item.name]]"
+                class="filter-dropdown"
                 options="[[item.selection]]"
                 on-value-change="changeFilterValue">
               </etools-searchable-multiselection-menu>
@@ -286,6 +293,10 @@
           value: '',
           observer: '_searchStringChanged'
         },
+        vendors: {
+          type: Array,
+          value: []
+        },
         ajaxParams: {
           type: Object,
           value: {
@@ -306,6 +317,10 @@
           type: String,
           value: etoolsAppConfig.endpoints.et2fInvoiceList.url
         },
+        vendorEndPoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fVendorList.url
+        },
         filters: {
           type: Array,
           computed: '_computeFilters(structure)',
@@ -324,12 +339,7 @@
           {
             name: 'Vendor number',
             filterName: 'f_vendor_number',
-            selection: [
-              {
-                label: 'data N.A.',
-                value: undefined
-              }
-            ]
+            selection: this.vendors
           },
           {
             name: 'Status',
@@ -337,15 +347,18 @@
             selection: [
               {
                 label: 'Success',
-                value: 'success'
+                value: 0,
+                apiValue: 'success'
               },
               {
                 label: 'Failed',
-                value: 'failed'
+                value: 1,
+                apiValue: 'failed'
               },
               {
                 label: 'Processing',
-                value: 'processing'
+                value: 2,
+                apiValue: 'processing'
               }
             ]
           }
@@ -384,8 +397,23 @@
         this.splice('usedFilters', indexToRemove, 1);
       },
       changeFilterValue: function(e) {
+
         var key = e.model.item.filterName;
-        var value = e.detail.selectedValues.value;
+        var id = e.detail.selectedValues.value;
+        var value;
+
+        if (key === 'f_status') {
+          value = this._computeFilters()[1].selection.filter(function(item) {
+            return item.value == id;
+          })[0].apiValue;
+        }
+
+        if (key === 'f_vendor_number') {
+          value = this.vendors.filter(function(item) {
+            return item.value == id;
+          })[0].apiValue;
+        }
+
         var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
         oldParams[key] = value;
         this.set('ajaxParams', oldParams);
@@ -420,25 +448,27 @@
       },
       labelLib: {
         'Reference #': 'id',
-        'Purpose of travel': 'purpose',
-        'Traveler': 'traveler',
-        'Start date': 'start_date',
-        'End date': 'end_date',
+        'Vendor number': 'vendor_number',
+        'TA Number': 'ta_number',
         'Status': 'status',
-        'Office': 'office',
-        'Section': 'section'
+        'Currency': 'currency',
+        'Amount': 'amount',
+        'VISION Fi Doc': 'vision_fi_id'
       },
       handleListResponse: function(event, data) {
         this.set('datalength', data.total_count);
-        data.data.forEach(function(travel) {
-          if (travel.start_date) {
-            travel.start_date = travel.start_date.split('T')[0];
-          }
-          if (travel.end_date) {
-            travel.end_date = travel.end_date.split('T')[0];
-          }
-        });
         this.set('data', data.data);
+      },
+      handleVendors: function(event, data) {
+        var self = this;
+
+        data.forEach(function(vendorStr, i) {
+          self.push('vendors', {
+            label: vendorStr,
+            value: i,
+            apiValue: vendorStr
+          });
+        });
       },
       searchKeyDown: function(e) {
 
