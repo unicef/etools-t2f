@@ -325,12 +325,6 @@
             show_hidden: false
           }
         },
-        refreshData: {
-          type: Boolean,
-          value: false,
-          notify: true,
-          observer: '_doRefreshData'
-        },
         listEndPoint: {
           type: String,
           value: etoolsAppConfig.endpoints.et2fTravelList.url
@@ -346,6 +340,10 @@
         usedFilters: {
           type: Array,
           value: []
+        },
+        route: {
+          type: Object,
+          observer: '_routeObserver'
         }
       },
       _computeFilters: function(structure) {
@@ -660,12 +658,17 @@
         backup.show_hidden = show;
         this.set('ajaxParams', backup);
       },
-      _doRefreshData: function(status) {
-        if (status) {
+      _doRefreshData: function() {
           var backup = this.ajaxParams;
           this.set('ajaxParams', {});
           this.set('ajaxParams', backup);
-          this.refreshData = false;
+      },
+      _routeObserver: function(newValue, oldValue) {
+        if (!oldValue || !newValue) {
+          return;
+        }
+        if (newValue.path.indexOf('travel-list') > -1 || !(oldValue.path.indexOf('travel-list'))) {
+         this._doRefreshData();
         }
       }
     });
