@@ -373,51 +373,62 @@
             selection: [
               {
                 label: 'Planned',
-                value: 'planned'
+                value: 0,
+                apiValue: 'planned'
               },
               {
                 label: 'Submitted',
-                value: 'submitted'
+                value: 1,
+                apiValue: 'submitted'
               },
               {
                 label: 'Rejected',
-                value: 'rejected'
+                value: 2,
+                apiValue: 'rejected'
               },
               {
                 label: 'Approved',
-                value: 'approved'
+                value: 3,
+                apiValue: 'approved'
               },
               {
                 label: 'Cancelled',
-                value: 'cancelled'
+                value: 4,
+                apiValue: 'cancelled'
               },
               {
                 label: 'Sent for payment',
-                value: 'sent_for_payment'
+                value: 5,
+                apiValue: 'sent_for_payment'
               },
               {
                 label: 'Certification submitted',
-                value: 'certification_submitted'
+                value: 6,
+                apiValue: 'certification_submitted'
               },
               {
                 label: 'Certification approved',
-                value: 'certification_approved'
+                value: 7,
+                apiValue: 'certification_approved'
               },
               {
                 label: 'Certification rejected',
-                value: 'certification_rejected'
+                value: 8,
+                apiValue: 'certification_rejected'
               },
               {
                 label: 'Certified',
-                value: 'certified'
+                value: 9,
+                apiValue: 'certified'
               },
               {
                 label: 'Completed',
-                value: 'completed'
+                value: 10,
+                apiValue: 'completed'
               }
             ]
           },
-           {
+          {
             name: 'Travel Type',
             filterName: 'f_travel_type',
             selection: structure.travel_types
@@ -553,6 +564,13 @@
       changeFilterValue: function(e) {
         var key = e.model.item.filterName;
         var value = e.detail.selectedValues.value;
+
+        if (key === 'f_status') {
+          value = this._computeFilters(this.structure)[4].selection.filter(function(item) {
+            return item.value == value;
+          })[0].apiValue;
+        }
+
         var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
         oldParams[key] = value;
         this.set('ajaxParams', oldParams);
