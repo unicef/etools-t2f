@@ -146,8 +146,10 @@
           <paper-input
               inline
               id="search-input"
-              label="search keyword(s)"
-              on-keydown="searchKeyDown">
+              label="Keywords"
+              on-keydown="searchKeyDown"
+              always-float-label
+              placeholder="Type and search">
             <iron-icon icon="search" prefix></iron-icon>
           </paper-input>
 
@@ -156,10 +158,11 @@
 
             <div class="layout horizontal">
 
-              <etools-searchable-multiselection-menu label="Select [[item.name]]"
+              <etools-searchable-multiselection-menu label="[[item.name]]"
                 class="filter-dropdown"
                 options="[[item.selection]]"
-                on-value-change="changeFilterValue">
+                on-value-change="changeFilterValue"
+                placeholder="Select">
               </etools-searchable-multiselection-menu>
 
               <div class="filter-reset-button" on-click="removeFilter">X</div>
