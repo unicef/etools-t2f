@@ -275,7 +275,7 @@
         var aps = this.actionPoints;
         var keys = Object.keys(aps);
         if (keys.length > 1) {
-         return this.$.action_point_form.validate();
+         return this.$$('#action_point_form').validate();
         }
         return true;
       },
