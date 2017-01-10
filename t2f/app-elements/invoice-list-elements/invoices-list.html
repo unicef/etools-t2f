@@ -407,13 +407,13 @@
 
         if (key === 'f_status') {
           value = this._computeFilters()[1].selection.filter(function(item) {
-            return item.value == id;
+            return item.value === id;
           })[0].apiValue;
         }
 
         if (key === 'f_vendor_number') {
           value = this.vendors.filter(function(item) {
-            return item.value == id;
+            return item.value === id;
           })[0].apiValue;
         }
 

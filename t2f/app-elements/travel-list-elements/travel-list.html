@@ -570,7 +570,7 @@
 
         if (key === 'f_status') {
           value = this._computeFilters(this.structure)[4].selection.filter(function(item) {
-            return item.value == value;
+            return item.value === value;
           })[0].apiValue;
         }
 
