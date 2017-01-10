@@ -52,14 +52,15 @@
       }
     </style>
 
-  <template is="dom-if" if="[[!viewMode]]">
-    <form
-      is="iron-form"
-      id="action_point_form"
-      class="layout vertical flex">
+    <template is="dom-if" if="[[!viewMode]]">
+      <form
+        is="iron-form"
+        id="action_point_form"
+        class="layout vertical flex">
+
         <div class="layout horizontal">
 
-           <paper-input label="Description"
+          <paper-input label="Description"
             class$="flex-3 custom-margin [[computedPermission.description.readOnly]]"
             disabled="[[computedPermission.description.disabled]]"
             hidden$="[[computedPermission.description.hidden]]"
@@ -68,7 +69,6 @@
             placeholder="description"
             value="{{actionPoints.description}}">
           </paper-input>
-
         </div>
 
         <div class="layout horizontal">
@@ -101,7 +101,6 @@
             checked="{{actionPoints.follow_up}}">
             Follow Up
           </paper-checkbox>
-
         </div>
 
         <div class="layout horizontal">
@@ -127,9 +126,7 @@
             placeholder="select"
             date="{{actionPoints.completed_at}}">
           </date-time-picker-input>
-
         </div>
-
 
         <div class="layout horizontal">
 
@@ -142,7 +139,6 @@
             placeholder="actions taken"
             value="{{actionPoints.actions_taken}}">
           </paper-textarea>
-
         </div>
 
       </form>
@@ -163,14 +159,14 @@
             class="flex-8 custom-margin readOnly"
             disabled
             value="{{actionPoints.description}}">
-          </paper-input>
+        </paper-input>
 
-          <date-time-picker-input label="Due Date"
-            inner-class="readOnly"
-            class="flex-4 readOnly"
-            disabled
-            date="{{actionPoints.due_date}}">
-          </date-time-picker-input>
+        <date-time-picker-input label="Due Date"
+          inner-class="readOnly"
+          class="flex-4 readOnly"
+          disabled
+          date="{{actionPoints.due_date}}">
+        </date-time-picker-input>
       </div>
 
       <div class="layout horizontal viewSpacing">
@@ -178,41 +174,39 @@
           disabled
           class="flex-4 custom-margin readOnly"
           value="[[actionPoints.person_responsible.label]]">
-         </paper-input>
+        </paper-input>
 
         <paper-input label="Assigned by"
-         class="flex-4 custom-margin readOnly"
-         disabled
-         value="asd"></paper-input>
+          class="flex-4 custom-margin readOnly"
+          disabled
+          value="asd">
+        </paper-input>
 
         <paper-checkbox class="flex-4 custom-margin self-end alignCheckbox"
-            checked="{{actionPoints.follow_up}}">
-            Follow Up
+          checked="{{actionPoints.follow_up}}">
+          Follow Up
         </paper-checkbox>
-
       </div>
 
-       <div class="layout horizontal viewSpacing">
+      <div class="layout horizontal viewSpacing">
 
-          <paper-textarea label="Actions Taken"
-            class="flex-12 custom-margin"
-            value="{{actionPoints.actions_taken}}">
-          </paper-textarea>
+        <paper-textarea label="Actions Taken"
+          class="flex-12 custom-margin"
+          value="{{actionPoints.actions_taken}}">
+        </paper-textarea>
+      </div>
 
-       </div>
+      <div class="layout horizontal viewSpacing">
 
-       <div class="layout horizontal viewSpacing">
+        <date-time-picker-input label="Completed Date"
+          class="flex-3"
+          date="{{actionPoints.completed_at}}">
+        </date-time-picker-input>
 
-          <date-time-picker-input label="Completed Date"
-            class="flex-3"
-            date="{{actionPoints.completed_at}}">
-          </date-time-picker-input>
-
-          <div class="flex-9"></div>
-
-        </div>
-
+        <div class="flex-9"></div>
+      </div>
     </template>
+
   </template>
 
   <script>
