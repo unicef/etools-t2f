@@ -171,21 +171,18 @@
         data="{{data}}"
         report-string="[[data.report]]"
         user-roles="[[userRoles]]"
-        user="[[user]]"
-        on-form-action="_handleFormAction">
+        user="[[user]]">
       </travel-report>
 
       <travel-attachments
         structure="[[structure]]"
         attachments-permission="[[travelPermissions.attachments]]"
-        is-international="[[data.baseDetails.international_travel]]"
-        completed-at="[[data.completed_at]]"
-        cancelled-at="[[data.cancelled_at]]"
+        notes-permission="[[travelPermissions.additional_notes]]"
+        base-details="{{data.baseDetails}}"
         attachments="{{data.attachments}}"
         deleted-attachments="{{data.deletedAttachments}}"
         status="[[data.status]]"
-        user-roles="[[userRoles]]"
-        on-form-action="_handleFormAction">
+        user-roles="[[userRoles]]">
       </travel-attachments>
 
     </iron-pages>
