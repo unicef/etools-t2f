@@ -228,7 +228,8 @@
         Object.freeze(data);
         this.set('structure', data);
       },
-      _handlePermissions: function(e, data) {
+      _handlePermissions: function(e, permissionMatrix) {
+        var travelPermission = permissionMatrix.travel;
 
         var nonBaseKeys = [
           'deductions',
@@ -242,26 +243,26 @@
           'attachments',
           'action_points'
         ];
-        Object.keys(data).forEach(function(role) {
-          if (!data[role]) {
+        Object.keys(travelPermission).forEach(function(role) {
+          if (!travelPermission[role]) {
             return;
           }
-          Object.keys(data[role]).forEach(function(status) {
-            if (!data[role][status]) {
+          Object.keys(travelPermission[role]).forEach(function(status) {
+            if (!travelPermission[role][status]) {
               return;
             }
-            var currentKeys = Object.keys(data[role][status]);
-            data[role][status].baseDetails = {};
+            var currentKeys = Object.keys(travelPermission[role][status]);
+            travelPermission[role][status].baseDetails = {};
             currentKeys.forEach(function(key) {
               if (nonBaseKeys.indexOf(key) === -1) {
-                data[role][status].baseDetails[key] = data[role][status][key];
-                delete data[role][status][key];
+                travelPermission[role][status].baseDetails[key] = travelPermission[role][status][key];
+                delete travelPermission[role][status][key];
               }
             });
           });
         });
-        Object.freeze(data);
-        this.et2fPermissions = data;
+        Object.freeze(travelPermission);
+        this.et2fPermissions = travelPermission;
       },
       _computeLoading: function(structure, permissions, subLoading) {
 
