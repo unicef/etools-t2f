@@ -1,6 +1,9 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
 <link rel="import" href="../pdf-make-wrapper/pdf-make.html">
@@ -52,9 +55,7 @@
 
   <template>
     <pdf-print id="pdfPrint" data="[[data]]" export-type="[[exportType]]" ></pdf-print>
-    <template is="dom-if" if="[[loadCSV]]" restamp>
-      <etools-ajax download-csv handle-as="text" url="[[csvEndpoint]]" params="[[exportParams]]" on-success="_handleCSVData"></etools-ajax>
-    </template>
+    <etools-ajax download-csv handle-as="text" url="[[csvEndpoint]]" params="[[exportParams]]" on-success="_handleCSVData"></etools-ajax>
 
     <div class="header-wrapper">
       <div class="side-heading horizontal layout center">
@@ -62,14 +63,18 @@
         <span class="flex title">[[title]]</span>
 
         <div class="side-heading-button-holder">
-          <paper-button
-            hidden$="[[!showExportButton]]"
-            class="grey-buttons"
-            on-click="export">
+        <paper-menu-button hidden$="[[!showExportButton]]" >
+            <paper-button class="grey-buttons dropdown-trigger">
+              <iron-icon icon="file-download"></iron-icon>
+              Export
+            </paper-button>
+            <paper-menu class="dropdown-content">
+              <template is="dom-repeat" items="[[exportList]]">
+                <paper-item on-tap="_export">{{item.name}}</paper-item>
+              </template>
+            </paper-menu>
+          </paper-menu-button>
 
-            <iron-icon icon="file-download"></iron-icon>
-            Export
-          </paper-button>
           <paper-button
             class="grey-buttons"
             on-click="print">
@@ -113,7 +118,6 @@
         },
         csvEndpoint: {
           type: String,
-          value: etoolsAppConfig.endpoints.et2fCSVListExport.url
         },
         baseUrl: {
             type: String,
@@ -121,7 +125,8 @@
         },
         exportType: {
           type: String
-        }
+        },
+        exportList: Array
       },
       behaviors: [etoolsAppConfig.globals],
       attached: function() {
@@ -130,10 +135,9 @@
       print: function() {
         this.$.pdfPrint.printPDF();
       },
-      export: function() {
-        if (this.showExportButton) {
-          this.loadCSV = true;
-        }
+      _export: function(event) {
+        var endpoint = event.model.item.endpoint;
+        this.set('csvEndpoint', endpoint);
       },
       _hideNewTravelButton: function(show) {
         return !show;
@@ -144,7 +148,7 @@
         a.download = 'csv_export_' + Date.now() + '.csv';
         a.click();
         window.URL.revokeObjectURL(a.href);
-        this.loadCSV = false;
+        this.set('csvEndpoint', undefined);
       }
     });
   </script>

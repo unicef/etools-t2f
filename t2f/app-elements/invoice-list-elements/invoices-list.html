@@ -132,7 +132,8 @@
       </etools-ajax>
 
       <et2f-header title="Invoices"
-        show-export-button
+        show-export-button$="[[showExportButton]]"
+        export-list="[[exportList]]"
         export-type="list"
         data="[[data]]"
         export-params="[[ajaxParams]]">
@@ -230,6 +231,7 @@
         structure: {
           type: Object
         },
+        user: Object,
         datalength: {
           type: Number,
           value: 0
@@ -335,7 +337,26 @@
         usedFilters: {
           type: Array,
           value: []
+        },
+        exportList: {
+          type: Array,
+          computed: '_computeExportList(user)'
+        },
+        showExportButton: {
+          type: Boolean,
+          value: false
         }
+      },
+       _computeExportList: function(user) {
+        var exportList = [];
+        var roles = user.t2f.roles;
+        if (roles.indexOf('Finance Focal Point') > -1) {
+          exportList.push({name: 'Invoice Export', endpoint: '/api/t2f/travels/invoice-export/'});
+          this.set('showExportButton', true);
+        } else {
+          this.set('showExportButton', false);
+        }
+       return exportList;
       },
       _computeFilters: function(structure) {
         return [
