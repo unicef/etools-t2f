@@ -506,7 +506,7 @@
           toValidate.forEach(function(area) {
             var fieldSet = area.toLowerCase();
             var domFieldSet = self.$$('#' + fieldSet);
-            if (domFieldSet && !domFieldSet.hidden) {
+            if (domFieldSet && !domFieldSet.hidden && !domFieldSet.disabled) {
               if (!self.data[fieldSet].hidden) {
                 var result = true;
                 self.data[fieldSet].forEach(function(field) {
