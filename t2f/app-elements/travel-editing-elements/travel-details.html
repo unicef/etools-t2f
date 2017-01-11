@@ -217,7 +217,7 @@
           elevation="1"
           show-counter
           open="[[sectionPermissions.itinerary.open]]"
-          hidden$="[[sectionPermissions.itinerary.hidden]]">
+          hidden$="[[_hideOnTANotRequired(sectionPermissions.itinerary.hidden, data.baseDetails.ta_required)]]">
 
           <template
             is="dom-repeat"
@@ -239,7 +239,7 @@
           hide-plus
           elevation="1"
           open="[[sectionPermissions.deductions.open]]"
-          hidden$="[[sectionPermissions.deductions.hidden]]">
+          hidden$="[[_hideOnTANotRequired(sectionPermissions.deductions.hidden, data.baseDetails.ta_required)]]">
 
           <div class="layout vertical flex">
 
@@ -259,7 +259,7 @@
           hide-plus="[[!sectionPermissions.expenses.edit]]"
           elevation="1"
           open="[[sectionPermissions.expenses.open]]"
-          hidden$="[[sectionPermissions.expenses.hidden]]">
+          hidden$="[[_hideOnTANotRequired(sectionPermissions.expenses.hidden, data.baseDetails.ta_required)]]">
 
           <template is="dom-repeat" items="{{data.expenses}}">
             <travel-expense permissions-matrix="[[travelPermissions.expenses]]"
@@ -275,7 +275,7 @@
           elevation="1"
           hide-plus="[[!sectionPermissions.cost_assignments.edit]]"
           open="[[sectionPermissions.cost_assignments.open]]"
-          hidden$="[[sectionPermissions.cost_assignments.hidden]]">
+          hidden$="[[_hideOnTANotRequired(sectionPermissions.cost_assignments.hidden, data.baseDetails.ta_required)]]">
 
           <template is="dom-repeat" items="{{data.cost_assignments}}">
 
@@ -296,7 +296,7 @@
           hide-plus
           elevation="1"
           open="[[sectionPermissions.cost_summary.open]]"
-          hidden$="[[sectionPermissions.cost_summary.hidden]]">
+          hidden$="[[_hideOnTANotRequired(sectionPermissions.cost_summary.hidden, data.baseDetails.ta_required)]]">
 
           <travel-cost-summary cost-summary="[[data.cost_summary]]" currency="[[data.baseDetails.currency]]" structure="[[structure]]"></travel-cost-summary>
         </etools-repeatable-field-set>
@@ -359,6 +359,11 @@
           computed: '_computeHideCertificationNote(data)'
         }
       },
+
+      _hideOnTANotRequired: function(permissionMatrixHidden, taRequired) {
+        return !taRequired || permissionMatrixHidden;
+      },
+
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
         var computed = {};
 
@@ -500,13 +505,16 @@
         function fieldSetValidation(toValidate) {
           toValidate.forEach(function(area) {
             var fieldSet = area.toLowerCase();
-            if (!self.data[fieldSet].hidden) {
-              var result = true;
-              self.data[fieldSet].forEach(function(field) {
-                result = field._validationFunction() && result;
-              });
-              if (!result) {
-                invalids.push(area);
+            var domFieldSet = self.$$('#' + fieldSet);
+            if (domFieldSet && !domFieldSet.hidden) {
+              if (!self.data[fieldSet].hidden) {
+                var result = true;
+                self.data[fieldSet].forEach(function(field) {
+                  result = field._validationFunction() && result;
+                });
+                if (!result) {
+                  invalids.push(area);
+                }
               }
             }
           });
@@ -526,12 +534,10 @@
             }
           }
 
-          if (action.name === 'Save') {
+          if (action.name === 'Save' && !self.$$('#itinerary').hidden) {
             fieldSetValidation(['Itinerary']);
-
-          self._validateItinerarySize(invalids);
-          self._validateItineraryIntegrity(invalids);
-
+            self._validateItinerarySize(invalids);
+            self._validateItineraryIntegrity(invalids);
           }
           return invalids;
       },

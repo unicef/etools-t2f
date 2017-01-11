@@ -213,7 +213,7 @@
         <paper-input label="Estimated travel cost"
           class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
           disabled="[[computedPermission.estimated_travel_cost.disabled]]"
-          hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
+          hidden$="[[_hideOnTANotRequired(computedPermission.estimated_travel_cost.hidden, baseDetails.ta_required)]]"
           pattern="^[0-9]+(\.[0-9]{1,2})?$"
           error-message="*number required"
           placeholder="eg.: 567.12"
@@ -224,7 +224,7 @@
         <etools-searchable-multiselection-menu label="Currency of TA"
           class$="flex-3 [[computedPermission.currency.readOnly]]"
           disabled="[[computedPermission.currency.disabled]]"
-          hidden$="[[computedPermission.currency.hidden]]"
+          hidden$="[[_hideOnTANotRequired(computedPermission.currency.hidden, baseDetails.ta_required)]]"
           empty-value
           options="[[structure.currencies]]"
           value="{{baseDetails.currency}}"
@@ -294,7 +294,7 @@
         },
         user: {
           type: Object,
-        }
+        },
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
@@ -302,6 +302,10 @@
       observers: [
         '_valuesObserver(baseDetails.*)'
       ],
+
+      _hideOnTANotRequired: function(permissionMatrixHidden, taRequired) {
+        return !taRequired || permissionMatrixHidden;
+      },
 
       _computeAutoValidate: function(data) {
           return data !== undefined && Object.keys(data).length > 0;
