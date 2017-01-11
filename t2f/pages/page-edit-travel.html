@@ -31,7 +31,9 @@
 
       </app-header>
     </app-header-layout>
-    <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" detail-loading="{{detailLoading}}" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
+    <template is="dom-if" if="[[showTravelEdit]]" restamp>
+      <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" detail-loading="{{detailLoading}}" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
+    </template>
   </template>
 
   <script>
@@ -49,7 +51,15 @@
         detailLoading: {
           type: Boolean,
           notify: true
+        },
+        showTravelEdit: {
+          type: Boolean,
+          value: false,
+          computed: '_computeShowTravelEdit(structure, et2fPermissions, travelId, user)'
         }
+      },
+      _computeShowTravelEdit: function(structure, permissions, id, user) {
+        return structure && permissions && id && user;
       }
 
     });
