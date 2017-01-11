@@ -1,0 +1,198 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="action-points-button">
+
+  <style include="shared-styles et2f-styles iron-flex iron-flex-alignment" is="custom-style">
+    :host {
+      display: block;
+    }
+    paper-button {
+      margin: 24px;
+      padding: 0;
+      height: 36px;
+      background-color: var(--et2f-primary);
+      color: white;
+    }
+    paper-button.grey {
+      background-color: var(--gray-mid);
+    }
+    paper-menu-button {
+      padding: 0 4px;
+    }
+    paper-icon-button {
+      border-left: 1px solid rgba(255,255,255,0.3);
+    }
+    .main-btn-part {
+      text-align: center;
+      font-weight: 500;
+      line-height: 34px;
+      height:100%;
+    }
+    .dropdown-content, .dropdown-content paper-item {
+      background-color: white;
+    }
+  </style>
+
+  <template>
+
+    <etools-ajax
+      id="patchAjax"
+      method="PATCH"
+      body="[[patchBody]]"
+      url="[[patchUrl]]"
+      on-success="_patchDone"
+      on-fail="_patchError">
+    </etools-ajax>
+
+    <template is="dom-if" if="[[hasPermission]]">
+
+      <div>[[str]]</div>
+
+      <paper-button raised class="layout horizontal">
+
+        <div on-tap="_clickPrimary" class="flex main-btn-part">[[actions.primary.name]]</div>
+
+        <paper-menu-button horizontal-align="right">
+
+          <paper-icon-button icon="expand-more" class="dropdown-trigger"></paper-icon-button>
+
+          <paper-menu class="dropdown-content">
+
+            <template is="dom-repeat" items="[[actions.secondary]]">
+
+              <paper-item on-click="_clickSecondary">[[item.name]]</paper-item>
+            </template>
+          </paper-menu>
+        </paper-menu-button>
+      </paper-button>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'action-points-button',
+
+      properties: {
+        data: {
+          type: Object
+        },
+        actList: {
+          type: Object,
+          value: {
+            'open': {
+              'name': 'Save as Open',
+              'status': 'open',
+              'endPoint': 'save-as-open'
+            },
+            'on-going': {
+              'name': 'Save as On-going',
+              'status': 'on-going',
+              'endPoint': 'save-as-on-going'
+            },
+            'completed': {
+              'name': 'Save as completed',
+              'status': 'completed',
+              'endPoint': 'save-as-completed'
+            },
+            'cancel': {
+              'name': 'Cancel',
+              'status': 'cancel',
+              'endPoint': 'cancel'
+            }
+          }
+        },
+        actions: {
+          type: Object
+        },
+        status: {
+          type: String,
+          // TODO remove default!!!!
+          value: 'completed'
+        },
+        hasPermission: {
+          type: Boolean,
+          // TODO remove default!!!!
+          value: true,
+          reflectToAttribute: true
+        },
+        data: {
+          type: Object
+        },
+        patchURL: {
+          type: String,
+          value: null
+        },
+        patchBody: {
+          type: Object,
+          value: {}
+        }
+      },
+
+      observers: [
+        '_computeActions(actList, status)'
+      ],
+
+      calcURL: function(data) {
+        return '/api/t2f/action_points/' + data.id + '/';
+      },
+
+      _computeActions: function(actList, status) {
+
+        var prim = actList[status];
+        prim.name = 'Save';
+
+        var availableActions = {
+          primary: prim,
+          secondary: Object.keys(actList)
+            .filter(function(action) {return action !== status})
+            .map(function(action) {
+              return actList[action];
+            })
+        };
+
+        this.set('actions', availableActions);
+      },
+
+      _clickPrimary: function() {
+
+        var toSendData = JSON.parse(JSON.stringify(this.data));
+        delete toSendData._validationFunction;
+        toSendData.person_responsible = toSendData.person_responsible.value;
+
+        this.set('patchBody', toSendData);
+        this.$.patchAjax.url = '/api/t2f/action_points/' + this.data.id + '/';
+      },
+
+      _clickSecondary: function(event) {
+
+        var toSendData = JSON.parse(JSON.stringify(this.data));
+        delete toSendData._validationFunction;
+        toSendData.person_responsible = toSendData.person_responsible.value;
+        toSendData.status = event.model.item.status !== 'cancel' ? event.model.item.status : 'cancelled';
+
+        this.set('patchBody', toSendData);
+        this.$.patchAjax.url = '/api/t2f/action_points/' + this.data.id + '/';
+      },
+
+      _patchDone: function(a, b, c) {
+        // Should we do something here on 'canceled' state?
+      },
+
+      _patchError: function(a, b, c) {
+        console.error('Patch error', a, b, c);
+      }
+    });
+  </script>
+
+</dom-module>
