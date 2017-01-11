@@ -484,10 +484,10 @@
         }
 
         if (orderError) {
-          invalids.push('Itinerary entries must be placed in order by Departure Date');
+          invalids.push('Itinerary: One or more arrival dates are earlier than the departure dates');
         }
         if (overlappingError) {
-          invalids.push('Itinerary entries must not overlap each other');
+          invalids.push('Itinerary: Two or more line items have overlapping dates');
         }
 
       },
