@@ -126,9 +126,6 @@
           value: true,
           reflectToAttribute: true
         },
-        data: {
-          type: Object
-        },
         patchURL: {
           type: String,
           value: null
@@ -154,9 +151,9 @@
 
         var availableActions = {
           primary: prim,
-          secondary: Object.keys(actList)
-            .filter(function(action) {return action !== status})
-            .map(function(action) {
+          secondary: Object.keys(actList).filter(function(action) {
+              return action !== status;
+            }).map(function(action) {
               return actList[action];
             })
         };
