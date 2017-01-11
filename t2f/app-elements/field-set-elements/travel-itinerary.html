@@ -83,6 +83,8 @@
           disabled="[[computedPermission.departure_date.disabled]]"
           hidden$="[[computedPermission.departure_date.hidden]]"
           time-picker
+          min-date="[[minDate]]"
+          max-date="[[maxDate]]"
           date="{{itinerary.departure_date}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.departure_date.required]]"
@@ -96,6 +98,7 @@
           hidden$="[[computedPermission.arrival_date.hidden]]"
           time-picker
           min-date="[[itinerary.departure_date]]"
+          max-date="[[maxDate]]"
           date="{{itinerary.arrival_date}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.arrival_date.required]]"
@@ -155,6 +158,8 @@
           type: Object,
           value: {}
         },
+        minDate: Date,
+        maxDate: Date,
         autoValidate: {
           type: Boolean,
           computed: '_computeAutoValidate(itinerary)'

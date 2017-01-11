@@ -300,7 +300,7 @@
       behaviors: [et2fBehaviors.PermissionLayer],
 
       observers: [
-        '_setCheckboxes(baseDetails.*)'
+        '_valuesObserver(baseDetails.*)'
       ],
 
       _computeAutoValidate: function(data) {
@@ -349,7 +349,7 @@
         return taRequiredDisabled || internationalTravel;
       },
 
-      _setCheckboxes: function(changed) {
+      _valuesObserver: function(changed) {
         this[changed.path] = changed.value;
       },
 

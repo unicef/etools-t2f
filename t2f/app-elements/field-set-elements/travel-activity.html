@@ -104,6 +104,8 @@
         <date-time-picker-input label="Date of Visit"
           class$="flex-4 [[computedPermission.date.readOnly]]"
           disabled="[[computedPermission.date.disabled]]"
+          min-date="[[minDate]]"
+          max-date="[[maxDate]]"
           hidden$="[[computedPermission.date.hidden]]"
           date="{{activity.date}}"
           placeholder="select">
@@ -142,6 +144,8 @@
           type: Array,
           value: []
         },
+        minDate: Date,
+        maxDate: Date,
         disablePartnerships: {
           type: Boolean,
           computed: '_computeDisablePartnerships(partnerships, computedPermission.partnership.disabled)'
@@ -173,7 +177,7 @@
           }
       },
 
-       _computeAutoValidate: function(activity) {
+      _computeAutoValidate: function(activity) {
           return activity !== undefined && Object.keys(activity).length > 0;
       },
 

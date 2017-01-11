@@ -200,6 +200,8 @@
             <travel-activities
               class="travel_activity"
               activity="{{item}}"
+              min-date="[[data.baseDetails.start_date]]"
+              max-date="[[data.baseDetails.end_date]]"
               permissions-matrix="[[travelPermissions.activities]]"
               structure="[[structure]]"
               activity-validation-array="{{activityValidationArray}}">
@@ -223,6 +225,8 @@
 
             <travel-itinerary permissions-matrix="[[travelPermissions.itinerary]]"
               itinerary="{{item}}"
+              min-date="[[data.baseDetails.start_date]]"
+              max-date="[[data.baseDetails.end_date]]"
               structure="[[structure]]">
             </travel-itinerary>
           </template>
