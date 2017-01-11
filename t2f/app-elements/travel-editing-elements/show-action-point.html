@@ -8,6 +8,7 @@
 <link rel="import" href="../../app-behaviors/permission-behavior.html">
 <link rel="import" href="../field-set-elements/action-point.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
+<link rel="import" href="../travel-status-box/action-point-status.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -22,13 +23,12 @@
 
     .container {
       padding: 24px;
-      margin-right: 24px;
+      background-color: var(--gray-lighter);
     }
 
     paper-material {
       padding: 0;
     }
-
 
     .card-heading {
       font-size: 20px;
@@ -45,6 +45,10 @@
       padding: 24px;
       width: calc(100% - 48px);
     }
+
+    action-point-status {
+      padding-left: 24px;
+    }
   </style>
 
   <template>
@@ -52,6 +56,7 @@
       on-success="_handleData" loading="{{loading}}"></etools-ajax>
 
     <et2f-header title="[[actionPoint.action_point_number]]"></et2f-header>
+
     <div class="container layout horizontal">
 
       <paper-material class="flex" elevation="1">
@@ -69,9 +74,11 @@
 
         </action-point>
       </paper-material>
+
+      <action-point-status status="[[actionPoint.status]]">
+      </action-point-status>
+
     </div>
-
-
   </template>
 
   <script>
@@ -84,6 +91,7 @@
           type: Object,
           notify: true
         },
+        actionPoint: Object,
         actionPointId: {
           type: String,
         },
