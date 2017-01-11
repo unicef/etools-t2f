@@ -69,6 +69,7 @@
           view-mode
           action-points="{{actionPoint}}"
           structure="{{structure}}"
+          on-navigate-to="_navigateToTravel"
           permissions-matrix="[[permissions.action_points]]"
           user="[[user]]">
 
@@ -97,6 +98,10 @@
         },
         structure: Object,
         user: Object,
+        route: {
+          type: Object,
+          notify: true
+        },
         actionPointUrl: {
           type: String,
           computed: '_computeUrl(actionPointId)',
@@ -126,6 +131,14 @@
 
         this.set('actionPoint', {});
         this.set('actionPoint', actionPoint);
+      },
+      _navigateToTravel: function(e, d) {
+        var backup = this.route;
+        backup.path = backup.path.split('/');
+        backup.path.splice(-2, 2);
+        backup.path = backup.path.concat(['edit-travel', d]).join('/');
+        this.set('route', {});
+        this.set('route', backup);
       }
     });
   </script>
