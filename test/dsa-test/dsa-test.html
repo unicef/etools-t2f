@@ -11,8 +11,6 @@
   <link rel="import" href="../../t2f/app-elements/api-elements/outbound-data.html">
   <link rel="import" href="../../t2f/app-elements/field-set-elements/travel-deductions.html">
 
-
-
   <link rel="import" href="./data/case-1.html">
 
 </head>
@@ -20,13 +18,14 @@
 
 <test-fixture id="el">
   <template>
-    <et2f-outbound-data id="api"></et2f-outbound-data>
+    <et2f-outbound-data postData="true" id="api"></et2f-outbound-data>
     <travel-deductions id="deductions"></travel-deductions>
   </template>
 </test-fixture>
 
 <script>
-/* global define, suite, setup, fixture, test, caseScenarios, expect */
+
+  /* global define, suite, setup, fixture, test, caseScenarios, expect */
   suite('dsa-test', function() {
 
     var el = null;
@@ -35,6 +34,7 @@
     var data = caseScenarios[0];
 
     setup(function() {
+
       el = fixture('el');
       deductions = Polymer.dom(el.root).querySelector('#deductions');
       api = Polymer.dom(el.root).querySelector('#api');
@@ -44,14 +44,34 @@
       data.deductions = deductions.deductions;
     });
 
-    test('deduction length is as expected', function() {
+    test('base#1 - it parses injected deduction', function() {
       expect(data.deductions.length).to.equal(13);
     });
-    test('the api send stuff to the server', function() {
+
+    test('base#2 - the API sends data to the server, and we\'re getting it back', function(done) {
+
       api.data = data;
+
+      api._handlePostSuccess = function(e, data) {
+        expect(data).to.be.an('object');
+        done();
+      }
+
       api.doRequest({endPoint: 'save'});
     });
 
+    test('base#3 - it generates deductions correctly', function() {});
+
+    test('case#0 - Simple usecase', function() {});
+    test('case#1 - Over 60 days', function() {});
+    test('case#2 - Same day travel', function() {});
+    test('case#3 - Less than 8 hours travel', function() {});
+    test('case#4 - Overnight travel', function() {});
+    test('case#5 - No DSA checked', function() {});
+    test('case#6 - Dinner, lunch, breakfast', function() {});
+    test('case#7 - Really complex calculation A', function() {});
+    test('case#8 - Really complex calculation B', function() {});
+    test('case#9 - Really complex calculation C', function() {});
   });
 </script>
 

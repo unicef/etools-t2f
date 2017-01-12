@@ -1,13 +1,300 @@
-
 <script type="text/javascript">
 
-   window.caseScenarios = window.caseScenarios ?  window.caseScenarios : [];
-   var data = JSON.parse('{"itinerary":[{"id":9,"origin":"A","destination":"B","departure_date":"2017-01-06T23:00:10.527Z","arrival_date":"2017-01-18T23:00:10.544Z","dsa_region":{"label":"Hungary - Budapest","value":3},"overnight_travel":true,"mode_of_travel":{"label":"Car","value":3},"airlines":[]}],"expenses":[{}],"deductions":[{"id":44,"date":"2017-01-07","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Sat"},{"id":45,"date":"2017-01-08","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Sun"},{"id":46,"date":"2017-01-09","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Mon"},{"id":47,"date":"2017-01-10","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Tue"},{"id":48,"date":"2017-01-11","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Wed"},{"id":49,"date":"2017-01-12","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Thu"},{"id":50,"date":"2017-01-13","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Fri"},{"id":51,"date":"2017-01-14","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Sat"},{"id":52,"date":"2017-01-15","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Sun"},{"id":53,"date":"2017-01-16","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Mon"},{"id":54,"date":"2017-01-17","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Tue"},{"id":55,"date":"2017-01-18","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Wed"},{"id":56,"date":"2017-01-19","breakfast":false,"lunch":false,"dinner":false,"accomodation":false,"no_dsa":false,"day_of_the_week":"Thu"}],"cost_assignments":[{"id":2,"wbs":{"label":"WBS #1","value":1,"grants":[{"label":"Grant #1","value":1},{"label":"Grant #2","value":2}]},"share":100,"grant":null,"fund":null}],"clearances":{"id":6,"medical_clearance":"requested","security_clearance":"requested","security_course":"requested"},"activities":[{"id":3,"travel_type":{"label":"Programmatic Visit","value":1},"partner":{"label":"Adult Basic Community Org","value":2,"partnerships":[{"label":"Test","value":30}]},"partnership":{"label":"Test","value":30},"result":{"label":"100 Social workers have skills in case management","value":125},"locations":[{"label":"Aadloun 001","value":4549}],"primary_traveler":true,"date":"2017-01-11T09:03:10.342Z"}],"completed_at":null,"canceled_at":null,"rejection_note":null,"cancellation_note":null,"attachments":[],"cost_summary":{"dsa_total":"-3480.00","expenses_total":"0.00","deductions_total":"0.00","dsa":[{"start_date":"2017-01-06","end_date":"2017-01-06","daily_rate_usd":"300.0000","night_count":1,"amount_usd":"-3480.0000","dsa_region":3,"dsa_region_name":"Hungary - Budapest"}],"preserved_expenses":null,"expenses_delta":"0.00"},"certification_note":null,"report":"","misc_expenses":null,"action_points":[{}],"baseDetails":{"reference_number":"2017/000006","supervisor":{"label":"Puli Lab","value":3741},"office":{"label":"Pulilab","value":195},"end_date":"2017-01-26T10:22:09.209Z","section":{"label":"Enginnering","value":2},"international_travel":false,"traveler":{"label":"Puli Lab","value":3742},"start_date":"2017-01-06T10:22:09.138Z","ta_required":true,"purpose":"test","id":6,"status":"submitted","mode_of_travel":[{"label":"Car","value":3}],"estimated_travel_cost":"4324.00","currency":{"label":"United States dollar","value":1,"short":"USD"},"additional_note":null},"status":"Submitted"}');
-   data.itinerary.forEach(function(iti) {
-      iti.arrival_date = new Date(iti.arrival_date);
-      iti.departure_date = new Date(iti.departure_date);
-   });
-   window.caseScenarios.push(data);
+  window.caseScenarios = window.caseScenarios ?  window.caseScenarios : [];
+
+  var case1 = {
+    "itinerary":[
+      {
+        "id":9,
+        "origin":"A",
+        "destination":"B",
+        "departure_date":"2017-01-06T23:00:10.527Z",
+        "arrival_date":"2017-01-18T23:00:10.544Z",
+        "dsa_region":{
+          "label":"Hungary - Budapest",
+          "value":3
+        },
+        "overnight_travel":true,
+        "mode_of_travel":{
+          "label":"Car",
+          "value":3
+        },
+        "airlines":[]
+      }
+    ],
+    "expenses":[{}],
+    "deductions":[
+      {
+        "id":44,
+        "date":"2017-01-07",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Sat"
+      },
+      {
+        "id":45,
+        "date":"2017-01-08",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Sun"
+      },
+      {
+        "id":46,
+        "date":"2017-01-09",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Mon"
+      },
+      {
+        "id":47,
+        "date":"2017-01-10",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Tue"
+      },
+      {
+        "id":48,
+        "date":"2017-01-11",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Wed"
+      },
+      {
+        "id":49,
+        "date":"2017-01-12",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Thu"
+      },
+      {
+        "id":50,
+        "date":"2017-01-13",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Fri"
+      },
+      {
+        "id":51,
+        "date":"2017-01-14",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Sat"
+      },
+      {
+        "id":52,
+        "date":"2017-01-15",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Sun"
+      },
+      {
+        "id":53,
+        "date":"2017-01-16",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Mon"
+      },
+      {
+        "id":54,
+        "date":"2017-01-17",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Tue"
+      },
+      {
+        "id":55,
+        "date":"2017-01-18",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Wed"
+      },
+      {
+        "id":56,
+        "date":"2017-01-19",
+        "breakfast":false,
+        "lunch":false,
+        "dinner":false,
+        "accomodation":false,
+        "no_dsa":false,
+        "day_of_the_week":"Thu"
+      }
+    ],
+    "cost_assignments":[
+      {
+        "id":2,
+        "wbs":{
+          "label":"WBS #1",
+          "value":1,
+          "grants":[
+            {
+              "label":"Grant #1",
+              "value":1
+            },
+            {
+              "label":"Grant #2",
+              "value":2
+            }
+          ]
+        },
+        "share":100,
+        "grant":null,
+        "fund":null
+      }
+    ],
+    "clearances":{
+      "id":6,
+      "medical_clearance":"requested",
+      "security_clearance":"requested",
+      "security_course":"requested"
+    },
+    "activities":[
+      {
+        "id":3,
+        "travel_type":{
+          "label":"Programmatic Visit",
+          "value":1
+        },
+        "partner":{
+          "label":"Adult Basic Community Org",
+          "value":2,
+          "partnerships":[
+            {
+              "label":"Test",
+              "value":30
+            }
+          ]
+        },
+        "partnership":{
+          "label":"Test",
+          "value":30
+        },
+        "result":{
+          "label":"100 Social workers have skills in case management",
+          "value":125
+        },
+        "locations":[
+          {
+            "label":"Aadloun 001",
+            "value":4549
+          }
+        ],
+        "primary_traveler":true,
+        "date":"2017-01-11T09:03:10.342Z"
+      }
+    ],
+    "completed_at":null,
+    "canceled_at":null,
+    "rejection_note":null,
+    "cancellation_note":null,
+    "attachments":[],
+    "cost_summary":{
+      "dsa_total":"-3480.00",
+      "expenses_total":"0.00",
+      "deductions_total":"0.00",
+      "dsa":[
+        {
+          "start_date":"2017-01-06",
+          "end_date":"2017-01-06",
+          "daily_rate_usd":"300.0000",
+          "night_count":1,
+          "amount_usd":"-3480.0000",
+          "dsa_region":3,
+          "dsa_region_name":"Hungary - Budapest"
+        }
+      ],
+      "preserved_expenses":null,
+      "expenses_delta":"0.00"
+    },
+    "certification_note":null,
+    "report":"",
+    "misc_expenses":null,
+    "action_points":[{}],
+    "baseDetails":{
+      "reference_number":"2017/000006",
+      "supervisor":{
+        "label":"Puli Lab",
+        "value":3741
+      },
+      "office":{
+        "label":"Pulilab",
+        "value":195
+      },
+      "end_date":"2017-01-26T10:22:09.209Z",
+      "section":{
+        "label":"Enginnering",
+        "value":2
+      },
+      "international_travel":false,
+      "traveler":{
+        "label":"Puli Lab",
+        "value":3742
+      },
+      "start_date":"2017-01-06T10:22:09.138Z",
+      "ta_required":true,
+      "purpose":"test",
+      "id":6,
+      "status":"submitted",
+      "mode_of_travel":[
+        {
+          "label":"Car",
+          "value":3
+        }
+      ],
+      "estimated_travel_cost":"4324.00",
+      "currency":{
+        "label":"United States dollar",
+        "value":1,
+        "short":"USD"
+      },
+      "additional_note":null
+    },
+    "status":"Submitted"
+  };
+
+  var case2 = JSON.parse(JSON.stringify(case1));
+  case2
+
+  case1.itinerary.forEach(function(iti) {
+    iti.arrival_date = new Date(iti.arrival_date);
+    iti.departure_date = new Date(iti.departure_date);
+  });
+
+  window.caseScenarios.push(case1);
 
 </script>
-

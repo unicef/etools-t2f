@@ -310,8 +310,7 @@
         properties: {
           data: {
             type: Object,
-            notify: true,
-            observer: '_warn'
+            notify: true
           },
           travelId: {
             type: String,
@@ -363,9 +362,6 @@
             type: Object,
             notify: true
           }
-        },
-        ready: function() {
-          console.log('asd')
         },
         generalModalAction: function() {
           console.log('Default fn. ran!');
