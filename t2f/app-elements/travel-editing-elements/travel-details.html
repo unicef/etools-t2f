@@ -264,6 +264,7 @@
           <template is="dom-repeat" items="{{data.expenses}}">
             <travel-expense permissions-matrix="[[travelPermissions.expenses]]"
               expense="{{item}}"
+              selected-expenses="[[selectedExpensesType]]"
               structure="[[structure]]">
             </travel-expense>
           </template>
@@ -357,7 +358,22 @@
           type: Boolean,
           value: true,
           computed: '_computeHideCertificationNote(data)'
+        },
+        selectedExpensesType: {
+          type: Array,
+          value: [],
+          computed: '_computeSelectedExpensesType(data.expenses.*)'
         }
+      },
+
+      _computeSelectedExpensesType: function(expensesChanged) {
+        var baseArray = expensesChanged.base;
+        if (baseArray) {
+          return baseArray.map(function(expense) {
+            return expense.type;
+          }) || [];
+        }
+        return [];
       },
 
       _hideOnTANotRequired: function(permissionMatrixHidden, taRequired) {

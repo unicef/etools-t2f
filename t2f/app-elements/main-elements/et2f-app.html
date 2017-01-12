@@ -206,6 +206,11 @@
               return {label: obj.name, value: obj.id};
             });
           },
+          expense_types: function(key) {
+             data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, unique: obj.unique, vendor_number: obj.vendor_number};
+            });
+          },
         };
         var dataKeys = Object.keys(data).sort();
         dataKeys.forEach(function(key) {

@@ -8,6 +8,8 @@
 
 <link rel="import" href="../travel-status-box/travel-status.html">
 
+<link rel="import" href="../../scripts/lodash/lodash.html">
+
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 
@@ -40,7 +42,7 @@
           disabled="[[computedPermission.type.disabled]]"
           hidden$="[[computedPermission.type.hidden]]"
           empty-value
-          options="[[structure.expense_types]]"
+          options="[[expenseTypes]]"
           value="{{expense.type}}"
           placeholder="select"
           required$="[[computedPermission.type.required]]"
@@ -115,6 +117,13 @@
         structure: {
           type: Object,
           value: {}
+        },
+        selectedExpenses: {
+          type: Array,
+        },
+        expenseTypes: {
+          type: Array,
+          computed: '_computeExpenseTypes(structure.expense_types, selectedExpenses)',
         }
       },
 
@@ -124,7 +133,19 @@
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
-      observers: ['_addValidationFunction(expense.*)'],
+      observers: [
+        '_addValidationFunction(expense.*)'
+      ],
+
+      _computeExpenseTypes: function(structure, selectedExpenses) {
+        var self = this;
+        selectedExpenses = selectedExpenses.filter(function(selected) {
+          return selected && selected.unique && self.expense.type ? selected.value !== self.expense.type.value : true;
+        });
+        var result = _.difference(structure, selectedExpenses);
+
+        return result;
+      },
 
       _addValidationFunction: function(changed) {
 
@@ -134,7 +155,6 @@
       },
 
       _validateType: function(self) {
-
         if (!this.computedPermission.type.required) {
           return true;
         }
