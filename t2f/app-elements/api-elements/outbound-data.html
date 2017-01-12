@@ -311,13 +311,7 @@
           data: {
             type: Object,
             notify: true,
-          },
-          structure: {
-            type: Object,
-          },
-          newTravel: {
-            type: Boolean,
-            value: false
+            observer: '_warn'
           },
           travelId: {
             type: String,
@@ -370,7 +364,9 @@
             notify: true
           }
         },
-
+        ready: function() {
+          console.log('asd')
+        },
         generalModalAction: function() {
           console.log('Default fn. ran!');
         },

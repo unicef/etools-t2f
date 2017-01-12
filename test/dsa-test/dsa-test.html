@@ -1,0 +1,59 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>test DSA CALCULATION</title>
+
+  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../bower_components/web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../../t2f/app-elements/api-elements/outbound-data.html">
+  <link rel="import" href="../../t2f/app-elements/field-set-elements/travel-deductions.html">
+
+
+
+  <link rel="import" href="./data/case-1.html">
+
+</head>
+<body>
+
+<test-fixture id="el">
+  <template>
+    <et2f-outbound-data id="api"></et2f-outbound-data>
+    <travel-deductions id="deductions"></travel-deductions>
+  </template>
+</test-fixture>
+
+<script>
+/* global define, suite, setup, fixture, test, caseScenarios, expect */
+  suite('dsa-test', function() {
+
+    var el = null;
+    var deductions = null;
+    var api = null;
+    var data = caseScenarios[0];
+
+    setup(function() {
+      el = fixture('el');
+      deductions = Polymer.dom(el.root).querySelector('#deductions');
+      api = Polymer.dom(el.root).querySelector('#api');
+
+      deductions.itinerary = data.itinerary;
+      deductions.deductions = [];
+      data.deductions = deductions.deductions;
+    });
+
+    test('deduction length is as expected', function() {
+      expect(data.deductions.length).to.equal(13);
+    });
+    test('the api send stuff to the server', function() {
+      api.data = data;
+      api.doRequest({endPoint: 'save'});
+    });
+
+  });
+</script>
+
+</body>
+</html>
