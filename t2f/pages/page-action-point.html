@@ -32,7 +32,11 @@
       </app-header>
 
     </app-header-layout>
-    <show-action-point route="{{route}}" action-point-id="[[actionPointId]]" structure="[[structure]]" permissions="[[et2fPermissions]]"></show-action-point>
+    <show-action-point route="{{route}}"
+      action-point-id="[[actionPointId]]"
+      structure="[[structure]]"
+      et2f-permissions="[[et2fPermissions]]">
+    </show-action-point>
   </template>
 
   <script>
@@ -48,7 +52,7 @@
         route: {
           type: Object,
           notify: true,
-        },
+        }
       }
 
     });

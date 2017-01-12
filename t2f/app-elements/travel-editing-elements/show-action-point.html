@@ -105,9 +105,17 @@
         actionPointUrl: {
           type: String,
           computed: '_computeUrl(actionPointId)',
-        }
+        },
+        et2fPermissions: {
+          type: Object,
+          observer: '_computePermissions'
+        },
       },
       behaviors: [et2fBehaviors.ApiBehavior],
+      _computePermissions: function(globalPermissions) {
+        console.log(globalPermissions)
+        this.set('permissions', globalPermissions.travel);
+      },
       _computeUrl: function(actionPointId) {
         var innerActionPointId = actionPointId ? ('' + actionPointId).replace(/\//g, '') : null;
         if (this.listen && innerActionPointId && innerActionPointId !== '-1') {
