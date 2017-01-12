@@ -138,6 +138,7 @@
         show-export-button
         export-type="list"
         data="[[data]]"
+        export-list="[[exportList]]"
         export-params="[[ajaxParams]]">
       </et2f-header>
 
@@ -344,7 +345,24 @@
         route: {
           type: Object,
           observer: '_routeObserver'
+        },
+        exportList: {
+          type: Array,
+          computed: '_computeExportList(user)'
         }
+      },
+      _computeExportList: function(user) {
+        var exportList = [];
+        var roles = user.t2f.roles;
+        exportList.push({name: 'Travel Activity Export', endpoint: '/api/t2f/travels/export/'});
+        if (roles.indexOf('Finance Focal Point') > -1) {
+          exportList.push({name: 'Finance Export', endpoint: '/api/t2f/travels/finance-export/'});
+          exportList.push({name: 'Travel Admin Export', endpoint: '/api/t2f/travels/travel-admin-export/'});
+
+        } else if (roles.indexOf('Travel Admin') > -1 || roles.indexOf('Travel Focal Point') > -1) {
+          exportList.push({name: 'Travel Admin Export', endpoint: '/api/t2f/travels/travel-admin-export/'});
+        }
+       return exportList;
       },
       _computeFilters: function(structure) {
         return [
