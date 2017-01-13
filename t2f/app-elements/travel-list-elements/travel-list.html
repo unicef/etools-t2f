@@ -682,7 +682,7 @@
           this.set('ajaxParams', backup);
       },
       _routeObserver: function(newValue, oldValue) {
-        if (!oldValue || !newValue) {
+        if (!oldValue || !newValue || !oldValue.path || !newValue.path) {
           return;
         }
         if (newValue.path.indexOf('travel-list') > -1 || !(oldValue.path.indexOf('travel-list'))) {
