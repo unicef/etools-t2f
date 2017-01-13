@@ -92,23 +92,19 @@
           value: {
             'open': {
               'name': 'Save as Open',
-              'status': 'open',
-              'endPoint': 'save-as-open'
+              'status': 'open'
             },
-            'on-going': {
+            'ongoing': {
               'name': 'Save as On-going',
-              'status': 'on-going',
-              'endPoint': 'save-as-on-going'
+              'status': 'ongoing'
             },
             'completed': {
               'name': 'Save as completed',
-              'status': 'completed',
-              'endPoint': 'save-as-completed'
+              'status': 'completed'
             },
             'cancel': {
               'name': 'Cancel',
-              'status': 'cancel',
-              'endPoint': 'cancel'
+              'status': 'cancel'
             }
           }
         },
@@ -117,8 +113,6 @@
         },
         status: {
           type: String,
-          // TODO remove default!!!!
-          value: 'completed'
         },
         hasPermission: {
           type: Boolean,
@@ -145,7 +139,9 @@
       },
 
       _computeActions: function(actList, status) {
-
+        if (!status || !actList) {
+          return;
+        }
         var prim = actList[status];
         prim.name = 'Save';
 
@@ -166,6 +162,7 @@
         var toSendData = JSON.parse(JSON.stringify(this.data));
         delete toSendData._validationFunction;
         toSendData.person_responsible = toSendData.person_responsible.value;
+        toSendData.status = toSendData.status.label.toLowerCase();
 
         this.set('patchBody', toSendData);
         this.$.patchAjax.url = '/api/t2f/action_points/' + this.data.id + '/';

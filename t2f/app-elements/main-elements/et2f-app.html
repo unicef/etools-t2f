@@ -61,7 +61,7 @@
         route="{{route}}"
         detail-loading="{{subLoading}}"
         travel-id="[[subroute.path]]"
-        et2f-permissions="[[et2fPermissions]]"
+        et2f-permissions="[[et2fPermissions.travel]]"
         structure="[[structure]]"></page-edit-travel>
 
       <page-invoices-list name="invoices-list"
@@ -87,7 +87,7 @@
         route="{{route}}"
         detail-loading="{{subLoading}}"
         invoice-id="[[subroute.path]]"
-        et2f-permissions="[[et2fPermissions]]"
+        et2f-permissions="[[et2fPermissions.travel]]"
         structure="[[structure]]"></page-invoice-detail>
 
       <page-not-found name="not-found"></page-not-found>
@@ -267,7 +267,7 @@
           });
         });
         Object.freeze(travelPermission);
-        this.et2fPermissions = travelPermission;
+        this.set('et2fPermissions', permissionMatrix);
       },
       _computeLoading: function(structure, permissions, subLoading) {
 

@@ -55,31 +55,33 @@
     <etools-ajax url="[[actionPointUrl]]"
       on-success="_handleData" loading="{{loading}}"></etools-ajax>
 
-    <et2f-header title="[[actionPoint.action_point_number]]"></et2f-header>
+    <template is="dom-if" if="[[permissions]]" restamp>
 
-    <div class="container layout horizontal">
+      <et2f-header title="[[actionPoint.action_point_number]]"></et2f-header>
 
-      <paper-material class="flex" elevation="1">
+      <div class="container layout horizontal">
+        <paper-material class="flex" elevation="1">
 
-        <div class="card-heading">
-          Action Point Details
-        </div>
+          <div class="card-heading">
+            Action Point Details
+          </div>
+          <action-point
+            view-mode
+            action-points="{{actionPoint}}"
+            structure="{{structure}}"
+            on-navigate-to="_navigateToTravel"
+            permissions-matrix="[[permissions.action_points]]"
+            action-points-permissions="[[actionPointsPermissions]]"
+            user="[[user]]">
 
-        <action-point
-          view-mode
-          action-points="{{actionPoint}}"
-          structure="{{structure}}"
-          on-navigate-to="_navigateToTravel"
-          permissions-matrix="[[permissions.action_points]]"
-          user="[[user]]">
+          </action-point>
+        </paper-material>
 
-        </action-point>
-      </paper-material>
+        <action-point-status data="[[actionPoint]]">
+        </action-point-status>
 
-      <action-point-status status="[[actionPoint.status]]" data="[[actionPoint]]">
-      </action-point-status>
-
-    </div>
+      </div>
+    </template>
   </template>
 
   <script>
@@ -88,11 +90,9 @@
       is: 'show-action-point',
 
       properties: {
-        data: {
+        actionPoint: {
           type: Object,
-          notify: true
         },
-        actionPoint: Object,
         actionPointId: {
           type: String,
         },
@@ -105,9 +105,54 @@
         actionPointUrl: {
           type: String,
           computed: '_computeUrl(actionPointId)',
+        },
+        et2fPermissions: {
+          type: Object,
         }
       },
+      observers: ['_computePermissions(et2fPermissions, user, actionPoint)'],
       behaviors: [et2fBehaviors.ApiBehavior],
+      _computePermissions: function(globalPermissions, user, actionPoint) {
+        if (!actionPoint || !actionPoint.id) {
+          return;
+        }
+        var roles = ['Others'];
+        roles = roles.concat(user.t2f.roles);
+        if (actionPoint.assigned_by.value === user.id) {
+          roles.push('Assigner');
+        }
+        if (actionPoint.person_responsible.value === user.id) {
+          roles.push('PersonResponsible');
+        }
+
+        roles = roles.filter(function(role) {
+          return ['Others', 'Assigner', 'PersonResponsible', 'PME'].indexOf(role) > -1;
+        });
+
+        var permissions = globalPermissions.action_point;
+        var userPermissions = {};
+        var draft = permissions[roles[0]];
+        Object.keys(draft).forEach(function(field) {
+          var item = draft[field];
+          userPermissions[field] = {};
+          Object.keys(item).forEach(function(fieldPermission) {
+            userPermissions[field][fieldPermission] =  draft[field][fieldPermission];
+            roles.forEach(function(role) {
+               userPermissions[field][fieldPermission] =
+               userPermissions[field][fieldPermission]
+               || permissions[role][field][fieldPermission];
+            });
+          });
+
+        });
+        Object.keys(userPermissions).map(function(key) {
+          var perm = userPermissions[key];
+          perm.readOnly = perm.view && !perm.edit ? 'readOnly' : false;
+          perm.required = perm.view && perm.edit;
+        });
+        this.set('actionPointsPermissions', userPermissions);
+        this.set('permissions', globalPermissions.travel);
+      },
       _computeUrl: function(actionPointId) {
         var innerActionPointId = actionPointId ? ('' + actionPointId).replace(/\//g, '') : null;
         if (this.listen && innerActionPointId && innerActionPointId !== '-1') {
@@ -128,8 +173,6 @@
             actionPoint[key] = data[key];
           }
         });
-
-        this.set('actionPoint', {});
         this.set('actionPoint', actionPoint);
       },
       _navigateToTravel: function(e, d) {
