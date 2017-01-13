@@ -71,6 +71,7 @@
           structure="{{structure}}"
           on-navigate-to="_navigateToTravel"
           permissions-matrix="[[permissions.action_points]]"
+          action-point-permissions="[[actionPointsPermissions]]"
           user="[[user]]">
 
         </action-point>
@@ -88,10 +89,6 @@
       is: 'show-action-point',
 
       properties: {
-        data: {
-          type: Object,
-          notify: true
-        },
         actionPoint: Object,
         actionPointId: {
           type: String,
@@ -108,12 +105,22 @@
         },
         et2fPermissions: {
           type: Object,
-          observer: '_computePermissions'
         },
       },
+      observers: ['_computePermissions(et2fPermissions, user, actionPoint)'],
       behaviors: [et2fBehaviors.ApiBehavior],
-      _computePermissions: function(globalPermissions) {
-        console.log(globalPermissions)
+      _computePermissions: function(globalPermissions, user, actionPoint) {
+        if (!actionPoint || !actionPoint.id) {
+          return;
+        }
+        console.log(globalPermissions.action_point);
+        console.log(user, actionPoint);
+        var role =  'Others';
+        role = actionPoint.assigned_by === user.id ?  'Assigner' : role;
+        role = actionPoint.person_responsible.label === user.id ?  'PersonResponsible' : role;
+        console.log(role)
+
+        this.set('actionPointsPermissions', globalPermissions.action_point);
         this.set('permissions', globalPermissions.travel);
       },
       _computeUrl: function(actionPointId) {

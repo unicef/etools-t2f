@@ -35,6 +35,7 @@
     <show-action-point route="{{route}}"
       action-point-id="[[actionPointId]]"
       structure="[[structure]]"
+      user="[[user]]"
       et2f-permissions="[[et2fPermissions]]">
     </show-action-point>
   </template>
@@ -46,7 +47,9 @@
         actionPointId: {
           type: String,
         },
-        et2fPermissions: Object,
+        et2fPermissions: {
+          type: Object,
+        },
         structure: Object,
         user: Object,
         route: {
