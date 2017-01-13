@@ -563,6 +563,7 @@
           }
 
           function doSaveUpdate() {
+            // console.log('DATA before touched:', JSON.stringify(self.data));
             prepareData();
             self.method = 'PATCH';
             self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
