@@ -181,8 +181,7 @@
       properties: {
         status: {
           type: String,
-          reflectToAttribute: true,
-          observer: '_log'
+          computed: '_computeStatus(data)'
         },
         data: {
           type: Object
@@ -204,6 +203,11 @@
           statClass = 'green';
         }
         return statClass;
+      },
+      _computeStatus: function(data) {
+        if (data && data.status) {
+          return data.status.label.toLowerCase();
+        }
       }
 
     });

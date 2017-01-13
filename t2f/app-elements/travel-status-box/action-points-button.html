@@ -113,8 +113,6 @@
         },
         status: {
           type: String,
-          // TODO remove default!!!!
-          // value: 'completed'
         },
         hasPermission: {
           type: Boolean,
@@ -141,7 +139,9 @@
       },
 
       _computeActions: function(actList, status) {
-
+        if (!status || !actList) {
+          return;
+        }
         var prim = actList[status];
         prim.name = 'Save';
 
@@ -162,6 +162,7 @@
         var toSendData = JSON.parse(JSON.stringify(this.data));
         delete toSendData._validationFunction;
         toSendData.person_responsible = toSendData.person_responsible.value;
+        toSendData.status = toSendData.status.label.toLowerCase();
 
         this.set('patchBody', toSendData);
         this.$.patchAjax.url = '/api/t2f/action_points/' + this.data.id + '/';

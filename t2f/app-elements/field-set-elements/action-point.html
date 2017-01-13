@@ -152,8 +152,9 @@
       <div class="layout horizontal viewSpacing">
         <div class="isLink"  on-tap="_navigateToTravel">
           <paper-input label="Trip Reference"
-            class="flex-3 custom-margin readOnly tripReference"
-            disabled
+            class$="flex-3 custom-margin [[actionPointsPermissions.trip_reference_number.readOnly]] tripReference"
+            disabled$="[[!actionPointsPermissions.trip_reference_number.edit]]"
+            hidden$="[[!actionPointsPermissions.trip_reference_number.view]]"
             value="[[actionPoints.trip_reference_number]]"></paper-input>
           </div>
          <div class="flex-9"></div>
@@ -161,33 +162,48 @@
 
       <div class="layout horizontal viewSpacing">
         <paper-input label="Description"
-            class="flex-8 custom-margin readOnly"
-            disabled
+            class$="flex-8 custom-margin [[actionPointsPermissions.description.readOnly]]"
+            hidden$="[[!actionPointsPermissions.description.view]]"
+            disabled$="[[!actionPointsPermissions.description.edit]]"
+            required="[[actionPointsPermissions.description.required]]"
+            starred$="[[actionPointsPermissions.description.required]]"
             value="{{actionPoints.description}}">
         </paper-input>
 
         <date-time-picker-input label="Due Date"
-          inner-class="readOnly"
-          class="flex-4 readOnly"
-          disabled
+          inner-class="[[actionPointsPermissions.due_date.readOnly]]"
+          class$="flex-4 [[actionPointsPermissions.due_date.readOnly]]"
+          hidden$="[[!actionPointsPermissions.due_date.view]]"
+          disabled$="[[!actionPointsPermissions.due_date.edit]]"
+          required="[[actionPointsPermissions.due_date.required]]"
+          starred$="[[actionPointsPermissions.due_date.required]]"
           date="{{actionPoints.due_date}}">
         </date-time-picker-input>
       </div>
 
       <div class="layout horizontal viewSpacing">
-        <paper-input label="Responsible Person"
-          disabled
-          class="flex-4 custom-margin readOnly"
-          value="[[actionPoints.person_responsible.label]]">
-        </paper-input>
+
+        <etools-searchable-multiselection-menu label="Responsible Person"
+            value="{{actionPoints.person_responsible}}"
+            class$="flex-4 [[actionPointsPermissions.person_responsible.readOnly]]"
+            disabled$="[[!actionPointsPermissions.person_responsible.edit]]"
+            hidden$="[[!actionPointsPermissions.person_responsible.view]]"
+            required="[[actionPointsPermissions.person_responsible.required]]"
+            starred$="[[actionPointsPermissions.person_responsible.required]]"
+            options="[[structure.users]]"
+            empty-value
+            placeholder="select">
+        </etools-searchable-multiselection-menu>
 
         <paper-input label="Assigned by"
           class="flex-4 custom-margin readOnly"
           disabled
-          value="asd">
+          value="[[actionPoints.assigned_by.label]]">
         </paper-input>
 
-        <paper-checkbox class="flex-4 custom-margin self-end alignCheckbox"
+        <paper-checkbox class$="flex-4 custom-margin self-end [[actionPointsPermissions.follow_up.readOnly]] alignCheckbox"
+          hidden$="[[!actionPointsPermissions.follow_up.view]]"
+          disabled$="[[!actionPointsPermissions.follow_up.edit]]"
           checked="{{actionPoints.follow_up}}">
           Follow Up
         </paper-checkbox>
@@ -196,7 +212,11 @@
       <div class="layout horizontal viewSpacing">
 
         <paper-textarea label="Actions Taken"
-          class="flex-12 custom-margin"
+          class$="flex-12 custom-margin [[actionPointsPermissions.actions_taken.readOnly]]"
+          hidden$="[[!actionPointsPermissions.actions_taken.view]]"
+          disabled$="[[!actionPointsPermissions.actions_taken.edit]]"
+          required="[[actionPointsPermissions.actions_taken.required]]"
+          starred$="[[actionPointsPermissions.actions_taken.required]]"
           value="{{actionPoints.actions_taken}}">
         </paper-textarea>
       </div>
@@ -204,7 +224,12 @@
       <div class="layout horizontal viewSpacing">
 
         <date-time-picker-input label="Completed Date"
-          class="flex-3"
+          inner-class="[[actionPointsPermissions.completed_at.readOnly]]"
+          hidden$="[[!actionPointsPermissions.completed_at.view]]"
+          disabled$="[[!actionPointsPermissions.completed_at.edit]]"
+          class$="flex-3 [[actionPointsPermissions.completed_at.readOnly]]"
+          required="[[actionPointsPermissions.completed_at.required]]"
+          starred$="[[actionPointsPermissions.completed_at.required]]"
           date="{{actionPoints.completed_at}}">
         </date-time-picker-input>
 
@@ -224,7 +249,6 @@
         },
         actionPoints: {
           type: Object,
-          value: {},
           notify: true
         },
         structure: {
@@ -242,6 +266,9 @@
         actionTakenRequired: {
           type: Boolean,
           computed: '_computeActionTakenRequired(computedPermission.actions_taken.required, actionPoints.*)'
+        },
+        actionPointsPermissions: {
+          type: Object,
         }
       },
       observers: [
@@ -280,7 +307,7 @@
       },
       _addValidationFunction: function(actionPointsChanged) {
         var actionPoints = actionPointsChanged.base;
-        if (!actionPoints._validationFunction) {
+        if (!actionPoints._validationFunction && !this.viewMode) {
           actionPoints._validationFunction = this._validateActionPoint.bind(this);
         }
       },

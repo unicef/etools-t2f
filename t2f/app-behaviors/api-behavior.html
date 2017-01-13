@@ -17,6 +17,11 @@
       }
       return '' + parseFloat(item).toFixed(2);
     },
+    _searchByLabel: function(structureData, value) {
+      return this.structure[structureData].find(function(item) {
+        return item.label.toLowerCase() === value;
+      });
+    },
     _multiFieldConversion: function(subField, fieldName, fieldSet) {
       var self = this;
       if (fieldSet instanceof Array) {
@@ -101,7 +106,8 @@
             due_date: this._convertDate,
             completed_at: this._convertDate,
             person_responsible: 'users',
-            status: 'action_point_status'
+            assigned_by: 'users',
+            status: this._searchByLabel.bind(this, 'action_point_status')
           },
           invoice: {
             currency: 'currencies',
