@@ -32,7 +32,7 @@
     var dom = null;
     var deductions = null;
     var api = null;
-    var data = caseScenarios[0];
+    var data = caseScenarios;
 
     setup(function() {
 
@@ -41,16 +41,15 @@
 
       deductions = dom.querySelector('#deductions');
       api = dom.querySelector('#api');
-
-      deductions.itinerary = data.itinerary;
-      deductions.deductions = [];
-      data.deductions = deductions.deductions;
-      dom.flush();
     });
 
     test('base#1 - it parses injected deduction', function() {
 
-      if (expect(data.deductions.length).to.equal(1)) {
+      deductions.itinerary = data.simple.itinerary;
+      deductions.deductions = [];
+      data.simple.deductions = deductions.deductions;
+
+      if (expect(data.simple.deductions.length).to.equal(1)) {
         console.log('✅');
       } else {
         console.log('💔');
@@ -59,7 +58,11 @@
 
     test('base#2 - the API sends data to the server, and we\'re getting it back', function(done) {
 
-      api.data = JSON.parse(JSON.stringify(data));
+      deductions.itinerary = data.simple.itinerary;
+      deductions.deductions = [];
+      data.simple.deductions = deductions.deductions;
+
+      api.data = JSON.parse(JSON.stringify(data.simple));
 
       api._handlePostSuccess = function(e, data) {
 
@@ -81,7 +84,11 @@
 
     test('case#0 - Simple usecase', function(done) {
 
-      api.data = JSON.parse(JSON.stringify(data));
+      deductions.itinerary = data.simple.itinerary;
+      deductions.deductions = [];
+      data.simple.deductions = deductions.deductions;
+
+      api.data = JSON.parse(JSON.stringify(data.simple));
 
       api._handlePostSuccess = function(e, data) {
 
@@ -98,7 +105,29 @@
       api.doRequest({endPoint: 'save'});
     });
 
-    test('case#1 - Over 60 days', function() {});
+    test('case#1 - Over 60 days', function(done) {
+
+      deductions.itinerary = data.longerThan60.itinerary;
+      deductions.deductions = [];
+      data.longerThan60.deductions = deductions.deductions;
+
+      api.data = JSON.parse(JSON.stringify(data.longerThan60));
+
+      api._handlePostSuccess = function(e, data) {
+
+        var gotBackDsa = data.cost_summary.dsa_total;
+
+        console.info('Total DSA of 92 day long simple trip (back and forth, no deduction) should be 18.000 + 6200 + 80 = 24.280$');
+        console.info('24280.00', '<= should be');
+        console.info(gotBackDsa, '<= is');
+
+        if (expect(gotBackDsa).to.equal('24280.00')) {console.log('✅')}
+        done();
+      };
+
+      api.doRequest({endPoint: 'save'});
+    });
+
     test('case#2 - Same day travel', function() {});
     test('case#3 - Less than 8 hours travel', function() {});
     test('case#4 - Overnight travel', function() {});
