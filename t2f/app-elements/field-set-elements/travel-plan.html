@@ -4,6 +4,7 @@
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
@@ -51,6 +52,8 @@
         color: var(--gray-mid);
         font-size: 16px;
         margin-bottom: 24px;
+        max-width: 500px;
+        margin: auto;
       }
 
       .dialog-confirm-button {
@@ -79,19 +82,41 @@
       </paper-button>
     </paper-dialog>
 
+    <paper-dialog id="info-modal" with-backdrop>
+
+      <div class="dialog-heading">Caution</div>
+      <div class="dialog-intro-text">
+      Your profile does not contain a vendor number to process a TA.
+      <br>
+      You can only plan and report a trip until this is updated.
+      <br>
+      Please contact your Travel Admin to rectify this issue.
+      <br>
+      TAs can only be processed if the VISION HR Master profile has your profile.</div>
+
+      <paper-button
+        class="dialog-confirm-button"
+        dialog-dismiss>
+        I understand
+      </paper-button>
+    </paper-dialog>
+
     <form
       is="iron-form"
       id="travel_plan_form"
       class="layout vertical flex">
 
       <div class="layout horizontal">
-
-        <paper-checkbox class$="flex-3 custom-margin [[computedPermission.ta_required.readOnly]]"
-          hidden$="[[computedPermission.ta_required.hidden]]"
-          checked="{{baseDetails.ta_required}}"
-          disabled="[[taRequiredDisabled]]"
-          >TA Required
-        </paper-checkbox>
+        <div class="flex-3">
+          <paper-checkbox class$="custom-margin [[computedPermission.ta_required.readOnly]]"
+            hidden$="[[computedPermission.ta_required.hidden]]"
+            checked="{{baseDetails.ta_required}}"
+            disabled="[[taRequiredDisabled]]"
+            >TA Required
+          </paper-checkbox>
+          <paper-tooltip offset="0" hidden$="[[taEligible]]">You are not eligible for submitting a TA</paper-tooltip>
+          <paper-tooltip offset="0" hidden$="[[!baseDetails.international_travel]]">An international Trips do not require a TA</paper-tooltip>
+        </div>
 
         <paper-checkbox class$="flex-3 custom-margin [[computedPermission.international_travel.readOnly]]"
           disabled="[[computedPermission.international_travel.disabled]]"
@@ -281,7 +306,7 @@
         taRequiredDisabled: {
           type: Boolean,
           computed: '_computeDisableTaRequired(computedPermission.ta_required.disabled,' +
-            ' baseDetails.international_travel)'
+            ' baseDetails.international_travel, taEligible)'
         },
         modeInputTouched: {
           type: Boolean,
@@ -295,6 +320,10 @@
         user: {
           type: Object,
         },
+        taEligible: {
+          type: Boolean,
+          computed: '_computeTaEligible(user, baseDetails.traveler, baseDetails.international_travel)',
+        }
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
@@ -302,6 +331,18 @@
       observers: [
         '_valuesObserver(baseDetails.*)'
       ],
+
+      _computeTaEligible: function(user, traveler, international) {
+        var vendorNumber = user.profile.vendor_number;
+        var userId = user.id;
+        var travelerId = traveler.value;
+        if (!vendorNumber && userId === travelerId && !international) {
+          this.$['info-modal'].open();
+          this.set('baseDetails.ta_required', false);
+          return false;
+        }
+        return true;
+      },
 
       _hideOnTANotRequired: function(permissionMatrixHidden, taRequired) {
         return !taRequired || permissionMatrixHidden;
@@ -349,10 +390,9 @@
         return value !== false;
       },
 
-      _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel) {
-        return taRequiredDisabled || internationalTravel;
+      _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel, taEligible) {
+        return taRequiredDisabled || internationalTravel || !taEligible;
       },
-
       _valuesObserver: function(changed) {
         this[changed.path] = changed.value;
       },
@@ -376,7 +416,6 @@
       },
 
       computeUsersButMe: function(users, user) {
-
         // Filters out logged in user
         return users.filter(function(actUser) {
           return actUser.value !== user.value;
