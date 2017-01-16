@@ -18,7 +18,10 @@
       is: 'et2f-permissions-data',
 
       properties: {
-        loading: Boolean,
+        loading: {
+          type: Boolean,
+          notify: true
+        },
         et2fPermissions: {
           type: Object,
           notify: true

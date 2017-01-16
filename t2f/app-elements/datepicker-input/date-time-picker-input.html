@@ -91,6 +91,7 @@
          Please select a date-time less or equal than: [[prettyMaxDate]]
       </div>
       <div class="buttons">
+        <paper-button hidden$="[[!clearable]]" on-tap="_clearDate" dialog-dismiss>Clear</paper-button>
         <paper-button dialog-dismiss>Cancel</paper-button>
         <paper-button disabled="[[dialogButtonDisabled]]" autofocus dialog-confirm>OK</paper-button>
       </div>
@@ -148,6 +149,10 @@
         disabled: {
           type: Boolean,
           value: false
+        },
+        clearable: {
+          type: Boolean,
+          value: false,
         },
         minDate: {
           type: Date,
@@ -285,6 +290,9 @@
           date.second('01');
           this.set('date', date.toDate());
         }
+      },
+      _clearDate: function(e) {
+        this.set('date', undefined);
       }
 
     });

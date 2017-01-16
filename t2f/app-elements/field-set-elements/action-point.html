@@ -127,6 +127,7 @@
             required="[[completedDateRequired]]"
             starred$="[[completedDateRequired]]"
             placeholder="select"
+            clearable$="[[!completedDateRequired]]"
             date="{{actionPoints.completed_at}}">
           </date-time-picker-input>
         </div>
@@ -261,6 +262,7 @@
         },
         completedDateRequired: {
           type: Boolean,
+          value: false,
           computed: '_computeCompletedDateRequired(computedPermission.completed_at.required, actionPoints.status)'
         },
         actionTakenRequired: {
