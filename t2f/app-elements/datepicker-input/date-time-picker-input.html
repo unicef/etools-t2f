@@ -178,7 +178,7 @@
         showMaxDateWarning: {
           type: Boolean,
           value: false,
-          computed: '_computeShowMaxDateWarning(maxDate, internalDate, hour, minute)'
+          computed: '_computeShowMaxDateWarning(calculatedMaxDate, internalDate, hour, minute)'
         },
         dialogButtonDisabled: {
           type: Boolean,
@@ -222,16 +222,16 @@
       _calculateMinDateCalculated: function(date) {
         if (date) {
           date = moment(new Date(date));
-          date.subtract(1, 'days');
           this.set('prettyMinDate', date.format(this.format));
+          date.subtract(1, 'days');
           return date.toDate();
         }
       },
       _calculateMaxDateCalculated: function(date) {
         if (date) {
           date = moment(new Date(date));
-          date.add(1, 'days');
           this.set('prettyMaxDate', date.format(this.format));
+          date.add(1, 'days');
           return date.toDate();
         }
       },
