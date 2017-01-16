@@ -1,6 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 
@@ -90,6 +91,7 @@
          Please select a date-time less or equal than: [[prettyMaxDate]]
       </div>
       <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
         <paper-button disabled="[[dialogButtonDisabled]]" autofocus dialog-confirm>OK</paper-button>
       </div>
     </paper-dialog>
@@ -270,13 +272,15 @@
           this.set('date', undefined);
         }
       },
-      _setNewDate: function() {
-        var date = moment(this.internalDate);
-        if (this.timePicker) {
-          date.hour(this.hour);
-          date.minute(this.minute);
+      _setNewDate: function(event) {
+        if(event.detail.confirmed){
+          var date = moment(this.internalDate);
+          if (this.timePicker) {
+            date.hour(this.hour);
+            date.minute(this.minute);
+          }
+          this.set('date', date.toDate());
         }
-        this.set('date', date.toDate());
       }
 
     });
