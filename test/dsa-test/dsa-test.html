@@ -31,8 +31,10 @@
     var el = null;
     var dom = null;
     var deductions = null;
+    var deductionsItems = null;
     var api = null;
     var data = caseScenarios;
+    var deDom = null;
 
     setup(function() {
 
@@ -40,7 +42,12 @@
       dom = Polymer.dom(el.root);
 
       deductions = dom.querySelector('#deductions');
+      deductionsItems = function() {
+        return deductions.$.deductions_list.items;
+      };
+
       api = dom.querySelector('#api');
+      dom.flush();
     });
 
     test('base#1 - it parses injected deduction', function() {
@@ -77,12 +84,7 @@
       api.doRequest({endPoint: 'save'});
     });
 
-    test('base#3 - it generates deductions correctly', function() {
-
-      console.log('🚧');
-    });
-
-    test('case#0 - Simple usecase', function(done) {
+    test('dsa#1 - Simple usecase (two days, there and back should be 140%, so 420$)', function(done) {
 
       deductions.itinerary = data.simple.itinerary;
       deductions.deductions = [];
@@ -93,11 +95,6 @@
       api._handlePostSuccess = function(e, data) {
 
         var gotBackDsa = data.cost_summary.dsa_total;
-
-        console.info('Total DSA of two day simple trip (back and forth, no deduction) should be 140% of base DSA(300$)');
-        console.info('420.00', '<= should be');
-        console.info(gotBackDsa, '<= is');
-
         if (expect(gotBackDsa).to.equal('420.00')) {console.log('✅')}
         done();
       };
@@ -105,7 +102,7 @@
       api.doRequest({endPoint: 'save'});
     });
 
-    test('case#1 - Over 60 days', function(done) {
+    test('dsa#2 - Over 60 days, (92 day long simple trip (back and forth, no deduction) should be 18.000 + 6200 + 80 = 24.280$)', function(done) {
 
       deductions.itinerary = data.longerThan60.itinerary;
       deductions.deductions = [];
@@ -116,11 +113,6 @@
       api._handlePostSuccess = function(e, data) {
 
         var gotBackDsa = data.cost_summary.dsa_total;
-
-        console.info('Total DSA of 92 day long simple trip (back and forth, no deduction) should be 18.000 + 6200 + 80 = 24.280$');
-        console.info('24280.00', '<= should be');
-        console.info(gotBackDsa, '<= is');
-
         if (expect(gotBackDsa).to.equal('24280.00')) {console.log('✅')}
         done();
       };
@@ -128,7 +120,7 @@
       api.doRequest({endPoint: 'save'});
     });
 
-    test('case#2 - Same day travel, 8- hrs', function(done) {
+    test('dsa#2 - Same day travel, 8- hrs, (expected: 0$)', function(done) {
 
       deductions.itinerary = data.sameDay.itinerary;
       deductions.deductions = [];
@@ -139,11 +131,6 @@
       api._handlePostSuccess = function(e, data) {
 
         var gotBackDsa = data.cost_summary.dsa_total;
-
-        console.info('Total DSA of less than 8 hours trip (back and forth, no deduction) should be 0$');
-        console.info('0.00', '<= should be');
-        console.info(gotBackDsa, '<= is');
-
         if (expect(gotBackDsa).to.equal('0.00')) {console.log('✅')}
         done();
       };
@@ -151,7 +138,7 @@
       api.doRequest({endPoint: 'save'});
     });
 
-    test('case#3 - Same day travel, 8+ hrs', function(done) {
+    test('dsa#3 - Same day travel (8+ hours trip, back and forth, no deduction: should be 40% * 300 = 120$)', function(done) {
 
       deductions.itinerary = data.sameDayLonger.itinerary;
       deductions.deductions = [];
@@ -162,29 +149,83 @@
       api._handlePostSuccess = function(e, data) {
 
         var gotBackDsa = data.cost_summary.dsa_total;
-
-        console.info('Total DSA of more than 8 hours trip (back and forth, no deduction) should be 40% * 300 = 120$$');
-        console.info('120.00', '<= should be');
-        console.info(gotBackDsa, '<= is');
-
-        if (expect(gotBackDsa).to.equal('0.00')) {console.log('✅')}
+        if (expect(gotBackDsa).to.equal('120.00')) {console.log('✅')}
         done();
       };
 
       api.doRequest({endPoint: 'save'});
     });
 
-    test('case#4 - Overnight travel', function() {});
+    test('deduction#1 - Overnight travel', function() {
 
-    test('case#5 - No DSA checked', function() {});
-    test('case#6 - Dinner, lunch, breakfast', function() {});
-    test('case#7 - Multiple DSAs', function() {});
-    test('case#8 - Currency issues?', function() {});
+      console.log('🚧');
+    });
 
-    test('case#7 - Really complex calculation A', function() {});
-    test('case#8 - Really complex calculation B', function() {});
-    test('case#9 - Really complex calculation C', function() {});
+    test('deduction#2 - No DSA as deduction checked on the first day of case#1, expected baseDSA: 420$, expected deductions: 300$', function(done) {
 
+      deductions.itinerary = data.simple.itinerary;
+      deductions.deductions = [];
+      data.simple.deductions = deductions.deductions;
+
+      // Set no DSA for first day
+      deductionsItems()[0].no_dsa = true;
+
+      api.data = JSON.parse(JSON.stringify(data.simple));
+
+      api._handlePostSuccess = function(e, data) {
+
+        var gotBackDsa = data.cost_summary.dsa_total;
+        var gotDeductions = data.cost_summary.deductions_total;
+
+        if (
+          expect(gotBackDsa).to.equal('420.00') &&
+          expect(gotDeductions).to.equal('300.00')
+        ) {
+          console.log('✅')
+        }
+        done();
+      };
+
+      api.doRequest({endPoint: 'save'});
+    });
+
+    test('deduction#3 - Dinner, lunch, breakfast, accomodation (-80% deduction of first day, only 40% DSA for second(last) day, expected DSA: (300+120=) 420$, expected deductions: 240$)', function(done) {
+
+      deductions.itinerary = data.simple.itinerary;
+      deductions.deductions = [];
+      data.simple.deductions = deductions.deductions;
+
+      // Set deductions
+      deductionsItems()[0].accomodation = true;
+      deductionsItems()[0].breakfast = true;
+      deductionsItems()[0].dinner = true;
+      deductionsItems()[0].lunch = true;
+
+      api.data = JSON.parse(JSON.stringify(data.simple));
+
+      api._handlePostSuccess = function(e, data) {
+
+        var gotBackDsa = data.cost_summary.dsa_total;
+        var gotDeductions = data.cost_summary.deductions_total;
+
+        if (
+          expect(gotBackDsa).to.equal('420.00') &&
+          expect(gotDeductions).to.equal('240.00')
+        ) {
+          console.log('✅');
+        }
+        done();
+      };
+
+      api.doRequest({endPoint: 'save'});
+    });
+
+    test('deduction#4 - Multiple DSAs', function() {});
+    test('deduction#5 - Currency issues?', function() {});
+
+    test('complex#1 - Really complex calculation A', function() {});
+    test('complex#2 - Really complex calculation B', function() {});
+    test('complex#3 - Really complex calculation C', function() {});
   });
 </script>
 
