@@ -51,6 +51,8 @@
         color: var(--gray-mid);
         font-size: 16px;
         margin-bottom: 24px;
+        max-width: 500px;
+        margin: auto;
       }
 
       .dialog-confirm-button {
@@ -76,6 +78,25 @@
         class="dialog-confirm-button"
         on-click="_closeDialog">
         Cancel
+      </paper-button>
+    </paper-dialog>
+
+    <paper-dialog id="info-modal" with-backdrop>
+
+      <div class="dialog-heading">Caution</div>
+      <div class="dialog-intro-text">
+      Your profile does not contain a vendor number to process a TA.
+      <br>
+      You can only plan and report a trip until this is updated.
+      <br>
+      Please contact your Travel Admin to rectify this issue.
+      <br>
+      TAs can only be processed if the VISION HR Master profile has your profile.</div>
+
+      <paper-button
+        class="dialog-confirm-button"
+        dialog-dismiss>
+        I understand
       </paper-button>
     </paper-dialog>
 
@@ -281,7 +302,7 @@
         taRequiredDisabled: {
           type: Boolean,
           computed: '_computeDisableTaRequired(computedPermission.ta_required.disabled,' +
-            ' baseDetails.international_travel)'
+            ' baseDetails.international_travel, taEligible)'
         },
         modeInputTouched: {
           type: Boolean,
@@ -295,6 +316,10 @@
         user: {
           type: Object,
         },
+        taEligible: {
+          type: Boolean,
+          computed: '_computeTaEligible(user, baseDetails.traveler)',
+        }
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
@@ -302,6 +327,18 @@
       observers: [
         '_valuesObserver(baseDetails.*)'
       ],
+
+      _computeTaEligible: function(user, traveler) {
+        var vendorNumber = user.profile.vendor_number;
+        var userId = user.id;
+        var travelerId = traveler.value;
+        if (!vendorNumber && userId === travelerId) {
+          this.$['info-modal'].open();
+          this.set('baseDetails.ta_required', false);
+          return false;
+        }
+        return true;
+      },
 
       _hideOnTANotRequired: function(permissionMatrixHidden, taRequired) {
         return !taRequired || permissionMatrixHidden;
@@ -349,10 +386,9 @@
         return value !== false;
       },
 
-      _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel) {
-        return taRequiredDisabled || internationalTravel;
+      _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel, taEligible) {
+        return taRequiredDisabled || internationalTravel || !taEligible;
       },
-
       _valuesObserver: function(changed) {
         this[changed.path] = changed.value;
       },
@@ -376,7 +412,6 @@
       },
 
       computeUsersButMe: function(users, user) {
-
         // Filters out logged in user
         return users.filter(function(actUser) {
           return actUser.value !== user.value;
