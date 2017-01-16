@@ -128,9 +128,54 @@
       api.doRequest({endPoint: 'save'});
     });
 
-    test('case#2 - Same day travel', function() {});
-    test('case#3 - Less than 8 hours travel', function() {});
+    test('case#2 - Same day travel, 8- hrs', function(done) {
+
+      deductions.itinerary = data.sameDay.itinerary;
+      deductions.deductions = [];
+      data.sameDay.deductions = deductions.deductions;
+
+      api.data = JSON.parse(JSON.stringify(data.sameDay));
+
+      api._handlePostSuccess = function(e, data) {
+
+        var gotBackDsa = data.cost_summary.dsa_total;
+
+        console.info('Total DSA of less than 8 hours trip (back and forth, no deduction) should be 0$');
+        console.info('0.00', '<= should be');
+        console.info(gotBackDsa, '<= is');
+
+        if (expect(gotBackDsa).to.equal('0.00')) {console.log('✅')}
+        done();
+      };
+
+      api.doRequest({endPoint: 'save'});
+    });
+
+    test('case#3 - Same day travel, 8+ hrs', function(done) {
+
+      deductions.itinerary = data.sameDayLonger.itinerary;
+      deductions.deductions = [];
+      data.sameDayLonger.deductions = deductions.deductions;
+
+      api.data = JSON.parse(JSON.stringify(data.sameDayLonger));
+
+      api._handlePostSuccess = function(e, data) {
+
+        var gotBackDsa = data.cost_summary.dsa_total;
+
+        console.info('Total DSA of more than 8 hours trip (back and forth, no deduction) should be 40% * 300 = 120$$');
+        console.info('120.00', '<= should be');
+        console.info(gotBackDsa, '<= is');
+
+        if (expect(gotBackDsa).to.equal('0.00')) {console.log('✅')}
+        done();
+      };
+
+      api.doRequest({endPoint: 'save'});
+    });
+
     test('case#4 - Overnight travel', function() {});
+
     test('case#5 - No DSA checked', function() {});
     test('case#6 - Dinner, lunch, breakfast', function() {});
     test('case#7 - Multiple DSAs', function() {});
