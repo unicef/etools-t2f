@@ -40,7 +40,7 @@ module.exports = {
     'logPrefix': 'BS',
     'logConnections': false,
     'logFileChanges': true,
-    'logSnippet': true,
+    'logSnippet': false,
     'rewriteRules': [],
     'open': 'local',
     'browser': 'default',
