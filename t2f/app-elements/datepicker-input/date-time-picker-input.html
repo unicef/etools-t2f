@@ -278,7 +278,11 @@
           if (this.timePicker) {
             date.hour(this.hour);
             date.minute(this.minute);
+          } else {
+            date.hour('00');
+            date.minute('00');
           }
+          date.second('01');
           this.set('date', date.toDate());
         }
       }

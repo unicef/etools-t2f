@@ -6,6 +6,8 @@
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../app-behaviors/api-behavior.html">
+<link rel="import" href="../api-elements/structure-data.html">
+<link rel="import" href="../api-elements/permissions-data.html">
 
 
 <dom-module id="et2f-app">
@@ -20,18 +22,13 @@
 
     </style>
 
+    <et2f-structure-data loading="{{structureLoading}}"
+    structure="{{structure}}">
+    </et2f-structure-data>
 
-    <etools-ajax endpoint="[[structureEndpoint]]"
-      on-success="_handleStructure"
-      loading="{{structureLoading}}"
-      on-unauthorized="_redirectToLogin"
-      on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[permissionsEndpoint]]"
-      on-success="_handlePermissions" loading="{{permissionsLoading}}"
-      ></etools-ajax>
-
-
+    <et2f-permissions-data loading="{{permissionsLoading}}"
+      et2f-permissions="{{et2fPermissions}}">
+    </et2f-permissions-data>
 
     <iron-pages id="pages"
       selected="[[page]]"
@@ -139,138 +136,9 @@
         subLoading: {
           type: Boolean,
           value: false
-        },
-        structureEndpoint: {
-          type: String,
-          value: etoolsAppConfig.endpoints.et2fStaticData
-        },
-        permissionsEndpoint: {
-          type: String,
-          value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
         }
-      },
-      _redirectToLogin: function() {
-        window.location.href = '/login/';
-      },
-      _handleStructure: function(event, data) {
-
-        function fillDependenceis(child, parent, parentKey) {
-          data[child].forEach(function(childItem) {
-            data[parent].forEach(function(parentItem) {
-              if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
-                parentItem[child] = [];
-              }
-              var parentId = parentItem.id || parentItem.value;
-              var childId = childItem.id || childItem.value;
-              if (parentId === childItem[parentKey]) {
-                parentItem[child].push({
-                    label: childItem.name,
-                    value: childId
-                });
-              }
-            });
-          });
-        }
-
-        var parsingFunctions = {
-          partner: function(key) {
-             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, partnerships: obj.partnerships};
-            });
-          },
-          partnerships: function(key) {
-            fillDependenceis(key, 'partners', 'partner');
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id};
-            });
-          },
-          currencies: function(key) {
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, short: obj.iso_4217};
-            });
-          },
-          wbs: function(key) {
-             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, grants: obj.grants};
-            });
-          },
-          grants: function(key) {
-            fillDependenceis(key, 'wbs', 'wbs');
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, funds: obj.funds};
-            });
-          },
-          funds: function(key) {
-            fillDependenceis('funds', 'grants', 'grant');
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id};
-            });
-          },
-          expense_types: function(key) {
-             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, unique: obj.unique, vendor_number: obj.vendor_number};
-            });
-          },
-        };
-        var dataKeys = Object.keys(data).sort();
-        dataKeys.forEach(function(key) {
-          var parsingFunction = parsingFunctions[key];
-          if (parsingFunction) {
-            parsingFunction(key);
-          } else {
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name || obj.full_name, value: obj.id};
-            });
-          }
-
-        });
-        data.action_point_status = [
-          {label: 'Open', value: 0},
-          {label: 'On-going', value: 1},
-          {label: 'Completed', value: 2},
-          {label: 'Cancelled', value: 3}
-        ];
-        Object.freeze(data);
-        this.set('structure', data);
-      },
-      _handlePermissions: function(e, permissionMatrix) {
-        var travelPermission = permissionMatrix.travel;
-
-        var nonBaseKeys = [
-          'deductions',
-          'itinerary',
-          'activities',
-          'cost_assignments',
-          'expenses',
-          'clearances',
-          'cost_summary',
-          'report',
-          'attachments',
-          'action_points'
-        ];
-        Object.keys(travelPermission).forEach(function(role) {
-          if (!travelPermission[role]) {
-            return;
-          }
-          Object.keys(travelPermission[role]).forEach(function(status) {
-            if (!travelPermission[role][status]) {
-              return;
-            }
-            var currentKeys = Object.keys(travelPermission[role][status]);
-            travelPermission[role][status].baseDetails = {};
-            currentKeys.forEach(function(key) {
-              if (nonBaseKeys.indexOf(key) === -1) {
-                travelPermission[role][status].baseDetails[key] = travelPermission[role][status][key];
-                delete travelPermission[role][status][key];
-              }
-            });
-          });
-        });
-        Object.freeze(travelPermission);
-        this.set('et2fPermissions', permissionMatrix);
       },
       _computeLoading: function(structure, permissions, subLoading) {
-
         return structure || permissions || subLoading;
       }
 
