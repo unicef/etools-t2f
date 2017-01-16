@@ -81,7 +81,7 @@
       //document.head.appendChild(base);
 
       // Load pre-caching Service Worker
-      if ('serviceWorker' in navigator) {
+      if ('serviceWorker' in navigator && false) {
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('service-worker.js');
         });

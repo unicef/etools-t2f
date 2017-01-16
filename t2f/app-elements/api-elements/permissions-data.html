@@ -1,0 +1,72 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../app-config/etools-app-config.html">
+
+
+<dom-module id="et2f-permissions-data">
+  <template>
+     <etools-ajax endpoint="[[permissionsEndpoint]]"
+        on-success="_handlePermissions"
+        loading="{{loading}}">
+      </etools-ajax>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'et2f-permissions-data',
+
+      properties: {
+        loading: Boolean,
+        et2fPermissions: {
+          type: Object,
+          notify: true
+        },
+        permissionsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
+        }
+      },
+       _handlePermissions: function(e, permissionMatrix) {
+        var travelPermission = permissionMatrix.travel;
+
+        var nonBaseKeys = [
+          'deductions',
+          'itinerary',
+          'activities',
+          'cost_assignments',
+          'expenses',
+          'clearances',
+          'cost_summary',
+          'report',
+          'attachments',
+          'action_points'
+        ];
+        Object.keys(travelPermission).forEach(function(role) {
+          if (!travelPermission[role]) {
+            return;
+          }
+          Object.keys(travelPermission[role]).forEach(function(status) {
+            if (!travelPermission[role][status]) {
+              return;
+            }
+            var currentKeys = Object.keys(travelPermission[role][status]);
+            travelPermission[role][status].baseDetails = {};
+            currentKeys.forEach(function(key) {
+              if (nonBaseKeys.indexOf(key) === -1) {
+                travelPermission[role][status].baseDetails[key] = travelPermission[role][status][key];
+                delete travelPermission[role][status][key];
+              }
+            });
+          });
+        });
+        Object.freeze(permissionMatrix);
+        this.set('et2fPermissions', permissionMatrix);
+      },
+      _redirectToLogin: function() {
+        window.location.href = '/login/';
+      },
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,172 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../app-config/etools-app-config.html">
+
+
+<dom-module id="et2f-structure-data">
+  <template>
+    <etools-ajax endpoint="[[staticDataEndpoint]]"
+      on-success="_handleStaticData"
+      loading="{{staticDataLoading}}"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      ></etools-ajax>
+    <etools-ajax endpoint="[[sectionsEndpoint]]"
+      on-success="_handleSections"
+      loading="{{sectionsLoading}}"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      ></etools-ajax>
+    <etools-ajax endpoint="[[officesEndpoint]]"
+      on-success="_handleOffices"
+      loading="{{officesLoading}}"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      ></etools-ajax>
+
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'et2f-structure-data',
+
+      properties: {
+        staticDataLoading: Boolean,
+        sectionsLoading: Boolean,
+        officesLoading: Boolean,
+        structure: {
+          type: Object,
+          notify: true,
+          computed: '_generateStructure(staticData, sectionsData, officesData)'
+        },
+        staticData: {
+          type: Object,
+        },
+        sectionData: {
+          type: Object
+        },
+        officesData: {
+          type: Object
+        },
+        loading: {
+          type: Boolean,
+          notify: true,
+          computed: '_computeLoading(staticDataLoading, sectionsLoading, officesLoading)'
+        },
+        staticDataEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fStaticData
+        },
+        sectionsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.sections
+        },
+        officesEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.offices
+        }
+      },
+      _computeLoading: function(structure, sections, offices) {
+        return structure || sections || offices;
+      },
+      _redirectToLogin: function() {
+        window.location.href = '/login/';
+      },
+      _handleStaticData: function(e, data) {
+        this.set('staticData', data);
+      },
+      _handleSections: function(e, data) {
+        this.set('sectionsData', data);
+      },
+      _handleOffices: function(e, data) {
+        this.set('officesData', data);
+      },
+      _generateStructure: function(staticData, sectionsData, officesData) {
+        var data = staticData;
+        data.sections = sectionsData;
+        data.offices = officesData;
+
+        function fillDependenceis(child, parent, parentKey) {
+          data[child].forEach(function(childItem) {
+            data[parent].forEach(function(parentItem) {
+              if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
+                parentItem[child] = [];
+              }
+              var parentId = parentItem.id || parentItem.value;
+              var childId = childItem.id || childItem.value;
+              if (parentId === childItem[parentKey]) {
+                parentItem[child].push({
+                    label: childItem.name,
+                    value: childId
+                });
+              }
+            });
+          });
+        }
+
+        var parsingFunctions = {
+          partner: function(key) {
+             data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, partnerships: obj.partnerships};
+            });
+          },
+          partnerships: function(key) {
+            fillDependenceis(key, 'partners', 'partner');
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id};
+            });
+          },
+          currencies: function(key) {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, short: obj.iso_4217};
+            });
+          },
+          wbs: function(key) {
+             data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, grants: obj.grants};
+            });
+          },
+          grants: function(key) {
+            fillDependenceis(key, 'wbs', 'wbs');
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, funds: obj.funds};
+            });
+          },
+          funds: function(key) {
+            fillDependenceis('funds', 'grants', 'grant');
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id};
+            });
+          },
+          expense_types: function(key) {
+             data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, unique: obj.unique, vendor_number: obj.vendor_number};
+            });
+          },
+        };
+        var dataKeys = Object.keys(data).sort();
+        dataKeys.forEach(function(key) {
+          var parsingFunction = parsingFunctions[key];
+          if (parsingFunction) {
+            parsingFunction(key);
+          } else {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name || obj.full_name, value: obj.id};
+            });
+          }
+
+        });
+        data.action_point_status = [
+          {label: 'Open', value: 0},
+          {label: 'On-going', value: 1},
+          {label: 'Completed', value: 2},
+          {label: 'Cancelled', value: 3}
+        ];
+        Object.freeze(data);
+        return data;
+      },
+    });
+  </script>
+</dom-module>
