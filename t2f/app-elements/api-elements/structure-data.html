@@ -10,18 +10,21 @@
       loading="{{staticDataLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
       ></etools-ajax>
     <etools-ajax endpoint="[[sectionsEndpoint]]"
       on-success="_handleSections"
       loading="{{sectionsLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
       ></etools-ajax>
     <etools-ajax endpoint="[[officesEndpoint]]"
       on-success="_handleOffices"
       loading="{{officesLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
       ></etools-ajax>
 
 
@@ -75,18 +78,31 @@
         window.location.href = '/login/';
       },
       _handleStaticData: function(e, data) {
+        if (!data.parsed) {
+          data = this._parseData(data);
+        }
         this.set('staticData', data);
       },
       _handleSections: function(e, data) {
+        if (!data.parsed) {
+          data = this._parseData(data);
+        }
         this.set('sectionsData', data);
       },
       _handleOffices: function(e, data) {
+        if (!data.parsed) {
+          data = this._parseData(data);
+        }
         this.set('officesData', data);
       },
-      _generateStructure: function(staticData, sectionsData, officesData) {
-        var data = staticData;
-        data.sections = sectionsData;
-        data.offices = officesData;
+      _generateStructure: function(static, sections, offices) {
+          var data = static;
+          data.sections = sections;
+          data.offices = offices;
+          Object.freeze(data);
+          return data;
+      },
+      _parseData: function(data) {
         function fillDependenceis(child, parent, parentKey) {
           data[child].forEach(function(childItem) {
             data[parent].forEach(function(parentItem) {
@@ -151,9 +167,14 @@
           if (parsingFunction) {
             parsingFunction(key);
           } else {
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name || obj.full_name, value: parseInt(obj.id, 10)};
-            });
+            var item = data[key];
+            if (item instanceof Array) {
+              data[key] = item.map(function(obj) {
+                return {label: obj.name || obj.full_name, value: parseInt(obj.id, 10)};
+              });
+            } else {
+              data[key] = {label: item.name || item.full_name, value: parseInt(item.id, 10)};
+            }
           }
 
         });
@@ -163,7 +184,7 @@
           {label: 'Completed', value: 2},
           {label: 'Cancelled', value: 3}
         ];
-        Object.freeze(data);
+        data.parsed = true;
         return data;
       },
     });

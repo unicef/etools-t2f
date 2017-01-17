@@ -7,7 +7,8 @@
   <template>
      <etools-ajax endpoint="[[permissionsEndpoint]]"
         on-success="_handlePermissions"
-        loading="{{loading}}">
+        loading="{{loading}}"
+        caching-storage="dexie">
       </etools-ajax>
 
   </template>
@@ -31,7 +32,13 @@
           value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
         }
       },
-       _handlePermissions: function(e, permissionMatrix) {
+      _handlePermissions: function(e, data) {
+        if (!data.parsed) {
+          data = this._parsePermissions(data);
+        }
+        this.set('et2fPermissions', data);
+      },
+       _parsePermissions: function(permissionMatrix) {
         var travelPermission = permissionMatrix.travel;
 
         var nonBaseKeys = [
@@ -64,8 +71,9 @@
             });
           });
         });
+        permissionMatrix.parsed = true;
         Object.freeze(permissionMatrix);
-        this.set('et2fPermissions', permissionMatrix);
+        return permissionMatrix;
       },
       _redirectToLogin: function() {
         window.location.href = '/login/';
