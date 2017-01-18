@@ -387,6 +387,11 @@
             action_points: []
           };
 
+          var returnByLabel = {
+            action_points: {'status': true},
+            itinerary: {'mode_of_travel': true}
+          };
+
           function duplicateIdPurging(collection) {
             if (collection.length < 2) {
               return collection;
@@ -420,7 +425,7 @@
               result = item.value;
             }
             // console.debug(fieldSet + ' ---> ' + key);
-            if (fieldSet === 'action_points' && key === 'status') {
+            if (returnByLabel[fieldSet] && returnByLabel[fieldSet][key]) {
               return item.label.toLowerCase();
             }
             return result;
