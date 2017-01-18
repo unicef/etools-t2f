@@ -167,6 +167,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .texttert {
         color: rgba(0,0,0,0.38);
       }
+      .capitalize {
+        text-transform: capitalize !important;
+      }
       .unselectable {
         -webkit-user-select: none; /* Chrome/Safari */
         -moz-user-select: none; /* Firefox */
@@ -174,6 +177,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       .capital {
         text-transform: capitalize;
+      }
+
+      .custom-margin {
+        --paper-input-container: {
+          height: auto;
+          margin-left: 12px;
+          margin-right: 12px;
+          margin-bottom: 12px;
+        };
+        --paper-checkbox-margin: 12px;
       }
 
     </style>

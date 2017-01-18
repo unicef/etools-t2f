@@ -21,15 +21,6 @@
         display: block;
         width: 100%;
       }
-      .custom-margin {
-        --paper-input-container: {
-          height: auto;
-          margin-left: 12px;
-          margin-right: 12px;
-          margin-bottom: 12px;
-        };
-        --paper-checkbox-margin: 12px;
-      }
       span.standalone {
         color: var(--gray-dark);
         font-size: 16px;
@@ -220,7 +211,7 @@
 
         <etools-searchable-multiselection-menu label="Mode of travel"
           id="mode_of_travel"
-          class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
+          class$="flex-6 capitalize [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.travel_modes]]"

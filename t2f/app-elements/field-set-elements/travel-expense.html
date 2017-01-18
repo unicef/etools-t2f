@@ -20,16 +20,6 @@
         display: block;
         width: 100%;
       }
-
-      .custom-margin {
-        --paper-input-container: {
-          height: auto;
-          margin-left: 12px;
-          margin-right: 12px;
-          margin-bottom: 12px;
-        };
-        --paper-checkbox-margin: 12px;
-      }
     </style>
 
     <form is="iron-form" id="expense_form" class="layout vertical flex">
@@ -177,7 +167,7 @@
           return true;
         }
 
-        if (this.expense.document_currency || self.expense.document_currency) {
+        if ((this.expense && this.expense.document_currency) || (self.expense && self.expense.document_currency)) {
 
           this.$.curr1.removeAttribute('invalid');
           return true;
@@ -195,7 +185,7 @@
           return true;
         }
 
-        if (this.expense.account_currency || self.expense.account_currency) {
+        if ((this.expense && this.expense.account_currency) || (self.expense && self.expense.account_currency)) {
 
           this.$.curr2.removeAttribute('invalid');
           return true;

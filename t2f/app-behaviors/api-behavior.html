@@ -52,12 +52,12 @@
             section: 'sections',
             start_date: this._convertDate,
             end_date: this._convertDate,
-            mode_of_travel: this._multiFieldConversion.bind(this, 'value', 'travel_modes'),
+            mode_of_travel: this._multiFieldConversion.bind(this, 'label', 'travel_modes'),
             currency: 'currencies'
           },
           activities: {
             locations: this._multiFieldConversion.bind(this, 'value', 'locations'),
-            travel_type: 'travel_types',
+            travel_type: this._searchByLabel.bind(this, 'travel_types'),
             partner: 'partners',
             partnership: 'partnerships',
             result: 'results',
@@ -65,7 +65,7 @@
           },
           itinerary: {
             airlines: this._multiFieldConversion.bind(this, 'value', 'airlines'),
-            mode_of_travel: 'travel_modes',
+            mode_of_travel: this._searchByLabel.bind(this, 'travel_modes'),
             dsa_region: 'dsa_regions',
             departure_date: this._convertDate,
             arrival_date: this._convertDate,
