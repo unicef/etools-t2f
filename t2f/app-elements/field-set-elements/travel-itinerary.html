@@ -178,7 +178,7 @@
 
       _computeHideAirline: function(modeOfTravel) {
         if (modeOfTravel) {
-          return modeOfTravel.label !== 'Plane';
+          return modeOfTravel.label.toLowerCase() !== 'plane';
         }
         return true;
       },
