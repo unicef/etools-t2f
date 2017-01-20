@@ -193,6 +193,13 @@
               return {label: obj.name, value: obj.id, short: obj.iso_4217};
             });
           },
+          business_areas: function(key) {
+            data[key] = data[key].map(function(obj) {
+              obj.label = obj.name;
+              obj.value = obj.id;
+              return obj;
+            });
+          },
           wbs: function(key) {
              data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id, grants: obj.grants};
@@ -237,7 +244,7 @@
           },
           countries: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: parseInt(obj.id, 10), currency: obj.currency};
+              return {label: obj.name, value: parseInt(obj.id, 10), currency: obj.currency, business_area: obj.business_area};
             });
           },
 

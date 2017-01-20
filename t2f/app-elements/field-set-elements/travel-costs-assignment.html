@@ -19,21 +19,35 @@
         width: 100%;
       }
 
-      .custom-margin {
-        --paper-input-container: {
-          height: auto;
-          margin-left: 12px;
-          margin-right: 12px;
-          margin-bottom: 12px;
-        };
-        --paper-checkbox-margin: 12px;
-      }
-
     </style>
 
     <form is="iron-form"
       id="cost_assignment_form"
       class="layout vertical flex">
+
+
+      <div class="layout horizontal">
+
+        <etools-searchable-multiselection-menu label="Business Area"
+          class$="flex-4 [[computedPermission.business_area.readOnly]]"
+          options="[[structure.business_areas]]"
+          empty-value
+          value="{{costAssignment.business_area}}"
+          disabled="[[disableBusinessArea]]"
+          hidden$="[[computedPermission.business_area.hidden]]"
+          placeholder="select"
+          required$="[[computedPermission.business_area.required]]"
+          starred>
+        </etools-searchable-multiselection-menu>
+
+        <paper-checkbox class$="custom-margin self-end flex-8 [[computedPermission.delegate.readOnly]]"
+          hidden$="[[computedPermission.delegate.hidden]]"
+          checked="{{costAssignment.delegate}}"
+          disabled="[[computedPermission.delegate.disabled]]"
+          >Delegate
+        </paper-checkbox>
+
+        </div>
 
       <div class="layout horizontal">
 
@@ -109,6 +123,15 @@
           type: Boolean,
           value: false
         },
+        defaultBusinessArea: {
+          type: Object,
+          observer: '_observeDefaultBusinessArea'
+        },
+        disableBusinessArea: {
+          type: Boolean,
+          value: true,
+          computed: '_computeDisableBusinessArea(computedPermission.business_area.disabled, costAssignment.delegate)'
+        },
         disableGrant: {
           type: Boolean,
           value: true,
@@ -137,10 +160,20 @@
       observers: [
         '_costAssignmentObserver(costAssignment.*)',
       ],
+      _observeDefaultBusinessArea: function(defaultBusinessArea) {
+        this.set('costAssignment.business_area', defaultBusinessArea);
+      },
       _costAssignmentObserver: function(costAssignmentChanged) {
         if (costAssignmentChanged.base && !costAssignmentChanged.base._validationFunction) {
             costAssignmentChanged.base._validationFunction = this._validateCostAssignment.bind(this);
         }
+        this[costAssignmentChanged.path] = costAssignmentChanged.value;
+      },
+      _computeDisableBusinessArea: function(permission, delegate) {
+        if (!delegate) {
+          this.set('costAssignment.business_area', this.defaultBusinessArea);
+        }
+        return permission || !delegate;
       },
       _computeDisableGrant: function(permission, wbs) {
         return permission || !(wbs && wbs.grants !== []);
