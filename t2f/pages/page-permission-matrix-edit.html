@@ -64,6 +64,14 @@
       <div class="layout vertical">
         <h2> Add new field</div>
         <paper-input label="New Field" value="{{newField.name}}"></paper-input>
+        <paper-dropdown-menu label="Permissions to clone" id="sibilings" value="{{newField.permissionTemplate}}">
+          <paper-listbox class="dropdown-content" selected="{{selectedSibiling}}">
+            <template is="dom-repeat" items="[[newField.sibilings]]">
+              <paper-item>[[item]]</paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+
       </div>
       <div class="buttons">
         <paper-button dialog-confirm on-tap="_addNewField">New Field</paper-button>
@@ -107,7 +115,10 @@
                         <div class="layout horizontal wrap ">
                           <template is="dom-repeat" items="[[_computeField(role,status,section, forceFieldReload)]]" as="field">
                             <div class="flex-3 cell">
-                              <div>{{field}}</div>
+                              <div>
+                              <span>{{field}}</span>
+                               <paper-icon-button icon="delete-forever" on-tap="_deleteField"></paper-icon-button>
+                              </div>
                               <div>
                                 <input type="checkbox" checked="[[_checked('view',role,status,section, field)]]" on-change="_setView">V</input>
                                 <input type="checkbox" checked="[[_checked('edit',role,status,section, field)]]" on-change="_setEdit">E</input>
@@ -190,28 +201,51 @@
       },
       _addFieldDialog: function(e) {
         var section = e.model.section;
+        var sibilings = Object.keys(this.et2fPermissions.God.planned[section]);
         var nf = {
           section: section,
-          name: ''
+          name: '',
+          sibilings: sibilings,
+          permissionTemplate: null
         };
+        this.set('newField', {});
         this.set('newField', nf);
+        this.set('selectedSibiling', null);
         this.$.field.toggle();
       },
       _addNewField: function() {
         var p = this.et2fPermissions;
         var newName = this.newField.name;
         var newFieldSection = this.newField.section;
+        var templateName = this.newField.permissionTemplate;
         if (newName && newName.length > 1) {
           newName = newName.toLowerCase().split(' ').join('_');
           Object.keys(p).forEach(function(role) {
             Object.keys(p[role]).forEach(function(status) {
-              p[role][status][newFieldSection][newName] = {
+              var template = {
                 view: true,
                 edit: false
               };
+              if (templateName) {
+                template = JSON.parse(JSON.stringify(p[role][status][newFieldSection][templateName]));
+              }
+              p[role][status][newFieldSection][newName] = template;
             });
           });
          }
+        this.set('et2fPermissions', {});
+        this.set('et2fPermissions', p);
+        this.set('forceFieldReload', !this.forceFieldReload);
+      },
+      _deleteField: function(e) {
+        var section = e.model.section;
+        var field = e.model.field;
+        var p = this.et2fPermissions;
+        Object.keys(p).forEach(function(role) {
+            Object.keys(p[role]).forEach(function(status) {
+              delete p[role][status][section][field];
+            });
+        });
         this.set('et2fPermissions', {});
         this.set('et2fPermissions', p);
         this.set('forceFieldReload', !this.forceFieldReload);
@@ -237,6 +271,7 @@
         this.set('et2fPermissions', p);
         this.set('forceSectionReload', !this.forceSectionReload);
       },
+
       _computeRoles: function(perm) {
         return Object.keys(perm);
       },
@@ -322,7 +357,6 @@
           action_point: this.actionPointPermissions
         };
         this._storeInDb(perm);
-        window.location.reload();
       },
       _import: function() {
         var self = this;

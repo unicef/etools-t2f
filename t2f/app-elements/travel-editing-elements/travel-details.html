@@ -520,7 +520,7 @@
 
         function fieldSetValidation(toValidate) {
           toValidate.forEach(function(area) {
-            var fieldSet = area.toLowerCase();
+            var fieldSet = area.toLowerCase().split(' ').join('_');
             var domFieldSet = self.$$('#' + fieldSet);
             if (domFieldSet && !domFieldSet.hidden && !domFieldSet.disabled) {
               if (!self.data[fieldSet].hidden) {
@@ -546,8 +546,12 @@
 
             // Checking Cost Assignment validity
             if (this.percentagesSum !== 100) {
-              invalids.push('Cost assignment');
+              invalids.push('Cost assignments share(s) must sum to 100');
             }
+          }
+
+          if (action.name === 'Save & submit') {
+            fieldSetValidation(['Cost Assignments']);
           }
 
           if (action.name === 'Save' && !self.$$('#itinerary').hidden) {
