@@ -47,6 +47,9 @@
           },
           bold: {
             bold: true
+          },
+          bottomMargin: {
+            margin: [0, 10]
           }
         };
       },
@@ -121,12 +124,12 @@
           columns: [
             {stack: [
                 {text: 'Name', style: 'bold'},
-                {text: print(data.baseDetails.traveler)},
-                 {text: 'Vendor', style: 'bold'},
+                {text: print(data.baseDetails.traveler), style: 'bottomMargin'},
+                {text: 'Vendor', style: 'bold'},
               ]
             },
             {stack: [
-                {text: 'Index', style: 'bold'},
+                {text: 'Staff No.', style: 'bold'},
                 {text: print(data.baseDetails.id)},
                 {text: print('')}
               ]
@@ -137,7 +140,7 @@
               ]
             },
             {stack: [
-                {text: 'Employee group', style: 'bold'},
+                {text: 'Employee Group', style: 'bold'},
                 {text: print('')}
               ]
             }
@@ -243,20 +246,18 @@
                 body: [
                   [{text: 'Expense', style: 'bold', alignment: 'left'},
                   {text: 'Document currency', style: 'bold', alignment: 'center'},
-                  {text: 'Account currency', style: 'bold', alignment: 'center'},
                   {text: 'Amount', style: 'bold', alignment: 'right'},]
                 ].concat(data.expenses.map(function(ee) {
                     return [
                       {text: print(ee.type), alignment: 'left'},
                       {text: print(ee.document_currency), alignment: 'center'},
-                      {text: print(ee.account_currency), alignment: 'center'},
                       {text: print(ee.amount), alignment: 'right'}
                     ];
                   }))
               }},
               blackLine(5),
               {columns: [
-                   {text: 'Total estimated cost for the trip', style: 'bigBold', alignment: 'left'},
+                   {text: 'Total Expense cost for the trip', style: 'bold', alignment: 'left'},
                    {text: print(exp), alignment: 'right'}
                 ]}
           ]
@@ -278,15 +279,15 @@
                 ].concat(data.cost_assignments.map(function(ca) {
                     return [
                       {text: print(ca.wbs), alignment: 'left'},
-                      {text: print(ca.share), alignment: 'center'},
                       {text: print(ca.grant), alignment: 'center'},
-                      {text: print(ca.fund), alignment: 'right'}
+                      {text: print(ca.fund), alignment: 'center'},
+                      {text: print(ca.share, '%'), alignment: 'right'},
                     ];
                   }))
               }},
               blackLine(5),
               {columns: [
-                   {text: 'Total estimated cost for the trip', style: 'bigBold', alignment: 'left'},
+                   {text: 'Total estimated cost for the trip', style: 'bold', alignment: 'left'},
                    {text: print(exp), alignment: 'right'}
                 ]}
           ]
