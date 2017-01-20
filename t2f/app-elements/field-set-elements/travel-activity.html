@@ -19,15 +19,7 @@
         display: block;
         width: 100%;
       }
-      .custom-margin {
-        --paper-input-container: {
-          height: auto;
-          margin-left: 12px;
-          margin-right: 12px;
-          margin-bottom: 12px;
-        };
-        --paper-checkbox-margin: 12px;
-      }
+
     </style>
 
     <form
@@ -39,7 +31,7 @@
 
         <etools-searchable-multiselection-menu label="Trip Type"
           id="trip_type"
-          class$="flex-4 [[computedPermission.travel_type.readOnly]]"
+          class$="flex-4 capitalize [[computedPermission.travel_type.readOnly]]"
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
           empty-value

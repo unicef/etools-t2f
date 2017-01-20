@@ -31,7 +31,17 @@ App global configuration
           exp: 30 * 60 * 1000, // 30min
           cachingKey: 'countries'
         },
+        users: {
+          url: '/users/api/',
+          exp: 1000 * 60 * 60, //1 hour
+          cachingKey: 'user-list'
+        },
         et2fStaticData: {
+          url: '/api/static_data/',
+          exp: 7 * 24 * 60 * 60 * 1000, // 1 week
+          cachingKey: 'static_data'
+        },
+        et2fPartnersPartnerships: {
           url: '/api/t2f/static_data/',
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
           cachingKey: 'et2f_static_data'

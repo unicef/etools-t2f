@@ -74,7 +74,6 @@
       }
 
     </style>
-    <countries-data countries="{{countries}}"></countries-data>
 
     <iron-icon class$="[[country.imgClass]]" prefix></iron-icon>
 
@@ -83,7 +82,7 @@
         <template id="repeat" is="dom-repeat" items="[[countries]]">
           <paper-item>
             <iron-icon class$="[[item.imgClass]]" item-icon></iron-icon>
-            [[item.name]]
+            [[item.label]]
           </paper-item>
         </template>
       </paper-listbox>
@@ -99,7 +98,9 @@
       is: 'countries-dropdown',
 
       properties: {
-        countries: Array
+        countries: {
+          type: Array,
+        }
       },
 
       _countrySelected: function(e) {

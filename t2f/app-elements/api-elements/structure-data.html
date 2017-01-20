@@ -26,6 +26,20 @@
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
+    <etools-ajax endpoint="[[partnersPartnershipsEndpoint]]"
+      on-success="_handlePartnersPartnerships"
+      loading="{{partnersPartnershipsLoading}}"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
+    <etools-ajax endpoint="[[usersEndpoint]]"
+      on-success="_handleUsers"
+      loading="{{usersLoading}}"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
 
 
   </template>
@@ -39,10 +53,12 @@
         staticDataLoading: Boolean,
         sectionsLoading: Boolean,
         officesLoading: Boolean,
+        partnersPartnershipsLoading: Boolean,
         structure: {
           type: Object,
           notify: true,
-          computed: '_generateStructure(staticData, sectionsData, officesData)'
+          computed: '_generateStructure(staticData, sectionsData,' +
+          ' officesData, partnersPartnershipsData, usersData)'
         },
         staticData: {
           type: Object,
@@ -56,7 +72,8 @@
         loading: {
           type: Boolean,
           notify: true,
-          computed: '_computeLoading(staticDataLoading, sectionsLoading, officesLoading)'
+          computed: '_computeLoading(staticDataLoading, sectionsLoading,' +
+          ' officesLoading, partnersPartnershipsLoading, usersLoading)'
         },
         staticDataEndpoint: {
           type: String,
@@ -69,10 +86,22 @@
         officesEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.offices
+        },
+        partnersPartnershipsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fPartnersPartnerships
+        },
+        usersEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.users
         }
       },
-      _computeLoading: function(structure, sections, offices) {
-        return structure || sections || offices;
+      _computeLoading: function(structure, sections, offices, partnersPartnerships, users) {
+        var result = false;
+        for (var i = 0; i < arguments.length; ++i) {
+           result = result || arguments[i];
+        }
+        return result;
       },
       _redirectToLogin: function() {
         window.location.href = '/login/';
@@ -85,20 +114,46 @@
       },
       _handleSections: function(e, data) {
         if (!data.parsed) {
+          data = {
+            sections: data
+          };
           data = this._parseData(data);
         }
         this.set('sectionsData', data);
       },
       _handleOffices: function(e, data) {
         if (!data.parsed) {
+          data = {
+            offices: data
+          };
           data = this._parseData(data);
         }
         this.set('officesData', data);
       },
-      _generateStructure: function(static, sections, offices) {
+      _handlePartnersPartnerships: function(e, data) {
+        if (!data.parsed) {
+          data = this._parseData(data);
+        }
+        this.set('partnersPartnershipsData', data);
+      },
+      _handleUsers: function(e, data) {
+        if (!data.parsed) {
+          data = {
+            users: data
+          };
+          data = this._parseData(data);
+        }
+        this.set('usersData', data);
+      },
+      _generateStructure: function(static, sections, offices, partnersPartnerships, users) {
           var data = static;
-          data.sections = sections;
-          data.offices = offices;
+          data.sections = sections.sections;
+          data.offices = offices.offices;
+          data.locations = partnersPartnerships.locations;
+          data.results = partnersPartnerships.results;
+          data.partners = partnersPartnerships.partners;
+          data.partnerships = partnersPartnerships.partnerships;
+          data.users = users.users;
           Object.freeze(data);
           return data;
       },
@@ -160,6 +215,32 @@
               return {label: obj.name, value: obj.id, unique: obj.unique, vendor_number: obj.vendor_number};
             });
           },
+          travel_modes: function(key) {
+            data[key] = data[key].map(function(obj, index) {
+              return {label: obj, value: index};
+            });
+          },
+          travel_types: function(key) {
+            data[key] = data[key].map(function(obj, index) {
+              return {label: obj, value: index};
+            });
+          },
+          users: function(key) {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.full_name, value: parseInt(obj.user_id, 10)};
+            });
+          },
+          dsa_regions: function(key) {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.area_name, value: parseInt(obj.id, 10)};
+            });
+          },
+          countries: function(key) {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: parseInt(obj.id, 10), currency: obj.currency};
+            });
+          },
+
         };
         var dataKeys = Object.keys(data).sort();
         dataKeys.forEach(function(key) {
@@ -170,10 +251,10 @@
             var item = data[key];
             if (item instanceof Array) {
               data[key] = item.map(function(obj) {
-                return {label: obj.name || obj.full_name, value: parseInt(obj.id, 10)};
+                return {label: obj.name, value: parseInt(obj.id, 10)};
               });
             } else {
-              data[key] = {label: item.name || item.full_name, value: parseInt(item.id, 10)};
+              data[key] = {label: item.name, value: parseInt(item.id, 10)};
             }
           }
 

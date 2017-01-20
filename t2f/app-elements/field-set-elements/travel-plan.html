@@ -21,15 +21,6 @@
         display: block;
         width: 100%;
       }
-      .custom-margin {
-        --paper-input-container: {
-          height: auto;
-          margin-left: 12px;
-          margin-right: 12px;
-          margin-bottom: 12px;
-        };
-        --paper-checkbox-margin: 12px;
-      }
       span.standalone {
         color: var(--gray-dark);
         font-size: 16px;
@@ -220,7 +211,7 @@
 
         <etools-searchable-multiselection-menu label="Mode of travel"
           id="mode_of_travel"
-          class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
+          class$="flex-6 capitalize [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.travel_modes]]"
@@ -329,8 +320,25 @@
       behaviors: [et2fBehaviors.PermissionLayer],
 
       observers: [
-        '_valuesObserver(baseDetails.*)'
+        '_valuesObserver(baseDetails.*)',
+        '_setDefaultCurrency(user, baseDetails.*, structure)'
       ],
+
+      _setDefaultCurrency: function(user, dataChanged, structure) {
+        var countries = structure.countries;
+        var currencies = structure.currencies;
+        var currency = dataChanged.base.currency;
+        if (!currency) {
+          var userCountry = countries.find(function(country) {
+            return country.value === user.profile.country;
+          });
+          var countryCurrency = currencies.find(function(currency) {
+            return currency.value === userCountry.currency;
+          });
+          this.set('baseDetails.currency', countryCurrency);
+        }
+
+      },
 
       _computeTaEligible: function(user, traveler, international) {
         var vendorNumber = user.profile.vendor_number;

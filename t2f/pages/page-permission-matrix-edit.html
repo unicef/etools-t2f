@@ -1,7 +1,15 @@
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../styles/et2f-styles.html">
+
 
 
 
@@ -10,62 +18,151 @@
 
 <dom-module id="page-permission-matrix-edit">
 
-  <style include="">
+  <style include="et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
     :host {
       display: block;
     }
-    td {
-      width:150px;
-      display:inline-block;
-      border: 1px solid black;
+    .sections {
+      margin-bottom: 24px;
     }
-    textarea {
-      width:80%;
-      display:block;
+    .sections:nth-child(2n+1) {
+      background: var(--gray-lighter);
+    }
+    .header {
+      text-align: center;
+      text-transform: capitalize;
+      font-weight: bold
+    }
+    .cell {
+      text-align: center;
+      text-transform:  capitalize;
+      border: 1px solid black;
+      margin: 1px;
+    }
+    paper-material {
+      margin: 24px;
+    }
+    .content {
+      padding: 0 12px;
     }
   </style>
 
   <template>
 
-    <button on-tap="_download">Download</button>
-    <template is="dom-repeat" items="[[permissionRoles]]" as="role">
-      <h2 on-tap="_openRole">{{role}}</h2>
-      <iron-collapse id$="collapseRole_[[role]]">
-        <template is="dom-repeat" items="[[permissionStatus]]" as="status">
-          <h3 on-tap="_openStatus">{{status}}</h3>
-          <iron-collapse id$="collapseStatus_[[role]]_[[status]]">
-            <table>
-              <template is="dom-repeat" items="[[_computeSection(role,status)]]" as="section">
-                <tr>
-                  <td>
-                    <div>{{section}}</div>
-                    <input type="checkbox" value="v" checked="[[_checked('view',role,status,section)]]" on-change="_setView">V</input>
-                    <input type="checkbox" checked="[[_checked('edit',role,status,section)]]" on-change="_setEdit">E</input>
-                  </td>
-                  <template is="dom-repeat" items="[[_computeField(role,status,section)]]" as="field">
-                    <td>
-                      <div>{{field}}</div>
-                      <input type="checkbox" checked="[[_checked('view',role,status,section, field)]]" on-change="_setView">V</input>
-                      <input type="checkbox" checked="[[_checked('edit',role,status,section, field)]]" on-change="_setEdit">E</input>
-                     </td>
+    <paper-dialog modal id="fieldset">
+      <div class="layout vertical">
+        <h2> Add new fieldset</div>
+        <paper-input label="New Fielset" value="{{newFieldSetName}}"></paper-input>
+      </div>
+      <div class="buttons">
+        <paper-button dialog-confirm on-tap="_addNewFieldSet">New Fieldset</paper-button>
+        <paper-button dialog-dismiss > Cancel</paper-button>
+      </div>
+    </paper-dialog>
+
+    <paper-dialog modal id="field">
+      <div class="layout vertical">
+        <h2> Add new field</div>
+        <paper-input label="New Field" value="{{newField.name}}"></paper-input>
+      </div>
+      <div class="buttons">
+        <paper-button dialog-confirm on-tap="_addNewField">New Field</paper-button>
+        <paper-button dialog-dismiss > Cancel</paper-button>
+      </div>
+    </paper-dialog>
+
+    <paper-toolbar>
+      <paper-button on-tap="_download">Download</paper-button>
+      <paper-button on-tap="_save">Test</paper-button>
+      <div class="title"> Permission Matrix Editor</div>
+      <input type="file" id="importArea"/>
+      <paper-button on-tap="_import">Import</paper-button>
+    </paper-toolbar>
+
+    <paper-material elevation="2">
+      <paper-toolbar>
+        <paper-icon-button icon="add" on-tap="_newFieldSetDialog"></paper-icon-button>
+        <div class="title">Travel Permission</div>
+      </paper-toolbar>
+      <div class="content">
+        <template is="dom-repeat" items="[[permissionRoles]]" as="role">
+          <h2 on-tap="_openRole">{{role}}</h2>
+          <iron-collapse id$="[[_computeCollapseId(role)]]">
+            <template is="dom-repeat" items="[[permissionStatus]]" as="status">
+              <h3 on-tap="_openStatus">{{status}}</h3>
+              <iron-collapse id$="[[_computeCollapseId(role, status)]]" >
+                  <div class="sectionContainer">
+                    <template is="dom-repeat" items="[[_computeSection(role,status,forceSectionReload)]]" as="section" id="sectionsRepeater">
+                      <div class="sections">
+                        <div class="flex-12 self-center layout vertical header">
+                          <div class="">
+                          <span>{{section}}</span>
+                          <paper-icon-button icon="add" on-tap="_addFieldDialog"></paper-icon-button>
+                          </div>
+                          <div>
+                            <input type="checkbox" value="v" checked="[[_checked('view',role,status,section)]]" on-change="_setView">V</input>
+                            <input type="checkbox" checked="[[_checked('edit',role,status,section)]]" on-change="_setEdit">E</input>
+                          </div>
+                        </div>
+                        <div class="layout horizontal wrap ">
+                          <template is="dom-repeat" items="[[_computeField(role,status,section, forceFieldReload)]]" as="field">
+                            <div class="flex-3 cell">
+                              <div>{{field}}</div>
+                              <div>
+                                <input type="checkbox" checked="[[_checked('view',role,status,section, field)]]" on-change="_setView">V</input>
+                                <input type="checkbox" checked="[[_checked('edit',role,status,section, field)]]" on-change="_setEdit">E</input>
+                              </div>
+                            </div>
+                          </template>
+                      </div>
+                    </div>
                   </template>
-                </tr>
-              </template>
-            </table>
+                </div>
+              </iron-collapse>
+            </template>
           </iron-collapse>
         </template>
-      </iron-collapse>
-    </template>
-    <textarea id="importArea"></textarea>
-    <button on-tap="_import">Import</button>
+      </div>
+    </paper-material>
+
+    <paper-material elevation="2">
+      <paper-toolbar>
+        <div class="title">Action Point Permission</div>
+      </paper-toolbar>
+      <div class="content">
+        <template is="dom-repeat" items="[[actionPointRoles]]" as="role">
+          <h2 on-tap="_openRole">{{role}}</h2>
+          <iron-collapse id$="[[_computeCollapseId(role)]]">
+              <table>
+                <template is="dom-repeat" items="[[_computeActionPointField(role)]]" as="field">
+                  <tr>
+                    <td>
+                      <div>{{field}}</div>
+                      <input type="checkbox" value="v" checked="[[_actionPointChecked('view',role,field)]]" on-change="_setView">V</input>
+                      <input type="checkbox" checked="[[_actionPointChecked('edit',role,field)]]" on-change="_setEdit">E</input>
+                    </td>
+                  </tr>
+                </template>
+              </table>
+          </iron-collapse>
+        </template>
+      </div>
+    </paper-material>
   </template>
 
   <script>
     Polymer({
       is: 'page-permission-matrix-edit',
       properties: {
+        actionPointPermissions: {
+          type: Object
+        },
         et2fPermissions: {
           type: Object
+        },
+        actionPointRoles: {
+          type: Array,
+          computed: '_computeRoles(actionPointPermissions)',
         },
         permissionRoles: {
           type: Array,
@@ -74,7 +171,71 @@
         permissionStatus: {
           type: Array,
           computed: '_computeStatus(et2fPermissions)'
+        },
+        newFieldSetName: {
+          type: String,
+          value: ''
+        },
+        newField: {
+          type: Object
+        },
+        forceSectionReload: {
+          type: Boolean,
+          value: false
+        },
+        forceFieldReload: {
+          type: Boolean,
+          value: false
         }
+      },
+      _addFieldDialog: function(e) {
+        var section = e.model.section;
+        var nf = {
+          section: section,
+          name: ''
+        };
+        this.set('newField', nf);
+        this.$.field.toggle();
+      },
+      _addNewField: function() {
+        var p = this.et2fPermissions;
+        var newName = this.newField.name;
+        var newFieldSection = this.newField.section;
+        if (newName && newName.length > 1) {
+          newName = newName.toLowerCase().split(' ').join('_');
+          Object.keys(p).forEach(function(role) {
+            Object.keys(p[role]).forEach(function(status) {
+              p[role][status][newFieldSection][newName] = {
+                view: true,
+                edit: false
+              };
+            });
+          });
+         }
+        this.set('et2fPermissions', {});
+        this.set('et2fPermissions', p);
+        this.set('forceFieldReload', !this.forceFieldReload);
+      },
+      _newFieldSetDialog: function() {
+        this.$.fieldset.toggle();
+      },
+      _addNewFieldSet: function() {
+        var p = this.et2fPermissions;
+        var newName = this.newFieldSetName;
+        if (newName && newName.length > 1) {
+          newName = newName.toLowerCase().split(' ').join('_');
+          Object.keys(p).forEach(function(role) {
+            Object.keys(p[role]).forEach(function(status) {
+              p[role][status][newName] = {
+                view: true,
+                edit: false
+              };
+            });
+          });
+        }
+        this.set('et2fPermissions', {});
+        this.set('et2fPermissions', p);
+        this.set('forceSectionReload', !this.forceSectionReload);
       },
       _computeRoles: function(perm) {
         return Object.keys(perm);
@@ -84,7 +245,16 @@
           return Object.keys(perm.God);
         }
       },
-      _computeSection: function(role, status) {
+      _computeCollapseId: function(role, status) {
+        role = role.toLowerCase().split(' ').join('_');
+        var result = 'collapseRole_' + role;
+        if (status) {
+          status = status.toLowerCase().split(' ').join('_');
+          result = result + '_' + status;
+        }
+        return result;
+      },
+      _computeSection: function(role, status, forceSectionReload) {
         return Object.keys(this.et2fPermissions[role][status]);
       },
       _computeField: function(role, status, section) {
@@ -93,11 +263,20 @@
           return ['id', 'view', 'edit'].indexOf(it) === -1;
         });
       },
+      _computeActionPointField: function(role, section) {
+        var result = Object.keys(this.actionPointPermissions[role]);
+        return result.filter(function(it) {
+          return ['id'].indexOf(it) === -1;
+        });
+      },
       _checked: function(type, role, status, section, field) {
         if (!field) {
           return this.et2fPermissions[role][status][section][type];
         }
         return this.et2fPermissions[role][status][section][field][type];
+      },
+      _actionPointChecked: function(type, role, field) {
+        return this.actionPointPermissions[role][field][type];
       },
       _setView: function(event) {
        this._setCheckbox(event, 'view');
@@ -118,26 +297,60 @@
         this.set(setString, !value);
       },
       _openRole: function(e) {
-        this.$$('#collapseRole_' + e.model.role).toggle();
+        var id = this._computeCollapseId(e.model.role);
+        this.$$('#' + id).toggle();
       },
       _openStatus: function(e) {
-        this.$$('#collapseStatus_' + e.model.role + '_' + e.model.status).toggle();
+        var id = this._computeCollapseId(e.model.role, e.model.status);
+        this.$$('#' + id).toggle();
       },
       _download: function() {
-        var data = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.et2fPermissions));
+        var perm = {
+          travel: this.et2fPermissions,
+          action_point: this.actionPointPermissions
+        };
+        var data = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(perm));
         var a = document.createElement('a');
         a.href =  'data:' + data;
         a.download = 'permission_matrix_' + Date.now() + '.json';
         a.click();
         window.URL.revokeObjectURL(a.href);
       },
+      _save: function() {
+        var perm = {
+          travel: this.et2fPermissions,
+          action_point: this.actionPointPermissions
+        };
+        this._storeInDb(perm);
+        window.location.reload();
+      },
       _import: function() {
-        var value = this.$.importArea.value;
-        if (value) {
-          var localOne = localStorage.getItem('et2f_permissions');
-          localOne.detail = JSON.parse(value);
-          localStorage.setItem('et2f_permissions', JSON.stringify(localOne));
-        }
+        var self = this;
+        var file = this.$.importArea.files[0];
+        var fr = new FileReader();
+        fr.onload = function(e) {
+          var lines = e.target.result;
+          var matrix = JSON.parse(lines);
+          self._storeInDb(matrix);
+        };
+        fr.readAsText(file);
+      },
+      _storeInDb: function(matrix) {
+        var db = null;
+        var request = window.indexedDB.open('t2f_etoolsAjaxCacheDb');
+        request.onsuccess = function(event) {
+          db = event.target.result;
+          var objectStore = db.transaction(['ajaxCachedData'], 'readwrite').objectStore('ajaxCachedData');
+          var request = objectStore.get('et2f_permissions');
+          request.onsuccess = function(e) {
+            var data = e.target.result;
+            data.data = matrix;
+            var update = objectStore.put(data);
+            update.onsuccess = function() {
+              window.location.reload();
+            };
+          };
+        };
       }
 
     });

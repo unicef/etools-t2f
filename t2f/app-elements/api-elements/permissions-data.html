@@ -39,38 +39,6 @@
         this.set('et2fPermissions', data);
       },
        _parsePermissions: function(permissionMatrix) {
-        var travelPermission = permissionMatrix.travel;
-
-        var nonBaseKeys = [
-          'deductions',
-          'itinerary',
-          'activities',
-          'cost_assignments',
-          'expenses',
-          'clearances',
-          'cost_summary',
-          'report',
-          'attachments',
-          'action_points'
-        ];
-        Object.keys(travelPermission).forEach(function(role) {
-          if (!travelPermission[role]) {
-            return;
-          }
-          Object.keys(travelPermission[role]).forEach(function(status) {
-            if (!travelPermission[role][status]) {
-              return;
-            }
-            var currentKeys = Object.keys(travelPermission[role][status]);
-            travelPermission[role][status].baseDetails = {};
-            currentKeys.forEach(function(key) {
-              if (nonBaseKeys.indexOf(key) === -1) {
-                travelPermission[role][status].baseDetails[key] = travelPermission[role][status][key];
-                delete travelPermission[role][status][key];
-              }
-            });
-          });
-        });
         permissionMatrix.parsed = true;
         Object.freeze(permissionMatrix);
         return permissionMatrix;

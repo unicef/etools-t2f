@@ -19,16 +19,6 @@
         width: 100%;
       }
 
-      .custom-margin {
-        --paper-input-container: {
-          height: auto;
-          margin-left: 12px;
-          margin-right: 12px;
-          margin-bottom: 12px;
-        };
-        --paper-checkbox-margin: 12px;
-      }
-
       .overnight-label {
         line-height: 24px;
         font-size: 16px;
@@ -105,11 +95,11 @@
           placeholder="select">
         </date-time-picker-input>
 
-        <etools-searchable-multiselection-menu class$="flex-2 [[computedPermission.mode_of_travel.readOnly]]"
+        <etools-searchable-multiselection-menu class$="flex-2 capitalize [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.travel_modes]]"
-          label="Mode of  Travel"
+          label="Mode of Travel"
           value="{{itinerary.mode_of_travel}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.mode_of_travel.required]]"
@@ -188,7 +178,7 @@
 
       _computeHideAirline: function(modeOfTravel) {
         if (modeOfTravel) {
-          return modeOfTravel.label !== 'Plane';
+          return modeOfTravel.label.toLowerCase() !== 'plane';
         }
         return true;
       },
