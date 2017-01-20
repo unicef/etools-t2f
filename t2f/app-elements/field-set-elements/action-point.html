@@ -114,7 +114,7 @@
             hidden$="[[computedPermission.status.hidden]]"
             required="[[computedPermission.status.required]]"
             starred$="[[computedPermission.status.required]]"
-            options="[[structure.action_point_status]]"
+            options="[[structure.action_point_statuses]]"
             value="{{actionPoints.status}}"
             empty-value
             placeholder="select">
@@ -176,6 +176,7 @@
           class$="flex-4 [[actionPointsPermissions.due_date.readOnly]]"
           hidden$="[[!actionPointsPermissions.due_date.view]]"
           disabled$="[[!actionPointsPermissions.due_date.edit]]"
+          min-date="[[today]]"
           required="[[actionPointsPermissions.due_date.required]]"
           starred$="[[actionPointsPermissions.due_date.required]]"
           date="{{actionPoints.due_date}}">

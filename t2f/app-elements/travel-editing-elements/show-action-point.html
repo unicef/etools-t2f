@@ -8,6 +8,7 @@
 <link rel="import" href="../../app-behaviors/permission-behavior.html">
 <link rel="import" href="../field-set-elements/action-point.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
+<link rel="import" href="../travel-editing-elements/form-errors.html">
 <link rel="import" href="../travel-status-box/action-point-status.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
@@ -53,13 +54,28 @@
 
   <template>
     <etools-ajax url="[[actionPointUrl]]"
-      on-success="_handleData" loading="{{loading}}"></etools-ajax>
+      on-success="_handleData"
+      loading="{{loading}}">
+    </etools-ajax>
+
+    <etools-ajax
+      id="patchAjax"
+      method="PATCH"
+      body="[[patchBody]]"
+      url="[[actionPointUrl]]"
+      on-success="_handleData"
+      loading="{{loading}}"
+      on-fail="_patchError">
+    </etools-ajax>
 
     <template is="dom-if" if="[[permissions]]" restamp>
 
       <et2f-header title="[[actionPoint.action_point_number]]"></et2f-header>
 
+      <form-errors id="apierrors" errors="{{formErrors}}" ></form-errors>
+
       <div class="container layout horizontal">
+
         <paper-material class="flex" elevation="1">
 
           <div class="card-heading">
@@ -77,7 +93,7 @@
           </action-point>
         </paper-material>
 
-        <action-point-status data="[[actionPoint]]">
+        <action-point-status data="[[actionPoint]]" on-primary-click="_primaryClickHandler" on-secondary-click="_secondaryClickHandler">
         </action-point-status>
 
       </div>
@@ -97,6 +113,10 @@
           type: String,
         },
         structure: Object,
+        loading: {
+          type: Boolean,
+          notify: true,
+        },
         user: Object,
         route: {
           type: Object,
@@ -182,6 +202,28 @@
         backup.path = backup.path.concat(['edit-travel', d]).join('/');
         this.set('route', {});
         this.set('route', backup);
+      },
+      _primaryClickHandler: function(e, data) {
+        var toSendData = JSON.parse(JSON.stringify(data));
+        delete toSendData._validationFunction;
+        toSendData.person_responsible = toSendData.person_responsible.value;
+        toSendData.status = toSendData.status.label.toLowerCase();
+
+        this.set('patchBody', toSendData);
+      },
+      _secondaryClickHandler: function(e, details) {
+        var data = details.data;
+        var status = details.status;
+        var toSendData = JSON.parse(JSON.stringify(data));
+        delete toSendData._validationFunction;
+        toSendData.person_responsible = toSendData.person_responsible.value;
+        toSendData.status = status;
+
+        this.set('patchBody', toSendData);
+      },
+      _patchError: function(e, i) {
+        this.set('formErrors', i.request.detail.request.xhr.response);
+        console.error('Api call failed: ', i.request.detail.request.xhr.response);
       }
     });
   </script>
