@@ -564,6 +564,7 @@
           }
 
           function doSavePost() {
+            // console.log('DATA before touched:', JSON.stringify(self.data));
             prepareData();
             self.method = 'POST';
             self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelList.url;
