@@ -310,14 +310,7 @@
         properties: {
           data: {
             type: Object,
-            notify: true,
-          },
-          structure: {
-            type: Object,
-          },
-          newTravel: {
-            type: Boolean,
-            value: false
+            notify: true
           },
           travelId: {
             type: String,
@@ -370,7 +363,6 @@
             notify: true
           }
         },
-
         generalModalAction: function() {
           console.log('Default fn. ran!');
         },
@@ -572,6 +564,7 @@
           }
 
           function doSavePost() {
+            // console.log('DATA before touched:', JSON.stringify(self.data));
             prepareData();
             self.method = 'POST';
             self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelList.url;
@@ -586,6 +579,7 @@
           }
 
           function doSaveUpdate() {
+            // console.log('DATA before touched:', JSON.stringify(self.data));
             prepareData();
             self.method = 'PATCH';
             self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
