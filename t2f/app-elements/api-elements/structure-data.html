@@ -26,9 +26,9 @@
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
-    <etools-ajax endpoint="[[partnersPartnershipsEndpoint]]"
-      on-success="_handlePartnersPartnerships"
-      loading="{{partnersPartnershipsLoading}}"
+    <etools-ajax endpoint="[[t2fStaticDataEndpoint]]"
+      on-success="_handlet2fStaticData"
+      loading="{{t2fStaticDataLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
@@ -53,12 +53,12 @@
         staticDataLoading: Boolean,
         sectionsLoading: Boolean,
         officesLoading: Boolean,
-        partnersPartnershipsLoading: Boolean,
+        t2fStaticDataLoading: Boolean,
         structure: {
           type: Object,
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
-          ' officesData, partnersPartnershipsData, usersData)'
+          ' officesData, t2fStaticData, usersData)'
         },
         staticData: {
           type: Object,
@@ -73,11 +73,11 @@
           type: Boolean,
           notify: true,
           computed: '_computeLoading(staticDataLoading, sectionsLoading,' +
-          ' officesLoading, partnersPartnershipsLoading, usersLoading)'
+          ' officesLoading, t2fStaticDataLoading, usersLoading)'
         },
         staticDataEndpoint: {
           type: String,
-          value: etoolsAppConfig.endpoints.et2fStaticData
+          value: etoolsAppConfig.endpoints.staticData
         },
         sectionsEndpoint: {
           type: String,
@@ -87,16 +87,16 @@
           type: String,
           value: etoolsAppConfig.endpoints.offices
         },
-        partnersPartnershipsEndpoint: {
+        t2fStaticDataEndpoint: {
           type: String,
-          value: etoolsAppConfig.endpoints.et2fPartnersPartnerships
+          value: etoolsAppConfig.endpoints.t2fStaticDataEndpoint
         },
         usersEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.users
         }
       },
-      _computeLoading: function(structure, sections, offices, partnersPartnerships, users) {
+      _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users) {
         var result = false;
         for (var i = 0; i < arguments.length; ++i) {
            result = result || arguments[i];
@@ -130,11 +130,11 @@
         }
         this.set('officesData', data);
       },
-      _handlePartnersPartnerships: function(e, data) {
+      _handlet2fStaticData: function(e, data) {
         if (!data.parsed) {
           data = this._parseData(data);
         }
-        this.set('partnersPartnershipsData', data);
+        this.set('t2fStaticData', data);
       },
       _handleUsers: function(e, data) {
         if (!data.parsed) {
@@ -145,19 +145,23 @@
         }
         this.set('usersData', data);
       },
-      _generateStructure: function(static, sections, offices, partnersPartnerships, users) {
+      _generateStructure: function(static, sections, offices, t2fStaticData, users) {
           var data = static;
           data.sections = sections.sections;
           data.offices = offices.offices;
-          data.locations = partnersPartnerships.locations;
-          data.results = partnersPartnerships.results;
-          data.partners = partnersPartnerships.partners;
-          data.partnerships = partnersPartnerships.partnerships;
+          data.locations = t2fStaticData.locations;
+          data.results = t2fStaticData.results;
+          data.partners = t2fStaticData.partners;
+          data.partnerships = t2fStaticData.partnerships;
+          data.action_point_statuses = t2fStaticData.action_point_statuses;
           data.users = users.users;
           Object.freeze(data);
           return data;
       },
       _parseData: function(data) {
+        function capitalize(value) {
+          return value.replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+        }
         function fillDependenceis(child, parent, parentKey) {
           data[child].forEach(function(childItem) {
             data[parent].forEach(function(parentItem) {
@@ -193,6 +197,13 @@
               return {label: obj.name, value: obj.id, short: obj.iso_4217};
             });
           },
+          business_areas: function(key) {
+            data[key] = data[key].map(function(obj) {
+              obj.label = obj.name;
+              obj.value = obj.id;
+              return obj;
+            });
+          },
           wbs: function(key) {
              data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id, grants: obj.grants};
@@ -222,7 +233,12 @@
           },
           travel_types: function(key) {
             data[key] = data[key].map(function(obj, index) {
-              return {label: obj, value: index};
+              return {label: capitalize(obj), value: index};
+            });
+          },
+          action_point_statuses: function(key) {
+            data[key] = data[key].map(function(obj, index) {
+              return {label: capitalize(obj), value: index};
             });
           },
           users: function(key) {
@@ -237,7 +253,8 @@
           },
           countries: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: parseInt(obj.id, 10), currency: obj.currency};
+              return {label: obj.name, value: parseInt(obj.id, 10),
+                currency: obj.currency, business_area: obj.business_area};
             });
           },
 
@@ -259,12 +276,7 @@
           }
 
         });
-        data.action_point_status = [
-          {label: 'Open', value: 0},
-          {label: 'On-going', value: 1},
-          {label: 'Completed', value: 2},
-          {label: 'Cancelled', value: 3}
-        ];
+
         data.parsed = true;
         return data;
       },

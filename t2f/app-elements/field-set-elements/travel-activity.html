@@ -75,6 +75,7 @@
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
           options="[[structure.results]]"
+          empty-value
           value="{{activity.result}}"
           placeholder="select">
         </etools-searchable-multiselection-menu>
@@ -83,7 +84,6 @@
           class$="flex-8 [[computedPermission.locations.readOnly]]"
           disabled="[[computedPermission.locations.disabled]]"
           hidden$="[[computedPermission.locations.hidden]]"
-          empty-value
           options="[[structure.locations]]"
           multi
           value="{{activity.locations}}"

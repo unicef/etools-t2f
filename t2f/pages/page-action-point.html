@@ -36,6 +36,7 @@
       action-point-id="[[actionPointId]]"
       structure="[[structure]]"
       user="[[user]]"
+      loading="{{detailLoading}}"
       et2f-permissions="[[et2fPermissions]]">
     </show-action-point>
   </template>
@@ -49,6 +50,10 @@
         },
         et2fPermissions: {
           type: Object,
+        },
+        detailLoading: {
+          type: Boolean,
+          notify: true,
         },
         structure: Object,
         user: Object,

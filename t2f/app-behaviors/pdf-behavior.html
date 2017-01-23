@@ -1,19 +1,23 @@
 <link rel="import" href="../../bower_components/moment-element/moment-with-locales-import.html">
 <script>
 var PDFBehavior = {
-  _print: function(item) {
+  _print: function(item, suffix) {
+    var result = '';
     if (item) {
       if (item.label) {
-        return item.label;
+        result = item.label;
       }
       if (typeof item === 'string') {
-        return item;
+        result =  item;
       }
       if (typeof item === 'number') {
-        return '' + item;
+        result = '' + item;
       }
     }
-    return '';
+    if (suffix) {
+      result = result + suffix;
+    }
+    return result;
   },
   _printDate: function(date) {
     if (date === '') {
