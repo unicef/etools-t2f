@@ -227,19 +227,22 @@
          }
       },
       _computeWbsOptions: function(wbsList, costAssignment) {
-
+        var wbsOptions = [];
         if (costAssignment && costAssignment.base && costAssignment.base.business_area) {
            var businessArea = costAssignment.base.business_area;
-           var wbsOptions = wbsList.filter(function(wbs) {
-              return businessArea.wbs.some(function(item) {
-                return item.value === wbs.value;
-              });
-           });
-           var wbs = costAssignment.base.wbs;
-           if (!this._isInList(wbsOptions, wbs)) {
-              this.set('costAssignment.wbs', null);
-           }
-           return wbsOptions;
+           if (businessArea.wbs) {
+             wbsOptions = wbsList.filter(function(wbs) {
+                return businessArea.wbs.some(function(item) {
+                  return item.value === wbs.value;
+                });
+             });
+
+             var wbs = costAssignment.base.wbs;
+             if (!this._isInList(wbsOptions, wbs)) {
+                this.set('costAssignment.wbs', null);
+             }
+          }
+          return wbsOptions;
          }
       },
       _validateCostAssignment: function() {
