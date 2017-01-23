@@ -53,7 +53,7 @@
 
         <etools-searchable-multiselection-menu label="WBS"
           class$="flex-4 [[computedPermission.wbs.readOnly]]"
-          options="[[structure.wbs]]"
+          options="[[wbsOptions]]"
           empty-value
           value="{{costAssignment.wbs}}"
           disabled="[[computedPermission.wbs.disabled]]"
@@ -154,7 +154,11 @@
         fundOptions: {
           type: Array,
           computed: '_computeFundOptions(structure.funds, costAssignment.grant.*, costAssignment.fund.*)',
-        }
+        },
+        wbsOptions: {
+          type: Array,
+          computed: '_computeWbsOptions(structure.wbs, costAssignment.*)',
+        },
       },
       behaviors: [et2fBehaviors.PermissionLayer],
       observers: [
@@ -220,6 +224,22 @@
               this.set('costAssignment.fund', null);
            }
            return fundOptions;
+         }
+      },
+      _computeWbsOptions: function(wbsList, costAssignment) {
+
+        if (costAssignment && costAssignment.base && costAssignment.base.business_area) {
+           var businessArea = costAssignment.base.business_area;
+           var wbsOptions = wbsList.filter(function(wbs) {
+              return businessArea.wbs.some(function(item) {
+                return item.value === wbs.value;
+              });
+           });
+           var wbs = costAssignment.base.wbs;
+           if (!this._isInList(wbsOptions, wbs)) {
+              this.set('costAssignment.wbs', null);
+           }
+           return wbsOptions;
          }
       },
       _validateCostAssignment: function() {

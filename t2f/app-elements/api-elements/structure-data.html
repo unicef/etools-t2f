@@ -201,10 +201,12 @@
             data[key] = data[key].map(function(obj) {
               obj.label = obj.name;
               obj.value = obj.id;
+              obj.wbs = obj.wbs;
               return obj;
             });
           },
           wbs: function(key) {
+            fillDependenceis(key, 'business_areas', 'business_area');
              data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id, grants: obj.grants};
             });
@@ -276,7 +278,6 @@
           }
 
         });
-
         data.parsed = true;
         return data;
       },
