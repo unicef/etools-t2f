@@ -149,17 +149,25 @@
         },
         grantOptions: {
           type: Array,
-          computed: '_computeGrantOptions(structure.grants, costAssignment.wbs.*)',
+          computed: '_computeGrantOptions(structure.grants, costAssignment.wbs.*, costAssignment.grant.*)',
         },
         fundOptions: {
           type: Array,
-          computed: '_computeFundOptions(structure.funds, costAssignment.grant.*)',
+          computed: '_computeFundOptions(structure.funds, costAssignment.grant.*, costAssignment.fund.*)',
         }
       },
       behaviors: [et2fBehaviors.PermissionLayer],
       observers: [
         '_costAssignmentObserver(costAssignment.*)',
       ],
+      _isInList: function(list, value) {
+        if (!value || !list) {
+          return false;
+        }
+        return list.some(function(item) {
+          return item.value === value.value;
+        });
+      },
       _observeDefaultBusinessArea: function(defaultBusinessArea) {
         this.set('costAssignment.business_area', defaultBusinessArea);
       },
@@ -184,26 +192,34 @@
       _computeDisableShare: function(permission, fund) {
         return permission || !fund;
       },
-      _computeGrantOptions: function(grants, wbs) {
-        this.set('costAssignment.grant', null);
+      _computeGrantOptions: function(grants, wbs, grant) {
         if (wbs && wbs.base) {
-           wbs = wbs.base;
-           return grants.filter(function(grant) {
-              return wbs.grants.some(function(item) {
-                return item.value === grant.value;
-              });
-           });
-       }
+          wbs = wbs.base;
+          var grantOptions =  grants.filter(function(grant) {
+            return wbs.grants.some(function(item) {
+              return item.value === grant.value;
+            });
+          });
+          grant = grant.base;
+          if (!this._isInList(grantOptions, grant)) {
+            this.set('costAssignment.grant', null);
+          }
+          return grantOptions;
+        }
       },
-      _computeFundOptions: function(funds, grant) {
-         this.set('costAssignment.fund', null);
+      _computeFundOptions: function(funds, grant, fund) {
          if (grant && grant.base) {
            grant = grant.base;
-           return funds.filter(function(fund) {
+           var fundOptions =  funds.filter(function(fund) {
               return grant.funds.some(function(item) {
                 return item.value === fund.value;
               });
            });
+           fund = fund.base;
+           if (!this._isInList(fundOptions, fund)) {
+              this.set('costAssignment.fund', null);
+           }
+           return fundOptions;
          }
       },
       _validateCostAssignment: function() {

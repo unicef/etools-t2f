@@ -39,7 +39,14 @@
       return this.structure[structureData].find(function(item) {
         return item.value === value;
       });
-
+    },
+    _log: function(structureData, value) {
+      console.log(structureData, value);
+      var result = this.structure[structureData].find(function(item) {
+        return item.value === value;
+      });
+      console.log(result);
+      return result;
     },
     _structureLib: function() {
       return {
