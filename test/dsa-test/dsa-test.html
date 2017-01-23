@@ -1,0 +1,274 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>test DSA CALCULATION</title>
+
+  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../bower_components/web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../../t2f/app-elements/api-elements/outbound-data.html">
+  <link rel="import" href="../../t2f/app-elements/field-set-elements/travel-deductions.html">
+
+  <link rel="import" href="./data/case-1.html">
+</head>
+<body>
+
+<test-fixture id="el">
+  <template>
+    <et2f-outbound-data postData="true" id="api"></et2f-outbound-data>
+    <travel-deductions id="deductions"></travel-deductions>
+  </template>
+</test-fixture>
+
+<script>
+
+  /* global define, suite, setup, fixture, test, caseScenarios, expect */
+  suite('dsa-test', function() {
+
+    var el = null;
+    var dom = null;
+    var deductions = null;
+    var deductionsItems = null;
+    var api = null;
+    var data = caseScenarios;
+    var deDom = null;
+
+    setup(function() {
+
+      el = fixture('el');
+      dom = Polymer.dom(el.root);
+
+      deductions = dom.querySelector('#deductions');
+      deductionsItems = function() {
+        return deductions.$.deductions_list.items;
+      };
+
+      api = dom.querySelector('#api');
+      dom.flush();
+    });
+
+    function fillData(JSONset, newOne, resetDeductions) {
+
+      deductions.itinerary = data[JSONset].itinerary;
+      if (resetDeductions) {
+        deductions.deductions = [];
+        data[JSONset].deductions = deductions.deductions;
+      }
+
+      if (newOne) api.travelId = '/-1';
+
+      api.data = JSON.parse(JSON.stringify(data[JSONset]));
+    }
+
+    test('Kidus\'s example', function(done) {
+
+      fillData('kidussExample', true);
+
+      api._handlePostSuccess = function(e, data) {
+
+        console.log('cost summary', data.cost_summary);
+
+        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('5300.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('50.00');
+        if (baseDSAokay && deductionsOkay) console.log('✅');
+        done();
+      }
+
+      api.doRequest({endPoint: 'save'});
+    });
+
+    // test('base#2 - the API sends data to the server, and we\'re getting it back', function(done) {
+
+    //   fillData('kidussExample', true, false);
+
+    //   api._handlePostSuccess = function(e, data) {
+
+    //     if (expect(data).to.be.an('object')) console.log('✅');
+    //     done();
+    //   }
+
+    //   api.doRequest({endPoint: 'save'});
+    // });
+
+
+    // test('dsa#1 - Simple usecase (two days, there and back should be 140%, so 420$)', function(done) {
+
+    //   deductions.itinerary = data.simple.itinerary;
+    //   deductions.deductions = [];
+    //   data.simple.deductions = deductions.deductions;
+
+    //   api.data = JSON.parse(JSON.stringify(data.simple));
+
+    //   api._handlePostSuccess = function(e, data) {
+
+    //     var gotBackDsa = data.cost_summary.dsa_total;
+    //     if (expect(gotBackDsa).to.equal('420.00')) {console.log('✅')}
+    //     done();
+    //   };
+
+    //   api.doRequest({endPoint: 'save'});
+    // });
+
+    // test('dsa#2 - Over 60 days, (92 day long simple trip (back and forth, no deduction) should be 18.000 + 6200 + 80 = 24.280$)', function(done) {
+
+    //   deductions.itinerary = data.longerThan60.itinerary;
+    //   deductions.deductions = [];
+    //   data.longerThan60.deductions = deductions.deductions;
+
+    //   api.data = JSON.parse(JSON.stringify(data.longerThan60));
+
+    //   api._handlePostSuccess = function(e, data) {
+
+    //     var gotBackDsa = data.cost_summary.dsa_total;
+    //     if (expect(gotBackDsa).to.equal('24280.00')) {console.log('✅')}
+    //     done();
+    //   };
+
+    //   api.doRequest({endPoint: 'save'});
+    // });
+
+    // test('dsa#3 - Same day travel, 8- hrs, (expected: 0$)', function(done) {
+
+    //   deductions.itinerary = data.sameDay.itinerary;
+    //   deductions.deductions = [];
+    //   data.sameDay.deductions = deductions.deductions;
+
+    //   api.data = JSON.parse(JSON.stringify(data.sameDay));
+
+    //   api._handlePostSuccess = function(e, data) {
+
+    //     var gotBackDsa = data.cost_summary.dsa_total;
+    //     if (expect(gotBackDsa).to.equal('0.00')) {console.log('✅')}
+    //     done();
+    //   };
+
+    //   api.doRequest({endPoint: 'save'});
+    // });
+
+    // test('dsa#4 - Same day travel, 8+ hours trip, back and forth, no deductions, expected DSA: (40%*300=) 120$', function(done) {
+
+    //   deductions.itinerary = data.sameDayLonger.itinerary;
+    //   deductions.deductions = [];
+    //   data.sameDayLonger.deductions = deductions.deductions;
+
+    //   api.data = JSON.parse(JSON.stringify(data.sameDayLonger));
+
+    //   api._handlePostSuccess = function(e, data) {
+
+    //     var gotBackDsa = data.cost_summary.dsa_total;
+    //     if (expect(gotBackDsa).to.equal('120.00')) {console.log('✅')}
+    //     done();
+    //   };
+
+    //   api.doRequest({endPoint: 'save'});
+    // });
+
+    // test('dsa#5 - Multiple areas, 3 travels, DSA rate switching date should be OK', function() {
+    //   console.warn('🚧  TODO');
+    // });
+
+    // test('deduction#1 - Overnight travel one day DSA is deducted, if checked', function() {
+
+    //   console.warn('🚧  TODO: Write a few easily modifiable testcase!!!');
+    //   console.warn('!!! Use a simple case where it is deducted if checked...');
+    //   console.warn('#2 - Should we allow it to be checked if the travel isnt taking over midnigth?');
+    // });
+
+    // test('deduction#2 - No DSA as deduction checked on the first day of case#1, expected baseDSA: 420$, expected deductions: 300$', function(done) {
+
+    //   deductions.itinerary = data.simple.itinerary;
+    //   deductions.deductions = [];
+    //   data.simple.deductions = deductions.deductions;
+
+    //   // Set no DSA for first day
+    //   deductionsItems()[0].no_dsa = true;
+
+    //   api.data = JSON.parse(JSON.stringify(data.simple));
+
+    //   api._handlePostSuccess = function(e, data) {
+
+    //     var gotBackDsa = data.cost_summary.dsa_total;
+    //     var gotDeductions = data.cost_summary.deductions_total;
+
+    //     if (
+    //       expect(gotBackDsa).to.equal('420.00') &&
+    //       expect(gotDeductions).to.equal('300.00')
+    //     ) {
+    //       console.log('✅')
+    //     }
+    //     done();
+    //   };
+
+    //   api.doRequest({endPoint: 'save'});
+    // });
+
+    // test('deduction#3 - Dinner, lunch, breakfast, accomodation (-80% deduction of first day, only 40% DSA for second(last) day, expected DSA: (300+120=) 420$, expected deductions: 240$)', function(done) {
+
+    //   deductions.itinerary = data.simple.itinerary;
+    //   deductions.deductions = [];
+    //   data.simple.deductions = deductions.deductions;
+
+    //   // Set deductions
+    //   deductionsItems()[0].accomodation = true;
+    //   deductionsItems()[0].breakfast = true;
+    //   deductionsItems()[0].dinner = true;
+    //   deductionsItems()[0].lunch = true;
+
+    //   api.data = JSON.parse(JSON.stringify(data.simple));
+
+    //   api._handlePostSuccess = function(e, data) {
+
+    //     var gotBackDsa = data.cost_summary.dsa_total;
+    //     var gotDeductions = data.cost_summary.deductions_total;
+
+    //     if (
+    //       expect(gotBackDsa).to.equal('420.00') &&
+    //       expect(gotDeductions).to.equal('240.00')
+    //     ) {
+    //       console.log('✅');
+    //     }
+    //     done();
+    //   };
+
+    //   api.doRequest({endPoint: 'save'});
+    // });
+
+    // test('deduction#4 - Multiple DSA regions with deductions, 3 travels', function() {
+    //   console.warn('🚧  TODO');
+    // });
+
+    // test('deduction#5 - Currency issues?', function() {
+    //   console.warn('🚧  TODO');
+    // });
+
+    // test('deduction#6 - Deducting over 60 days uses the correct daily DSA rates', function() {
+    //   console.warn('🚧  TODO');
+    // });
+
+    // test('complex#1 - Really complex calculation A', function() {
+    //   console.warn('🚧  TODO');
+    // });
+
+    // test('complex#2 - Really complex calculation B', function() {
+    //   console.warn('🚧  TODO');
+    // });
+
+    // test('complex#3 - Really complex calculation C', function() {
+    //   console.warn('🚧  TODO');
+    // });
+
+    // test('Questions', function() {
+    //   console.warn('TODO: Add tests from Kidus\'s comments on trello(Inbox)!');
+    //   console.warn('#1 - Should we consider last day -60% as a deduction/or remove from base DSA?');
+    //   console.warn('#2 - Should we consider overnight travel 100% as a deduction(visually not there)/or remove from base DSA?');
+    //   console.warn('#3 - Last days 40% always stays there, is it okay? Idea: Last, maybe different line on deductions?');
+    //   console.warn('');
+    //   console.warn('');
+    // });
+  });
+</script>
+
+</body>
+</html>
