@@ -125,7 +125,6 @@
         },
         defaultBusinessArea: {
           type: Object,
-          observer: '_observeDefaultBusinessArea'
         },
         disableBusinessArea: {
           type: Boolean,
@@ -162,6 +161,7 @@
       },
       behaviors: [et2fBehaviors.PermissionLayer],
       observers: [
+        '_observeDefaultBusinessArea(defaultBusinessArea, costAssignment.*)',
         '_costAssignmentObserver(costAssignment.*)',
       ],
       _isInList: function(list, value) {
@@ -172,8 +172,13 @@
           return item.value === value.value;
         });
       },
-      _observeDefaultBusinessArea: function(defaultBusinessArea) {
-        this.set('costAssignment.business_area', defaultBusinessArea);
+      _observeDefaultBusinessArea: function(defaultBusinessArea, costAssignmentChanged) {
+        var businessArea = defaultBusinessArea;
+        if (costAssignmentChanged && costAssignmentChanged.base) {
+          businessArea = costAssignmentChanged.base.business_area;
+          businessArea = businessArea ? businessArea : defaultBusinessArea;
+        }
+        this.set('costAssignment.business_area', businessArea);
       },
       _costAssignmentObserver: function(costAssignmentChanged) {
         if (costAssignmentChanged.base && !costAssignmentChanged.base._validationFunction) {
@@ -181,7 +186,7 @@
         }
         this[costAssignmentChanged.path] = costAssignmentChanged.value;
       },
-      _computeDisableBusinessArea: function(permission, delegate) {
+      _computeDisableBusinessArea: function(permission, delegate, businessArea) {
         if (!delegate) {
           this.set('costAssignment.business_area', this.defaultBusinessArea);
         }
