@@ -210,7 +210,7 @@
               return item.value === grant.value;
             });
           });
-          grant = costAssignmentChanged.base.grant;
+          var grant = costAssignmentChanged.base.grant;
           if (!this._isInList(grantOptions, grant)) {
             this.set('costAssignment.grant', null);
           }
@@ -225,7 +225,7 @@
                 return item.value === fund.value;
               });
            });
-           fund = costAssignmentChanged.base.fund;
+           var fund = costAssignmentChanged.base.fund;
            if (!this._isInList(fundOptions, fund)) {
               this.set('costAssignment.fund', null);
            }
