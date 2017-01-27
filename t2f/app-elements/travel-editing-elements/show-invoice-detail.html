@@ -186,7 +186,7 @@
 
       properties: {
         invoiceId: {
-          type: String,
+          type: Number,
         },
         structure: Object,
         user: Object,
@@ -196,11 +196,10 @@
         }
       },
       behaviors: [et2fBehaviors.ApiBehavior],
-      _computeUrl: function(actionPointId) {
-        var innerActionPointId = actionPointId ? ('' + actionPointId).replace(/\//g, '') : null;
-        if (this.listen && innerActionPointId && innerActionPointId !== '-1') {
+      _computeUrl: function(invoiceId) {
+        if (this.listen && invoiceId && invoiceId !== '-1') {
           return etoolsAppConfig.globals.computeTemplate('et2fInvoiceDetail', {
-            id: innerActionPointId
+            id: invoiceId
           }).url;
         }
       },

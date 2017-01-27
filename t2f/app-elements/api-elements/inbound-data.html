@@ -50,10 +50,9 @@
       },
       behaviors: [et2fBehaviors.ApiBehavior],
       _computeUrl: function(travelId) {
-        var innerTravelId = travelId ? ('' + travelId).replace(/\//g, '') : null;
-        if (this.listen && innerTravelId && innerTravelId !== '-1') {
+        if (this.listen && travelId && travelId !== '-1') {
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {
-            id: innerTravelId
+            id: travelId
           }).url;
         }
       },

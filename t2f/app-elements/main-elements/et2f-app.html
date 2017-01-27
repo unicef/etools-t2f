@@ -57,7 +57,7 @@
         user="[[user]]"
         route="{{route}}"
         detail-loading="{{subLoading}}"
-        travel-id="[[subroute.path]]"
+        travel-id="[[travelId]]"
         et2f-permissions="[[et2fPermissions.travel]]"
         structure="[[structure]]"></page-edit-travel>
 
@@ -74,7 +74,7 @@
         user="[[user]]"
         route="{{route}}"
         detail-loading="{{subLoading}}"
-        action-point-id="[[subroute.path]]"
+        action-point-id="[[actionPointId]]"
         et2f-permissions="[[et2fPermissions]]"
         structure="[[structure]]"></page-action-point>
 
@@ -83,7 +83,7 @@
         user="[[user]]"
         route="{{route}}"
         detail-loading="{{subLoading}}"
-        invoice-id="[[subroute.path]]"
+        invoice-id="[[invoiceId]]"
         et2f-permissions="[[et2fPermissions.travel]]"
         structure="[[structure]]"></page-invoice-detail>
 
@@ -139,6 +139,23 @@
         subLoading: {
           type: Boolean,
           value: false
+        },
+        travelId: {
+          type: Number,
+          computed: '_computeElementId(route, subroute, "edit-travel")'
+        },
+        actionPointId: {
+          type: Number,
+          computed: '_computeElementId(route, subroute, "action-point")'
+        },
+        invoiceId: {
+          type: Number,
+          computed: '_computeElementId(route, subroute, "invoice-detail")'
+        }
+      },
+      _computeElementId: function(route, subRoute, pageName) {
+        if (route.path.indexOf(pageName) > -1 && subRoute.path) {
+          return parseInt('' + subRoute.path.replace(/\//g, ''), 10);
         }
       },
       _computeLoading: function(structure, permissions, subLoading) {
