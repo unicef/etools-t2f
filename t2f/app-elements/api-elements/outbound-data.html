@@ -459,6 +459,12 @@
             });
           }
 
+          function checkCostAssignments(arr) {
+            return arr.filter(function(item) {
+              return Object.keys(item).length > 1;
+            });
+          }
+
           function handleArray(arr, fieldSet) {
             arr = duplicateIdPurging(arr);
             arr = emptyIdPurging(arr);
@@ -466,6 +472,9 @@
               handleObject(obj, fieldSet);
             });
             arr = emptyCollectionPurging(arr);
+            if (fieldSet === 'cost_assignments') {
+              arr = checkCostAssignments(arr);
+            }
             return arr;
           }
 
@@ -496,6 +505,7 @@
                 data.activities[0].locations.length === 0) {
 
                 delete self.serverData.activities;
+                delete data.activities;
               }
 
               // Preventing sending "empty" itinerary,
@@ -507,12 +517,15 @@
                 data.itinerary[0].airlines.length === 0) {
 
                 delete self.serverData.itinerary;
+                delete data.itinerary;
               }
+
             }
             if (self.serverData[serverKey]) {
               self.serverData[serverKey] = data[serverKey];
             }
           });
+
           var leftoverKeys = Object.keys(data);
           leftoverKeys.forEach(function(key) {
             var value = data[key];
@@ -612,7 +625,7 @@
           var statusActions = {
 
             save: function() {
-              if (self.travelId !== '/-1') {
+              if (self.travelId !== -1) {
                 doSaveUpdate();
               } else {
                 doSavePost();

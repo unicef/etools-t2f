@@ -166,7 +166,7 @@
           if (oldValue === undefined && newValue !== undefined && newValue !== '') {
             this.set('activity.primary_traveler', true);
           } else if (oldValue === undefined && newValue === undefined) {
-            this.set('activity.primary_traveler', false);
+            this.set('activity.primary_traveler', undefined);
           }
       },
 
