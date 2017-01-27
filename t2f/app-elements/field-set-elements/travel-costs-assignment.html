@@ -148,11 +148,11 @@
         },
         grantOptions: {
           type: Array,
-          computed: '_computeGrantOptions(structure.grants, costAssignment.wbs.*, costAssignment.grant.*)',
+          computed: '_computeGrantOptions(structure.grants, costAssignment.wbs.*, costAssignment.*)',
         },
         fundOptions: {
           type: Array,
-          computed: '_computeFundOptions(structure.funds, costAssignment.grant.*, costAssignment.fund.*)',
+          computed: '_computeFundOptions(structure.funds, costAssignment.grant.*, costAssignment.*)',
         },
         wbsOptions: {
           type: Array,
@@ -201,7 +201,7 @@
       _computeDisableShare: function(permission, fund) {
         return permission || !fund;
       },
-      _computeGrantOptions: function(grants, wbs, grant) {
+      _computeGrantOptions: function(grants, wbs, costAssignmentChanged) {
         if (wbs && wbs.base) {
           wbs = wbs.base;
           var grantOptions =  grants.filter(function(grant) {
@@ -209,14 +209,14 @@
               return item.value === grant.value;
             });
           });
-          grant = grant.base;
+          grant = costAssignmentChanged.base.grant;
           if (!this._isInList(grantOptions, grant)) {
             this.set('costAssignment.grant', null);
           }
           return grantOptions;
         }
       },
-      _computeFundOptions: function(funds, grant, fund) {
+      _computeFundOptions: function(funds, grant, costAssignmentChanged) {
          if (grant && grant.base) {
            grant = grant.base;
            var fundOptions =  funds.filter(function(fund) {
@@ -224,7 +224,7 @@
                 return item.value === fund.value;
               });
            });
-           fund = fund.base;
+           fund = costAssignmentChanged.base.fund;
            if (!this._isInList(fundOptions, fund)) {
               this.set('costAssignment.fund', null);
            }
