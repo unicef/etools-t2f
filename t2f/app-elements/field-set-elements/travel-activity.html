@@ -169,15 +169,12 @@
             this.set('activity.primary_traveler', undefined);
           }
       },
-
       _computeAutoValidate: function(activity) {
           return activity !== undefined && Object.keys(activity).length > 0;
       },
-
       _computeDisablePartnerships: function(partnerships, permissionDisabled) {
         return partnerships.length === 0 || permissionDisabled;
       },
-
       _activityObserver: function(changed) {
         this._addValidationFunction(changed);
         var partner = changed.base.partner;

@@ -152,40 +152,40 @@
 
     <form-errors id="apierrors" errors="{{formErrors}}" error-selected="{{errorSelected}}"></form-errors>
     <div class="layout horizontal">
-    <iron-pages selected="{{selected}}" class="flex">
+      <iron-pages selected="{{selected}}" class="flex">
 
-      <travel-details
-        id="travelDetails"
-        scroll-to-fieldset="[[errorSelected]]"
-        structure="[[structure]]"
-        travel-permissions="[[travelPermissions]]"
-        data="{{data}}"
-        user-roles="[[userRoles]]"
-        user="[[user]]">
-      </travel-details>
+        <travel-details
+          id="travelDetails"
+          scroll-to-fieldset="[[errorSelected]]"
+          structure="[[structure]]"
+          travel-permissions="[[travelPermissions]]"
+          data="{{data}}"
+          user-roles="[[userRoles]]"
+          user="[[user]]">
+        </travel-details>
 
-       <travel-report
-        id="travelReport"
-        structure="[[structure]]"
-        permissions="[[travelPermissions]]"
-        data="{{data}}"
-        report-string="[[data.report]]"
-        user-roles="[[userRoles]]"
-        user="[[user]]">
-      </travel-report>
+         <travel-report
+          id="travelReport"
+          structure="[[structure]]"
+          permissions="[[travelPermissions]]"
+          data="{{data}}"
+          report-string="[[data.report]]"
+          user-roles="[[userRoles]]"
+          user="[[user]]">
+        </travel-report>
 
-      <travel-attachments
-        structure="[[structure]]"
-        attachments-permission="[[travelPermissions.attachments]]"
-        notes-permission="[[travelPermissions.additional_notes]]"
-        base-details="{{data.baseDetails}}"
-        attachments="{{data.attachments}}"
-        deleted-attachments="{{data.deletedAttachments}}"
-        status="[[data.status]]"
-        user-roles="[[userRoles]]">
-      </travel-attachments>
+        <travel-attachments
+          structure="[[structure]]"
+          attachments-permission="[[travelPermissions.attachments]]"
+          notes-permission="[[travelPermissions.additional_notes]]"
+          base-details="{{data.baseDetails}}"
+          attachments="{{data.attachments}}"
+          deleted-attachments="{{data.deletedAttachments}}"
+          status="[[data.status]]"
+          user-roles="[[userRoles]]">
+        </travel-attachments>
 
-    </iron-pages>
+      </iron-pages>
 
       <travel-status
         id="travelStatus"
@@ -261,11 +261,17 @@
         this.set('data', {
           baseDetails: {
             ta_required: true,
-            international_travel: false
+            international_travel: null
           },
-          activities: [{}],
-          itinerary: [{}],
-          cost_assignments: [{}],
+          activities: [{
+            primary_traveler: null
+          }],
+          itinerary: [{
+            overnight_travel: null
+          }],
+          cost_assignments: [{
+            delegate: null
+          }],
           cost_summary: {},
           deductions: [],
           expenses: [{}],
@@ -376,8 +382,8 @@
           report: []
         };
 
-        invalids.details = this.$.travelDetails.doValidate(action);
-        invalids.report = this.$.travelReport.doValidate(action);
+        invalids.details = this.$$('#travelDetails').doValidate(action);
+        invalids.report = this.$$('#travelReport').doValidate(action);
 
         invalids.details = invalids.details.length > 0 ? invalids.details : false;
         invalids.report = invalids.report.length > 0 ? invalids.report : false;
