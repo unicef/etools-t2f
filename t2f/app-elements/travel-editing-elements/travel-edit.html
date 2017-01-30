@@ -350,7 +350,7 @@
         }
 
         var self = this;
-        if ((!self.travelId || self.travelId === '/-1') && data.baseDetails) {
+        if ((!self.travelId || self.travelId === -1) && data.baseDetails) {
           data.baseDetails.traveler = {
             label: user.full_name,
             value: user.id
