@@ -206,8 +206,8 @@
               }},
               blackLine(5),
               {columns: [
-                   {text: 'Total amount for DSA', style: 'bigBold', alignment: 'left'},
-                   {text: print(dsa), alignment: 'right'}
+                   {text: 'Total amount for DSA', style: 'bold', alignment: 'left'},
+                   {text: print((+dsa).toFixed(4)), alignment: 'right'}
                 ]}
             ]
         };
@@ -245,19 +245,14 @@
             }},
             blackLine(5),
             {
-              text: 'Total deductions: ' + (+data.cost_summary.deductions_total).toFixed(4),
-              alignment: 'left',
-              style: 'bold'
-            },
-            {
               columns: [
                 {
                   text: 'Total amount of deductions',
-                  style: 'bigBold',
+                  style: 'bold',
                   alignment: 'left'
                 },
                 {
-                  text: 'Total deductions: ' + (+data.cost_summary.deductions_total).toFixed(4),
+                  text: (+data.cost_summary.deductions_total).toFixed(4),
                   alignment: 'right'
                 }
               ]
@@ -276,11 +271,13 @@
                 body: [
                   [{text: 'Expense', style: 'bold', alignment: 'left'},
                   {text: 'Document currency', style: 'bold', alignment: 'center'},
+                  {text: 'Exchange to USD', style: 'bold', alignment: 'center'},
                   {text: 'Amount', style: 'bold', alignment: 'right'},]
                 ].concat(data.expenses.map(function(ee) {
                     return [
                       {text: print(ee.type), alignment: 'left'},
                       {text: print(ee.document_currency), alignment: 'center'},
+                      {text: print(ee.document_currency.exchange_to_dollar), alignment: 'center'},
                       {text: print(ee.amount), alignment: 'right'}
                     ];
                   }))

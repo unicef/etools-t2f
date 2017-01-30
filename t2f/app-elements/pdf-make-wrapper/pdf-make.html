@@ -59,9 +59,10 @@
           images: self.images,
           styles: self.styles,
           pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
-            console.log(currentNode);
-            if (currentNode.image === 'blackLine') { return false }
-            return currentNode.startPosition.top >= 700;
+            if (currentNode.image === 'blackLine') {
+              return false;
+            }
+            return currentNode.startPosition.top >= 750;
           }
         };
         switch (self.output) {
