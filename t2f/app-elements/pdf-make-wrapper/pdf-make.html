@@ -57,7 +57,12 @@
           pageMargins: self.pageMargins,
           content: content || self.content,
           images: self.images,
-          styles: self.styles
+          styles: self.styles,
+          pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
+            console.log(currentNode);
+            if (currentNode.image === 'blackLine') { return false }
+            return currentNode.startPosition.top >= 700;
+          }
         };
         switch (self.output) {
           case 'open':
