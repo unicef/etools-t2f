@@ -180,11 +180,13 @@
               blackLine(5),
               {layout: 'noBorders',
                 table: {
-                widths: [79,79,79,79,79,79],
+                widths: [70,70,45,45,40,79,40,70],
                 headerRows: 1,
                 body: [
                   [{text: 'Start date', style: 'bold', alignment: 'left'},
                   {text: 'End Date', style: 'bold', alignment: 'center'},
+                  {text: 'Ctry', style: 'bold', alignment: 'center'},
+                  {text: 'City', style: 'bold', alignment: 'center'},
                   {text: 'DSA Region', style: 'bold', alignment: 'center'},
                   {text: 'Daily rate', style: 'bold', alignment: 'center'},
                   {text: 'No. of Nights', style: 'bold', alignment: 'center'},
@@ -193,6 +195,8 @@
                     return [
                       {text: printDate(dsa.start_date), alignment: 'left'},
                       {text: printDate(dsa.end_Date), alignment: 'center'},
+                      {text: print(dsa.dsa_region_name.split(' - ')[0]), alignment: 'center'},
+                      {text: print(dsa.dsa_region_name.split(' - ')[1]), alignment: 'center'},
                       {text: print(dsa.dsa_region), alignment: 'center'},
                       {text: print(dsa.daily_rate_usd), alignment: 'center'},
                       {text: print(dsa.night_count), alignment: 'center'},
@@ -374,6 +378,7 @@
       },
 
       printTa: function() {
+        // console.log(this.data);
         var dataToPrint = this._parseData();
         this.$.pdfMake.printPDF(dataToPrint);
       }
