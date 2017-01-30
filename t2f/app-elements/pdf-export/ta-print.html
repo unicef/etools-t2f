@@ -75,6 +75,9 @@
 
         var printDate = this._printDate;
         var printX = this._printX;
+        var printFixed = this._printFixed;
+        var printCountryFromStr = this._printCountryFromStr;
+        var printCityFromStr = this._printCityFromStr;
 
         var dsa = parseFloat(data.cost_summary.dsa_total);
         dsa = Number.isNaN(dsa) ? 0 : dsa;
@@ -196,7 +199,8 @@
                       {text: printDate(dsa.start_date), alignment: 'left'},
                       {text: printDate(dsa.end_Date), alignment: 'center'},
                       {text: print(dsa.dsa_region_name.split(' - ')[0]), alignment: 'center'},
-                      {text: print(dsa.dsa_region_name.split(' - ')[1]), alignment: 'center'},
+                      {text: printCountryFromStr(dsa.dsa_region_name), alignment: 'center'},
+                      {text: printCityFromStr(dsa.dsa_region_name), alignment: 'center'},
                       {text: print(dsa.dsa_region), alignment: 'center'},
                       {text: print(dsa.daily_rate_usd), alignment: 'center'},
                       {text: print(dsa.night_count), alignment: 'center'},
@@ -207,7 +211,7 @@
               blackLine(5),
               {columns: [
                    {text: 'Total amount for DSA', style: 'bold', alignment: 'left'},
-                   {text: print((+dsa).toFixed(4)), alignment: 'right'}
+                   {text: printFixed(dsa), alignment: 'right'}
                 ]}
             ]
         };
@@ -252,7 +256,7 @@
                   alignment: 'left'
                 },
                 {
-                  text: (+data.cost_summary.deductions_total).toFixed(4),
+                  text: printFixed(data.cost_summary.deductions_total),
                   alignment: 'right'
                 }
               ]
