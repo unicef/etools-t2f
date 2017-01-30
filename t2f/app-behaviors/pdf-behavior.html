@@ -27,8 +27,35 @@ var PDFBehavior = {
   },
   _printX: function(item) {
     return item ? 'X' : '';
+  },
+  _printFixed: function(amount) {
+    if (+amount === amount) {
+      return amount.toFixed(4);
+    } else if (typeof amount === 'string') {
+      var parsed = parseFloat(amount);
+      return isNaN(parsed) ? amount : parsed.toFixed(4);
+    } else if (!amount) {
+      return '';
+    } else {
+      return amount;
+    }
+  },
+  _printCountryFromStr: function(str) {
+    var splat = str.split(' - ');
+    if (splat.length === 2) {
+      return splat[0];
+    } else {
+      return str;
+    }
+  },
+  _printCityFromStr: function(str) {
+    var splat = str.split(' - ');
+    if (splat.length === 2) {
+      return splat[1];
+    } else {
+      return '';
+    }
   }
-
 };
 window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
 window.et2fBehaviors.PDFBehavior = PDFBehavior;
