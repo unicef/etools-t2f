@@ -187,11 +187,11 @@
               blackLine(5),
               {layout: 'noBorders',
                 table: {
-                widths: [70,70,45,45,40,79,40,70],
+                widths: [70,70,57,57,35,70,35,65],
                 headerRows: 1,
                 body: [
                   [{text: 'Start date', style: 'bold', alignment: 'left'},
-                  {text: 'End Date', style: 'bold', alignment: 'center'},
+                  {text: 'End Date', style: 'bold', alignment: 'left'},
                   {text: 'Ctry', style: 'bold', alignment: 'center'},
                   {text: 'City', style: 'bold', alignment: 'center'},
                   {text: 'DSA Region', style: 'bold', alignment: 'center'},
@@ -201,7 +201,7 @@
                 ].concat(data.cost_summary.dsa.map(function(dsa) {
                     return [
                       {text: printDate(dsa.start_date), alignment: 'left'},
-                      {text: printDate(dsa.end_Date), alignment: 'center'},
+                      {text: printDate(dsa.end_Date), alignment: 'left'},
                       {text: printCountryFromStr(dsa.dsa_region_name), alignment: 'center'},
                       {text: printCityFromStr(dsa.dsa_region_name), alignment: 'center'},
                       {text: print(dsa.dsa_region), alignment: 'center'},
@@ -269,7 +269,7 @@
 
         var expensesBlock = {
           stack: [
-              {text: 'Breakdown of estimated costs for the trip', alignment: 'center', style: 'bold'},
+              {text: 'Breakdown of expenses costs for the trip', alignment: 'center', style: 'bold'},
               blackLine(5),
               {layout: 'noBorders',
                 table: {
@@ -318,12 +318,7 @@
                       {text: print(ca.share, '%'), alignment: 'right'},
                     ];
                   }))
-              }},
-              blackLine(5),
-              {columns: [
-                   {text: 'Total estimated cost for the trip', style: 'bold', alignment: 'left'},
-                   {text: printFixed(exp), alignment: 'right'}
-                ]}
+              }}
           ]
         };
 
@@ -339,14 +334,14 @@
                   [{text: 'Departing', style: 'bold', alignment: 'left'},
                   {text: 'Arriving', style: 'bold', alignment: 'center'},
                   {text: 'From', style: 'bold', alignment: 'center'},
-                  {text: 'To', style: 'bold', alignment: 'right'},
+                  {text: 'To', style: 'bold', alignment: 'center'},
                   {text: 'DSA Region', style: 'bold', alignment: 'right'}]
                 ].concat(data.itinerary.map(function(it) {
                     return [
                       {text: printDate(it.departure_date), alignment: 'left'},
                       {text: printDate(it.arrival_date), alignment: 'center'},
                       {text: print(it.origin), alignment: 'center'},
-                      {text: print(it.destination), alignment: 'right'},
+                      {text: print(it.destination), alignment: 'center'},
                       {text: print(it.dsa_region), alignment: 'right'}
                     ];
                   }))
