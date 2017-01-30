@@ -5,6 +5,9 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../app-behaviors/api-behavior.html">
+<link rel="import" href="../api-elements/structure-data.html">
+<link rel="import" href="../api-elements/permissions-data.html">
 
 
 <dom-module id="et2f-app">
@@ -19,24 +22,20 @@
 
     </style>
 
+    <et2f-structure-data loading="{{structureLoading}}"
+    structure="{{structure}}">
+    </et2f-structure-data>
 
-    <etools-ajax endpoint="[[structureEndpoint]]"
-      on-success="_handleStructure"
-      loading="{{structureLoading}}"
-      on-unauthorized="_redirectToLogin"
-      on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[permissionsEndpoint]]"
-      on-success="_handlePermissions" loading="{{permissionsLoading}}"
-      ></etools-ajax>
-
-
+    <et2f-permissions-data loading="{{permissionsLoading}}"
+      et2f-permissions="{{et2fPermissions}}">
+    </et2f-permissions-data>
 
     <iron-pages id="pages"
       selected="[[page]]"
       attr-for-selected="name"
       fallback-selection="not-found"
       role="main">
+
       <page-travel-list name="travel-list"
         user="[[user]]"
         structure="[[structure]]"
@@ -44,22 +43,64 @@
         refresh-data="{{refreshData}}"
         list-loading="{{subLoading}}">
       </page-travel-list>
+
+      <page-action-points-list name="action-points-list"
+        user="[[user]]"
+        structure="[[structure]]"
+        route="{{route}}"
+        refresh-data="{{refreshData}}"
+        list-loading="{{subLoading}}">
+      </page-action-points-list>
+
       <page-edit-travel fullbleed
         name="edit-travel"
         user="[[user]]"
         route="{{route}}"
         detail-loading="{{subLoading}}"
-        travel-id="[[subroute.path]]"
-        et2f-permissions="[[et2fPermissions]]"
+        travel-id="[[travelId]]"
+        et2f-permissions="[[et2fPermissions.travel]]"
         structure="[[structure]]"></page-edit-travel>
+
+      <page-invoices-list name="invoices-list"
+        user="[[user]]"
+        structure="[[structure]]"
+        route="{{route}}"
+        refresh-data="{{refreshData}}"
+        list-loading="{{subLoading}}">
+      </page-invoices-list>
+
+      <page-action-point fullbleed
+        name="action-point"
+        user="[[user]]"
+        route="{{route}}"
+        detail-loading="{{subLoading}}"
+        action-point-id="[[actionPointId]]"
+        et2f-permissions="[[et2fPermissions]]"
+        structure="[[structure]]"></page-action-point>
+
+      <page-invoice-detail fullbleed
+        name="invoice-detail"
+        user="[[user]]"
+        route="{{route}}"
+        detail-loading="{{subLoading}}"
+        invoice-id="[[invoiceId]]"
+        et2f-permissions="[[et2fPermissions.travel]]"
+        structure="[[structure]]"></page-invoice-detail>
+
       <page-not-found name="not-found"></page-not-found>
+
+      <page-permission-matrix-edit name="permission-matrix-edit"
+      et2f-permissions="[[et2fPermissions.travel]]"
+      action-point-permissions="[[et2fPermissions.action_point]]">
+      </page-permission-matrix-edit>
+
+
     </iron-pages>
 
 
   </template>
 
   <script>
-
     Polymer({
 
       is: 'et2f-app',
@@ -87,7 +128,9 @@
           notify: true
         },
         structureLoading: Boolean,
-        permissionsLoading: Boolean,
+        permissionsLoading: {
+          type: Boolean,
+        },
         loading: {
           type: Boolean,
           notify: true,
@@ -97,97 +140,25 @@
           type: Boolean,
           value: false
         },
-        structureEndpoint: {
-          type: String,
-          value: etoolsAppConfig.endpoints.et2fStaticData
+        travelId: {
+          type: Number,
+          computed: '_computeElementId(subroute, "edit-travel")'
         },
-        permissionsEndpoint: {
-          type: String,
-          value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
+        actionPointId: {
+          type: Number,
+          computed: '_computeElementId(subroute, "action-point")'
+        },
+        invoiceId: {
+          type: Number,
+          computed: '_computeElementId(subroute, "invoice-detail")'
         }
       },
-      _redirectToLogin: function() {
-        window.location.href = 'https://etools-dev.unicef.org/login/';
-      },
-      _handleStructure: function(event, data) {
-        var parsingFunctions = {
-          partners: function(key) {
-             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, partnerships: []};
-            });
-          },
-          partnerships: function(key) {
-              data[key].forEach(function(partnership) {
-                data.partners.forEach(function(partner) {
-                  if (partner.value === partnership.partner) {
-                    partner.partnerships.push({
-                        label: partnership.name,
-                        value: partnership.id
-                    });
-                  }
-                });
-              });
-             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id};
-            });
-          },
-          currencies: function(key) {
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, short: obj.iso_4217};
-            });
-          }
-        };
-        var dataKeys = Object.keys(data).sort();
-        dataKeys.forEach(function(key) {
-          var parsingFunction = parsingFunctions[key];
-          if (parsingFunction) {
-            parsingFunction(key);
-          } else {
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name || obj.full_name, value: obj.id};
-            });
-          }
-
-        });
-        Object.freeze(data);
-        this.set('structure', data);
-      },
-      _handlePermissions: function(e, data) {
-
-        var nonBaseKeys = [
-          'deductions',
-          'itinerary',
-          'activities',
-          'cost_assignments',
-          'expenses',
-          'clearances',
-          'cost_summary',
-          'report',
-          'attachments'
-        ];
-        Object.keys(data).forEach(function(role) {
-          if (!data[role]) {
-            return;
-          }
-          Object.keys(data[role]).forEach(function(status) {
-            if (!data[role][status]) {
-              return;
-            }
-            var currentKeys = Object.keys(data[role][status]);
-            data[role][status].baseDetails = {};
-            currentKeys.forEach(function(key) {
-              if (nonBaseKeys.indexOf(key) === -1) {
-                data[role][status].baseDetails[key] = data[role][status][key];
-                delete data[role][status][key];
-              }
-            });
-          });
-        });
-        Object.freeze(data);
-        this.et2fPermissions = data;
+      _computeElementId: function(subRoute, pageName) {
+        if (subRoute.prefix.indexOf(pageName) > -1 && subRoute.path) {
+          return parseInt('' + subRoute.path.replace(/\//g, ''), 10);
+        }
       },
       _computeLoading: function(structure, permissions, subLoading) {
-
         return structure || permissions || subLoading;
       }
 

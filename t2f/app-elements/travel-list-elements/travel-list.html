@@ -133,12 +133,14 @@
           on-success="handleListResponse">
       </etools-ajax>
 
-      <et2f-header title="Trip management"
+      <et2f-header title="List of Trips"
         show-new-travel-button
         show-export-button
         export-type="list"
         data="[[data]]"
-        export-params="[[ajaxParams]]"></et2f-header>
+        export-list="[[exportList]]"
+        export-params="[[ajaxParams]]">
+      </et2f-header>
 
       <paper-card class="second-header horizontal layout center">
 
@@ -148,8 +150,10 @@
           <paper-input
               inline
               id="search-input"
-              label="search keyword(s)"
-              on-keydown="searchKeyDown">
+              label="Keywords"
+              on-keydown="searchKeyDown"
+              always-float-label
+              placeholder="Type and search">
             <iron-icon icon="search" prefix></iron-icon>
           </paper-input>
 
@@ -158,9 +162,10 @@
 
             <div class="layout horizontal">
 
-               <etools-searchable-multiselection-menu label="Select [[item.name]]" class="filter-dropdown"
+              <etools-searchable-multiselection-menu label="[[item.name]]" class="filter-dropdown"
                 options="[[item.selection]]"
-                on-value-change="changeFilterValue">
+                on-value-change="changeFilterValue"
+                placeholder="Select">
               </etools-searchable-multiselection-menu>
 
               <div class="filter-reset-button" on-click="removeFilter">X</div>
@@ -188,7 +193,7 @@
         </div>
 
         <div class="toggle-hidden-div horizontal layout center">
-          <span>Show canceled</span>
+          <span>Show Canceled</span>
           <paper-toggle-button
               id="show-hidden-toggle"
               on-change="_changeShowHidden"
@@ -199,7 +204,7 @@
 
       <paper-card class="data-table">
 
-        <span class="textprim data-card-heading">{{showingResults}} results to show</span>
+        <span class="textprim data-card-heading">{{showingResults}} trips</span>
 
         <list-header id="list-header" data="[[headings]]" order-obj="{{orderObj}}">
         </list-header>
@@ -268,11 +273,11 @@
             },
             {
               'size': 11,
-              'label': 'Start date'
+              'label': 'Start Date'
             },
             {
               'size': 11,
-              'label': 'End date'
+              'label': 'End Date'
             },
             {
               'size': 23,
@@ -321,12 +326,6 @@
             show_hidden: false
           }
         },
-        refreshData: {
-          type: Boolean,
-          value: false,
-          notify: true,
-          observer: '_doRefreshData'
-        },
         listEndPoint: {
           type: String,
           value: etoolsAppConfig.endpoints.et2fTravelList.url
@@ -342,7 +341,31 @@
         usedFilters: {
           type: Array,
           value: []
+        },
+        route: {
+          type: Object,
+          observer: '_routeObserver'
+        },
+        exportList: {
+          type: Array,
+          computed: '_computeExportList(user)'
         }
+      },
+      _computeExportList: function(user) {
+        var exportList = [];
+        if (!user && !user.t2f) {
+          return;
+        }
+        var roles = user.t2f.roles;
+        exportList.push({name: 'Travel Activity Export', endpoint: '/api/t2f/travels/export/'});
+        if (roles.indexOf('Finance Focal Point') > -1) {
+          exportList.push({name: 'Finance Export', endpoint: '/api/t2f/travels/finance-export/'});
+          exportList.push({name: 'Travel Admin Export', endpoint: '/api/t2f/travels/travel-admin-export/'});
+
+        } else if (roles.indexOf('Travel Admin') > -1 || roles.indexOf('Travel Focal Point') > -1) {
+          exportList.push({name: 'Travel Admin Export', endpoint: '/api/t2f/travels/travel-admin-export/'});
+        }
+       return exportList;
       },
       _computeFilters: function(structure) {
         return [
@@ -355,6 +378,92 @@
             name: 'Supervisor',
             filterName: 'f_supervisor',
             selection: structure.users
+          },
+          {
+            name: 'Office',
+            filterName: 'f_office',
+            selection: structure.offices
+          },
+          {
+            name: 'Section',
+            filterName: 'f_section',
+            selection: structure.sections
+          },
+          {
+            name: 'Status',
+            filterName: 'f_status',
+            selection: [
+              {
+                label: 'Planned',
+                value: 0,
+                apiValue: 'planned'
+              },
+              {
+                label: 'Submitted',
+                value: 1,
+                apiValue: 'submitted'
+              },
+              {
+                label: 'Rejected',
+                value: 2,
+                apiValue: 'rejected'
+              },
+              {
+                label: 'Approved',
+                value: 3,
+                apiValue: 'approved'
+              },
+              {
+                label: 'Cancelled',
+                value: 4,
+                apiValue: 'cancelled'
+              },
+              {
+                label: 'Sent for payment',
+                value: 5,
+                apiValue: 'sent_for_payment'
+              },
+              {
+                label: 'Certification submitted',
+                value: 6,
+                apiValue: 'certification_submitted'
+              },
+              {
+                label: 'Certification approved',
+                value: 7,
+                apiValue: 'certification_approved'
+              },
+              {
+                label: 'Certification rejected',
+                value: 8,
+                apiValue: 'certification_rejected'
+              },
+              {
+                label: 'Certified',
+                value: 9,
+                apiValue: 'certified'
+              },
+              {
+                label: 'Completed',
+                value: 10,
+                apiValue: 'completed'
+              }
+            ]
+          },
+          {
+            name: 'Travel Type',
+            filterName: 'f_travel_type',
+            selection: structure.travel_types
+          },
+          {
+            name: 'Partner',
+            filterName: 'f_partner',
+            selection: structure.partners
+          },
+          {
+            name: 'Results',
+            filterName: 'f_cp_output',
+            selection: structure.results
           },
           {
             name: 'Year',
@@ -439,81 +548,6 @@
                 value: 11
               }
             ]
-          },
-          {
-            name: 'Office',
-            filterName: 'f_office',
-            selection: structure.offices
-          },
-          {
-            name: 'Section',
-            filterName: 'f_section',
-            selection: structure.sections
-          },
-          {
-            name: 'Travel type',
-            filterName: 'f_travel_type',
-            selection: structure.travel_types
-          },
-          {
-            name: 'Status',
-            filterName: 'f_status',
-            selection: [
-              {
-                label: 'Planned',
-                value: 'planned'
-              },
-              {
-                label: 'Submitted',
-                value: 'submitted'
-              },
-              {
-                label: 'Rejected',
-                value: 'rejected'
-              },
-              {
-                label: 'Approved',
-                value: 'approved'
-              },
-              {
-                label: 'Cancelled',
-                value: 'cancelled'
-              },
-              {
-                label: 'Sent for payment',
-                value: 'sent_for_payment'
-              },
-              {
-                label: 'Certification submitted',
-                value: 'certification_submitted'
-              },
-              {
-                label: 'Certification approved',
-                value: 'certification_approved'
-              },
-              {
-                label: 'Certification rejected',
-                value: 'certification_rejected'
-              },
-              {
-                label: 'Certified',
-                value: 'certified'
-              },
-              {
-                label: 'Completed',
-                value: 'completed'
-              }
-            ]
-          },
-          {
-            name: 'Partner',
-            filterName: 'f_partner',
-            selection: structure.partners
-          },
-          {
-            name: 'Results',
-            filterName: 'f_cp_output',
-            selection: structure.results
           }
         ];
       },
@@ -552,6 +586,13 @@
       changeFilterValue: function(e) {
         var key = e.model.item.filterName;
         var value = e.detail.selectedValues.value;
+
+        if (key === 'f_status') {
+          value = this._computeFilters(this.structure)[4].selection.filter(function(item) {
+            return item.value === value;
+          })[0].apiValue;
+        }
+
         var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
         oldParams[key] = value;
         this.set('ajaxParams', oldParams);
@@ -638,12 +679,17 @@
         backup.show_hidden = show;
         this.set('ajaxParams', backup);
       },
-      _doRefreshData: function(status) {
-        if (status) {
+      _doRefreshData: function() {
           var backup = this.ajaxParams;
           this.set('ajaxParams', {});
           this.set('ajaxParams', backup);
-          this.refreshData = false;
+      },
+      _routeObserver: function(newValue, oldValue) {
+        if (!oldValue || !newValue || !oldValue.path || !newValue.path) {
+          return;
+        }
+        if (newValue.path.indexOf('travel-list') > -1 || !(oldValue.path.indexOf('travel-list'))) {
+         this._doRefreshData();
         }
       }
     });

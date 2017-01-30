@@ -1,0 +1,306 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+
+<link rel="import" href="../../../bower_components/moment-element/moment-import.html">
+<link rel="import" href="../../../bower_components/paper-date-picker/paper-date-picker.html">
+<link rel="import" href="../../../bower_components/paper-time-picker/paper-time-picker.html">
+
+
+<dom-module id="date-time-picker-input">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width:100%;
+      }
+      *[hidden] {
+        display: none;
+      }
+      paper-input {
+        cursor: pointer;
+        --paper-input-container-disabled: {
+          opacity: 1;
+        };
+        --paper-input-container-label: {
+          color: var(--gray-light);
+        };
+        --paper-input-container-underline: {
+          border-color: var(--gray-light);
+        };
+        --paper-input-container-color: var(--gray-light);
+        width: calc( 100% - 24px );
+        margin-right:12px;
+        margin-left: 12px;
+      }
+      paper-time-picker {
+        --default-primary-color: var(--et2f-primary);
+      }
+      paper-date-picker {
+        --default-primary-color: var(--et2f-primary);
+      }
+      iron-icon {
+        color: var(--gray-mid);
+      }
+      .no-margin {
+        padding:0 !important;
+        margin: 0 !important;
+      }
+      .error {
+        padding:24px !important;
+        color: var(--et2f-error);
+      }
+      .readOnly {
+        --paper-input-container-underline: {
+          border-bottom: 0px solid black !important;
+        }
+      }
+    </style>
+
+    <paper-input id="date-input"
+      readonly
+      class$="[[innerClass]]"
+      on-focus="_onFocus"
+      label="[[label]]"
+      always-float-label
+      on-tap="_openCalendar"
+      value="{{prettyDate}}"
+      disabled$="[[disabled]]"
+      error-message="[[errorMessage]]"
+      required$="[[required]]"
+      placeholder="[[placeholder]]"
+      invalid$="[[invalid]]">
+
+      <iron-icon prefix icon="date-range" ></iron-icon>
+    </paper-input>
+
+    <paper-dialog id="timePickerDialog" modal on-iron-overlay-closed="_setNewDate">
+      <div class="flex layout horizontal no-margin">
+        <paper-date-picker date="{{internalDate}}" min-date="[[calculatedMinDate]]" max-date="[[calculatedMaxDate]]" force-narrow ></paper-date-picker>
+        <template is="dom-if" if="[[timePicker]]">
+          <paper-time-picker force-narrow time="[[time]]" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
+        </template>
+      </div>
+      <div class="flex layout horizontal no-margin error" hidden$="[[!showMinDateWarning]]">
+        Please select a date-time greater or equal than: [[prettyMinDate]]
+      </div>
+      <div class="flex layout horizontal no-margin error" hidden$="[[!showMaxDateWarning]]">
+         Please select a date-time less or equal than: [[prettyMaxDate]]
+      </div>
+      <div class="buttons">
+        <paper-button hidden$="[[!clearable]]" on-tap="_clearDate" dialog-dismiss>Clear</paper-button>
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button disabled="[[dialogButtonDisabled]]" autofocus dialog-confirm>OK</paper-button>
+      </div>
+    </paper-dialog>
+
+  </template>
+
+  <script>
+    /* global moment */
+    Polymer({
+      is: 'date-time-picker-input',
+      properties: {
+        errorMessage: {
+          type: String,
+          reflectToAttribute: true,
+        },
+        required: Boolean,
+        placeholder: String,
+        innerClass: String,
+        autoValidate: {
+          type: Boolean,
+        },
+        timePicker: {
+          type: Boolean,
+          value: false,
+          observer: '_computeFormat'
+        },
+        format: {
+          type: String,
+          value: 'LL'
+        },
+        invalid: {
+          type: Boolean,
+          value: false
+        },
+        label: {
+          type: String
+        },
+        date: {
+          notify: true
+        },
+        internalDate: {
+          type: Date,
+        },
+        time: {
+          type: String,
+        },
+        prettyDate: {
+          type: String,
+        },
+        opened: {
+          type: Boolean,
+          value: false,
+        },
+        disabled: {
+          type: Boolean,
+          value: false
+        },
+        clearable: {
+          type: Boolean,
+          value: false,
+        },
+        minDate: {
+          type: Date,
+          observer: '_minDateChanged'
+        },
+        calculatedMinDate: {
+          type: Date,
+          computed: '_calculateMinDateCalculated(minDate)'
+        },
+        showMinDateWarning: {
+          type: Boolean,
+          value: false,
+          computed: '_computeShowMinDateWarning(minDate, internalDate, hour, minute)'
+        },
+        maxDate: {
+          type: Date,
+          observer: '_maxDateChanged'
+        },
+        calculatedMaxDate: {
+          type: Date,
+          computed: '_calculateMaxDateCalculated(maxDate)'
+        },
+        showMaxDateWarning: {
+          type: Boolean,
+          value: false,
+          computed: '_computeShowMaxDateWarning(calculatedMaxDate, internalDate, hour, minute)'
+        },
+        dialogButtonDisabled: {
+          type: Boolean,
+          value: false,
+          computed: '_computeDisabledOkButton(showMinDateWarning, showMaxDateWarning)'
+        }
+      },
+      observers: ['_dateObserver(date.*)'],
+      _dateObserver: function(changed) {
+        var date = changed.base;
+        if (!date) {
+          this.set('prettyDate', undefined);
+          this.$['date-input'].invalid = false;
+          return;
+        }
+        if (!this.internalDate) {
+         this._updateComponentState(date);
+        } else if (date.getTime() !== this.internalDate.getTime()) {
+            this._updateComponentState(date);
+        }
+        this.set('prettyDate', moment(date).format(this.format));
+      },
+      _updateComponentState: function(date) {
+          date = new Date(date);
+          this.set('internalDate', date);
+          var time =  moment(date).format('hh:mm');
+          this.set('time', time);
+      },
+      _computeFormat: function(timePicker) {
+        this.set('format', timePicker ? 'LLL' : 'LL');
+      },
+      _dateChanged: function(changed, format) {
+        var date = changed.base;
+        var prettyDate = date;
+        if (date) {
+          prettyDate =  moment(date).format(format);
+        }
+       this.set('prettyDate', prettyDate);
+      },
+
+      _calculateMinDateCalculated: function(date) {
+        if (date) {
+          date = moment(new Date(date));
+          this.set('prettyMinDate', date.format(this.format));
+          date.hour('00');
+          date.minute('00');
+          date.second('00');
+          date.millisecond(0);
+          return date.toDate();
+        }
+      },
+      _calculateMaxDateCalculated: function(date) {
+        if (date) {
+          date = moment(new Date(date));
+          this.set('prettyMaxDate', date.format(this.format));
+          date.hour('00');
+          date.minute('00');
+          date.second('00');
+          date.millisecond(999);
+          return date.toDate();
+        }
+      },
+      _computeShowMinDateWarning: function(minDate, internalDate, hour, minute) {
+        internalDate = moment(internalDate);
+        internalDate.hour(this.hour);
+        internalDate.minute(this.minute);
+        minDate = moment(minDate);
+        return minDate.isAfter(internalDate);
+
+      },
+      _computeShowMaxDateWarning: function(maxDate, internalDate, hour, minute) {
+        internalDate = moment(internalDate);
+        internalDate.hour(this.hour);
+        internalDate.minute(this.minute);
+        maxDate = moment(maxDate);
+        return maxDate.isBefore(internalDate);
+      },
+      _computeDisabledOkButton: function(minDateWarning, maxDateWarning) {
+        return minDateWarning || maxDateWarning;
+      },
+      _openCalendar: function() {
+        if (this.disabled) {
+          return;
+        } else if (!this.opened) {
+           this.$.timePickerDialog.open();
+        }
+      },
+      _onFocus: function() {
+        this._openCalendar();
+      },
+      _minDateChanged: function(newDate) {
+        newDate = moment(newDate);
+        var oldDate = moment(this.internalDate);
+        if (newDate.isAfter(oldDate)) {
+          this.set('date', undefined);
+        }
+      },
+      _maxDateChanged: function(newDate) {
+        newDate = moment(newDate);
+        var oldDate = moment(this.internalDate);
+        if (newDate.isBefore(oldDate)) {
+          this.set('date', undefined);
+        }
+      },
+      _setNewDate: function(event) {
+        if (event.detail.confirmed) {
+          var date = moment(this.internalDate);
+          if (this.timePicker) {
+            date.hour(this.hour);
+            date.minute(this.minute);
+          } else {
+            date.hour('00');
+            date.minute('00');
+          }
+          date.second('00');
+          this.set('date', date.toDate());
+        }
+      },
+      _clearDate: function(e) {
+        this.set('date', undefined);
+      }
+
+    });
+  </script>
+</dom-module>

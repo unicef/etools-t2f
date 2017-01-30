@@ -1,0 +1,68 @@
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+
+
+<link rel="import" href="../app-elements/travel-editing-elements/show-action-point.html">
+<link rel="import" href="../app-elements/page-header-element/page-header.html">
+
+<link rel="import" href="../styles/shared-styles.html">
+
+
+
+<dom-module id="page-action-point">
+
+  <style include="shared-styles">
+    :host {
+      display: block;
+    }
+
+  </style>
+
+  <template>
+    <app-header-layout>
+
+      <app-header fixed shadow>
+
+        <page-header title="Action Point" countries="[[structure.countries]]"></page-header>
+
+      </app-header>
+
+    </app-header-layout>
+    <show-action-point route="{{route}}"
+      action-point-id="[[actionPointId]]"
+      structure="[[structure]]"
+      user="[[user]]"
+      loading="{{detailLoading}}"
+      et2f-permissions="[[et2fPermissions]]">
+    </show-action-point>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'page-action-point',
+      properties: {
+        actionPointId: {
+          type: String,
+        },
+        et2fPermissions: {
+          type: Object,
+        },
+        detailLoading: {
+          type: Boolean,
+          notify: true,
+        },
+        structure: Object,
+        user: Object,
+        route: {
+          type: Object,
+          notify: true,
+        }
+      }
+
+    });
+  </script>
+</dom-module>

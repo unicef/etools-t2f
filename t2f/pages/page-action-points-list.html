@@ -1,0 +1,59 @@
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../styles/shared-styles.html">
+<link rel="import" href="../styles/et2f-styles.html">
+<link rel="import" href="../app-elements/action-points-list-elements/action-points-list.html">
+<link rel="import" href="../app-elements/page-header-element/page-header.html">
+
+
+<dom-module id="page-action-points-list">
+
+  <style include="shared-styles et2f-styles">
+    :host {
+      display: block;
+    }
+
+  </style>
+
+  <template>
+
+    <!-- This comes from the template
+      not DRY like this, but without it, it isn't showing correctly -->
+    <app-header-layout>
+
+      <app-header fixed shadow>
+
+        <page-header title="Trip Management" countries="[[structure.countries]]"></page-header>
+
+      </app-header>
+
+      <action-points-list user="[[user]]"
+        structure="[[structure]]"
+        route="{{route}}"
+        list-loading="{{listLoading}}"
+      ></action-points-list>
+    </app-header-layout>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'page-action-points-list',
+      properties: {
+        refreshData: {
+          type: Boolean,
+          notify: true,
+        },
+        structure: Object,
+        user: Object,
+        route: Object,
+        listLoading: {
+          type: Boolean,
+          notify: true
+        }
+      }
+    });
+  </script>
+</dom-module>

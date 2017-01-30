@@ -7,7 +7,7 @@
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="../travel-status-box/travel-status.html">
-<link rel="import" href="../datepicker-input/datepicker-input.html">
+<link rel="import" href="../datepicker-input/date-time-picker-input.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -19,15 +19,7 @@
         display: block;
         width: 100%;
       }
-      .custom-margin {
-        --paper-input-container: {
-          height: auto;
-          margin-left: 12px;
-          margin-right: 12px;
-          margin-bottom: 12px;
-        };
-        --paper-checkbox-margin: 12px;
-      }
+
     </style>
 
     <form
@@ -37,9 +29,9 @@
 
       <div class="layout horizontal">
 
-        <etools-searchable-multiselection-menu label="Trip type"
+        <etools-searchable-multiselection-menu label="Trip Type"
           id="trip_type"
-          class$="flex-4 [[computedPermission.travel_type.readOnly]]"
+          class$="flex-4 capitalize [[computedPermission.travel_type.readOnly]]"
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
           empty-value
@@ -83,15 +75,15 @@
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
           options="[[structure.results]]"
+          empty-value
           value="{{activity.result}}"
           placeholder="select">
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Travel locations"
+        <etools-searchable-multiselection-menu label="Location(s)"
           class$="flex-8 [[computedPermission.locations.readOnly]]"
           disabled="[[computedPermission.locations.disabled]]"
           hidden$="[[computedPermission.locations.hidden]]"
-          empty-value
           options="[[structure.locations]]"
           multi
           value="{{activity.locations}}"
@@ -101,13 +93,16 @@
 
       <div class="layout horizontal">
 
-        <datepicker-input label="When"
+        <date-time-picker-input label="Date of Visit"
           class$="flex-4 [[computedPermission.date.readOnly]]"
           disabled="[[computedPermission.date.disabled]]"
+          min-date="[[minDate]]"
+          max-date="[[maxDate]]"
+          clearable
           hidden$="[[computedPermission.date.hidden]]"
           date="{{activity.date}}"
           placeholder="select">
-        </datepicker-input>
+        </date-time-picker-input>
 
         <paper-checkbox
           class$="flex-8 custom-margin self-end [[computedPermission.primary_traveler.readOnly]]"
@@ -142,6 +137,8 @@
           type: Array,
           value: []
         },
+        minDate: Date,
+        maxDate: Date,
         disablePartnerships: {
           type: Boolean,
           computed: '_computeDisablePartnerships(partnerships, computedPermission.partnership.disabled)'
@@ -169,18 +166,15 @@
           if (oldValue === undefined && newValue !== undefined && newValue !== '') {
             this.set('activity.primary_traveler', true);
           } else if (oldValue === undefined && newValue === undefined) {
-            this.set('activity.primary_traveler', false);
+            this.set('activity.primary_traveler', undefined);
           }
       },
-
-       _computeAutoValidate: function(activity) {
+      _computeAutoValidate: function(activity) {
           return activity !== undefined && Object.keys(activity).length > 0;
       },
-
       _computeDisablePartnerships: function(partnerships, permissionDisabled) {
         return partnerships.length === 0 || permissionDisabled;
       },
-
       _activityObserver: function(changed) {
         this._addValidationFunction(changed);
         var partner = changed.base.partner;

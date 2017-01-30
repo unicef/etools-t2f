@@ -25,13 +25,14 @@
 
       <app-header fixed shadow>
 
-       <page-header title="Trip Management"></page-header>
+       <page-header title="" countries="[[structure.countries]]"></page-header>
 
       </app-header>
 
        <travel-list user="[[user]]"
           structure="[[structure]]"
           route="{{route}}"
+          user="[[user]]"
           list-loading="{{listLoading}}"
           refresh-data="{{refreshData}}"
         ></travel-list>

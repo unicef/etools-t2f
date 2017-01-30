@@ -27,19 +27,23 @@
 
       <app-header fixed shadow>
 
-        <page-header title="Trip Management"></page-header>
+        <page-header title="" countries="[[structure.countries]]"></page-header>
 
       </app-header>
     </app-header-layout>
-    <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" detail-loading="{{detailLoading}}" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
+    <template is="dom-if" if="[[showTravelEdit]]" restamp>
+      <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" detail-loading="{{detailLoading}}" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
+    </template>
   </template>
 
   <script>
     Polymer({
       is: 'page-edit-travel',
       properties: {
-        travelId: String,
-        et2fPermissions: Object,
+        travelId: Number,
+        et2fPermissions: {
+          type: Object,
+        },
         structure: Object,
         user: Object,
         route: {
@@ -49,7 +53,15 @@
         detailLoading: {
           type: Boolean,
           notify: true
+        },
+        showTravelEdit: {
+          type: Boolean,
+          value: false,
+          computed: '_computeShowTravelEdit(structure, et2fPermissions, travelId, user)'
         }
+      },
+      _computeShowTravelEdit: function(structure, permissions, id, user) {
+        return structure && permissions && id && user;
       }
 
     });

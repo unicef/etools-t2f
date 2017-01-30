@@ -1,0 +1,142 @@
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="invoices-list-header">
+
+  <style include="shared-styles et2f-styles invoices-list">
+    :host {
+      display: block;
+      padding: 0;
+      margin: 0;
+    }
+    .heading-row {
+      width: 100%;
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.26);
+    }
+    .local-headings {
+      display: block;
+      box-sizing: border-box;
+      float: left;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .heading {
+      line-height: 56px;
+      font-size: 12px;
+    }
+    .local-headings iron-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--gray-mid);
+    }
+    .act .textsec.heading, .local-headings:hover .textsec.heading  {
+      color: var(--gray-dark);
+    }
+    .local-headings:hover .down-icon[hidden]:not(.action-down-icon),
+    .local-headings:hover .up-icon:not([downhidden]) {
+      display: inline-block!important;
+      opacity: 1!important;
+    }
+  </style>
+
+  <template>
+    <div class="heading-row clearfix layout horizontal">
+      <div class="w60"></div>
+      <template is="dom-repeat" items="[[metaData]]">
+        <div on-click="_clickOnLabel" class$="local-headings [[_headingClassGenerator(item, orderObj.orderedBy)]]">
+          <span class="textsec heading">[[item.label]]</span>
+
+          <iron-icon
+            class$="down-icon [[isActionsDownIconClass(item)]]"
+            icon="icons:arrow-downward"
+            hidden$="[[_hidden(item.down, orderObj.reverse, orderObj.orderedBy)]]">
+          </iron-icon>
+
+          <iron-icon
+            class="up-icon"
+            icon="icons:arrow-upward"
+            downhidden$="[[_hidden(item.down, orderObj.reverse, orderObj.orderedBy)]]"
+            hidden$="[[_hidden(item.up, orderObj.reverse, orderObj.orderedBy)]]">
+          </iron-icon>
+
+        </div>
+      </template>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'invoices-list-header',
+
+      properties: {
+        data: {
+          type: Array,
+          value: []
+        },
+        orderObj: {
+          type: Object,
+          notify: true
+        },
+        metaData: {
+          type: Array,
+          computed: '_getMetaData(data, orderObj)',
+          notify: true
+        }
+      },
+
+      _headingClassGenerator: function(item, orderedBy) {
+
+        var returnClass = 'w' + item.size;
+
+        if (item.label === orderedBy) {
+          returnClass += ' act';
+        }
+
+        return returnClass;
+      },
+
+      isActionsDownIconClass: function(item) {
+        return item.label === 'Actions' ? 'action-down-icon' : '';
+      },
+
+      _clickOnLabel: function(event) {
+
+        var newOrderBy = event.model.item.label;
+        if (newOrderBy === 'Actions') { return; }
+
+        if (newOrderBy === this.orderObj.orderedBy) {
+          this.set('orderObj', {
+            orderedBy: newOrderBy,
+            reverse: !this.orderObj.reverse
+          });
+        } else {
+          this.set('orderObj', {
+            orderedBy: newOrderBy,
+            reverse: false
+          });
+        }
+      },
+
+      _getMetaData: function(data, orderObj) {
+
+        var metaData = data.map(function(el) {
+          el.down = !(orderObj.orderedBy === el.label && !orderObj.reverse);
+          el.up = !(orderObj.orderedBy === el.label && orderObj.reverse);
+          return el;
+        });
+
+        return metaData;
+      },
+
+      _hidden: function(hidden, rev, orderedBy) {
+        return hidden;
+      }
+
+    });
+  </script>
+</dom-module>
