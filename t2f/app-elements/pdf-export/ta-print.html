@@ -180,7 +180,7 @@
               blackLine(5),
               {layout: 'noBorders',
                 table: {
-                widths: [79,79,79,79,79, 79],
+                widths: [79,79,79,79,79,79],
                 headerRows: 1,
                 body: [
                   [{text: 'Start date', style: 'bold', alignment: 'left'},
@@ -210,28 +210,54 @@
 
         var deductionsBlock = {
           stack: [
-              {text: 'Deductions', alignment: 'center', style: 'bold'},
-              blackLine(5),
-              {layout: 'noBorders',
-                table: {
+            {
+              text: 'Deductions',
+              alignment: 'center',
+              style: 'bold'
+            },
+            blackLine(5),
+            {
+              layout: 'noBorders',
+              table: {
                 widths: [97,97,97,97,97],
                 headerRows: 1,
                 body: [
-                  [{text: 'Date', style: 'bold', alignment: 'center'},
-                  {text: 'Breakfast', style: 'bold', alignment: 'center'},
-                  {text: 'Lunch', style: 'bold', alignment: 'center'},
-                  {text: 'Dinner', style: 'bold', alignment: 'center'},
-                  {text: 'Accomodation', style: 'bold', alignment: 'center'},]
+                  [
+                    {text: 'Date', style: 'bold', alignment: 'center'},
+                    {text: 'Breakfast', style: 'bold', alignment: 'center'},
+                    {text: 'Lunch', style: 'bold', alignment: 'center'},
+                    {text: 'Dinner', style: 'bold', alignment: 'center'},
+                    {text: 'Accomodation', style: 'bold', alignment: 'center'},
+                  ]
                 ].concat(data.deductions.map(function(dd) {
-                    return [
-                      {text: printDate(dd.date), alignment: 'center'},
-                      {text: printX(dd.breakfast), alignment: 'center'},
-                      {text: printX(dd.lunch), alignment: 'center'},
-                      {text: printX(dd.dinner), alignment: 'center'},
-                      {text: printX(dd.accomodation), alignment: 'center'}
-                    ];
-                  }))
-              }}
+                  return [
+                    {text: printDate(dd.date), alignment: 'center'},
+                    {text: printX(dd.breakfast), alignment: 'center'},
+                    {text: printX(dd.lunch), alignment: 'center'},
+                    {text: printX(dd.dinner), alignment: 'center'},
+                    {text: printX(dd.accomodation), alignment: 'center'}
+                  ];
+                }))
+            }},
+            blackLine(5),
+            {
+              text: 'Total deductions: ' + (+data.cost_summary.deductions_total).toFixed(4),
+              alignment: 'left',
+              style: 'bold'
+            },
+            {
+              columns: [
+                {
+                  text: 'Total amount of deductions',
+                  style: 'bigBold',
+                  alignment: 'left'
+                },
+                {
+                  text: 'Total deductions: ' + (+data.cost_summary.deductions_total).toFixed(4),
+                  alignment: 'right'
+                }
+              ]
+            }
           ]
         };
 
@@ -273,9 +299,9 @@
                 headerRows: 1,
                 body: [
                   [{text: 'WBS', style: 'bold', alignment: 'left'},
-                  {text: 'Share', style: 'bold', alignment: 'center'},
                   {text: 'Grant', style: 'bold', alignment: 'center'},
-                  {text: 'Fund', style: 'bold', alignment: 'right'},]
+                  {text: 'Fund', style: 'bold', alignment: 'center'},
+                  {text: 'Share', style: 'bold', alignment: 'right'},]
                 ].concat(data.cost_assignments.map(function(ca) {
                     return [
                       {text: print(ca.wbs), alignment: 'left'},
