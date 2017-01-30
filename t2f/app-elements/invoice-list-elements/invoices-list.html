@@ -14,16 +14,16 @@
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
-<link rel="import" href="./list-element.html">
-<link rel="import" href="./list-header.html">
-<link rel="import" href="./list-pagination.html">
+<link rel="import" href="./invoices-list-element.html">
+<link rel="import" href="./invoices-list-header.html">
+<link rel="import" href="./invoices-list-pagination.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
 
 
-<dom-module id="travel-list">
+<dom-module id="invoices-list">
 
   <style include="iron-flex shared-styles et2f-styles">
     :host {
@@ -37,11 +37,9 @@
     .background {
       background-color: var(--gray-lighter);
     }
-
     et2f-header {
       margin-bottom: 12px;
     }
-
     .second-header {
       min-height: 84px;
       margin-bottom: 12px;
@@ -64,11 +62,9 @@
       font-size: 16px;
       margin-right: 8px;
     }
-
     .data-table {
       margin-bottom: 24px;
     }
-
     .data-table .data-card-heading {
       display: block;
       font-size: 20px;
@@ -76,10 +72,8 @@
       font-weight: 500;
       line-height: 64px;
     }
-
     #add-filter-container {
       border-left: 2px solid var(--gray-lighter);
-      border-right: 2px solid var(--gray-lighter);
       margin-left: 16px;
       margin-right: 16px;
       padding-left: 10px;
@@ -106,7 +100,6 @@
       text-align: center;
       cursor: pointer;
     }
-
     .w5 {
       width: 5%;
     }
@@ -128,17 +121,21 @@
     <div class="background">
 
       <etools-ajax url="[[listEndPoint]]"
-          params="{{ajaxParams}}"
-          loading="{{listLoading}}"
-          on-success="handleListResponse">
+        params="{{ajaxParams}}"
+        loading="{{listLoading}}"
+        on-success="handleListResponse">
       </etools-ajax>
 
-      <et2f-header title="List of Trips"
-        show-new-travel-button
-        show-export-button
+      <etools-ajax url="[[vendorEndPoint]]"
+        loading="{{listLoading}}"
+        on-success="handleVendors">
+      </etools-ajax>
+
+      <et2f-header title="Invoices"
+        show-export-button$="[[showExportButton]]"
+        export-list="[[exportList]]"
         export-type="list"
         data="[[data]]"
-        export-list="[[exportList]]"
         export-params="[[ajaxParams]]">
       </et2f-header>
 
@@ -162,7 +159,8 @@
 
             <div class="layout horizontal">
 
-              <etools-searchable-multiselection-menu label="[[item.name]]" class="filter-dropdown"
+              <etools-searchable-multiselection-menu label="[[item.name]]"
+                class="filter-dropdown"
                 options="[[item.selection]]"
                 on-value-change="changeFilterValue"
                 placeholder="Select">
@@ -192,46 +190,39 @@
           </paper-menu-button>
         </div>
 
-        <div class="toggle-hidden-div horizontal layout center">
-          <span>Show Canceled</span>
-          <paper-toggle-button
-              id="show-hidden-toggle"
-              on-change="_changeShowHidden"
-              class="right-float">
-          </paper-toggle-button>
-        </div>
       </paper-card>
 
       <paper-card class="data-table">
 
-        <span class="textprim data-card-heading">{{showingResults}} trips</span>
+        <span class="textprim data-card-heading">{{showingResults}} results to show</span>
 
-        <list-header id="list-header" data="[[headings]]" order-obj="{{orderObj}}">
-        </list-header>
+        <invoices-list-header id="list-header" data="[[headings]]" order-obj="{{orderObj}}">
+        </invoices-list-header>
 
         <template is="dom-repeat" items="[[data]]">
-          <list-element
+          <invoices-list-element
             data="[[item]]"
             route="{{route}}"
             users="[[structure.users]]"
-            offices="[[structure.offices]]"
-            sections="[[structure.sections]]">
-          </list-element>
+            currencies="[[structure.currencies]]">
+          </invoices-list-element>
         </template>
 
-        <list-pagination
-            id="list-pagination"
-            maxnr="{{datalength}}"
-            pages="{{pages}}"
-            showing-results="{{showingResults}}">
-        </list-pagination>
+        <invoices-list-pagination
+          id="list-pagination"
+          maxnr="{{datalength}}"
+          pages="{{pages}}"
+          showing-results="{{showingResults}}">
+        </invoices-list-pagination>
       </paper-card>
     </div>
   </template>
 
   <script type="text/javascript">
     Polymer({
-      is: 'travel-list',
+
+      is: 'invoices-list',
+
       properties: {
         data: {
           type: Array,
@@ -240,6 +231,7 @@
         structure: {
           type: Object
         },
+        user: Object,
         datalength: {
           type: Number,
           value: 0
@@ -256,37 +248,33 @@
           type: Array,
           value: [
             {
-              'size': 13,
+              'size': 23,
               'label': 'Reference #'
             },
             {
               'size': 13,
-              'label': 'Traveler'
+              'label': 'Vendor number'
             },
             {
               'size': 13,
-              'label': 'Office'
+              'label': 'TA Number'
             },
             {
               'size': 13,
-              'label': 'Section'
-            },
-            {
-              'size': 11,
-              'label': 'Start Date'
-            },
-            {
-              'size': 11,
-              'label': 'End Date'
-            },
-            {
-              'size': 23,
               'label': 'Status'
             },
             {
-              'size': 5,
-              'label': 'Actions'
+              'size': 13,
+              'label': 'Currency'
             },
+            {
+              'size': 13,
+              'label': 'Amount'
+            },
+            {
+              'size': 13,
+              'label': 'VISION FI Doc'
+            }
           ]
         },
         pages: {
@@ -310,10 +298,9 @@
           value: '',
           observer: '_searchStringChanged'
         },
-        showHidden: {
-          type: Boolean,
-          value: false,
-          observer: '_showHiddenChanged'
+        vendors: {
+          type: Array,
+          value: []
         },
         ajaxParams: {
           type: Object,
@@ -322,13 +309,22 @@
             reverse: true,
             page: 1,
             page_size: 10,
-            search: '',
-            show_hidden: false
+            search: ''
           }
+        },
+        refreshData: {
+          type: Boolean,
+          value: false,
+          notify: true,
+          observer: '_doRefreshData'
         },
         listEndPoint: {
           type: String,
-          value: etoolsAppConfig.endpoints.et2fTravelList.url
+          value: etoolsAppConfig.endpoints.et2fInvoiceList.url
+        },
+        vendorEndPoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fVendorList.url
         },
         filters: {
           type: Array,
@@ -342,210 +338,51 @@
           type: Array,
           value: []
         },
-        route: {
-          type: Object,
-          observer: '_routeObserver'
-        },
         exportList: {
           type: Array,
           computed: '_computeExportList(user)'
+        },
+        showExportButton: {
+          type: Boolean,
+          value: false
         }
       },
-      _computeExportList: function(user) {
+       _computeExportList: function(user) {
         var exportList = [];
-        if (!user && !user.t2f) {
-          return;
-        }
         var roles = user.t2f.roles;
-        exportList.push({name: 'Travel Activity Export', endpoint: '/api/t2f/travels/export/'});
         if (roles.indexOf('Finance Focal Point') > -1) {
-          exportList.push({name: 'Finance Export', endpoint: '/api/t2f/travels/finance-export/'});
-          exportList.push({name: 'Travel Admin Export', endpoint: '/api/t2f/travels/travel-admin-export/'});
-
-        } else if (roles.indexOf('Travel Admin') > -1 || roles.indexOf('Travel Focal Point') > -1) {
-          exportList.push({name: 'Travel Admin Export', endpoint: '/api/t2f/travels/travel-admin-export/'});
+          exportList.push({name: 'Invoice Export', endpoint: '/api/t2f/travels/invoice-export/'});
+          this.set('showExportButton', true);
+        } else {
+          this.set('showExportButton', false);
         }
        return exportList;
       },
       _computeFilters: function(structure) {
         return [
           {
-            name: 'Traveler',
-            filterName: 'f_traveler',
-            selection: structure.users
-          },
-          {
-            name: 'Supervisor',
-            filterName: 'f_supervisor',
-            selection: structure.users
-          },
-          {
-            name: 'Office',
-            filterName: 'f_office',
-            selection: structure.offices
-          },
-          {
-            name: 'Section',
-            filterName: 'f_section',
-            selection: structure.sections
+            name: 'Vendor number',
+            filterName: 'f_vendor_number',
+            selection: this.vendors
           },
           {
             name: 'Status',
             filterName: 'f_status',
             selection: [
               {
-                label: 'Planned',
+                label: 'Success',
                 value: 0,
-                apiValue: 'planned'
+                apiValue: 'success'
               },
               {
-                label: 'Submitted',
+                label: 'Failed',
                 value: 1,
-                apiValue: 'submitted'
+                apiValue: 'failed'
               },
               {
-                label: 'Rejected',
+                label: 'Processing',
                 value: 2,
-                apiValue: 'rejected'
-              },
-              {
-                label: 'Approved',
-                value: 3,
-                apiValue: 'approved'
-              },
-              {
-                label: 'Cancelled',
-                value: 4,
-                apiValue: 'cancelled'
-              },
-              {
-                label: 'Sent for payment',
-                value: 5,
-                apiValue: 'sent_for_payment'
-              },
-              {
-                label: 'Certification submitted',
-                value: 6,
-                apiValue: 'certification_submitted'
-              },
-              {
-                label: 'Certification approved',
-                value: 7,
-                apiValue: 'certification_approved'
-              },
-              {
-                label: 'Certification rejected',
-                value: 8,
-                apiValue: 'certification_rejected'
-              },
-              {
-                label: 'Certified',
-                value: 9,
-                apiValue: 'certified'
-              },
-              {
-                label: 'Completed',
-                value: 10,
-                apiValue: 'completed'
-              }
-            ]
-          },
-          {
-            name: 'Travel Type',
-            filterName: 'f_travel_type',
-            selection: structure.travel_types
-          },
-          {
-            name: 'Partner',
-            filterName: 'f_partner',
-            selection: structure.partners
-          },
-          {
-            name: 'Results',
-            filterName: 'f_cp_output',
-            selection: structure.results
-          },
-          {
-            name: 'Year',
-            filterName: 'f_year',
-            selection: [
-              {
-                label: '2015',
-                value: 2015
-              },
-              {
-                label: '2016',
-                value: 2016
-              },
-              {
-                label: '2017',
-                value: 2017
-              },
-              {
-                label: '2018',
-                value: 2018
-              },
-              {
-                label: '2019',
-                value: 2019
-              },
-              {
-                label: '2020',
-                value: 2020
-              }
-            ]
-          },
-          {
-            name: 'Month',
-            filterName: 'f_month',
-            selection: [
-              {
-                label: 'January',
-                value: 0
-              },
-              {
-                label: 'February',
-                value: 1
-              },
-              {
-                label: 'March',
-                value: 2
-              },
-              {
-                label: 'April',
-                value: 3
-              },
-              {
-                label: 'May',
-                value: 4
-              },
-              {
-                label: 'Juny',
-                value: 5
-              },
-              {
-                label: 'July',
-                value: 6
-              },
-              {
-                label: 'August',
-                value: 7
-              },
-              {
-                label: 'September',
-                value: 8
-              },
-              {
-                label: 'October',
-                value: 9
-              },
-              {
-                label: 'November',
-                value: 10
-              },
-              {
-                label: 'December',
-                value: 11
+                apiValue: 'processing'
               }
             ]
           }
@@ -584,12 +421,20 @@
         this.splice('usedFilters', indexToRemove, 1);
       },
       changeFilterValue: function(e) {
+
         var key = e.model.item.filterName;
-        var value = e.detail.selectedValues.value;
+        var id = e.detail.selectedValues.value;
+        var value;
 
         if (key === 'f_status') {
-          value = this._computeFilters(this.structure)[4].selection.filter(function(item) {
-            return item.value === value;
+          value = this._computeFilters()[1].selection.filter(function(item) {
+            return item.value === id;
+          })[0].apiValue;
+        }
+
+        if (key === 'f_vendor_number') {
+          value = this.vendors.filter(function(item) {
+            return item.value === id;
           })[0].apiValue;
         }
 
@@ -627,25 +472,27 @@
       },
       labelLib: {
         'Reference #': 'id',
-        'Purpose of travel': 'purpose',
-        'Traveler': 'traveler',
-        'Start date': 'start_date',
-        'End date': 'end_date',
+        'Vendor number': 'vendor_number',
+        'TA Number': 'ta_number',
         'Status': 'status',
-        'Office': 'office',
-        'Section': 'section'
+        'Currency': 'currency',
+        'Amount': 'amount',
+        'VISION Fi Doc': 'vision_fi_id'
       },
       handleListResponse: function(event, data) {
         this.set('datalength', data.total_count);
-        data.data.forEach(function(travel) {
-          if (travel.start_date) {
-            travel.start_date = travel.start_date.split('T')[0];
-          }
-          if (travel.end_date) {
-            travel.end_date = travel.end_date.split('T')[0];
-          }
-        });
         this.set('data', data.data);
+      },
+      handleVendors: function(event, data) {
+        var self = this;
+
+        data.forEach(function(vendorStr, i) {
+          self.push('vendors', {
+            label: vendorStr,
+            value: i,
+            apiValue: vendorStr
+          });
+        });
       },
       searchKeyDown: function(e) {
 
@@ -679,17 +526,12 @@
         backup.show_hidden = show;
         this.set('ajaxParams', backup);
       },
-      _doRefreshData: function() {
+      _doRefreshData: function(status) {
+        if (status) {
           var backup = this.ajaxParams;
           this.set('ajaxParams', {});
           this.set('ajaxParams', backup);
-      },
-      _routeObserver: function(newValue, oldValue) {
-        if (!oldValue || !newValue || !oldValue.path || !newValue.path) {
-          return;
-        }
-        if (newValue.path.indexOf('travel-list') > -1 || !(oldValue.path.indexOf('travel-list'))) {
-         this._doRefreshData();
+          this.refreshData = false;
         }
       }
     });

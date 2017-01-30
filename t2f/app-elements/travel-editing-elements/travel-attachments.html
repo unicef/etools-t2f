@@ -55,6 +55,19 @@
                 </etools-repeatable-field-set>
             </div>
         </div>
+
+        <div class="layout horizontal">
+          <etools-repeatable-field-set hide-plus model="[1]" title="Additional Notes" elevation="1" hide-vertical-divider>
+            <paper-textarea label="Additional Notes"
+              class$="flex-12 custom-margin [[notePermission.readOnly]]"
+              disabled="[[notePermission.disabled]]"
+              hidden$="[[notePermission.hidden]]"
+              placeholder="Provide any other additional notes about the trip here"
+              value="{{baseDetails.additional_note}}">
+            </paper-textarea>
+          </etools-repeatable-field-set>
+      </div>
+
     </template>
 
     <script>
@@ -71,6 +84,10 @@
             value: [],
             notify: true
           },
+          baseDetails: {
+            type: Object,
+            notify: true
+          },
           status: String,
           userRoles: String,
           completedAt: Date,
@@ -78,6 +95,9 @@
           isInternational: Boolean,
           attachmentsPermission: {
             type: Object,
+          },
+          notePermission: {
+            type: Object
           }
         },
         observers: [

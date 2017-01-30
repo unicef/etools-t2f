@@ -4,7 +4,6 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../styles/countries-flags/country-flag-styles.html">
 
-<link rel="import" href="../countries-data/countries-data.html">
 
 <dom-module id="countries-dropdown">
   <template>
@@ -74,7 +73,6 @@
       }
 
     </style>
-    <countries-data countries="{{countries}}"></countries-data>
 
     <iron-icon class$="[[country.imgClass]]" prefix></iron-icon>
 
@@ -83,7 +81,7 @@
         <template id="repeat" is="dom-repeat" items="[[countries]]">
           <paper-item>
             <iron-icon class$="[[item.imgClass]]" item-icon></iron-icon>
-            [[item.name]]
+            [[item.label]]
           </paper-item>
         </template>
       </paper-listbox>
@@ -99,7 +97,9 @@
       is: 'countries-dropdown',
 
       properties: {
-        countries: Array
+        countries: {
+          type: Array,
+        }
       },
 
       _countrySelected: function(e) {

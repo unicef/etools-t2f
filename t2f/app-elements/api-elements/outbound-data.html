@@ -310,18 +310,11 @@
         properties: {
           data: {
             type: Object,
-            notify: true,
-          },
-          structure: {
-            type: Object,
-          },
-          newTravel: {
-            type: Boolean,
-            value: false
+            notify: true
           },
           travelId: {
             type: String,
-            notify: true,
+            notify: true
           },
           loading: {
             type: Boolean,
@@ -370,7 +363,6 @@
             notify: true
           }
         },
-
         generalModalAction: function() {
           console.log('Default fn. ran!');
         },
@@ -393,6 +385,21 @@
             expenses: [],
             clearances: {},
             action_points: []
+          };
+
+          var returnByLabel = {
+            action_points: {
+              'status': true
+            },
+            itinerary: {
+              'mode_of_travel': true
+            },
+            baseDetails: {
+              'mode_of_travel': true
+            },
+            activities: {
+              'travel_type': true
+            }
           };
 
           function duplicateIdPurging(collection) {
@@ -422,8 +429,19 @@
                 return Object.keys(item).length > 0;
             });
           }
+          function valueForServer(item, key, fieldSet) {
+            var result = item;
+            if (typeof item === 'object') {
+              result = item.value;
+            }
+            // console.debug(fieldSet + ' ---> ' + key);
+            if (returnByLabel[fieldSet] && returnByLabel[fieldSet][key]) {
+              return item.label.toLowerCase();
+            }
+            return result;
+          }
 
-          function handleObject(obj) {
+          function handleObject(obj, fieldSet) {
             if (!obj) {return;}
             var keys = Object.keys(obj);
             keys.forEach(function(key) {
@@ -431,23 +449,32 @@
                 delete obj[key];
               }
               if (obj[key] && !(obj[key] instanceof Array)) {
-                obj[key] = typeof obj[key] === 'object' ?  obj[key].value : obj[key];
+                obj[key] = valueForServer(obj[key], key, fieldSet);
               }
               if (obj[key] && obj[key] instanceof Array) {
                 obj[key] = obj[key].map(function(item) {
-                  return typeof item === 'object' ? item.value : item;
+                  return valueForServer(item, key, fieldSet);
                 });
               }
             });
           }
 
-          function handleArray(arr) {
+          function checkCostAssignments(arr) {
+            return arr.filter(function(item) {
+              return Object.keys(item).length > 1;
+            });
+          }
+
+          function handleArray(arr, fieldSet) {
             arr = duplicateIdPurging(arr);
             arr = emptyIdPurging(arr);
             arr.forEach(function(obj) {
-              handleObject(obj);
+              handleObject(obj, fieldSet);
             });
             arr = emptyCollectionPurging(arr);
+            if (fieldSet === 'cost_assignments') {
+              arr = checkCostAssignments(arr);
+            }
             return arr;
           }
 
@@ -455,9 +482,9 @@
 
           dataKeys.forEach(function(fieldSet) {
             if (data[fieldSet] instanceof Array) {
-              data[fieldSet] = handleArray(data[fieldSet]);
+              data[fieldSet] = handleArray(data[fieldSet], fieldSet);
             } else if (typeof data[fieldSet] === 'object') {
-              handleObject(data[fieldSet]);
+              handleObject(data[fieldSet], fieldSet);
             }
           });
 
@@ -478,6 +505,7 @@
                 data.activities[0].locations.length === 0) {
 
                 delete self.serverData.activities;
+                delete data.activities;
               }
 
               // Preventing sending "empty" itinerary,
@@ -489,12 +517,15 @@
                 data.itinerary[0].airlines.length === 0) {
 
                 delete self.serverData.itinerary;
+                delete data.itinerary;
               }
+
             }
             if (self.serverData[serverKey]) {
               self.serverData[serverKey] = data[serverKey];
             }
           });
+
           var leftoverKeys = Object.keys(data);
           leftoverKeys.forEach(function(key) {
             var value = data[key];
@@ -546,6 +577,7 @@
           }
 
           function doSavePost() {
+            // console.log('DATA before touched:', JSON.stringify(self.data));
             prepareData();
             self.method = 'POST';
             self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelList.url;
@@ -560,6 +592,7 @@
           }
 
           function doSaveUpdate() {
+            // console.log('DATA before touched:', JSON.stringify(self.data));
             prepareData();
             self.method = 'PATCH';
             self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
@@ -592,7 +625,7 @@
           var statusActions = {
 
             save: function() {
-              if (self.travelId !== '/-1') {
+              if (self.travelId !== -1) {
                 doSaveUpdate();
               } else {
                 doSavePost();

@@ -4,45 +4,39 @@
 
 <link rel="import" href="../styles/shared-styles.html">
 <link rel="import" href="../styles/et2f-styles.html">
-<link rel="import" href="../app-elements/travel-list-elements/travel-list.html">
+<link rel="import" href="../app-elements/invoice-list-elements/invoices-list.html">
 <link rel="import" href="../app-elements/page-header-element/page-header.html">
 
 
-<dom-module id="page-travel-list">
+<dom-module id="page-invoices-list">
 
   <style include="shared-styles et2f-styles">
     :host {
       display: block;
     }
-
   </style>
 
   <template>
 
-    <!-- This comes from the template
-      not DRY like this, but without it, it isn't showing correctly -->
     <app-header-layout>
 
       <app-header fixed shadow>
 
-       <page-header title="" countries="[[structure.countries]]"></page-header>
-
+        <page-header title="Trip Management" countries="[[structure.countries]]"></page-header>
       </app-header>
 
-       <travel-list user="[[user]]"
-          structure="[[structure]]"
-          route="{{route}}"
-          user="[[user]]"
-          list-loading="{{listLoading}}"
-          refresh-data="{{refreshData}}"
-        ></travel-list>
+      <invoices-list user="[[user]]"
+        structure="[[structure]]"
+        route="{{route}}"
+        list-loading="{{listLoading}}"
+        refresh-data="{{refreshData}}">
+      </invoices-list>
     </app-header-layout>
-
   </template>
 
   <script>
     Polymer({
-      is: 'page-travel-list',
+      is: 'page-invoices-list',
       properties: {
         refreshData: {
           type: Boolean,

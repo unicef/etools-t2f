@@ -33,111 +33,224 @@
         font-size: 16px;
         padding-left: 12px;
       }
+      .readOnly {
+        --paper-input-container-underline: {
+          border-bottom: 0px solid black !important;
+        }
+      }
+      .tripReference {
+        --paper-input-container-input: {
+          color: var(--et2f-primary);
+          font-weight: 500;
+        };
+      }
+      .isLink {
+        cursor: pointer;
+      }
+      .alignCheckbox {
+        height:56px;
+      }
+      .viewSpacing {
+        margin:12px, 0;
+      }
     </style>
 
-    <form
-      is="iron-form"
-      id="action_point_form"
-      class="layout vertical flex">
+    <template is="dom-if" if="[[!viewMode]]">
+      <form
+        is="iron-form"
+        id="action_point_form"
+        class="layout vertical flex">
 
-      <div class="layout horizontal">
+        <div class="layout horizontal">
 
-         <paper-input label="Description"
-          class$="flex-3 custom-margin [[computedPermission.description.readOnly]]"
-          disabled="[[computedPermission.description.disabled]]"
-          hidden$="[[computedPermission.description.hidden]]"
-          required="[[computedPermission.description.required]]"
-          starred$="[[computedPermission.description.required]]"
-          placeholder="description"
-          value="{{actionPoints.description}}">
+          <paper-input label="Description"
+            class$="flex-3 custom-margin [[computedPermission.description.readOnly]]"
+            disabled="[[computedPermission.description.disabled]]"
+            hidden$="[[computedPermission.description.hidden]]"
+            required="[[computedPermission.description.required]]"
+            starred$="[[computedPermission.description.required]]"
+            placeholder="description"
+            value="{{actionPoints.description}}">
+          </paper-input>
+        </div>
+
+        <div class="layout horizontal">
+
+          <date-time-picker-input label="Due Date"
+            class$="flex-3 [[computedPermission.due_date.readOnly]]"
+            disabled="[[computedPermission.due_date.disabled]]"
+            hidden$="[[computedPermission.due_date.hidden]]"
+            required="[[computedPermission.due_date.required]]"
+            starred$="[[computedPermission.due_date.required]]"
+            min-date="[[today]]"
+            placeholder="select"
+            date="{{actionPoints.due_date}}">
+          </date-time-picker-input>
+
+          <etools-searchable-multiselection-menu label="Responsible Person"
+            value="{{actionPoints.person_responsible}}"
+            class$="flex-3 [[computedPermission.person_responsible.readOnly]]"
+            disabled="[[computedPermission.person_responsible.disabled]]"
+            hidden$="[[computedPermission.person_responsible.hidden]]"
+            required="[[computedPermission.person_responsible.required]]"
+            starred$="[[computedPermission.person_responsible.required]]"
+            options="[[structure.users]]"
+            empty-value
+            placeholder="select">
+          </etools-searchable-multiselection-menu>
+
+          <paper-checkbox class$="flex-3 custom-margin self-end[[computedPermission.follow_up.readOnly]]"
+            hidden$="[[computedPermission.follow_up.hidden]]"
+            checked="{{actionPoints.follow_up}}">
+            Follow Up
+          </paper-checkbox>
+        </div>
+
+        <div class="layout horizontal">
+
+          <etools-searchable-multiselection-menu label="Status"
+            class$="flex-6 [[computedPermission.status.readOnly]]"
+            disabled="[[computedPermission.status.disabled]]"
+            hidden$="[[computedPermission.status.hidden]]"
+            required="[[computedPermission.status.required]]"
+            starred$="[[computedPermission.status.required]]"
+            options="[[structure.action_point_statuses]]"
+            value="{{actionPoints.status}}"
+            empty-value
+            placeholder="select">
+          </etools-searchable-multiselection-menu>
+
+          <date-time-picker-input label="Completed Date"
+            class$="flex-3 [[computedPermission.completed_at.readOnly]]"
+            disabled="[[endDateDisabled]]"
+            hidden$="[[computedPermission.completed_at.hidden]]"
+            required="[[completedDateRequired]]"
+            starred$="[[completedDateRequired]]"
+            placeholder="select"
+            clearable$="[[!completedDateRequired]]"
+            date="{{actionPoints.completed_at}}">
+          </date-time-picker-input>
+        </div>
+
+        <div class="layout horizontal">
+
+          <paper-textarea label="Actions Taken"
+            class$="flex-12 custom-margin [[computedPermission.actions_taken.readOnly]]"
+            disabled="[[computedPermission.actions_taken.disabled]]"
+            hidden$="[[computedPermission.actions_taken.hidden]]"
+            required="[[actionTakenRequired]]"
+            starred$="[[actionTakenRequired]]"
+            placeholder="actions taken"
+            value="{{actionPoints.actions_taken}}">
+          </paper-textarea>
+        </div>
+
+      </form>
+    </template>
+
+    <template is="dom-if" if="[[viewMode]]">
+
+      <div class="layout horizontal viewSpacing">
+        <div class="isLink"  on-tap="_navigateToTravel">
+          <paper-input label="Trip Reference"
+            class$="flex-3 custom-margin [[actionPointsPermissions.trip_reference_number.readOnly]] tripReference"
+            disabled$="[[!actionPointsPermissions.trip_reference_number.edit]]"
+            hidden$="[[!actionPointsPermissions.trip_reference_number.view]]"
+            value="[[actionPoints.trip_reference_number]]"></paper-input>
+          </div>
+         <div class="flex-9"></div>
+      </div>
+
+      <div class="layout horizontal viewSpacing">
+        <paper-input label="Description"
+            class$="flex-8 custom-margin [[actionPointsPermissions.description.readOnly]]"
+            hidden$="[[!actionPointsPermissions.description.view]]"
+            disabled$="[[!actionPointsPermissions.description.edit]]"
+            required="[[actionPointsPermissions.description.required]]"
+            starred$="[[actionPointsPermissions.description.required]]"
+            value="{{actionPoints.description}}">
         </paper-input>
 
-      </div>
-
-      <div class="layout horizontal">
-
-        <date-time-picker-input label="Due date"
-          class$="flex-3 [[computedPermission.due_date.readOnly]]"
-          disabled="[[computedPermission.due_date.disabled]]"
-          hidden$="[[computedPermission.due_date.hidden]]"
-          required="[[computedPermission.due_date.required]]"
-          starred$="[[computedPermission.due_date.required]]"
-          max-date="[[today]]"
-          placeholder="select"
+        <date-time-picker-input label="Due Date"
+          inner-class="[[actionPointsPermissions.due_date.readOnly]]"
+          class$="flex-4 [[actionPointsPermissions.due_date.readOnly]]"
+          hidden$="[[!actionPointsPermissions.due_date.view]]"
+          disabled$="[[!actionPointsPermissions.due_date.edit]]"
+          min-date="[[today]]"
+          required="[[actionPointsPermissions.due_date.required]]"
+          starred$="[[actionPointsPermissions.due_date.required]]"
           date="{{actionPoints.due_date}}">
         </date-time-picker-input>
-
-        <etools-searchable-multiselection-menu label="Person responsible"
-          value="{{actionPoints.person_responsible}}"
-          class$="flex-3 [[computedPermission.person_responsible.readOnly]]"
-          disabled="[[computedPermission.person_responsible.disabled]]"
-          hidden$="[[computedPermission.person_responsible.hidden]]"
-          required="[[computedPermission.person_responsible.required]]"
-          starred$="[[computedPermission.person_responsible.required]]"
-          options="[[structure.users]]"
-          empty-value
-          placeholder="select">
-        </etools-searchable-multiselection-menu>
-
-        <paper-checkbox class$="flex-3 custom-margin self-end[[computedPermission.follow_up.readOnly]]"
-          hidden$="[[computedPermission.follow_up.hidden]]"
-          checked="{{actionPoints.follow_up}}">
-          Follow up?
-        </paper-checkbox>
-
       </div>
 
-      <div class="layout horizontal">
+      <div class="layout horizontal viewSpacing">
 
-        <etools-searchable-multiselection-menu label="Status"
-          class$="flex-6 [[computedPermission.status.readOnly]]"
-          disabled="[[computedPermission.status.disabled]]"
-          hidden$="[[computedPermission.status.hidden]]"
-          required="[[computedPermission.status.required]]"
-          starred$="[[computedPermission.status.required]]"
-          options="[[structure.action_point_status]]"
-          value="{{actionPoints.status}}"
-          empty-value
-          placeholder="select">
+        <etools-searchable-multiselection-menu label="Responsible Person"
+            value="{{actionPoints.person_responsible}}"
+            class$="flex-4 [[actionPointsPermissions.person_responsible.readOnly]]"
+            disabled$="[[!actionPointsPermissions.person_responsible.edit]]"
+            hidden$="[[!actionPointsPermissions.person_responsible.view]]"
+            required="[[actionPointsPermissions.person_responsible.required]]"
+            starred$="[[actionPointsPermissions.person_responsible.required]]"
+            options="[[structure.users]]"
+            empty-value
+            placeholder="select">
         </etools-searchable-multiselection-menu>
 
+        <paper-input label="Assigned by"
+          class="flex-4 custom-margin readOnly"
+          disabled
+          value="[[actionPoints.assigned_by.label]]">
+        </paper-input>
+
+        <paper-checkbox class$="flex-4 custom-margin self-end [[actionPointsPermissions.follow_up.readOnly]] alignCheckbox"
+          hidden$="[[!actionPointsPermissions.follow_up.view]]"
+          disabled$="[[!actionPointsPermissions.follow_up.edit]]"
+          checked="{{actionPoints.follow_up}}">
+          Follow Up
+        </paper-checkbox>
+      </div>
+
+      <div class="layout horizontal viewSpacing">
+
+        <paper-textarea label="Actions Taken"
+          class$="flex-12 custom-margin [[actionPointsPermissions.actions_taken.readOnly]]"
+          hidden$="[[!actionPointsPermissions.actions_taken.view]]"
+          disabled$="[[!actionPointsPermissions.actions_taken.edit]]"
+          required="[[actionPointsPermissions.actions_taken.required]]"
+          starred$="[[actionPointsPermissions.actions_taken.required]]"
+          value="{{actionPoints.actions_taken}}">
+        </paper-textarea>
+      </div>
+
+      <div class="layout horizontal viewSpacing">
+
         <date-time-picker-input label="Completed Date"
-          class$="flex-3 [[computedPermission.completed_at.readOnly]]"
-          disabled="[[endDateDisabled]]"
-          hidden$="[[computedPermission.completed_at.hidden]]"
-          required="[[completedDateRequired]]"
-          starred$="[[completedDateRequired]]"
-          placeholder="select"
+          inner-class="[[actionPointsPermissions.completed_at.readOnly]]"
+          hidden$="[[!actionPointsPermissions.completed_at.view]]"
+          disabled$="[[!actionPointsPermissions.completed_at.edit]]"
+          class$="flex-3 [[actionPointsPermissions.completed_at.readOnly]]"
+          required="[[actionPointsPermissions.completed_at.required]]"
+          starred$="[[actionPointsPermissions.completed_at.required]]"
           date="{{actionPoints.completed_at}}">
         </date-time-picker-input>
 
+        <div class="flex-9"></div>
       </div>
+    </template>
 
-
-      <div class="layout horizontal">
-
-        <paper-textarea label="Actions taken"
-          class$="flex-12 custom-margin [[computedPermission.actions_taken.readOnly]]"
-          disabled="[[computedPermission.actions_taken.disabled]]"
-          hidden$="[[computedPermission.actions_taken.hidden]]"
-          required="[[actionTakenRequired]]"
-          starred$="[[actionTakenRequired]]"
-          placeholder="actions taken"
-          value="{{actionPoints.actions_taken}}">
-        </paper-textarea>
-
-      </div>
-
-    </form>
   </template>
 
   <script>
     Polymer({
       is: 'action-point',
       properties: {
+        viewMode: {
+          type: Boolean,
+          value: false
+        },
         actionPoints: {
           type: Object,
-          value: {},
           notify: true
         },
         structure: {
@@ -150,24 +263,33 @@
         },
         completedDateRequired: {
           type: Boolean,
+          value: false,
           computed: '_computeCompletedDateRequired(computedPermission.completed_at.required, actionPoints.status)'
         },
         actionTakenRequired: {
           type: Boolean,
           computed: '_computeActionTakenRequired(computedPermission.actions_taken.required, actionPoints.*)'
+        },
+        actionPointsPermissions: {
+          type: Object,
         }
       },
       observers: [
-        '_computeStatusDefaultValue(actionPoints.*, structure.action_point_status)',
-        '_addValidationFunction(actionPoints.*)'
+        '_computeDefaultValues(actionPoints.*, structure.action_point_status, user)',
+        '_addValidationFunction(actionPoints.*)',
       ],
       behaviors: [et2fBehaviors.PermissionLayer],
-      _computeStatusDefaultValue: function(actionPoints, structure) {
+      _computeDefaultValues: function(actionPoints, structure, user) {
         var status = actionPoints.base.status;
         if (!status && Object.keys(actionPoints.base).length > 1) {
-          this.set('actionPoints.status', structure.find(function(item) {
+          this.actionPoints.status = structure.find(function(item) {
             return item.label === 'Open';
-          }));
+          });
+          if (!actionPoints.base.assigned_by) {
+            this.actionPoints.assigned_by = user.value;
+          }
+          this.notifyPath('actionPoints.status');
+          this.notifyPath('actionPoints.assigned_by');
         }
       },
       _computeCompletedDateRequired: function(permissions, status) {
@@ -182,17 +304,19 @@
         var aps = this.actionPoints;
         var keys = Object.keys(aps);
         if (keys.length > 1) {
-         return this.$.action_point_form.validate();
+         return this.$$('#action_point_form').validate();
         }
         return true;
       },
       _addValidationFunction: function(actionPointsChanged) {
         var actionPoints = actionPointsChanged.base;
-        if (!actionPoints._validationFunction) {
+        if (!actionPoints._validationFunction && !this.viewMode) {
           actionPoints._validationFunction = this._validateActionPoint.bind(this);
         }
+      },
+      _navigateToTravel: function() {
+        this.fire('navigate-to', this.actionPoints.trip_id);
       }
-
     });
   </script>
 </dom-module>

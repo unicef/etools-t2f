@@ -14,14 +14,12 @@
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
+<link rel="import" href="../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../bower_components/etools-loading/etools-loading-behavior.html">
 
 <link rel="import" href="app-config/etools-app-config.html">
 <link rel="import" href="app-elements/user-data/user-data.html">
 <link rel="import" href="app-elements/side-bar-item/side-bar-item.html">
-
-<link rel="import" href="app-elements/countries-dropdown/countries-dropdown.html">
-<link rel="import" href="app-elements/countries-data/countries-data.html">
 
 <link rel="import" href="styles/shared-styles.html">
 <link rel="import" href="styles/page-layout-styles.html">
@@ -134,7 +132,11 @@
           <div class="nav-menu">
             <iron-selector selected="[[page]]" attr-for-selected="name" selectable="side-bar-item" role="navigation">
               <template is="dom-if" if="{{permissions.loggedInDefault}}">
-                  <side-bar-item name="trips" icon="description" href="[[baseUrl]]travel-list"></side-bar-item>
+
+                  <side-bar-item name="Travel2Field" icon="maps:transfer-within-a-station" href="[[baseUrl]]travel-list"></side-bar-item>
+                  <side-bar-item name="invoices" icon="description" href="[[baseUrl]]invoices-list"></side-bar-item>
+                  <side-bar-item name="action points" icon="list" href="[[baseUrl]]action-points-list"></side-bar-item>
+
                   <div class="divider"></div>
               </template>
               <!-- Permissions example: only display settings if the user has permission -->
@@ -284,7 +286,7 @@
         if (this._pagesAvailable || (['settings', 'etc'].indexOf(page) !== -1)) {
             this.page = page || 'travel-list';
         } else {
-            console.log('No permissions yet or page hasn\'t stampped', page);
+            // console.log('No permissions yet or page hasn\'t stampped', page);
         }
       },
 

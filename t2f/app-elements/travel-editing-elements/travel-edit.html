@@ -110,7 +110,7 @@
         <div class="dialog-heading flex">Warning</div>
         <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
       </div>
-      <div class="dialog-intro-text">You are not allowed to take this action, until you have missing, or badly formatted information in the following fields:</div>
+      <div class="dialog-intro-text">You are not allowed to take this action, until you correct the following missing or badly formatted information below:</div>
 
       <div class="missing-action-header flex" hidden$="[[!invalids.details]]">Travel Details</div>
       <template is="dom-repeat" items="[[invalids.details]]">
@@ -130,72 +130,71 @@
     </paper-dialog>
 
 
-    <et2f-header title="Edit travel plan"
+    <et2f-header title="Edit Trip"
       data="[[data]]"
       export-type='details'
       show-new-travel-button="true">
       <paper-tabs scrollable
         selected="{{selected}}">
         <paper-tab error$="[[invalids.details]]">
-          TRAVEL DETAILS
+          DETAILS
+          <iron-icon icon="warning"></iron-icon>
+        </paper-tab>
+         <paper-tab error$="[[invalids.report]]">
+          REPORT
           <iron-icon icon="warning"></iron-icon>
         </paper-tab>
         <paper-tab>
-          ATTACHMENTS
-        </paper-tab>
-        <paper-tab error$="[[invalids.report]]">
-          REPORT
-          <iron-icon icon="warning"></iron-icon>
+          ATTACHMENTS &#38; NOTES
         </paper-tab>
       </paper-tabs>
     </et2f-header>
 
     <form-errors id="apierrors" errors="{{formErrors}}" error-selected="{{errorSelected}}"></form-errors>
     <div class="layout horizontal">
-    <iron-pages selected="{{selected}}" class="flex">
+      <iron-pages selected="{{selected}}" class="flex">
 
-      <travel-details
-        id="travelDetails"
-        scroll-to-fieldset="[[errorSelected]]"
-        structure="[[structure]]"
-        travel-permissions="[[travelPermissions]]"
-        data="{{data}}"
-        user-roles="[[userRoles]]"
-        user="[[user]]">
-      </travel-details>
+        <travel-details
+          id="travelDetails"
+          scroll-to-fieldset="[[errorSelected]]"
+          structure="[[structure]]"
+          travel-permissions="[[travelPermissions]]"
+          data="{{data}}"
+          user-roles="[[userRoles]]"
+          user="[[user]]">
+        </travel-details>
 
-      <travel-attachments
-        structure="[[structure]]"
-        attachments-permission="[[travelPermissions.attachments]]"
-        is-international="[[data.baseDetails.international_travel]]"
-        completed-at="[[data.completed_at]]"
-        cancelled-at="[[data.cancelled_at]]"
-        attachments="{{data.attachments}}"
-        deleted-attachments="{{data.deletedAttachments}}"
-        status="[[data.status]]"
-        user-roles="[[userRoles]]"
-        on-form-action="_handleFormAction">
-      </travel-attachments>
+         <travel-report
+          id="travelReport"
+          structure="[[structure]]"
+          permissions="[[travelPermissions]]"
+          data="{{data}}"
+          report-string="[[data.report]]"
+          user-roles="[[userRoles]]"
+          user="[[user]]">
+        </travel-report>
 
-      <travel-report
-        id="travelReport"
-        structure="[[structure]]"
-        permissions="[[travelPermissions]]"
-        data="{{data}}"
-        report-string="[[data.report]]"
-        user-roles="[[userRoles]]"
-        on-form-action="_handleFormAction">
-      </travel-report>
-    </iron-pages>
+        <travel-attachments
+          structure="[[structure]]"
+          attachments-permission="[[travelPermissions.attachments]]"
+          notes-permission="[[travelPermissions.additional_notes]]"
+          base-details="{{data.baseDetails}}"
+          attachments="{{data.attachments}}"
+          deleted-attachments="{{data.deletedAttachments}}"
+          status="[[data.status]]"
+          user-roles="[[userRoles]]">
+        </travel-attachments>
 
-      <travel-status
-        id="travelStatus"
-        user-roles="[[userRoles]]"
-        data="[[data]]"
-        scroll-top-margin="84"
-        on-validate="onValidate">
-      </travel-status>
-      </div>
+      </iron-pages>
+
+    <travel-status
+      id="travelStatus"
+      user-roles="[[userRoles]]"
+      data="[[data]]"
+      scroll-top-margin="84"
+      on-validate="onValidate">
+    </travel-status>
+    </div>
 
   </template>
 
@@ -254,7 +253,7 @@
 
       },
       observers: [
-        '_computeTravelPermission(et2fPermissions, status, user, data)',
+        '_computeTravelPermission(et2fPermissions, status, user, data)'
       ],
 
       _loadDefault: function() {
@@ -262,11 +261,17 @@
         this.set('data', {
           baseDetails: {
             ta_required: true,
-            international_travel: false
+            international_travel: null
           },
-          activities: [{}],
-          itinerary: [{}],
-          cost_assignments: [{}],
+          activities: [{
+            primary_traveler: null
+          }],
+          itinerary: [{
+            overnight_travel: null
+          }],
+          cost_assignments: [{
+            delegate: null
+          }],
           cost_summary: {},
           deductions: [],
           expenses: [{}],
@@ -274,6 +279,7 @@
           action_points: [{}],
           status: 'Planned'
         });
+        this.set('invalids', {});
       },
       _formErrorObserver: function(newValue, old) {
           if (newValue) {
@@ -314,6 +320,9 @@
           travelRole = forcedTravelRole;
         }
         var userTravelRoles = travelRole ? user.t2f.roles.concat(travelRole) : user.t2f.roles;
+        userTravelRoles = userTravelRoles.filter(function(role) {
+          return ['Others', 'Assigner', 'PersonResponsible', 'PME'].indexOf(role) === -1;
+        });
         if (userTravelRoles.length > 0) {
           var userPermissions = {};
           var draft = permissions[userTravelRoles[0]][status];
@@ -347,7 +356,7 @@
         }
 
         var self = this;
-        if ((!self.travelId || self.travelId === '/-1') && data.baseDetails) {
+        if ((!self.travelId || self.travelId === -1) && data.baseDetails) {
           data.baseDetails.traveler = {
             label: user.full_name,
             value: user.id
@@ -373,8 +382,8 @@
           report: []
         };
 
-        invalids.details = this.$.travelDetails.doValidate(action);
-        invalids.report = this.$.travelReport.doValidate(action);
+        invalids.details = this.$$('#travelDetails').doValidate(action);
+        invalids.report = this.$$('#travelReport').doValidate(action);
 
         invalids.details = invalids.details.length > 0 ? invalids.details : false;
         invalids.report = invalids.report.length > 0 ? invalids.report : false;

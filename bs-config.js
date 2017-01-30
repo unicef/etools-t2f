@@ -15,7 +15,8 @@
 
 var proxy = require('http-proxy-middleware');
 var backendProxy = proxy(['/api','/users/api/'], {
-  target: 'http://127.0.0.1:8000/',
+  target: 'http://139.59.134.232:9090/',
+  // target: 'http://192.168.0.27:8000/',
   changeOrigin: true,             // for vhosted sites, changes host header to match to target's host
   logLevel: 'debug'
 });
@@ -39,7 +40,7 @@ module.exports = {
     'logPrefix': 'BS',
     'logConnections': false,
     'logFileChanges': true,
-    'logSnippet': true,
+    'logSnippet': false,
     'rewriteRules': [],
     'open': 'local',
     'browser': 'default',

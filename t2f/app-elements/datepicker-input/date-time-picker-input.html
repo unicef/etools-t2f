@@ -1,6 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 
@@ -52,10 +53,16 @@
         padding:24px !important;
         color: var(--et2f-error);
       }
+      .readOnly {
+        --paper-input-container-underline: {
+          border-bottom: 0px solid black !important;
+        }
+      }
     </style>
 
     <paper-input id="date-input"
       readonly
+      class$="[[innerClass]]"
       on-focus="_onFocus"
       label="[[label]]"
       always-float-label
@@ -84,7 +91,9 @@
          Please select a date-time less or equal than: [[prettyMaxDate]]
       </div>
       <div class="buttons">
-        <paper-button disabled="[[dialogButtonDisabled]]" dialog-confirm>OK</paper-button>
+        <paper-button hidden$="[[!clearable]]" on-tap="_clearDate" dialog-dismiss>Clear</paper-button>
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button disabled="[[dialogButtonDisabled]]" autofocus dialog-confirm>OK</paper-button>
       </div>
     </paper-dialog>
 
@@ -101,6 +110,7 @@
         },
         required: Boolean,
         placeholder: String,
+        innerClass: String,
         autoValidate: {
           type: Boolean,
         },
@@ -140,6 +150,10 @@
           type: Boolean,
           value: false
         },
+        clearable: {
+          type: Boolean,
+          value: false,
+        },
         minDate: {
           type: Date,
           observer: '_minDateChanged'
@@ -164,7 +178,7 @@
         showMaxDateWarning: {
           type: Boolean,
           value: false,
-          computed: '_computeShowMaxDateWarning(maxDate, internalDate, hour, minute)'
+          computed: '_computeShowMaxDateWarning(calculatedMaxDate, internalDate, hour, minute)'
         },
         dialogButtonDisabled: {
           type: Boolean,
@@ -208,16 +222,22 @@
       _calculateMinDateCalculated: function(date) {
         if (date) {
           date = moment(new Date(date));
-          date.subtract(1, 'days');
           this.set('prettyMinDate', date.format(this.format));
+          date.hour('00');
+          date.minute('00');
+          date.second('00');
+          date.millisecond(0);
           return date.toDate();
         }
       },
       _calculateMaxDateCalculated: function(date) {
         if (date) {
           date = moment(new Date(date));
-          date.add(1, 'days');
           this.set('prettyMaxDate', date.format(this.format));
+          date.hour('00');
+          date.minute('00');
+          date.second('00');
+          date.millisecond(999);
           return date.toDate();
         }
       },
@@ -263,13 +283,22 @@
           this.set('date', undefined);
         }
       },
-      _setNewDate: function() {
-        var date = moment(this.internalDate);
-        if (this.timePicker) {
-          date.hour(this.hour);
-          date.minute(this.minute);
+      _setNewDate: function(event) {
+        if (event.detail.confirmed) {
+          var date = moment(this.internalDate);
+          if (this.timePicker) {
+            date.hour(this.hour);
+            date.minute(this.minute);
+          } else {
+            date.hour('00');
+            date.minute('00');
+          }
+          date.second('00');
+          this.set('date', date.toDate());
         }
-        this.set('date', date.toDate());
+      },
+      _clearDate: function(e) {
+        this.set('date', undefined);
       }
 
     });

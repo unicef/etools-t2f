@@ -1,19 +1,23 @@
 <link rel="import" href="../../bower_components/moment-element/moment-with-locales-import.html">
 <script>
 var PDFBehavior = {
-  _print: function(item) {
+  _print: function(item, suffix) {
+    var result = '';
     if (item) {
       if (item.label) {
-        return item.label;
+        result = item.label;
       }
       if (typeof item === 'string') {
-        return item;
+        result =  item;
       }
       if (typeof item === 'number') {
-        return '' + item;
+        result = '' + item;
       }
     }
-    return '';
+    if (suffix) {
+      result = result + suffix;
+    }
+    return result;
   },
   _printDate: function(date) {
     if (date === '') {
@@ -23,8 +27,35 @@ var PDFBehavior = {
   },
   _printX: function(item) {
     return item ? 'X' : '';
+  },
+  _printFixed: function(amount) {
+    if (+amount === amount) {
+      return amount.toFixed(4);
+    } else if (typeof amount === 'string') {
+      var parsed = parseFloat(amount);
+      return isNaN(parsed) ? amount : parsed.toFixed(4);
+    } else if (!amount) {
+      return '';
+    } else {
+      return amount;
+    }
+  },
+  _printCountryFromStr: function(str) {
+    var splat = str.split(' - ');
+    if (splat.length === 2) {
+      return splat[0];
+    } else {
+      return str;
+    }
+  },
+  _printCityFromStr: function(str) {
+    var splat = str.split(' - ');
+    if (splat.length === 2) {
+      return splat[1];
+    } else {
+      return '';
+    }
   }
-
 };
 window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
 window.et2fBehaviors.PDFBehavior = PDFBehavior;

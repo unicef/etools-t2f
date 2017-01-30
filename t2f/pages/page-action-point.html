@@ -6,14 +6,14 @@
 
 
 
-<link rel="import" href="../app-elements/travel-editing-elements/travel-edit.html">
+<link rel="import" href="../app-elements/travel-editing-elements/show-action-point.html">
 <link rel="import" href="../app-elements/page-header-element/page-header.html">
 
 <link rel="import" href="../styles/shared-styles.html">
 
 
 
-<dom-module id="page-edit-travel">
+<dom-module id="page-action-point">
 
   <style include="shared-styles">
     :host {
@@ -27,41 +27,40 @@
 
       <app-header fixed shadow>
 
-        <page-header title="" countries="[[structure.countries]]"></page-header>
+        <page-header title="Action Point" countries="[[structure.countries]]"></page-header>
 
       </app-header>
+
     </app-header-layout>
-    <template is="dom-if" if="[[showTravelEdit]]" restamp>
-      <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" detail-loading="{{detailLoading}}" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
-    </template>
+    <show-action-point route="{{route}}"
+      action-point-id="[[actionPointId]]"
+      structure="[[structure]]"
+      user="[[user]]"
+      loading="{{detailLoading}}"
+      et2f-permissions="[[et2fPermissions]]">
+    </show-action-point>
   </template>
 
   <script>
     Polymer({
-      is: 'page-edit-travel',
+      is: 'page-action-point',
       properties: {
-        travelId: Number,
+        actionPointId: {
+          type: String,
+        },
         et2fPermissions: {
           type: Object,
+        },
+        detailLoading: {
+          type: Boolean,
+          notify: true,
         },
         structure: Object,
         user: Object,
         route: {
           type: Object,
           notify: true,
-        },
-        detailLoading: {
-          type: Boolean,
-          notify: true
-        },
-        showTravelEdit: {
-          type: Boolean,
-          value: false,
-          computed: '_computeShowTravelEdit(structure, et2fPermissions, travelId, user)'
         }
-      },
-      _computeShowTravelEdit: function(structure, permissions, id, user) {
-        return structure && permissions && id && user;
       }
 
     });

@@ -9,6 +9,8 @@
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
+
+<link rel="import" href="../../scripts/lodash/lodash.html">
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../travel-status-box/travel-status.html">
 <link rel="import" href="../../app-behaviors/permission-behavior.html">
@@ -103,7 +105,7 @@
       <div class="flex">
 
         <!-- Cancellation note -->
-        <paper-material class="note cancel" elevation="1" hidden$="[[_hideCancelNote(data)]]">
+        <paper-material class="note cancel" elevation="1" hidden$="[[hideCancelNote]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g class="cancel-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
@@ -118,7 +120,7 @@
         </paper-material>
 
         <!-- Rejection note -->
-        <paper-material class="note reject" elevation="1" hidden$="[[_hideRejectionNote(data)]]">
+        <paper-material class="note reject" elevation="1" hidden$="[[hideRejectionNote]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
             <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g class="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
@@ -133,7 +135,7 @@
         </paper-material>
 
         <!-- Certification rejection note -->
-        <paper-material class="note reject" elevation="1" hidden$="[[_hideCertRejectionNote(data)]]">
+        <paper-material class="note reject" elevation="1" hidden$="[[hideCertRejectionNote]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
             <g  stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g class="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
@@ -148,7 +150,7 @@
         </paper-material>
 
         <!-- Certification note -->
-        <paper-material class="note reject" elevation="1" hidden$="[[_hideCertificationNote(data)]]">
+        <paper-material class="note reject" elevation="1" hidden$="[[hideCertificationNote]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
             <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g class="reject-flag" transform="translate(-96.000000, -226.000000)" fill="#FF9044">
@@ -165,7 +167,7 @@
           <div class="note-text">[[data.misc_expenses]]</div>
         </paper-material>
 
-        <etools-repeatable-field-set title="Trip Plan"
+        <etools-repeatable-field-set title="Overview"
           hide-plus
           show-counter="[[false]]"
           model="[1]"
@@ -198,6 +200,8 @@
             <travel-activities
               class="travel_activity"
               activity="{{item}}"
+              min-date="[[data.baseDetails.start_date]]"
+              max-date="[[data.baseDetails.end_date]]"
               permissions-matrix="[[travelPermissions.activities]]"
               structure="[[structure]]"
               activity-validation-array="{{activityValidationArray}}">
@@ -213,7 +217,7 @@
           elevation="1"
           show-counter
           open="[[sectionPermissions.itinerary.open]]"
-          hidden$="[[sectionPermissions.itinerary.hidden]]">
+          hidden$="[[_hideOnTANotRequired(sectionPermissions.itinerary.hidden, data.baseDetails.ta_required)]]">
 
           <template
             is="dom-repeat"
@@ -221,6 +225,8 @@
 
             <travel-itinerary permissions-matrix="[[travelPermissions.itinerary]]"
               itinerary="{{item}}"
+              min-date="[[data.baseDetails.start_date]]"
+              max-date="[[data.baseDetails.end_date]]"
               structure="[[structure]]">
             </travel-itinerary>
           </template>
@@ -233,7 +239,7 @@
           hide-plus
           elevation="1"
           open="[[sectionPermissions.deductions.open]]"
-          hidden$="[[sectionPermissions.deductions.hidden]]">
+          hidden$="[[_hideOnTANotRequired(sectionPermissions.deductions.hidden, data.baseDetails.ta_required)]]">
 
           <div class="layout vertical flex">
 
@@ -253,11 +259,12 @@
           hide-plus="[[!sectionPermissions.expenses.edit]]"
           elevation="1"
           open="[[sectionPermissions.expenses.open]]"
-          hidden$="[[sectionPermissions.expenses.hidden]]">
+          hidden$="[[_hideOnTANotRequired(sectionPermissions.expenses.hidden, data.baseDetails.ta_required)]]">
 
           <template is="dom-repeat" items="{{data.expenses}}">
             <travel-expense permissions-matrix="[[travelPermissions.expenses]]"
               expense="{{item}}"
+              selected-expenses="[[selectedExpensesType]]"
               structure="[[structure]]">
             </travel-expense>
           </template>
@@ -269,20 +276,21 @@
           elevation="1"
           hide-plus="[[!sectionPermissions.cost_assignments.edit]]"
           open="[[sectionPermissions.cost_assignments.open]]"
-          hidden$="[[sectionPermissions.cost_assignments.hidden]]">
+          hidden$="[[_hideOnTANotRequired(sectionPermissions.cost_assignments.hidden, data.baseDetails.ta_required)]]">
 
           <template is="dom-repeat" items="{{data.cost_assignments}}">
 
             <travel-cost-assignment permissions-matrix="[[travelPermissions.cost_assignments]]"
               cost-assignment="{{item}}"
               structure="[[structure]]"
+              default-business-area="[[defaultBusinessArea]]"
               invalid-shares="[[_invalidShares(data.cost_assignments.*)]]">
             </travel-cost-assignment>
 
           </template>
         </etools-repeatable-field-set>
 
-        <etools-repeatable-field-set title="Cost summary"
+        <etools-repeatable-field-set title="Cost Summary"
           id="cost_summary"
           hide-vertical-divider
           class="orange-header"
@@ -290,7 +298,7 @@
           hide-plus
           elevation="1"
           open="[[sectionPermissions.cost_summary.open]]"
-          hidden$="[[sectionPermissions.cost_summary.hidden]]">
+          hidden$="[[_hideOnTANotRequired(sectionPermissions.cost_summary.hidden, data.baseDetails.ta_required)]]">
 
           <travel-cost-summary cost-summary="[[data.cost_summary]]" currency="[[data.baseDetails.currency]]" structure="[[structure]]"></travel-cost-summary>
         </etools-repeatable-field-set>
@@ -331,8 +339,67 @@
           observer: '_scrollTo'
         },
         percentagesSum: Number,
-        user: Object
+        user: Object,
+        defaultBusinessArea: {
+          type: Object,
+          computed: '_computeDefaultBusinssArea(user, structure)'
+        },
+        hideCancelNote: {
+          type: Boolean,
+          value: true,
+          computed: '_computeHideCancelNote(data)'
+        },
+        hideRejectionNote: {
+          type: Boolean,
+          value: true,
+          computed: '_computeHideRejectionNote(data)'
+        },
+        hideCertRejectionNote: {
+          type: Boolean,
+          value: true,
+          computed: '_computeideCertRejectionNote(data)'
+        },
+        hideCertificationNote: {
+          type: Boolean,
+          value: true,
+          computed: '_computeHideCertificationNote(data)'
+        },
+        selectedExpensesType: {
+          type: Array,
+          value: [],
+          computed: '_computeSelectedExpensesType(data.expenses.*)'
+        }
       },
+
+      _computeDefaultBusinssArea: function(user, structure) {
+        var userCountry = parseInt(user.profile.country, 10);
+        userCountry = structure.countries.find(function(country) {
+          return parseInt(country.value, 10) === userCountry;
+        });
+
+        var userBa = userCountry.business_area ? userCountry.business_area : structure.business_areas[0].id;
+
+        var businessArea = structure.business_areas.find(function(ba) {
+          return parseInt(ba.id, 10) === parseInt(userBa, 10);
+        });
+
+        return businessArea;
+      },
+
+      _computeSelectedExpensesType: function(expensesChanged) {
+        var baseArray = expensesChanged.base;
+        if (baseArray) {
+          return baseArray.map(function(expense) {
+            return expense.type;
+          }) || [];
+        }
+        return [];
+      },
+
+      _hideOnTANotRequired: function(permissionMatrixHidden, taRequired) {
+        return !taRequired || permissionMatrixHidden;
+      },
+
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
         var computed = {};
 
@@ -399,26 +466,71 @@
         this.$[fieldset].scrollIntoView();
       },
 
-      _hideCancelNote: function(data) {
+      _computeHideCancelNote: function(data) {
         return data.status !== 'Cancelled' || data.cancellation_note.length === 0;
       },
 
-      _hideRejectionNote: function(data) {
+      _computeHideRejectionNote: function(data) {
         return data.status !== 'Rejected' || data.rejection_note.length === 0;
       },
 
-      _hideCertRejectionNote: function(data) {
+      _computeideCertRejectionNote: function(data) {
         return data.status !== 'Certification rejected' || data.cert_rejection_note.length === 0;
       },
 
-      _hideCertificationNote: function(data) {
+      _computeHideCertificationNote: function(data) {
         return data.status !== 'Certification submitted';
       },
-      _validateItinerarySize: function() {
+      _validateItinerarySize: function(invalids) {
         if (this.data.itinerary.length === 0) {
           return false;
         }
-        return this.data.itinerary[0]._validationFunction(true);
+        if (!this.data.itinerary[0]._validationFunction(true)) {
+          invalids.push('Itinerary must have at least one entry');
+        }
+      },
+
+      _validateItineraryIntegrity: function(invalids) {
+
+        function sameDate(a, b) {
+          return new Date(a).getTime() !== new Date(b).getTime();
+        }
+
+        function beforeDate(a, b) {
+          if (!a || !b) {
+            return false;
+          }
+          return new Date(a).getTime() < new Date(b).getTime();
+        }
+        var itinerary = _.cloneDeep(this.data.itinerary);
+
+        itinerary.sort(function(a, b) {
+          return a.departure_date > b.departure_date;
+        });
+
+        var orderError = false;
+        var overlappingError = false;
+        for (var i = 0; i < itinerary.length - 1; i++) {
+          var ordered =  itinerary[i];
+          var original = this.data.itinerary[i];
+
+          if (sameDate(ordered.departure_date, original.departure_date)
+            || sameDate(ordered.arrival_date, original.arrival_date)) {
+            orderError = true;
+          }
+          var nextDeparture = itinerary[i + 1] ? itinerary[i + 1].departure_date : undefined;
+          if (beforeDate(nextDeparture, ordered.arrival_date)) {
+            overlappingError = true;
+          }
+        }
+
+        if (orderError) {
+          invalids.push('Itinerary: One or more arrival dates are earlier than the departure dates');
+        }
+        if (overlappingError) {
+          invalids.push('Itinerary: Two or more line items have overlapping dates');
+        }
+
       },
 
       doValidate: function(action) {
@@ -428,14 +540,17 @@
 
         function fieldSetValidation(toValidate) {
           toValidate.forEach(function(area) {
-            var fieldSet = area.toLowerCase();
-            if (!self.data[fieldSet].hidden) {
-              var result = true;
-              self.data[fieldSet].forEach(function(field) {
-                result = field._validationFunction() && result;
-              });
-              if (!result) {
-                invalids.push(area);
+            var fieldSet = area.toLowerCase().split(' ').join('_');
+            var domFieldSet = self.$$('#' + fieldSet);
+            if (domFieldSet && !domFieldSet.hidden && !domFieldSet.disabled) {
+              if (!self.data[fieldSet].hidden) {
+                var result = true;
+                self.data[fieldSet].forEach(function(field) {
+                  result = field._validationFunction() && result;
+                });
+                if (!result) {
+                  invalids.push(area);
+                }
               }
             }
           });
@@ -443,26 +558,28 @@
 
         if (['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0) {
           // Validating Trip plan
-            if (!this.$.travel_plan._validateTravelPlan()) {
-              invalids.push('Trip Plan');
-            }
-            var toValidate = ['Activities', 'Expenses'];
-            fieldSetValidation(toValidate);
-
-            // Checking Cost Assignment validity
-            if (this.percentagesSum !== 100) {
-              invalids.push('Cost assignment');
-            }
+          if (!this.$.travel_plan._validateTravelPlan()) {
+            invalids.push('Trip Plan');
           }
+          var toValidate = ['Activities', 'Expenses'];
+          fieldSetValidation(toValidate);
 
-          if (action.name === 'Save') {
-            fieldSetValidation(['Itinerary']);
-
-            if (!self._validateItinerarySize()) {
-              invalids.push('Itinerary must have at least one entry');
-            }
+          // Checking Cost Assignment validity
+          if (this.percentagesSum !== 100) {
+            invalids.push('Cost assignments share(s) must sum to 100');
           }
-          return invalids;
+        }
+
+        if (action.name === 'Save & submit') {
+          fieldSetValidation(['Cost Assignments']);
+        }
+
+        if (action.name === 'Save' && !self.$$('#itinerary').hidden) {
+          fieldSetValidation(['Itinerary']);
+          self._validateItinerarySize(invalids);
+          self._validateItineraryIntegrity(invalids);
+        }
+        return invalids;
       },
 
       _invalidShares: function(changed) { // data.cost_assignments.*

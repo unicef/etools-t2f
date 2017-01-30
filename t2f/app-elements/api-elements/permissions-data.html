@@ -1,0 +1,51 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../app-config/etools-app-config.html">
+
+
+<dom-module id="et2f-permissions-data">
+  <template>
+     <etools-ajax endpoint="[[permissionsEndpoint]]"
+        on-success="_handlePermissions"
+        loading="{{loading}}"
+        caching-storage="dexie">
+      </etools-ajax>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'et2f-permissions-data',
+
+      properties: {
+        loading: {
+          type: Boolean,
+          notify: true
+        },
+        et2fPermissions: {
+          type: Object,
+          notify: true
+        },
+        permissionsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
+        }
+      },
+      _handlePermissions: function(e, data) {
+        if (!data.parsed) {
+          data = this._parsePermissions(data);
+        }
+        this.set('et2fPermissions', data);
+      },
+       _parsePermissions: function(permissionMatrix) {
+        permissionMatrix.parsed = true;
+        Object.freeze(permissionMatrix);
+        return permissionMatrix;
+      },
+      _redirectToLogin: function() {
+        window.location.href = '/login/';
+      },
+    });
+  </script>
+</dom-module>

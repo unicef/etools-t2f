@@ -4,6 +4,7 @@
 <link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
@@ -19,15 +20,6 @@
       :host {
         display: block;
         width: 100%;
-      }
-      .custom-margin {
-        --paper-input-container: {
-          height: auto;
-          margin-left: 12px;
-          margin-right: 12px;
-          margin-bottom: 12px;
-        };
-        --paper-checkbox-margin: 12px;
       }
       span.standalone {
         color: var(--gray-dark);
@@ -51,6 +43,8 @@
         color: var(--gray-mid);
         font-size: 16px;
         margin-bottom: 24px;
+        max-width: 500px;
+        margin: auto;
       }
 
       .dialog-confirm-button {
@@ -79,19 +73,41 @@
       </paper-button>
     </paper-dialog>
 
+    <paper-dialog id="info-modal" with-backdrop>
+
+      <div class="dialog-heading">Caution</div>
+      <div class="dialog-intro-text">
+      Your profile does not contain a vendor number to process a TA.
+      <br>
+      You can only plan and report a trip until this is updated.
+      <br>
+      Please contact your Travel Admin to rectify this issue.
+      <br>
+      TAs can only be processed if the VISION HR Master profile has your profile.</div>
+
+      <paper-button
+        class="dialog-confirm-button"
+        dialog-dismiss>
+        I understand
+      </paper-button>
+    </paper-dialog>
+
     <form
       is="iron-form"
       id="travel_plan_form"
       class="layout vertical flex">
 
       <div class="layout horizontal">
-
-        <paper-checkbox class$="flex-3 custom-margin [[computedPermission.ta_required.readOnly]]"
-          hidden$="[[computedPermission.ta_required.hidden]]"
-          checked="{{baseDetails.ta_required}}"
-          disabled="[[taRequiredDisabled]]"
-          >TA required?
-        </paper-checkbox>
+        <div class="flex-3">
+          <paper-checkbox class$="custom-margin [[computedPermission.ta_required.readOnly]]"
+            hidden$="[[computedPermission.ta_required.hidden]]"
+            checked="{{baseDetails.ta_required}}"
+            disabled="[[taRequiredDisabled]]"
+            >TA Required
+          </paper-checkbox>
+          <paper-tooltip offset="0" hidden$="[[taEligible]]">You are not eligible for submitting a TA</paper-tooltip>
+          <paper-tooltip offset="0" hidden$="[[!baseDetails.international_travel]]">An international Trip do not require a TA</paper-tooltip>
+        </div>
 
         <paper-checkbox class$="flex-3 custom-margin [[computedPermission.international_travel.readOnly]]"
           disabled="[[computedPermission.international_travel.disabled]]"
@@ -99,7 +115,7 @@
           toggles="[[falseValue]]"
           checked="[[baseDetails.international_travel]]"
           on-tap="_openDialog"
-          >International travel?
+          >International Trip
         </paper-checkbox>
 
         <div class="flex-6 layout horizontal center">
@@ -195,7 +211,7 @@
 
         <etools-searchable-multiselection-menu label="Mode of travel"
           id="mode_of_travel"
-          class$="flex-6 [[computedPermission.mode_of_travel.readOnly]]"
+          class$="flex-6 capitalize [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.travel_modes]]"
@@ -213,7 +229,7 @@
         <paper-input label="Estimated travel cost"
           class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
           disabled="[[computedPermission.estimated_travel_cost.disabled]]"
-          hidden$="[[computedPermission.estimated_travel_cost.hidden]]"
+          hidden$="[[_hideOnTANotRequired(computedPermission.estimated_travel_cost.hidden, baseDetails.ta_required)]]"
           pattern="^[0-9]+(\.[0-9]{1,2})?$"
           error-message="*number required"
           placeholder="eg.: 567.12"
@@ -221,10 +237,10 @@
           auto-validate>
         </paper-input>
 
-        <etools-searchable-multiselection-menu label="Currency"
+        <etools-searchable-multiselection-menu label="Currency of TA"
           class$="flex-3 [[computedPermission.currency.readOnly]]"
           disabled="[[computedPermission.currency.disabled]]"
-          hidden$="[[computedPermission.currency.hidden]]"
+          hidden$="[[_hideOnTANotRequired(computedPermission.currency.hidden, baseDetails.ta_required)]]"
           empty-value
           options="[[structure.currencies]]"
           value="{{baseDetails.currency}}"
@@ -236,7 +252,7 @@
 
       <div class="layout horizontal">
 
-        <paper-textarea label="Purpose of travel"
+        <paper-textarea label="Purpose of Trip"
           id="purpose"
           class$="flex-12 custom-margin [[computedPermission.purpose.readOnly]]"
           disabled="[[computedPermission.purpose.disabled]]"
@@ -250,16 +266,6 @@
         </paper-textarea>
       </div>
 
-      <div class="layout horizontal">
-
-        <paper-textarea label="Additional notes"
-          class$="flex-12 custom-margin [[computedPermission.additional_note.readOnly]]"
-          disabled="[[computedPermission.additional_note.disabled]]"
-          hidden$="[[computedPermission.additional_note.hidden]]"
-          placeholder="more details"
-          value="{{baseDetails.additional_note}}">
-        </paper-textarea>
-      </div>
     </form>
   </template>
 
@@ -291,7 +297,7 @@
         taRequiredDisabled: {
           type: Boolean,
           computed: '_computeDisableTaRequired(computedPermission.ta_required.disabled,' +
-            ' baseDetails.international_travel)'
+            ' baseDetails.international_travel, taEligible)'
         },
         modeInputTouched: {
           type: Boolean,
@@ -302,14 +308,53 @@
           computed: '_computeDisableEndDate(computedPermission.end_date.disabled,' +
             ' baseDetails.*)',
         },
-        user: Object
+        user: {
+          type: Object,
+        },
+        taEligible: {
+          type: Boolean,
+          computed: '_computeTaEligible(user, baseDetails.traveler, baseDetails.international_travel)',
+        }
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
       observers: [
-        '_setCheckboxes(baseDetails.*)'
+        '_valuesObserver(baseDetails.*)',
+        '_setDefaultCurrency(user, baseDetails.*, structure)'
       ],
+
+      _setDefaultCurrency: function(user, dataChanged, structure) {
+        var countries = structure.countries;
+        var currencies = structure.currencies;
+        var currency = dataChanged.base.currency;
+        if (!currency) {
+          var userCountry = countries.find(function(country) {
+            return country.value === user.profile.country;
+          });
+          var countryCurrency = currencies.find(function(currency) {
+            return currency.value === userCountry.currency;
+          });
+          this.set('baseDetails.currency', countryCurrency);
+        }
+
+      },
+
+      _computeTaEligible: function(user, traveler, international) {
+        var vendorNumber = user.profile.vendor_number;
+        var userId = user.id;
+        var travelerId = traveler.value;
+        if (!vendorNumber && userId === travelerId && !international) {
+          this.$['info-modal'].open();
+          this.set('baseDetails.ta_required', false);
+          return false;
+        }
+        return true;
+      },
+
+      _hideOnTANotRequired: function(permissionMatrixHidden, taRequired) {
+        return !taRequired || permissionMatrixHidden;
+      },
 
       _computeAutoValidate: function(data) {
           return data !== undefined && Object.keys(data).length > 0;
@@ -353,11 +398,10 @@
         return value !== false;
       },
 
-      _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel) {
-        return taRequiredDisabled || internationalTravel;
+      _computeDisableTaRequired: function(taRequiredDisabled, internationalTravel, taEligible) {
+        return taRequiredDisabled || internationalTravel || !taEligible;
       },
-
-      _setCheckboxes: function(changed) {
+      _valuesObserver: function(changed) {
         this[changed.path] = changed.value;
       },
 
@@ -380,7 +424,6 @@
       },
 
       computeUsersButMe: function(users, user) {
-
         // Filters out logged in user
         return users.filter(function(actUser) {
           return actUser.value !== user.value;
