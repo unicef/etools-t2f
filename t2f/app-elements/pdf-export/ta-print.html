@@ -198,7 +198,6 @@
                     return [
                       {text: printDate(dsa.start_date), alignment: 'left'},
                       {text: printDate(dsa.end_Date), alignment: 'center'},
-                      {text: print(dsa.dsa_region_name.split(' - ')[0]), alignment: 'center'},
                       {text: printCountryFromStr(dsa.dsa_region_name), alignment: 'center'},
                       {text: printCityFromStr(dsa.dsa_region_name), alignment: 'center'},
                       {text: print(dsa.dsa_region), alignment: 'center'},
@@ -289,7 +288,7 @@
               blackLine(5),
               {columns: [
                    {text: 'Total Expense cost for the trip', style: 'bold', alignment: 'left'},
-                   {text: print(exp), alignment: 'right'}
+                   {text: printFixed(exp), alignment: 'right'}
                 ]}
           ]
         };
@@ -319,7 +318,7 @@
               blackLine(5),
               {columns: [
                    {text: 'Total estimated cost for the trip', style: 'bold', alignment: 'left'},
-                   {text: print(exp), alignment: 'right'}
+                   {text: printFixed(exp), alignment: 'right'}
                 ]}
           ]
         };

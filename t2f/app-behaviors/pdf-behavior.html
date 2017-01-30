@@ -31,7 +31,7 @@ var PDFBehavior = {
   _printFixed: function(amount) {
     if (+amount === amount) {
       return amount.toFixed(4);
-    } else if (typeof amount === 'string'){
+    } else if (typeof amount === 'string') {
       var parsed = parseFloat(amount);
       return isNaN(parsed) ? amount : parsed.toFixed(4);
     } else if (!amount) {
@@ -55,8 +55,7 @@ var PDFBehavior = {
     } else {
       return '';
     }
-  },
-
+  }
 };
 window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
 window.et2fBehaviors.PDFBehavior = PDFBehavior;
