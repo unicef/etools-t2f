@@ -43,7 +43,7 @@
       deductions = dom.querySelector('#deductions');
       deductionsItems = function() {
         return deductions.$.deductions_list.items;
-      };
+      }; // LOLOLOLOL TROLROLOLO
 
       api = dom.querySelector('#api');
       dom.flush();
@@ -57,18 +57,18 @@
         data[JSONset].deductions = deductions.deductions;
       }
 
-      if (newOne) api.travelId = '/-1';
+      if (newOne) api.travelId = -1;
 
       api.data = JSON.parse(JSON.stringify(data[JSONset]));
     }
 
     test('Kidus\'s example', function(done) {
 
-      fillData('kidussExample', true);
+      fillData('kidussExample', true, false);
 
       api._handlePostSuccess = function(e, data) {
 
-        console.log('cost summary', data.cost_summary);
+        // console.log('cost summary', data.cost_summary);
 
         var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('5300.00');
         var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('50.00');
@@ -78,6 +78,32 @@
 
       api.doRequest({endPoint: 'save'});
     });
+
+    test('Andras\'s EXAMPLE CASE 1. (validated by Kidus)', function(done) {
+
+      fillData('case1', true, false);
+
+      api._handlePostSuccess = function(e, data) {
+
+        // console.log('cost summary', data.cost_summary);
+
+        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('80.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('20.00');
+        if (baseDSAokay && deductionsOkay) console.log('✅');
+        done();
+      }
+
+      api.doRequest({endPoint: 'save'});
+    });
+
+    test('Andras\'s EXAMPLE CASE 2. (validated by Kidus)', function(done) {done();});
+
+    test('Andras\'s EXAMPLE CASE 3. (validated by Kidus)', function(done) {done();});
+
+    test('Andras\'s EXAMPLE CASE 4. (validated by Kidus)', function(done) {done();});
+
+    test('Andras\'s EXAMPLE CASE 5. (validated by Kidus)', function(done) {done();});
+
 
     // test('base#2 - the API sends data to the server, and we\'re getting it back', function(done) {
 

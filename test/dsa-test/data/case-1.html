@@ -10,7 +10,7 @@
       {
         "locations": [],
         "partnership": null,
-        "primary_traveler": false
+        "primary_traveler": true
       }
     ],
     "attachments": [],
@@ -380,403 +380,107 @@
     "status": "Planned"
   };
 
-  // window.caseScenarios.simple = {
-  //   "action_points": [
-  //     {}
-  //   ],
-  //   "activities": [
-  //     {
-  //       "id": 7,
-  //       "locations": [],
-  //       "partnership": null,
-  //       "primary_traveler": false
-  //     }
-  //   ],
-  //   "attachments": [],
-  //   "baseDetails": {
-  //     "additional_note": null,
-  //     "end_date": "2017-01-15T12:51:16.755Z",
-  //     "estimated_travel_cost": "0.00",
-  //     "id": 7,
-  //     "international_travel": false,
-  //     "mode_of_travel": [
-  //       {
-  //         "label": "Bus",
-  //         "value": 2
-  //       }
-  //     ],
-  //     "office": {
-  //       "label": "Pulilab",
-  //       "value": 195
-  //     },
-  //     "purpose": "#1 Test scenario - basic",
-  //     "reference_number": "2017/000007",
-  //     "section": {
-  //       "label": "SPPME",
-  //       "value": 1
-  //     },
-  //     "start_date": "2017-01-14T12:51:16.719Z",
-  //     "status": "planned",
-  //     "supervisor": {
-  //       "label": "Puli Lab",
-  //       "value": 3741
-  //     },
-  //     "ta_required": true,
-  //     "traveler": {
-  //       "label": "Puli Lab",
-  //       "value": 3742
-  //     }
-  //   },
-  //   "canceled_at": null,
-  //   "cancellation_note": null,
-  //   "certification_note": null,
-  //   "clearances": {
-  //     "id": 7,
-  //     "medical_clearance": "not_applicable",
-  //     "security_clearance": "not_applicable",
-  //     "security_course": "not_applicable"
-  //   },
-  //   "completed_at": null,
-  //   "cost_assignments": [
-  //     {}
-  //   ],
-  //   "cost_summary": {
-  //     "deductions_total": "0.00",
-  //     "dsa": [
-  //       {
-  //         "amount_usd": "600.0000",
-  //         "daily_rate_usd": "300.0000",
-  //         "dsa_region": 3,
-  //         "dsa_region_name": "Hungary - Budapest",
-  //         "end_date": "2017-01-15",
-  //         "night_count": 2,
-  //         "start_date": "2017-01-14"
-  //       }
-  //     ],
-  //     "dsa_total": "600.00",
-  //     "expenses_delta": "0.00",
-  //     "expenses_total": "0.00",
-  //     "preserved_expenses": null
-  //   },
-  //   "deductions": [
-  //     {
-  //       "accomodation": false,
-  //       "breakfast": false,
-  //       "date": "2017-01-14",
-  //       "day_of_the_week": "Sat",
-  //       "dinner": false,
-  //       "id": 525,
-  //       "lunch": false,
-  //       "no_dsa": false
-  //     }
-  //   ],
-  //   "expenses": [
-  //     {}
-  //   ],
-  //   "itinerary": [
-  //     {
-  //       "airlines": [],
-  //       "arrival_date": "2017-01-14T20:50:18.107Z",
-  //       "departure_date": "2017-01-14T12:51:18.092Z",
-  //       "destination": "B",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": 10,
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "A",
-  //       "overnight_travel": false
-  //     },
-  //     {
-  //       "airlines": [],
-  //       "arrival_date": "2017-01-15T08:50:18.107Z",
-  //       "departure_date": "2017-01-15T00:51:18.092Z",
-  //       "destination": "A",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": 11,
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "B",
-  //       "overnight_travel": false
-  //     }
-  //   ],
-  //   "misc_expenses": null,
-  //   "rejection_note": null,
-  //   "report": "",
-  //   "status": "Planned"
-  // };
+  window.caseScenarios.case1 = {
+    "action_points": [
+      {}
+    ],
+    "activities": [
+      {
+        "locations": [],
+        "partnership": null
+      }
+    ],
+    "attachments": [],
+    "baseDetails": {
+      "currency": {
+        "label": "Euro",
+        "short": "EUR",
+        "value": 42
+      },
+      "international_travel": null,
+      "mode_of_travel": [],
+      "ta_required": true,
+      "traveler": {
+        "label": "Main User",
+        "value": 3742
+      }
+    },
+    "cost_assignments": [
+      {
+        "business_area": {
+          "code": "0",
+          "id": 162,
+          "label": "Test area",
+          "name": "Test area",
+          "region": {
+            "code": "00",
+            "name": "Test region"
+          },
+          "value": 162,
+          "wbs": []
+        },
+        "delegate": null,
+        "wbs": null
+      }
+    ],
+    "cost_summary": {},
+    "deductions": [
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-01-01",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      }
+    ],
+    "expenses": [
+      {}
+    ],
+    "itinerary": [
+      {
+        "airlines": [],
+        "arrival_date": "2017-01-01T01:00:00.718Z",
+        "departure_date": "2017-01-01T00:00:00.702Z",
+        "destination": "Budapest",
+        "dsa_region": {
+          "label": "Budapest",
+          "value": 5
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "Amsterdam",
+        "overnight_travel": null
+      },
+      {
+        "airlines": "",
+        "arrival_date": "2017-01-01T14:00:00.800Z",
+        "departure_date": "2017-01-01T09:00:00.778Z",
+        "destination": "Amsterdam",
+        "dsa_region": {
+          "label": "Amsterdam",
+          "value": 10
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "Budapest",
+        "overnight_travel": ""
+      }
+    ],
+    "status": "Planned"
+  };
 
-  // window.caseScenarios.longerThan60 = {
-  //   "action_points": [
-  //     {}
-  //   ],
-  //   "activities": [
-  //     {
-  //       "id": 7,
-  //       "locations": [],
-  //       "partnership": null,
-  //       "primary_traveler": false
-  //     }
-  //   ],
-  //   "attachments": [],
-  //   "baseDetails": {
-  //     "additional_note": null,
-  //     "end_date": "2017-04-15T11:51:16.755Z",
-  //     "estimated_travel_cost": "0.00",
-  //     "id": 7,
-  //     "international_travel": false,
-  //     "mode_of_travel": [
-  //       {
-  //         "label": "Bus",
-  //         "value": 2
-  //       }
-  //     ],
-  //     "office": {
-  //       "label": "Pulilab",
-  //       "value": 195
-  //     },
-  //     "purpose": "#1 Test scenario - basic",
-  //     "reference_number": "2017/000007",
-  //     "section": {
-  //       "label": "SPPME",
-  //       "value": 1
-  //     },
-  //     "start_date": "2017-01-14T12:51:16.719Z",
-  //     "status": "planned",
-  //     "supervisor": {
-  //       "label": "Puli Lab",
-  //       "value": 3741
-  //     },
-  //     "ta_required": true,
-  //     "traveler": {
-  //       "label": "Puli Lab",
-  //       "value": 3742
-  //     }
-  //   },
-  //   "canceled_at": null,
-  //   "cancellation_note": null,
-  //   "certification_note": null,
-  //   "clearances": {
-  //     "id": 7,
-  //     "medical_clearance": "not_applicable",
-  //     "security_clearance": "not_applicable",
-  //     "security_course": "not_applicable"
-  //   },
-  //   "completed_at": null,
-  //   "cost_assignments": [
-  //     {}
-  //   ],
-  //   "cost_summary": {
-  //     "deductions_total": "0.00",
-  //     "dsa": [
-  //       {
-  //         "amount_usd": "600.0000",
-  //         "daily_rate_usd": "300.0000",
-  //         "dsa_region": 3,
-  //         "dsa_region_name": "Hungary - Budapest",
-  //         "end_date": "2017-01-15",
-  //         "night_count": 2,
-  //         "start_date": "2017-01-14"
-  //       }
-  //     ],
-  //     "dsa_total": "600.00",
-  //     "expenses_delta": "0.00",
-  //     "expenses_total": "0.00",
-  //     "preserved_expenses": null
-  //   },
-  //   "deductions": [],
-  //   "expenses": [
-  //     {}
-  //   ],
-  //   "itinerary": [
-  //     {
-  //       "airlines": [],
-  //       "arrival_date": "2017-01-14T20:50:18.107Z",
-  //       "departure_date": "2017-01-14T12:51:18.092Z",
-  //       "destination": "B",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": 10,
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "A",
-  //       "overnight_travel": false
-  //     },
-  //     {
-  //       "airlines": [],
-  //       "arrival_date": "2017-04-15T07:50:18.107Z",
-  //       "departure_date": "2017-04-14T23:51:18.092Z",
-  //       "destination": "A",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": 11,
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "B",
-  //       "overnight_travel": false
-  //     }
-  //   ],
-  //   "misc_expenses": null,
-  //   "rejection_note": null,
-  //   "report": "",
-  //   "status": "Planned"
-  // };
+  window.caseScenarios.case2 = {};
 
-  // window.caseScenarios.sameDay = {
-  //   "action_points": [
-  //     {}
-  //   ],
-  //   "activities": [
-  //     {
-  //       "id": 8,
-  //       "locations": [],
-  //       "partnership": null,
-  //       "primary_traveler": false
-  //     }
-  //   ],
-  //   "attachments": [],
-  //   "baseDetails": {
-  //     "additional_note": null,
-  //     "end_date": "2017-01-17T10:56:49.966Z",
-  //     "estimated_travel_cost": "0.00",
-  //     "id": 10,
-  //     "international_travel": false,
-  //     "mode_of_travel": [
-  //       {
-  //         "label": "Bus",
-  //         "value": 2
-  //       }
-  //     ],
-  //     "office": {
-  //       "label": "Pulilab",
-  //       "value": 195
-  //     },
-  //     "purpose": null,
-  //     "reference_number": "2017/000010",
-  //     "section": {
-  //       "label": "Enginnering",
-  //       "value": 2
-  //     },
-  //     "start_date": "2017-01-16T10:56:49.939Z",
-  //     "status": "planned",
-  //     "supervisor": {
-  //       "label": "Puli Lab",
-  //       "value": 3741
-  //     },
-  //     "ta_required": true,
-  //     "traveler": {
-  //       "label": "Main User",
-  //       "value": 3742
-  //     }
-  //   },
-  //   "canceled_at": null,
-  //   "cancellation_note": null,
-  //   "certification_note": null,
-  //   "clearances": {
-  //     "id": 10,
-  //     "medical_clearance": "not_applicable",
-  //     "security_clearance": "not_applicable",
-  //     "security_course": "not_applicable"
-  //   },
-  //   "completed_at": null,
-  //   "cost_assignments": [
-  //     {}
-  //   ],
-  //   "cost_summary": {
-  //     "deductions_total": "0.00",
-  //     "dsa": [
-  //       {
-  //         "amount_usd": "120.0000",
-  //         "daily_rate_usd": "300.0000",
-  //         "dsa_region": 3,
-  //         "dsa_region_name": "Hungary - Budapest",
-  //         "end_date": "2017-01-16",
-  //         "night_count": 1,
-  //         "start_date": "2017-01-16"
-  //       }
-  //     ],
-  //     "dsa_total": "120.00",
-  //     "expenses_delta": "0.00",
-  //     "expenses_total": "0.00",
-  //     "preserved_expenses": null
-  //   },
-  //   "deductions": [
-  //     {
-  //       "accomodation": false,
-  //       "breakfast": false,
-  //       "date": "2017-01-16",
-  //       "day_of_the_week": "Mon",
-  //       "dinner": false,
-  //       "id": 1667,
-  //       "lunch": false,
-  //       "no_dsa": false
-  //     }
-  //   ],
-  //   "expenses": [
-  //     {}
-  //   ],
-  //   "itinerary": [
-  //     {
-  //       "airlines": [],
-  //       "arrival_date": "2017-01-17T01:10:51.122Z",
-  //       "departure_date": "2017-01-17T01:00:51.110Z",
-  //       "destination": "B",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": 14,
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "A",
-  //       "overnight_travel": false
-  //     },
-  //     {
-  //       "airlines": "",
-  //       "arrival_date": "2017-01-17T07:10:02.109Z",
-  //       "departure_date": "2017-01-17T07:00:02.073Z",
-  //       "destination": "A",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": "",
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "B",
-  //       "overnight_travel": ""
-  //     }
-  //   ],
-  //   "misc_expenses": null,
-  //   "rejection_note": null,
-  //   "report": "",
-  //   "status": "Planned"
-  // };
+  window.caseScenarios.case3 = {};
 
-  // window.caseScenarios.sameDayLonger = JSON.parse(JSON.stringify(window.caseScenarios.sameDay));
-  // window.caseScenarios.sameDayLonger.itinerary[1].arrival_date = "2017-01-17T17:10:02.109Z";
-  // window.caseScenarios.sameDayLonger.itinerary[1].departure_date = "2017-01-17T17:00:02.073Z";
+  window.caseScenarios.case4 = {};
+
+  window.caseScenarios.case5 = {};
 
   Object.keys(window.caseScenarios).forEach(function(key) {
     window.caseScenarios[key].itinerary.forEach(function(iti) {
