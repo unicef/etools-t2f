@@ -558,28 +558,28 @@
 
         if (['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0) {
           // Validating Trip plan
-            if (!this.$.travel_plan._validateTravelPlan()) {
-              invalids.push('Trip Plan');
-            }
-            var toValidate = ['Activities', 'Expenses'];
-            fieldSetValidation(toValidate);
-
-            // Checking Cost Assignment validity
-            if (this.percentagesSum !== 100) {
-              invalids.push('Cost assignments share(s) must sum to 100');
-            }
+          if (!this.$.travel_plan._validateTravelPlan()) {
+            invalids.push('Trip Plan');
           }
+          var toValidate = ['Activities', 'Expenses'];
+          fieldSetValidation(toValidate);
 
-          if (action.name === 'Save & submit') {
-            fieldSetValidation(['Cost Assignments']);
+          // Checking Cost Assignment validity
+          if (this.percentagesSum !== 100) {
+            invalids.push('Cost assignments share(s) must sum to 100');
           }
+        }
 
-          if (action.name === 'Save' && !self.$$('#itinerary').hidden) {
-            fieldSetValidation(['Itinerary']);
-            self._validateItinerarySize(invalids);
-            self._validateItineraryIntegrity(invalids);
-          }
-          return invalids;
+        if (action.name === 'Save & submit') {
+          fieldSetValidation(['Cost Assignments']);
+        }
+
+        if (action.name === 'Save' && !self.$$('#itinerary').hidden) {
+          fieldSetValidation(['Itinerary']);
+          self._validateItinerarySize(invalids);
+          self._validateItineraryIntegrity(invalids);
+        }
+        return invalids;
       },
 
       _invalidShares: function(changed) { // data.cost_assignments.*

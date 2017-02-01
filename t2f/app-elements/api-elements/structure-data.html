@@ -194,7 +194,12 @@
           },
           currencies: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, short: obj.iso_4217};
+              return {
+                label: obj.name,
+                value: obj.id,
+                short: obj.iso_4217,
+                exchange_to_dollar: obj.exchange_to_dollar
+              };
             });
           },
           business_areas: function(key) {
