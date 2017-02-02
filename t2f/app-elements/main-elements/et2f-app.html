@@ -154,7 +154,7 @@
         }
       },
       _computeElementId: function(subRoute, pageName) {
-        if (subRoute.prefix.indexOf(pageName) > -1 && subRoute.path) {
+        if (subRoute.prefix && subRoute.prefix.indexOf(pageName) > -1 && subRoute.path) {
           return parseInt('' + subRoute.path.replace(/\//g, ''), 10);
         }
       },
