@@ -174,7 +174,7 @@
               },
               'Sent for payment': {
                 'primary': 'wentAsPlanned',
-                'secondary': ['submitCertificate','sendForPayment', 'printTa', 'save']
+                'secondary': ['submitCertificate', 'sendForPayment', 'printTa', 'save']
               },
               'Certification submitted': {
                 'primary': 'approveCertificate',
@@ -942,9 +942,11 @@
         var status = data.base.status;
         var taRequired = data.base.baseDetails.ta_required;
 
-        var lib = isInternational ?  internationalTravelPermissions : permissions;
+        var lib = isInternational ? internationalTravelPermissions : permissions;
 
-        userRoles.reverse();
+        if (data.changed) {
+          userRoles.reverse();
+        }
         var mainActions = userRoles.reduce(function(result, role) {
             var primary = lib[role][status].primary;
             if (result.indexOf(primary) === -1 && primary !== '') {
