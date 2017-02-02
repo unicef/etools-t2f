@@ -116,7 +116,7 @@
 
             <div class="flex-3 element layout vertical">
               <label>Amount</label>
-              <div>{{invoice.amount}}</div>
+              <div>{{_printAsFixed2(invoice.amount)}}</div>
             </div>
 
             <div class="flex-6 element layout vertical">
@@ -166,7 +166,7 @@
 
                 <div class="flex-2 element layout vertical">
                   <label>Amount</label>
-                  <div>{{item.amount}}</div>
+                  <div>{{_printAsFixed2(item.amount)}}</div>
                 </div>
               </div>
 
@@ -231,6 +231,9 @@
         });
         this.set('invoice', {});
         this.set('invoice', invoice);
+      },
+      _printAsFixed2: function(value) {
+        return parseFloat(value).toFixed(2);
       }
     });
   </script>
