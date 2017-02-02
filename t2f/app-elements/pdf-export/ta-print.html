@@ -22,9 +22,10 @@
         data: {
           type: Object,
         },
+        structure: Object,
         storedData: {
           type: Object,
-          computed: '_computeStoredData(data)',
+          computed: '_computeStoredData(data, structure)',
         },
         printStyles: {
           type: Object,
@@ -59,12 +60,16 @@
           blackLine: blackLine
         };
       },
-      _computeStoredData: function(incomingData) {
+      _computeStoredData: function(incomingData, structure) {
         if (!incomingData.baseDetails) {
           return;
         }
-        return JSON.parse(JSON.stringify(incomingData));
-
+        var cloned = JSON.parse(JSON.stringify(incomingData));
+        var groupsList = structure.groups.filter(function(group) {
+          return cloned.baseDetails.traveler.groups.indexOf(group.value) > -1;
+        });
+        cloned.baseDetails.traveler.groups = groupsList.map(function(g) { return g.label;}).join(' - ');
+        return cloned;
       },
 
       _parseData: function() {
@@ -133,6 +138,8 @@
                 {text: 'Name', style: 'bold'},
                 {text: print(data.baseDetails.traveler), style: 'bottomMargin'},
                 {text: 'Vendor', style: 'bold'},
+                {text: print(data.baseDetails.traveler.profile.vendor_number), style: 'bottomMargin'},
+
               ]
             },
             {stack: [
@@ -143,12 +150,12 @@
             },
             {stack: [
                 {text: 'Title', style: 'bold'},
-                {text: print('')}
+                {text: print(data.baseDetails.traveler.profile.job_title), style: 'bottomMargin'}
               ]
             },
             {stack: [
                 {text: 'Employee Group', style: 'bold'},
-                {text: print('')}
+                {text: print(data.baseDetails.traveler.groups), style: 'bottomMargin'}
               ]
             }
           ]

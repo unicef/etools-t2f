@@ -15,7 +15,7 @@
 <link rel="import" href="./travel-attachments.html">
 <link rel="import" href="./travel-report.html">
 <link rel="import" href="../api-elements/inbound-data.html">
-<link rel="import" href="../api-elements/outbound-data.html">
+<link rel="import" href="../api-elements/inbound-data.html">
 <link rel="import" href="../pdf-export/ta-print.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
 <link rel="import" href="./form-errors.html">
@@ -94,6 +94,7 @@
       data-to-serialize="[[incomingData]]">
     </et2f-inbound-data>
 
+
     <et2f-outbound-data loading="{{detailLoading}}"
       id="outbound-data" form-errors="{{formErrors}}"
       data="[[data]]"
@@ -102,7 +103,7 @@
       inbound-data="{{incomingData}}">
     </et2f-outbound-data>
 
-    <ta-print id="taPrint" data="[[data]]"></ta-print>
+    <ta-print id="taPrint" data="[[data]]" structure="[[structure]]"></ta-print>
 
     <paper-dialog id="invalid_modal" with-backdrop>
 

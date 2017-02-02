@@ -40,6 +40,13 @@
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
+      <etools-ajax endpoint="[[groupsEndpoint]]"
+      on-success="_handleGroups"
+      loading="{{groupsLoading}}"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
 
 
   </template>
@@ -58,7 +65,7 @@
           type: Object,
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
-          ' officesData, t2fStaticData, usersData)'
+          ' officesData, t2fStaticData, usersData, groupsData)'
         },
         staticData: {
           type: Object,
@@ -73,7 +80,7 @@
           type: Boolean,
           notify: true,
           computed: '_computeLoading(staticDataLoading, sectionsLoading,' +
-          ' officesLoading, t2fStaticDataLoading, usersLoading)'
+          ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading)'
         },
         staticDataEndpoint: {
           type: String,
@@ -94,9 +101,13 @@
         usersEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.users
+        },
+        groupsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.groups
         }
       },
-      _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users) {
+      _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users, groups) {
         var result = false;
         for (var i = 0; i < arguments.length; ++i) {
            result = result || arguments[i];
@@ -145,7 +156,16 @@
         }
         this.set('usersData', data);
       },
-      _generateStructure: function(static, sections, offices, t2fStaticData, users) {
+      _handleGroups: function(e, data) {
+        if (!data.parsed) {
+          data = {
+            groups: data
+          };
+          data = this._parseData(data);
+        }
+        this.set('groupsData', data);
+      },
+      _generateStructure: function(static, sections, offices, t2fStaticData, users, groups) {
           var data = static;
           data.sections = sections.sections;
           data.offices = offices.offices;
@@ -155,6 +175,7 @@
           data.partnerships = t2fStaticData.partnerships;
           data.action_point_statuses = t2fStaticData.action_point_statuses;
           data.users = users.users;
+          data.groups = groups.groups;
           Object.freeze(data);
           return data;
       },
@@ -250,7 +271,8 @@
           },
           users: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.full_name, value: parseInt(obj.user_id, 10)};
+              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10),
+              profile: obj.profile, groups: obj.groups};
             });
           },
           dsa_regions: function(key) {
