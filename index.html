@@ -41,10 +41,9 @@
         dom: 'shadow',
         lazyRegister: true
       };
-     var serverBackend = (window.location.port !== '8080');
-    //we work with browsersync and it assign the port dinamically but always on the 300X range
-     var isDev = ('' + window.location.port).indexOf('300') > -1;
-     var baseUrl = serverBackend ? 't2f' : '';
+     var serverBackend = (window.location.port !== '8080' && '' + window.location.port.indexOf('300') === -1);
+     var baseUrl = serverBackend ? '/t2f' : '';
+
       // Load webcomponentsjs polyfill if browser does not support native Web Components
       (function() {
         'use strict';
@@ -89,7 +88,8 @@
       // set app shell import path based on baseUrl
       var appShellImport = document.createElement('link');
       appShellImport.rel = 'import';
-      var appShellUrl = isDev ? '/t2f/app-shell.html' : '/t2f/' + baseUrl + '/app-shell.html';
+      var appShellUrl = '/t2f' + baseUrl + '/app-shell.html';
+      console.log(appShellUrl);
       appShellImport.href = window.location.origin + appShellUrl;
       document.head.appendChild(appShellImport);
 
