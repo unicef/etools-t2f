@@ -943,38 +943,42 @@
         var taRequired = data.base.baseDetails.ta_required;
 
         var lib = isInternational ? internationalTravelPermissions : permissions;
+        var performFor = ['ta_required', 'international_travel', 'status'];
+        var pathArray = data.path.split('.');
+        var currentPath = pathArray.length > 0 ? pathArray[pathArray.length - 1] : false;
 
-        if (data.changed) {
+        if (performFor.indexOf(currentPath) > -1 || currentPath === 'data') {
           userRoles.reverse();
-        }
-        var mainActions = userRoles.reduce(function(result, role) {
-            var primary = lib[role][status].primary;
-            if (result.indexOf(primary) === -1 && primary !== '') {
-              return result.concat(primary);
-            }
-            return result;
-        }, []);
-        var allActions = userRoles.reduce(function(result, role) {
-          var secondary = lib[role][status].secondary.filter(function(action) {
-            return result.indexOf(action) === -1 && action !== '';
-          });
-          return result.concat(secondary);
-        }, mainActions);
+          var mainActions = userRoles.reduce(function(result, role) {
+              var primary = lib[role][status].primary;
+              if (result.indexOf(primary) === -1 && primary !== '') {
+                return result.concat(primary);
+              }
+              return result;
+          }, []);
+          var allActions = userRoles.reduce(function(result, role) {
+            var secondary = lib[role][status].secondary.filter(function(action) {
+              return result.indexOf(action) === -1 && action !== '';
+            });
+            return result.concat(secondary);
+          }, mainActions);
 
-        if (taRequired === false) {
-          var notTaKeys = ['save', 'cancel'];
-          allActions = allActions.filter(function(action) {
-            return notTaKeys.indexOf(action) > -1;
-          });
-        }
-        var availableActions = {
-          primary: actList[allActions.shift()],
-          secondary: allActions.map(function(action) {
-            return actList[action];
-          })
-        };
+          if (taRequired === false) {
+            var notTaKeys = ['save', 'cancel'];
+            allActions = allActions.filter(function(action) {
+              return notTaKeys.indexOf(action) > -1;
+            });
+          }
 
-        this.set('actions', availableActions);
+          var availableActions = {
+            primary: actList[allActions.shift()],
+            secondary: allActions.map(function(action) {
+              return actList[action];
+            })
+          };
+
+          this.set('actions', availableActions);
+        }
       },
       _showAtAll: function(actions) {
 
