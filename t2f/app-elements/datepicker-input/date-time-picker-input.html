@@ -178,7 +178,7 @@
         showMaxDateWarning: {
           type: Boolean,
           value: false,
-          computed: '_computeShowMaxDateWarning(calculatedMaxDate, internalDate, hour, minute)'
+          computed: '_computeShowMaxDateWarning(maxDateCalculated, internalDate, hour, minute)'
         },
         dialogButtonDisabled: {
           type: Boolean,
@@ -234,9 +234,9 @@
         if (date) {
           date = moment(new Date(date));
           this.set('prettyMaxDate', date.format(this.format));
-          date.hour('00');
-          date.minute('00');
-          date.second('00');
+          date.hour('23');
+          date.minute('59');
+          date.second('59');
           date.millisecond(999);
           return date.toDate();
         }
