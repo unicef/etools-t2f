@@ -44,7 +44,7 @@
      var serverBackend = (window.location.port !== '8080');
     //we work with browsersync and it assign the port dinamically but always on the 300X range
      var isDev = ('' + window.location.port).indexOf('300') > -1;
-      var baseUrl = serverBackend ? 't2f' : '';
+     var baseUrl = serverBackend ? 't2f' : '';
       // Load webcomponentsjs polyfill if browser does not support native Web Components
       (function() {
         'use strict';
@@ -86,11 +86,11 @@
           navigator.serviceWorker.register('service-worker.js');
         });
       }
-
       // set app shell import path based on baseUrl
       var appShellImport = document.createElement('link');
       appShellImport.rel = 'import';
-      appShellImport.href = isDev ? '/t2f/app-shell.html' : '/t2f/' + baseUrl + '/app-shell.html';
+      var appShellUrl = isDev ? '/t2f/app-shell.html' : '/t2f/' + baseUrl + '/app-shell.html';
+      appShellImport.href = window.location.origin + appShellUrl;
       document.head.appendChild(appShellImport);
 
     </script>
