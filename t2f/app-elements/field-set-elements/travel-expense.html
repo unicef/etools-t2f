@@ -60,7 +60,7 @@
           disabled="[[computedPermission.document_currency.disabled]]"
           hidden$="[[computedPermission.document_currency.hidden]]"
           empty-value
-          options="[[structure.currencies]]"
+          options="[[currOptions]]"
           value="{{expense.document_currency}}"
           placeholder="select"
           required$="[[computedPermission.document_currency.required]]"
@@ -69,20 +69,6 @@
           starred>
         </etools-searchable-multiselection-menu>
 
-        <etools-searchable-multiselection-menu label="Accounting currency"
-          id="curr2"
-          class$="flex-3 [[computedPermission.account_currency.readOnly]]"
-          disabled="[[computedPermission.account_currency.disabled]]"
-          hidden$="[[computedPermission.account_currency.hidden]]"
-          empty-value
-          options="[[structure.currencies]]"
-          value="{{expense.account_currency}}"
-          placeholder="select"
-          required$="[[computedPermission.account_currency.required]]"
-          on-paper-dropdown-close="_validateAccCurr"
-          auto-validate$="[[autoValidate]]"
-          starred>
-        </etools-searchable-multiselection-menu>
       </div>
     </form>
   </template>
@@ -98,12 +84,11 @@
           type: Object,
           notify: true,
         },
-
+        currency: Object,
         autoValidate: {
           type: Boolean,
           computed: '_computeAutoValidate(expense)'
         },
-
         structure: {
           type: Object,
           value: {}
@@ -114,18 +99,48 @@
         expenseTypes: {
           type: Array,
           computed: '_computeExpenseTypes(structure.expense_types, selectedExpenses)',
+        },
+        currOptions: {
+          type: Array,
+          computed: '_getCurrOptions(documentCurrency, structure.currencies)'
         }
       },
 
       _computeAutoValidate: function(data) {
-          return data !== undefined && Object.keys(data).length > 0;
+        return data !== undefined && Object.keys(data).length > 0;
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
       observers: [
-        '_addValidationFunction(expense.*)'
+        '_addValidationFunction(expense.*)',
+        '_setDefaultCurr(expense.*, currOptions)'
       ],
+
+      // Returns the documents currency, and USD as options array for the dropdown
+      _getCurrOptions: function(documentCurrency, currencies) {
+        if (documentCurrency.short === 'USD') {
+          return [documentCurrency];
+        } else {
+          var options = currencies.filter(function(el) {
+            return el.short === 'USD';
+          });
+          options.push(documentCurrency);
+          return options;
+        }
+      },
+
+      // Defaults expenses currency (on type, or amount change)
+      _setDefaultCurr: function(changed, options) {
+        var isInit = changed.path === 'expense';
+        var currencyChanged = changed.path === 'expense.document_currency';
+        var currNotSet = ['', undefined, null].indexOf(this.expense.document_currency) > -1;
+        var toSet = options.length === 2 ? options[1] : options[0];
+
+        if (!isInit && !currencyChanged && currNotSet) {
+          this.set('expense.document_currency', toSet);
+        }
+      },
 
       _computeExpenseTypes: function(structure, selectedExpenses) {
         var self = this;
@@ -179,24 +194,6 @@
         }
       },
 
-      _validateAccCurr: function(self) {
-
-        if (!this.computedPermission.account_currency.required) {
-          return true;
-        }
-
-        if ((this.expense && this.expense.account_currency) || (self.expense && self.expense.account_currency)) {
-
-          this.$.curr2.removeAttribute('invalid');
-          return true;
-
-        } else {
-
-          this.$.curr2.setAttribute('invalid', true);
-          return false;
-        }
-      },
-
       allEmpty: function() {
         var allEmpty = !this.expense.type &&
           !this.expense.amount &&
@@ -213,11 +210,10 @@
         }
 
         var typeValid = this._validateType(this);
-        var accCurr = this._validateAccCurr(this);
         var docCurr = this._validateDocCurr(this);
         var formValid = this.$.expense_form.validate();
 
-        return typeValid && formValid && accCurr && docCurr;
+        return typeValid && formValid && docCurr;
       }
     });
   </script>
