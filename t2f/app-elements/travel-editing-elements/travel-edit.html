@@ -16,6 +16,7 @@
 <link rel="import" href="./travel-report.html">
 <link rel="import" href="../api-elements/inbound-data.html">
 <link rel="import" href="../api-elements/outbound-data.html">
+<link rel="import" href="../api-elements/profile-data.html">
 <link rel="import" href="../pdf-export/ta-print.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
 <link rel="import" href="./form-errors.html">
@@ -94,6 +95,11 @@
       data-to-serialize="[[incomingData]]">
     </et2f-inbound-data>
 
+    <et2f-profile-data
+      user-id="[[data.baseDetails.traveler.value]]"
+      loading="{{profileLoading}}"
+      profile="{{data.baseDetails.traveler.profile}}">
+    </et2f-profile-data>
 
     <et2f-outbound-data loading="{{detailLoading}}"
       id="outbound-data" form-errors="{{formErrors}}"
@@ -207,9 +213,16 @@
           type: Object,
           notify: true,
         },
-        detailLoading: {
+        travelDataLoading: {
           type: Boolean,
           notify: true,
+          computed: '_computeLoading(detailLoading, profileLoading)',
+        },
+        profileLoading: {
+          type: Boolean,
+        },
+        detailLoading: {
+          type: Boolean,
         },
         structure: {
           type: Object,
@@ -256,7 +269,9 @@
       observers: [
         '_computeTravelPermission(et2fPermissions, status, user, data)'
       ],
-
+      _computeLoading: function(details, profile) {
+        return details || profile;
+      },
       _loadDefault: function() {
         this.set('data', {});
         this.set('data', {
