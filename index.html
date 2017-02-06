@@ -41,7 +41,7 @@
         dom: 'shadow',
         lazyRegister: true
       };
-     var serverBackend = (window.location.port !== '8080' && '' + window.location.port.indexOf('300') === -1);
+     var serverBackend = window.location.port === '';
      var baseUrl = serverBackend ? '/t2f' : '';
 
       // Load webcomponentsjs polyfill if browser does not support native Web Components
@@ -74,10 +74,11 @@
           onload();
         }
       })();
+
       // add base tag with href set to baseUrl
-      //var base = document.createElement('base');
-      //base.href = baseUrl;
-      //document.head.appendChild(base);
+      // var base = document.createElement('base');
+      // base.href = baseUrl;
+      // document.head.appendChild(base);
 
       // Load pre-caching Service Worker
       if ('serviceWorker' in navigator && false) {
