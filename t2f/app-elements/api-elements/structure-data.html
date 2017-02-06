@@ -107,6 +107,11 @@
           value: etoolsAppConfig.endpoints.groups
         }
       },
+      _sortByLabel: function(a, b) {
+        var A = a.label.toUpperCase();
+        var B = b.label.toUpperCase();
+        return A < B ? -1 : (A > B) ? 1 : 0;
+      },
       _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users, groups) {
         var result = false;
         for (var i = 0; i < arguments.length; ++i) {
@@ -180,6 +185,7 @@
           return data;
       },
       _parseData: function(data) {
+        var self = this;
         function capitalize(value) {
           return value.replace(/\b\w/g, function(l) { return l.toUpperCase(); });
         }
@@ -279,6 +285,7 @@
             data[key] = data[key].map(function(obj) {
               return {label: obj.area_name, value: parseInt(obj.id, 10)};
             });
+            data[key] = data[key].sort(self._sortByLabel);
           },
           countries: function(key) {
             data[key] = data[key].map(function(obj) {
