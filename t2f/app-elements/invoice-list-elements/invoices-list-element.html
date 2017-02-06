@@ -187,9 +187,12 @@
       },
 
       getCurrency: function(id, currencies) {
-        return (currencies.filter(function(currency) {
+        currencies = currencies.filter(function(currency) {
           return currency.value === id;
-        })[0]).label;
+        });
+        if (currencies && currencies[0]) {
+          return currencies[0].label;
+        }
       }
     });
   </script>

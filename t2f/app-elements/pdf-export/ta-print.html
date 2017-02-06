@@ -65,12 +65,12 @@
           return;
         }
         var cloned = JSON.parse(JSON.stringify(incomingData));
-        if (cloned.baseDetails.traveler && cloned.baseDetails.traveler.groups) {
-          var groupsList = structure.groups.filter(function(group) {
-            return cloned.baseDetails.traveler.groups.indexOf(group.value) > -1;
-          });
-          cloned.baseDetails.traveler.groups = groupsList.map(function(g) { return g.label;}).join(' - ');
-        }
+        // if (cloned.baseDetails.traveler && cloned.baseDetails.traveler.groups) {
+        //   var groupsList = structure.groups.filter(function(group) {
+        //     return cloned.baseDetails.traveler.groups.indexOf(group.value) > -1;
+        //   });
+        //   cloned.baseDetails.traveler.groups = groupsList.map(function(g) { return g.label;}).join(' - ');
+        // }
         return cloned;
       },
 

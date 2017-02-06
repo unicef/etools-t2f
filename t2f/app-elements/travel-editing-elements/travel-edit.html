@@ -98,7 +98,7 @@
     <et2f-profile-data
       user-id="[[data.baseDetails.traveler.value]]"
       loading="{{profileLoading}}"
-      profile="{{data.baseDetails.traveler.profile}}">
+      profile="{{travelerProfile}}">
     </et2f-profile-data>
 
     <et2f-outbound-data loading="{{detailLoading}}"
@@ -109,7 +109,7 @@
       inbound-data="{{incomingData}}">
     </et2f-outbound-data>
 
-    <ta-print id="taPrint" data="[[data]]" structure="[[structure]]"></ta-print>
+    <ta-print id="taPrint" data="[[dataForTa]]" structure="[[structure]]"></ta-print>
 
     <paper-dialog id="invalid_modal" with-backdrop>
 
@@ -263,6 +263,11 @@
         formErrors: {
           type: Object,
           observer: '_formErrorObserver'
+        },
+        travelerProfile: Object,
+        dataForTa: {
+          type: Object,
+          computed: '_computeDataForTa(data, travelerProfile)'
         }
 
       },
@@ -271,6 +276,13 @@
       ],
       _computeLoading: function(details, profile) {
         return details || profile;
+      },
+      _computeDataForTa: function(data, profile) {
+        if (!data.baseDetails) {
+          return;
+        }
+        data.baseDetails.traveler.profile = profile.profile;
+        return JSON.parse(JSON.stringify(data));
       },
       _loadDefault: function() {
         this.set('data', {});

@@ -232,6 +232,10 @@
     Polymer({
       is: 'action-points-list',
       properties: {
+        route: {
+          type: Object,
+          observer: '_routeObserver'
+        },
         data: {
           type: Array,
           value: []
@@ -314,12 +318,6 @@
             page_size: 10,
             search: ''
           }
-        },
-        refreshData: {
-          type: Boolean,
-          value: false,
-          notify: true,
-          observer: '_doRefreshData'
         },
         listEndPoint: {
           type: String,
@@ -487,11 +485,17 @@
         this.set('ajaxParams', backup);
       },
       _doRefreshData: function(status) {
-        if (status) {
-          var backup = this.ajaxParams;
-          this.set('ajaxParams', {});
-          this.set('ajaxParams', backup);
-          this.refreshData = false;
+        var backup = this.ajaxParams;
+        this.set('ajaxParams', {});
+        this.set('ajaxParams', backup);
+      },
+      _routeObserver: function(newValue, oldValue) {
+        var pageString = 'action-points-list';
+        if (!oldValue || !newValue || !oldValue.path || !newValue.path) {
+          return;
+        }
+        if (newValue.path.indexOf(pageString) > -1 || !(oldValue.path.indexOf(pageString))) {
+         this._doRefreshData();
         }
       }
     });
