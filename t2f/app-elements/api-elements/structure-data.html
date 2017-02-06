@@ -36,6 +36,7 @@
     <etools-ajax endpoint="[[usersEndpoint]]"
       on-success="_handleUsers"
       loading="{{usersLoading}}"
+      params="[[usersEndpointParams]]"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
@@ -101,6 +102,9 @@
         usersEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.users
+        },
+        usersEndpointParams: {
+          value: {verbosity: 'minimal'}
         },
         groupsEndpoint: {
           type: String,
@@ -283,7 +287,7 @@
           },
           dsa_regions: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.area_name, value: parseInt(obj.id, 10)};
+              return {label: obj.long_name, value: parseInt(obj.id, 10)};
             });
             data[key] = data[key].sort(self._sortByLabel);
           },
