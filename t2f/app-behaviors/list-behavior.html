@@ -1,0 +1,26 @@
+<script>
+
+  var ListBehavior = {
+
+    // If the old route could have change the content, refresh data
+    _routeObserver: function(newValue, oldValue) {
+
+      var componentName = this.is;
+      if (!oldValue || !newValue || !oldValue.path || !newValue.path) {
+        return;
+      }
+      if (newValue.path.indexOf(componentName) > -1 || !(oldValue.path.indexOf(componentName))) {
+       this._doRefreshData();
+      }
+    },
+
+    // Refresh data by triggering automatic API call
+    _doRefreshData: function() {
+
+      var backup = this.ajaxParams;
+      this.set('ajaxParams', {});
+      this.set('ajaxParams', backup);
+    },
+
+  };
+</script>

@@ -14,6 +14,8 @@
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
+<link rel="import" href="../../app-behaviors/list-behavior.html">
+
 <link rel="import" href="./invoices-list-element.html">
 <link rel="import" href="./invoices-list-header.html">
 <link rel="import" href="./invoices-list-pagination.html">
@@ -222,6 +224,8 @@
     Polymer({
 
       is: 'invoices-list',
+
+      behaviors: [ListBehavior],
 
       properties: {
         data: {
@@ -523,21 +527,8 @@
         var backup = JSON.parse(JSON.stringify(this.ajaxParams));
         backup.show_hidden = show;
         this.set('ajaxParams', backup);
-      },
-     _doRefreshData: function(status) {
-        var backup = this.ajaxParams;
-        this.set('ajaxParams', {});
-        this.set('ajaxParams', backup);
-      },
-      _routeObserver: function(newValue, oldValue) {
-        var pageString = 'invoices-list';
-        if (!oldValue || !newValue || !oldValue.path || !newValue.path) {
-          return;
-        }
-        if (newValue.path.indexOf(pageString) > -1 || !(oldValue.path.indexOf(pageString))) {
-         this._doRefreshData();
-        }
       }
+
     });
   </script>
 </dom-module>

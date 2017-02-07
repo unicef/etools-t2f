@@ -14,6 +14,8 @@
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
+<link rel="import" href="../../app-behaviors/list-behavior.html">
+
 <link rel="import" href="./action-points-list-element.html">
 <link rel="import" href="./action-points-list-header.html">
 <link rel="import" href="./action-points-list-pagination.html">
@@ -230,7 +232,11 @@
 
   <script type="text/javascript">
     Polymer({
+
       is: 'action-points-list',
+
+      behaviors: [ListBehavior],
+
       properties: {
         route: {
           type: Object,
@@ -483,21 +489,8 @@
         var backup = JSON.parse(JSON.stringify(this.ajaxParams));
         backup.search = searchStr;
         this.set('ajaxParams', backup);
-      },
-      _doRefreshData: function(status) {
-        var backup = this.ajaxParams;
-        this.set('ajaxParams', {});
-        this.set('ajaxParams', backup);
-      },
-      _routeObserver: function(newValue, oldValue) {
-        var pageString = 'action-points-list';
-        if (!oldValue || !newValue || !oldValue.path || !newValue.path) {
-          return;
-        }
-        if (newValue.path.indexOf(pageString) > -1 || !(oldValue.path.indexOf(pageString))) {
-         this._doRefreshData();
-        }
       }
+
     });
   </script>
 </dom-module>
