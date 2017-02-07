@@ -61,7 +61,7 @@
           options="[[structure.dsa_regions]]"
           value="{{itinerary.dsa_region}}"
           auto-validate$="[[autoValidate]]"
-          required$="[[computedPermission.dsa_region.required]]"
+          required$="[[dsaAreaRequired]]"
           placeholder="[[dsaAreaPlaceholder]]">
         </etools-searchable-multiselection-menu>
       </div>
@@ -160,6 +160,10 @@
           type: String,
           computed: '_computeDsaAreaPlaceholder(isLastEntry)'
         },
+        dsaAreaRequired: {
+          type: Boolean,
+          computed: '_computedDsaAreaRequired(computedPermission.dsa_region.required, isLastEntry)'
+        },
         autoValidate: {
           type: Boolean,
           computed: '_computeAutoValidate(itinerary)'
@@ -184,6 +188,9 @@
 
       _computeIsLastEntry: function(collection, index) {
         return (collection - 1) === index;
+      },
+      _computedDsaAreaRequired: function(permission, isLastEntry) {
+        return permission && !isLastEntry;
       },
 
       _computeAutoValidate: function(itinerary) {
