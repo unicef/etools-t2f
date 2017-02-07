@@ -332,7 +332,7 @@
           var userCountry = countries.find(function(country) {
             return country.value === user.profile.country;
           });
-          if (userCountry) {
+          if (userCountry && userCountry.currency) {
             var countryCurrency = currencies.find(function(currency) {
               return currency.value === userCountry.currency;
             });

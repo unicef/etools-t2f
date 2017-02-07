@@ -345,7 +345,7 @@
           value: false
         }
       },
-       _computeExportList: function(user) {
+      _computeExportList: function(user) {
         var exportList = [];
         var roles = user.t2f.roles;
         if (roles.indexOf('Finance Focal Point') > -1) {
@@ -529,7 +529,7 @@
         this.set('ajaxParams', {});
         this.set('ajaxParams', backup);
       },
-      _routeObserver: function(newValue, oldValue) {
+     _routeObserver: function(newValue, oldValue) {
         var pageString = 'invoices-list';
         if (!oldValue || !newValue || !oldValue.path || !newValue.path) {
           return;
