@@ -332,10 +332,14 @@
           var userCountry = countries.find(function(country) {
             return country.value === user.profile.country;
           });
-          var countryCurrency = currencies.find(function(currency) {
-            return currency.value === userCountry.currency;
-          });
-          this.set('baseDetails.currency', countryCurrency);
+          if (userCountry) {
+            var countryCurrency = currencies.find(function(currency) {
+              return currency.value === userCountry.currency;
+            });
+            this.set('baseDetails.currency', countryCurrency);
+          } else {
+            console.error('No country matching user profile, there is an error in the data');
+          }
         }
 
       },
