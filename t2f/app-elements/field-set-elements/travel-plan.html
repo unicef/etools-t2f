@@ -329,17 +329,18 @@
         var currencies = structure.currencies;
         var currency = dataChanged.base.currency;
         if (!currency) {
-          var userCountry = countries.find(function(country) {
-            return country.value === user.profile.country;
-          });
-          if (userCountry && userCountry.currency) {
-            var countryCurrency = currencies.find(function(currency) {
-              return currency.value === userCountry.currency;
-            });
-            this.set('baseDetails.currency', countryCurrency);
-          } else {
-            console.error('No country matching user profile, there is an error in the data');
-          }
+          // var userCountry = countries.find(function(country) {
+          //   return country.value === user.profile.country;
+          // });
+          // if (userCountry && userCountry.currency) {
+          //   var countryCurrency = currencies.find(function(currency) {
+          //     return currency.value === userCountry.currency;
+          //   });
+          //   this.set('baseDetails.currency', countryCurrency);
+          // } else {
+          //   console.error('No country matching user profile, there is an error in the data');
+          // }
+          this.set('baseDetails.currency', currencies[0]);
         }
 
       },
