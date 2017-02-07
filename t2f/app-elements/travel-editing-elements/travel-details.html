@@ -225,6 +225,8 @@
 
             <travel-itinerary permissions-matrix="[[travelPermissions.itinerary]]"
               itinerary="{{item}}"
+              index="[[index]]"
+              collection-size="[[data.itinerary.length]]"
               min-date="[[data.baseDetails.start_date]]"
               max-date="[[data.baseDetails.end_date]]"
               structure="[[structure]]">
@@ -371,7 +373,6 @@
           computed: '_computeSelectedExpensesType(data.expenses.*)'
         }
       },
-
       _computeDefaultBusinssArea: function(user, structure) {
         var userCountry = parseInt(user.profile.country, 10);
         userCountry = structure.countries.find(function(country) {

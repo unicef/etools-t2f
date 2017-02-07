@@ -62,7 +62,7 @@
           value="{{itinerary.dsa_region}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.dsa_region.required]]"
-          placeholder="select">
+          placeholder="[[dsaAreaPlaceholder]]">
         </etools-searchable-multiselection-menu>
       </div>
 
@@ -150,6 +150,16 @@
         },
         minDate: Date,
         maxDate: Date,
+        collectionSize: Number,
+        index: Number,
+        isLastEntry: {
+          type: Boolean,
+          computed: '_computeIsLastEntry(collectionSize, index)'
+        },
+        dsaAreaPlaceholder: {
+          type: String,
+          computed: '_computeDsaAreaPlaceholder(isLastEntry)'
+        },
         autoValidate: {
           type: Boolean,
           computed: '_computeAutoValidate(itinerary)'
@@ -168,14 +178,20 @@
       behaviors: [et2fBehaviors.PermissionLayer],
 
       observers: ['_itineraryObserver(itinerary.*)'],
-      _computeAutoValidate: function(itinerary) {
-          return itinerary !== undefined && Object.keys(itinerary).length > 0;
-      },
-
       _itineraryObserver: function(changed) {
         this._addValidationFunction(changed);
       },
 
+      _computeIsLastEntry: function(collection, index) {
+        return (collection - 1) === index;
+      },
+
+      _computeAutoValidate: function(itinerary) {
+          return itinerary !== undefined && Object.keys(itinerary).length > 0;
+      },
+      _computeDsaAreaPlaceholder: function(last) {
+        return last ? 'No DSA' : 'select';
+      },
       _computeHideAirline: function(modeOfTravel) {
         if (modeOfTravel) {
           return modeOfTravel.label.toLowerCase() !== 'plane';
