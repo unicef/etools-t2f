@@ -342,6 +342,19 @@
           value: []
         }
       },
+
+      // Mapping of Labels / API names
+      labelLib: {
+        'Action Point #': 'action_point_number',
+        'Trip Reference #': 'trip_reference_number',
+        'Description': 'description',
+        'Due Date': 'due_date',
+        'Responsible Person': 'person_responsible',
+        'Assigned By': 'assigned_by',
+        'Status': 'status',
+      },
+
+      // Aggregating filters and collections into form useable by view
       _computeFilters: function(structure) {
         return [
           {
@@ -377,38 +390,8 @@
           }
         ];
       },
-      fillAvailableFilters: function(filters) {
-        this.set('availableFilters', filters);
-      },
-      addFilter: function(e) {
 
-        var newFilter = this.filters.filter(function(filter) {
-          return filter.name === e.model.item.name;
-        })[0];
-
-        this.set('availableFilters', this.availableFilters.filter(function(filter) {
-          return filter.name !== newFilter.name;
-        }));
-
-        this.push('usedFilters', newFilter);
-      },
-      removeFilter: function(e) {
-
-        var filterName = e.model.item.name;
-        var pristineFilter = this.filters.filter(function(filter) {
-          return filter.name === filterName;
-        })[0];
-
-        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-        delete backup[e.model.item.filterName];
-        this.set('ajaxParams', backup);
-
-        this.push('availableFilters', pristineFilter);
-
-        var indexToRemove = this.usedFilters.indexOf(e.model.item);
-
-        this.splice('usedFilters', indexToRemove, 1);
-      },
+      // Sets the chosen filter value to the params, auto call API
       changeFilterValue: function(e) {
 
         var key = e.model.item.filterName;
@@ -424,21 +407,8 @@
         oldParams[key] = value;
         this.set('ajaxParams', oldParams);
       },
-      _computeResultsToShow: function(pages, datalength) {
-        var start = (pages.page - 1) * pages.itemsPerPage;
-        var end = (pages.itemsPerPage * pages.page) > datalength ?
-                   datalength : (pages.itemsPerPage * pages.page);
-        return start + ' - ' + end + ' of ' + datalength;
-      },
-      labelLib: {
-        'Action Point #': 'action_point_number',
-        'Trip Reference #': 'trip_reference_number',
-        'Description': 'description',
-        'Due Date': 'due_date',
-        'Responsible Person': 'person_responsible',
-        'Assigned By': 'assigned_by',
-        'Status': 'status',
-      },
+
+      // Mapping data to the view
       handleListResponse: function(event, data) {
         this.set('datalength', data.total_count);
         data.data.forEach(function(action) {
@@ -447,8 +417,7 @@
           }
         });
         this.set('data', data.data);
-      }
-
+      },
     });
   </script>
 </dom-module>

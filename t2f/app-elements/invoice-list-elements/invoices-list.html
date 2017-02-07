@@ -349,17 +349,35 @@
           value: false
         }
       },
-       _computeExportList: function(user) {
+
+      // Mapping of Labels / API names
+      labelLib: {
+        'Reference #': 'id',
+        'Vendor number': 'vendor_number',
+        'TA Number': 'ta_number',
+        'Status': 'status',
+        'Currency': 'currency',
+        'Amount': 'amount',
+        'VISION Fi Doc': 'vision_fi_id'
+      },
+
+      // Sets export properties if FFP
+      _computeExportList: function(user) {
+
         var exportList = [];
         var roles = user.t2f.roles;
+
         if (roles.indexOf('Finance Focal Point') > -1) {
           exportList.push({name: 'Invoice Export', endpoint: '/api/t2f/travels/invoice-export/'});
           this.set('showExportButton', true);
         } else {
           this.set('showExportButton', false);
         }
-       return exportList;
+
+        return exportList;
       },
+
+      // Aggregating filters and collections into form useable by view
       _computeFilters: function(structure) {
         return [
           {
@@ -390,38 +408,8 @@
           }
         ];
       },
-      fillAvailableFilters: function(filters) {
-        this.set('availableFilters', filters);
-      },
-      addFilter: function(e) {
 
-        var newFilter = this.filters.filter(function(filter) {
-          return filter.name === e.model.item.name;
-        })[0];
-
-        this.set('availableFilters', this.availableFilters.filter(function(filter) {
-          return filter.name !== newFilter.name;
-        }));
-
-        this.push('usedFilters', newFilter);
-      },
-      removeFilter: function(e) {
-
-        var filterName = e.model.item.name;
-        var pristineFilter = this.filters.filter(function(filter) {
-          return filter.name === filterName;
-        })[0];
-
-        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-        delete backup[e.model.item.filterName];
-        this.set('ajaxParams', backup);
-
-        this.push('availableFilters', pristineFilter);
-
-        var indexToRemove = this.usedFilters.indexOf(e.model.item);
-
-        this.splice('usedFilters', indexToRemove, 1);
-      },
+      // Sets the chosen filter value to the params, auto call API
       changeFilterValue: function(e) {
 
         var key = e.model.item.filterName;
@@ -444,25 +432,14 @@
         oldParams[key] = value;
         this.set('ajaxParams', oldParams);
       },
-      _computeResultsToShow: function(pages, datalength) {
-        var start = (pages.page - 1) * pages.itemsPerPage;
-        var end = (pages.itemsPerPage * pages.page) > datalength ?
-                   datalength : (pages.itemsPerPage * pages.page);
-        return start + ' - ' + end + ' of ' + datalength;
-      },
-      labelLib: {
-        'Reference #': 'id',
-        'Vendor number': 'vendor_number',
-        'TA Number': 'ta_number',
-        'Status': 'status',
-        'Currency': 'currency',
-        'Amount': 'amount',
-        'VISION Fi Doc': 'vision_fi_id'
-      },
+
+      // Mapping data to the view
       handleListResponse: function(event, data) {
         this.set('datalength', data.total_count);
         this.set('data', data.data);
       },
+
+      // Maps the vendors to readable form
       handleVendors: function(event, data) {
         var self = this;
 
@@ -473,8 +450,7 @@
             apiValue: vendorStr
           });
         });
-      }
-
+      },
     });
   </script>
 </dom-module>
