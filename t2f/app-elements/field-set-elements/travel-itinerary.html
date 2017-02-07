@@ -62,6 +62,7 @@
           value="{{itinerary.dsa_region}}"
           auto-validate$="[[autoValidate]]"
           required$="[[dsaAreaRequired]]"
+          empty-value="[[!dsaAreaRequired]]"
           placeholder="[[dsaAreaPlaceholder]]">
         </etools-searchable-multiselection-menu>
       </div>
