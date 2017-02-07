@@ -17,7 +17,7 @@
 <link rel="import" href="../../app-behaviors/list-behavior.html">
 
 <link rel="import" href="./invoices-list-element.html">
-<link rel="import" href="./invoices-list-header.html">
+<link rel="import" href="../list-elements/list-header.html">
 <link rel="import" href="../list-elements/list-pagination.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
 
@@ -115,8 +115,12 @@
 
         <span class="textprim data-card-heading">{{showingResults}} results to show</span>
 
-        <invoices-list-header id="list-header" data="[[headings]]" order-obj="{{orderObj}}">
-        </invoices-list-header>
+        <list-header
+          id="list-header"
+          data="[[headings]]"
+          order-obj="{{orderObj}}"
+          first-left-margin-class="w60">
+        </list-header>
 
         <template is="dom-repeat" items="[[data]]">
           <invoices-list-element

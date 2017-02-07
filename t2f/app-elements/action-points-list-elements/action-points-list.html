@@ -17,7 +17,7 @@
 <link rel="import" href="../../app-behaviors/list-behavior.html">
 
 <link rel="import" href="./action-points-list-element.html">
-<link rel="import" href="./action-points-list-header.html">
+<link rel="import" href="../list-elements/list-header.html">
 <link rel="import" href="../list-elements/list-pagination.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
 
@@ -106,8 +106,12 @@
 
         <span class="textprim data-card-heading">{{showingResults}} results to show</span>
 
-        <action-points-list-header id="list-header" data="[[headings]]" order-obj="{{orderObj}}">
-        </action-points-list-header>
+        <list-header
+          id="list-header"
+          data="[[headings]]"
+          order-obj="{{orderObj}}"
+          first-left-margin-class="w20">
+        </list-header>
 
         <template is="dom-repeat" items="[[data]]">
           <action-points-list-element
