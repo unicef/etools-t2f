@@ -105,11 +105,26 @@
         </date-time-picker-input>
 
         <paper-checkbox
-          class$="flex-8 custom-margin self-end [[computedPermission.primary_traveler.readOnly]]"
-          disabled="[[computedPermission.primary_traveler.disabled]]"
-          hidden$="[[computedPermission.primary_traveler.hidden]]"
-          checked="{{activity.primary_traveler}}">I am a Primary Traveler
+          class$="flex-4 custom-margin self-end [[computedPermission.is_primary_traveler.readOnly]]"
+          disabled="[[computedPermission.is_primary_traveler.disabled]]"
+          hidden$="[[computedPermission.is_primary_traveler.hidden]]"
+          checked="{{activity.is_primary_traveler}}">I am a Primary Traveler
         </paper-checkbox>
+
+        <div class="flex-4">
+          <etools-searchable-multiselection-menu label="Primary Traveler"
+            id="primary_travler"
+            value="{{activity.primary_traveler}}"
+            class$="flex [[computedPermission.primary_traveler.readOnly]]"
+            disabled="[[computedPermission.primary_traveler.disabled]]"
+            hidden$="[[hidePrimaryTraveler]]"
+            options="[[structure.users]]"
+            empty-value
+            placeholder="select"
+            auto-validate$="[[autoValidate]]"
+            >
+          </etools-searchable-multiselection-menu>
+        </div>
       </div>
     </form>
 
@@ -150,24 +165,25 @@
         activityValidationArray: {
           type: Array,
           notify: true
+        },
+        hidePrimaryTraveler: {
+          type: Boolean,
+          value: true,
+          computed: '_computeHidePrimaryTraveler(computedPermission.primary_traveler.hidden,' +
+          ' activity.is_primary_traveler)',
         }
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],
 
       observers: [
-        '_travelTypeObserver(activity.travel_type)',
         '_activityObserver(activity.*)',
       ],
+      _computeHidePrimaryTraveler: function(permission, primaryTraveler) {
+        return permission || primaryTraveler;
+      },
       _computeTravelType: function(travel_type) {
        return travel_type;
-      },
-      _travelTypeObserver: function(newValue, oldValue) {
-          if (oldValue === undefined && newValue !== undefined && newValue !== '') {
-            this.set('activity.primary_traveler', true);
-          } else if (oldValue === undefined && newValue === undefined) {
-            this.set('activity.primary_traveler', undefined);
-          }
       },
       _computeAutoValidate: function(activity) {
           return activity !== undefined && Object.keys(activity).length > 0;
@@ -175,8 +191,7 @@
       _computeDisablePartnerships: function(partnerships, permissionDisabled) {
         return partnerships.length === 0 || permissionDisabled;
       },
-      _activityObserver: function(changed) {
-        this._addValidationFunction(changed);
+      _partnerPartnershipsHandling: function(changed) {
         var partner = changed.base.partner;
         var partnership = changed.base.partnership;
         if (partner) {
@@ -192,7 +207,23 @@
           this.set('partnerships', []);
           this.set('activity.partnership', null);
         }
-
+      },
+      _primaryTravelerHandling: function(changed) {
+        if (changed && changed.base) {
+          var isPrimaryTraveler = changed.base.is_primary_traveler;
+          var travelType = changed.base.travel_type;
+          if (isPrimaryTraveler === undefined && travelType !== undefined) {
+            this.set('activity.is_primary_traveler', true);
+          }
+          if (isPrimaryTraveler === true) {
+            this.set('activity.primary_traveler', undefined);
+          }
+        }
+      },
+      _activityObserver: function(changed) {
+        this._addValidationFunction(changed);
+        this._partnerPartnershipsHandling(changed);
+        this._primaryTravelerHandling(changed);
       },
 
       _addValidationFunction: function(changed) {
