@@ -444,28 +444,6 @@
         oldParams[key] = value;
         this.set('ajaxParams', oldParams);
       },
-      _changeParamsOrder: function(orderObj, old) {
-
-        if (typeof old === 'undefined') {
-          return;
-        }
-        this.set('pages.page', 1);
-        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-        backup.page = 1;
-        backup.reverse = orderObj.reverse;
-        backup.sort_by = this.labelLib[orderObj.orderedBy];
-        this.set('ajaxParams', backup);
-      },
-      _changeParamsPages: function(pages, old) {
-
-        if (typeof old === 'undefined') {
-          return;
-        }
-        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-        backup.page = pages.page;
-        backup.page_size = pages.itemsPerPage;
-        this.set('ajaxParams', backup);
-      },
       _computeResultsToShow: function(pages, datalength) {
         var start = (pages.page - 1) * pages.itemsPerPage;
         var end = (pages.itemsPerPage * pages.page) > datalength ?
@@ -495,38 +473,6 @@
             apiValue: vendorStr
           });
         });
-      },
-      searchKeyDown: function(e) {
-
-        if (e.keyCode === 13) {     // Enter was hit
-
-          var input = this.$['search-input'];
-
-          this.set('searchString', input.value);
-          input.focus();
-        }
-      },
-      _searchStringChanged: function(searchStr, old) {
-
-        if (typeof old === 'undefined') {
-          return;
-        }
-        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-        backup.search = searchStr;
-        this.set('ajaxParams', backup);
-      },
-      _changeShowHidden: function(e, detail) {
-        //jshint unused:false
-        this.set('showHidden', !this.showHidden);
-      },
-      _showHiddenChanged: function(show, old) {
-
-        if (typeof old === 'undefined') {
-          return;
-        }
-        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-        backup.show_hidden = show;
-        this.set('ajaxParams', backup);
       }
 
     });

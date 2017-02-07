@@ -22,5 +22,54 @@
       this.set('ajaxParams', backup);
     },
 
+    // Changes the searchString prop only if it was "entered"
+    searchKeyDown: function(e) {
+
+      if (e.keyCode === 13) {     // Enter was hit
+
+        var input = this.$['search-input'];
+
+        this.set('searchString', input.value);
+        input.focus();
+      }
+    },
+
+    // Sets the query for search, auto-triggers API call
+    _searchStringChanged: function(searchStr, old) {
+
+      if (typeof old === 'undefined') {
+        return;
+      }
+      var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+      backup.search = searchStr;
+      this.set('ajaxParams', backup);
+    },
+
+    // Handle ordering change, reset to page 1, auto API call
+    _changeParamsOrder: function(orderObj, old) {
+
+      if (typeof old === 'undefined') {
+        return;
+      }
+      this.set('pages.page', 1);
+      var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+      backup.page = 1;
+      backup.reverse = orderObj.reverse;
+      backup.sort_by = this.labelLib[orderObj.orderedBy];
+      this.set('ajaxParams', backup);
+    },
+
+    // Handle pagination change, auto API call
+    _changeParamsPages: function(pages, old) {
+
+      if (typeof old === 'undefined') {
+        return;
+      }
+      var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+      backup.page = pages.page;
+      backup.page_size = pages.itemsPerPage;
+      this.set('ajaxParams', backup);
+    },
+
   };
 </script>
