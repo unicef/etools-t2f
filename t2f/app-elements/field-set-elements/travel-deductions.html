@@ -261,7 +261,7 @@
           return defaultTime;
         }
         itinerary.forEach(function(item) {
-            if (item.arrival_date === undefined) {
+            if (item.departure_date === undefined) {
               calculated = undefined;
             }
         });
@@ -269,10 +269,9 @@
           return calculated;
         }
         calculated = itinerary.reduce(function(ret, curr) {
-          return (new Date(curr.arrival_date)).getTime() > (new Date(ret)).getTime() ?
-            curr.arrival_date : ret;
+          return (new Date(curr.departure_date)).getTime() > (new Date(ret)).getTime() ?
+            curr.departure_date : ret;
         }, defaultTime);
-
         return calculated === defaultTime ? undefined : calculated;
       },
     });
