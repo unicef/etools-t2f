@@ -208,36 +208,7 @@
           auto-validate$="[[autoValidate]]"
           starred>
         </date-time-picker-input>
-
-        <etools-searchable-multiselection-menu label="Mode of travel"
-          id="mode_of_travel"
-          class$="flex-6 capitalize [[computedPermission.mode_of_travel.readOnly]]"
-          disabled="[[computedPermission.mode_of_travel.disabled]]"
-          hidden$="[[computedPermission.mode_of_travel.hidden]]"
-          options="[[structure.travel_modes]]"
-          value="{{baseDetails.mode_of_travel}}"
-          multi
-          on-paper-dropdown-close="_validateMode"
-          required$="[[computedPermission.mode_of_travel.required]]"
-          placeholder="select"
-          starred>
-        </etools-searchable-multiselection-menu>
-      </div>
-
-      <div class="layout horizontal">
-
-        <paper-input label="Estimated travel cost"
-          class$="flex-3 custom-margin [[computedPermission.estimated_travel_cost.readOnly]]"
-          disabled="[[computedPermission.estimated_travel_cost.disabled]]"
-          hidden$="[[_hideOnTANotRequired(computedPermission.estimated_travel_cost.hidden, baseDetails.ta_required)]]"
-          pattern="^[0-9]+(\.[0-9]{1,2})?$"
-          error-message="*number required"
-          placeholder="eg.: 567.12"
-          value="{{baseDetails.estimated_travel_cost}}"
-          auto-validate>
-        </paper-input>
-
-        <etools-searchable-multiselection-menu label="Currency of TA"
+         <etools-searchable-multiselection-menu label="Currency of TA"
           class$="flex-3 [[computedPermission.currency.readOnly]]"
           disabled="[[computedPermission.currency.disabled]]"
           hidden$="[[_hideOnTANotRequired(computedPermission.currency.hidden, baseDetails.ta_required)]]"
@@ -246,9 +217,9 @@
           value="{{baseDetails.currency}}"
           placeholder="select">
         </etools-searchable-multiselection-menu>
-
-        <div class="flex-6"></div>
+        <div class="flex-3"></div>
       </div>
+
 
       <div class="layout horizontal">
 
@@ -373,25 +344,7 @@
       },
 
       _validateTravelPlan: function() {
-
-        var modeValid = this._validateMode();
-        var formValid = this.$.travel_plan_form.validate();
-
-        return modeValid && formValid;
-      },
-
-      _validateMode: function() {
-
-        if (Array.isArray(this.baseDetails.mode_of_travel) && this.baseDetails.mode_of_travel.length > 0) {
-
-          this.$.mode_of_travel.removeAttribute('invalid');
-          return true;
-
-        } else {
-
-          this.$.mode_of_travel.setAttribute('invalid', true);
-          return false;
-        }
+        return this.$.travel_plan_form.validate();
       },
 
       _computeModeInputTouched: function(mode_of_travel) {
