@@ -18,7 +18,7 @@
 
 <link rel="import" href="./list-element.html">
 <link rel="import" href="./list-header.html">
-<link rel="import" href="./list-pagination.html">
+<link rel="import" href="../list-elements/list-pagination.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
@@ -28,7 +28,8 @@
 
 <dom-module id="travel-list">
 
-  <style include="iron-flex shared-styles et2f-styles et2f-list-styles"></style>
+  <style include="iron-flex shared-styles et2f-styles et2f-list-styles">
+  </style>
 
   <template>
     <div class="background">
@@ -126,10 +127,10 @@
         </template>
 
         <list-pagination
-            id="list-pagination"
-            maxnr="{{datalength}}"
-            pages="{{pages}}"
-            showing-results="{{showingResults}}">
+          id="list-pagination"
+          maxnr="{{datalength}}"
+          pages="{{pages}}"
+          showing-results="{{showingResults}}">
         </list-pagination>
       </paper-card>
     </div>

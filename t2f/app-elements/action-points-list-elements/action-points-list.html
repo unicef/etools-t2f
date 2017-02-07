@@ -18,7 +18,7 @@
 
 <link rel="import" href="./action-points-list-element.html">
 <link rel="import" href="./action-points-list-header.html">
-<link rel="import" href="./action-points-list-pagination.html">
+<link rel="import" href="../list-elements/list-pagination.html">
 <link rel="import" href="../et2f-header/et2f-header.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
@@ -119,12 +119,12 @@
           </action-points-list-element>
         </template>
 
-        <action-points-list-pagination
+        <list-pagination
             id="list-pagination"
             maxnr="{{datalength}}"
             pages="{{pages}}"
             showing-results="{{showingResults}}">
-        </action-points-list-pagination>
+        </list-pagination>
       </paper-card>
     </div>
   </template>
