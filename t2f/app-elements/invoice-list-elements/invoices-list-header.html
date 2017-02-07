@@ -3,47 +3,22 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
+<link rel="import" href="../../styles/et2f-list-styles.html">
 
 <dom-module id="invoices-list-header">
 
-  <style include="shared-styles et2f-styles invoices-list">
+  <style include="iron-flex shared-styles et2f-styles et2f-list-styles">
+
     :host {
       display: block;
       padding: 0;
       margin: 0;
     }
-    .heading-row {
-      width: 100%;
-      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.26);
-    }
-    .local-headings {
-      display: block;
-      box-sizing: border-box;
-      float: left;
-      font-weight: 500;
-      cursor: pointer;
-    }
-    .heading {
-      line-height: 56px;
-      font-size: 12px;
-    }
-    .local-headings iron-icon {
-      width: 16px;
-      height: 16px;
-      color: var(--gray-mid);
-    }
-    .act .textsec.heading, .local-headings:hover .textsec.heading  {
-      color: var(--gray-dark);
-    }
-    .local-headings:hover .down-icon[hidden]:not(.action-down-icon),
-    .local-headings:hover .up-icon:not([downhidden]) {
-      display: inline-block!important;
-      opacity: 1!important;
-    }
+
   </style>
 
   <template>
-    <div class="heading-row clearfix layout horizontal">
+    <div class="heading-row-header clearfix layout horizontal">
       <div class="w60"></div>
       <template is="dom-repeat" items="[[metaData]]">
         <div on-click="_clickOnLabel" class$="local-headings [[_headingClassGenerator(item, orderObj.orderedBy)]]">
