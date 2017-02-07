@@ -171,36 +171,9 @@
         },
         headings: {
           type: Array,
-          value: [
-            {
-              'size': 23,
-              'label': 'Reference #'
-            },
-            {
-              'size': 13,
-              'label': 'Vendor number'
-            },
-            {
-              'size': 13,
-              'label': 'TA Number'
-            },
-            {
-              'size': 13,
-              'label': 'Status'
-            },
-            {
-              'size': 13,
-              'label': 'Currency'
-            },
-            {
-              'size': 13,
-              'label': 'Amount'
-            },
-            {
-              'size': 13,
-              'label': 'VISION FI Doc'
-            }
-          ]
+          value: function() {
+            return this.getHeadings();
+          }
         },
         pages: {
           type: Object,
@@ -265,6 +238,40 @@
           type: Boolean,
           value: false
         }
+      },
+
+      // Returns an array with the header labels
+      getHeadings: function() {
+        return [
+          {
+            'size': 23,
+            'label': 'Reference #'
+          },
+          {
+            'size': 13,
+            'label': 'Vendor number'
+          },
+          {
+            'size': 13,
+            'label': 'TA Number'
+          },
+          {
+            'size': 13,
+            'label': 'Status'
+          },
+          {
+            'size': 13,
+            'label': 'Currency'
+          },
+          {
+            'size': 13,
+            'label': 'Amount'
+          },
+          {
+            'size': 13,
+            'label': 'VISION FI Doc'
+          }
+        ];
       },
 
       // Mapping of Labels / API names

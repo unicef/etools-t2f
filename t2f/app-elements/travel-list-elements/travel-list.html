@@ -165,40 +165,9 @@
         },
         headings: {
           type: Array,
-          value: [
-            {
-              'size': 13,
-              'label': 'Reference #'
-            },
-            {
-              'size': 13,
-              'label': 'Traveler'
-            },
-            {
-              'size': 13,
-              'label': 'Office'
-            },
-            {
-              'size': 13,
-              'label': 'Section'
-            },
-            {
-              'size': 11,
-              'label': 'Start Date'
-            },
-            {
-              'size': 11,
-              'label': 'End Date'
-            },
-            {
-              'size': 23,
-              'label': 'Status'
-            },
-            {
-              'size': 5,
-              'label': 'Actions'
-            },
-          ]
+          value: function() {
+            return this.getHeadings();
+          }
         },
         pages: {
           type: Object,
@@ -272,6 +241,44 @@
         'Status': 'status',
         'Office': 'office',
         'Section': 'section'
+      },
+
+      // Returns an array with the header labels
+      getHeadings: function() {
+        return [
+          {
+            'size': 13,
+            'label': 'Reference #'
+          },
+          {
+            'size': 13,
+            'label': 'Traveler'
+          },
+          {
+            'size': 13,
+            'label': 'Office'
+          },
+          {
+            'size': 13,
+            'label': 'Section'
+          },
+          {
+            'size': 11,
+            'label': 'Start Date'
+          },
+          {
+            'size': 11,
+            'label': 'End Date'
+          },
+          {
+            'size': 23,
+            'label': 'Status'
+          },
+          {
+            'size': 5,
+            'label': 'Actions'
+          },
+        ];
       },
 
       // Sets export properties if FFP

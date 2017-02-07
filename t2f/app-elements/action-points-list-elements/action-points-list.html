@@ -162,36 +162,9 @@
         },
         headings: {
           type: Array,
-          value: [
-            {
-              'size': 13,
-              'label': 'Action Point #'
-            },
-            {
-              'size': 13,
-              'label': 'Trip Reference #'
-            },
-            {
-              'size': 23,
-              'label': 'Description'
-            },
-            {
-              'size': 9,
-              'label': 'Due Date'
-            },
-            {
-              'size': 15,
-              'label': 'Responsible Person'
-            },
-            {
-              'size': 15,
-              'label': 'Assigned By'
-            },
-            {
-              'size': 9,
-              'label': 'Status'
-            }
-          ]
+          value: function() {
+            return this.getHeadings();
+          }
         },
         pages: {
           type: Object,
@@ -240,6 +213,40 @@
           type: Array,
           value: []
         }
+      },
+
+      // Returns an array with the header labels
+      getHeadings: function() {
+        return [
+          {
+            'size': 13,
+            'label': 'Action Point #'
+          },
+          {
+            'size': 13,
+            'label': 'Trip Reference #'
+          },
+          {
+            'size': 23,
+            'label': 'Description'
+          },
+          {
+            'size': 9,
+            'label': 'Due Date'
+          },
+          {
+            'size': 15,
+            'label': 'Responsible Person'
+          },
+          {
+            'size': 15,
+            'label': 'Assigned By'
+          },
+          {
+            'size': 9,
+            'label': 'Status'
+          }
+        ];
       },
 
       // Mapping of Labels / API names
