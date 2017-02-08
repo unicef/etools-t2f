@@ -14,114 +14,21 @@
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
+<link rel="import" href="../../app-behaviors/list-behavior.html">
+
 <link rel="import" href="./list-element.html">
-<link rel="import" href="./list-header.html">
-<link rel="import" href="./list-pagination.html">
+<link rel="import" href="../list-elements/list-header.html">
+<link rel="import" href="../list-elements/list-pagination.html">
+<link rel="import" href="../et2f-header/et2f-header.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
-<link rel="import" href="../et2f-header/et2f-header.html">
+<link rel="import" href="../../styles/et2f-list-styles.html">
 
 
 <dom-module id="travel-list">
 
-  <style include="iron-flex shared-styles et2f-styles">
-    :host {
-      display: block;
-      --paper-card:  {
-        background-color: white;
-        margin: 0 24px;
-        width: calc(100% - 48px);
-      }
-    }
-    .background {
-      background-color: var(--gray-lighter);
-    }
-
-    et2f-header {
-      margin-bottom: 12px;
-    }
-
-    .second-header {
-      min-height: 84px;
-      margin-bottom: 12px;
-    }
-    .second-header paper-input {
-      --paper-input-container: {
-        width: 240px;
-        margin-left: 26px;
-      };
-      --paper-input-container-color: var(--gray-light);
-    }
-    .second-header paper-input iron-icon {
-      color: var(--gray-mid);
-    }
-    .second-header .toggle-hidden-div {
-      margin-right: 26px;
-    }
-    .second-header .toggle-hidden-div span {
-      color: var(--gray-dark);
-      font-size: 16px;
-      margin-right: 8px;
-    }
-
-    .data-table {
-      margin-bottom: 24px;
-    }
-
-    .data-table .data-card-heading {
-      display: block;
-      font-size: 20px;
-      margin-left: 20px;
-      font-weight: 500;
-      line-height: 64px;
-    }
-
-    #add-filter-container {
-      border-left: 2px solid var(--gray-lighter);
-      border-right: 2px solid var(--gray-lighter);
-      margin-left: 16px;
-      margin-right: 16px;
-      padding-left: 10px;
-      padding-right: 10px;
-    }
-    #add-filter-container paper-button {
-      color: var(--et2f-primary);
-    }
-    .filter-dropdown {
-      margin-left: 20px;
-      width: 200px;
-    }
-    .filter-reset-button {
-      margin: auto 12px;
-      transform: translate(0, 8px);
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      line-height: 16px;
-      background-color: var(--et2f-error);
-      color: white;
-      font-weight: 500;
-      font-size: 12px;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    .w5 {
-      width: 5%;
-    }
-    .w11 {
-      width: 11%;
-    }
-    .w13 {
-      width: 13%;
-    }
-    .w23 {
-      @apply(--layout-flex);
-    }
-    .w60 {
-      width: 60px;
-    }
+  <style include="iron-flex shared-styles et2f-styles et2f-list-styles">
   </style>
 
   <template>
@@ -206,7 +113,11 @@
 
         <span class="textprim data-card-heading">{{showingResults}} trips</span>
 
-        <list-header id="list-header" data="[[headings]]" order-obj="{{orderObj}}">
+        <list-header
+          id="list-header"
+          data="[[headings]]"
+          order-obj="{{orderObj}}"
+          first-left-margin-class="w60">
         </list-header>
 
         <template is="dom-repeat" items="[[data]]">
@@ -220,10 +131,10 @@
         </template>
 
         <list-pagination
-            id="list-pagination"
-            maxnr="{{datalength}}"
-            pages="{{pages}}"
-            showing-results="{{showingResults}}">
+          id="list-pagination"
+          maxnr="{{datalength}}"
+          pages="{{pages}}"
+          showing-results="{{showingResults}}">
         </list-pagination>
       </paper-card>
     </div>
@@ -231,7 +142,11 @@
 
   <script type="text/javascript">
     Polymer({
+
       is: 'travel-list',
+
+      behaviors: [ListBehavior],
+
       properties: {
         data: {
           type: Array,
@@ -254,40 +169,9 @@
         },
         headings: {
           type: Array,
-          value: [
-            {
-              'size': 13,
-              'label': 'Reference #'
-            },
-            {
-              'size': 13,
-              'label': 'Traveler'
-            },
-            {
-              'size': 13,
-              'label': 'Office'
-            },
-            {
-              'size': 13,
-              'label': 'Section'
-            },
-            {
-              'size': 11,
-              'label': 'Start Date'
-            },
-            {
-              'size': 11,
-              'label': 'End Date'
-            },
-            {
-              'size': 23,
-              'label': 'Status'
-            },
-            {
-              'size': 5,
-              'label': 'Actions'
-            },
-          ]
+          value: function() {
+            return this.getHeadings();
+          }
         },
         pages: {
           type: Object,
@@ -351,6 +235,57 @@
           computed: '_computeExportList(user)'
         }
       },
+
+      labelLib: {
+        'Reference #': 'id',
+        'Purpose of travel': 'purpose',
+        'Traveler': 'traveler',
+        'Start date': 'start_date',
+        'End date': 'end_date',
+        'Status': 'status',
+        'Office': 'office',
+        'Section': 'section'
+      },
+
+      // Returns an array with the header labels
+      getHeadings: function() {
+        return [
+          {
+            'size': 13,
+            'label': 'Reference #'
+          },
+          {
+            'size': 13,
+            'label': 'Traveler'
+          },
+          {
+            'size': 13,
+            'label': 'Office'
+          },
+          {
+            'size': 13,
+            'label': 'Section'
+          },
+          {
+            'size': 11,
+            'label': 'Start Date'
+          },
+          {
+            'size': 11,
+            'label': 'End Date'
+          },
+          {
+            'size': 23,
+            'label': 'Status'
+          },
+          {
+            'size': 5,
+            'label': 'Actions'
+          },
+        ];
+      },
+
+      // Sets export properties if FFP
       _computeExportList: function(user) {
         var exportList = [];
         if (!user && !user.t2f) {
@@ -367,6 +302,8 @@
         }
        return exportList;
       },
+
+      // Aggregating filters and collections into form useable by view
       _computeFilters: function(structure) {
         return [
           {
@@ -551,38 +488,8 @@
           }
         ];
       },
-      fillAvailableFilters: function(filters) {
-        this.set('availableFilters', filters);
-      },
-      addFilter: function(e) {
 
-        var newFilter = this.filters.filter(function(filter) {
-          return filter.name === e.model.item.name;
-        })[0];
-
-        this.set('availableFilters', this.availableFilters.filter(function(filter) {
-          return filter.name !== newFilter.name;
-        }));
-
-        this.push('usedFilters', newFilter);
-      },
-      removeFilter: function(e) {
-
-        var filterName = e.model.item.name;
-        var pristineFilter = this.filters.filter(function(filter) {
-          return filter.name === filterName;
-        })[0];
-
-        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-        delete backup[e.model.item.filterName];
-        this.set('ajaxParams', backup);
-
-        this.push('availableFilters', pristineFilter);
-
-        var indexToRemove = this.usedFilters.indexOf(e.model.item);
-
-        this.splice('usedFilters', indexToRemove, 1);
-      },
+      // Sets the chosen filter value to the params, auto call API
       changeFilterValue: function(e) {
         var key = e.model.item.filterName;
         var value = e.detail.selectedValues.value;
@@ -597,44 +504,8 @@
         oldParams[key] = value;
         this.set('ajaxParams', oldParams);
       },
-      _changeParamsOrder: function(orderObj, old) {
 
-        if (typeof old === 'undefined') {
-          return;
-        }
-        this.set('pages.page', 1);
-        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-        backup.page = 1;
-        backup.reverse = orderObj.reverse;
-        backup.sort_by = this.labelLib[orderObj.orderedBy];
-        this.set('ajaxParams', backup);
-      },
-      _changeParamsPages: function(pages, old) {
-
-        if (typeof old === 'undefined') {
-          return;
-        }
-        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-        backup.page = pages.page;
-        backup.page_size = pages.itemsPerPage;
-        this.set('ajaxParams', backup);
-      },
-      _computeResultsToShow: function(pages, datalength) {
-        var start = (pages.page - 1) * pages.itemsPerPage;
-        var end = (pages.itemsPerPage * pages.page) > datalength ?
-                   datalength : (pages.itemsPerPage * pages.page);
-        return start + ' - ' + end + ' of ' + datalength;
-      },
-      labelLib: {
-        'Reference #': 'id',
-        'Purpose of travel': 'purpose',
-        'Traveler': 'traveler',
-        'Start date': 'start_date',
-        'End date': 'end_date',
-        'Status': 'status',
-        'Office': 'office',
-        'Section': 'section'
-      },
+      // Mapping data to the view
       handleListResponse: function(event, data) {
         this.set('datalength', data.total_count);
         data.data.forEach(function(travel) {
@@ -647,29 +518,13 @@
         });
         this.set('data', data.data);
       },
-      searchKeyDown: function(e) {
 
-        if (e.keyCode === 13) {     // Enter was hit
-
-          var input = this.$['search-input'];
-
-          this.set('searchString', input.value);
-          input.focus();
-        }
-      },
-      _searchStringChanged: function(searchStr, old) {
-
-        if (typeof old === 'undefined') {
-          return;
-        }
-        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-        backup.search = searchStr;
-        this.set('ajaxParams', backup);
-      },
-      _changeShowHidden: function(e, detail) {
-        //jshint unused:false
+      // Toggles showing hiddens
+      _changeShowHidden: function() {
         this.set('showHidden', !this.showHidden);
       },
+
+      // Handles param changing on hidden toggled
       _showHiddenChanged: function(show, old) {
 
         if (typeof old === 'undefined') {
@@ -679,19 +534,6 @@
         backup.show_hidden = show;
         this.set('ajaxParams', backup);
       },
-      _doRefreshData: function() {
-          var backup = this.ajaxParams;
-          this.set('ajaxParams', {});
-          this.set('ajaxParams', backup);
-      },
-      _routeObserver: function(newValue, oldValue) {
-        if (!oldValue || !newValue || !oldValue.path || !newValue.path) {
-          return;
-        }
-        if (newValue.path.indexOf('travel-list') > -1 || !(oldValue.path.indexOf('travel-list'))) {
-         this._doRefreshData();
-        }
-      }
     });
   </script>
 </dom-module>

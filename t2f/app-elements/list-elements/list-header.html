@@ -3,16 +3,18 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
+<link rel="import" href="../../styles/et2f-list-styles.html">
 
 <dom-module id="list-header">
 
-  <style include="shared-styles et2f-styles travel-list">
+  <style include="iron-flex shared-styles et2f-styles et2f-list-styles">
+
     :host {
       display: block;
       padding: 0;
       margin: 0;
     }
-    .heading-row {
+    .heading-row-header {
       width: 100%;
       box-shadow: inset 0 -1px 0 rgba(0,0,0,0.26);
     }
@@ -40,11 +42,12 @@
       display: inline-block!important;
       opacity: 1!important;
     }
+
   </style>
 
   <template>
-    <div class="heading-row clearfix layout horizontal">
-      <div class="w60"></div>
+    <div class="heading-row-header clearfix layout horizontal">
+      <div class$="[[firstLeftMarginClass]]"></div>
       <template is="dom-repeat" items="[[metaData]]">
         <div on-click="_clickOnLabel" class$="local-headings [[_headingClassGenerator(item, orderObj.orderedBy)]]">
           <span class="textsec heading">[[item.label]]</span>
@@ -86,7 +89,8 @@
           type: Array,
           computed: '_getMetaData(data, orderObj)',
           notify: true
-        }
+        },
+        firstLeftMarginClass: String,
       },
 
       _headingClassGenerator: function(item, orderedBy) {

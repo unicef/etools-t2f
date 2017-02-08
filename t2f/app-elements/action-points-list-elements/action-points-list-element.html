@@ -17,61 +17,12 @@
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
+<link rel="import" href="../../styles/et2f-list-styles.html">
+<link rel="import" href="../../styles/et2f-list-element-styles.html">
 
 <dom-module id="action-points-list-element">
 
-  <style include="shared-styles et2f-styles action-points-list iron-flex">
-    :host {
-      display: block;
-      padding: 0;
-      margin: 0;
-      border-bottom: 1px solid rgba(0,0,0,.12);
-      box-sizing: border-box;
-    }
-    .full-row, .heading-row {
-      width: 100%;
-    }
-    .heading-row {
-      transition: background-color 0.15s ease;
-    }
-    .heading-row.grey-heading {
-      background-color: var(--gray-lighter);
-    }
-    .heading-row-detailed {
-      background-color: #EEEEEE;
-      height: 64px;
-    }
-    .full-row:hover .heading-row {
-      background-color: #f5f5f5;
-    }
-    .headings {
-      display: block;
-      float: left;
-      font-size: 13px;
-      line-height: 47px;
-      box-sizing: border-box;
-    }
-    .detail-headings {
-      color: var(--gray-mid);
-      font-size: 12px;
-      font-weight: 500;
-      line-height: 32px;
-    }
-    .detail-text {
-      color: var(--gray-dark);
-      font-weight: normal;
-      line-height: 32px;
-    }
-    .blue {
-      color: #00AEEF;
-      cursor: pointer;
-    }
-    .bold {
-      font-weight: 500;
-    }
-    .capital {
-      text-transform: capitalize;
-    }
+  <style include="iron-flex shared-styles et2f-styles action-points-list et2f-list-styles et2f-list-element-styles">
     .description {
       width: 100%;
       height: 47px;
