@@ -1,0 +1,382 @@
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import" href="../../app-behaviors/list-behavior.html">
+
+<link rel="import" href="./invoices-list-element.html">
+<link rel="import" href="../list-elements/list-header.html">
+<link rel="import" href="../list-elements/list-pagination.html">
+<link rel="import" href="../page-elements/et2f-header.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+<link rel="import" href="../../styles/et2f-list-styles.html">
+
+
+<dom-module id="invoices-list">
+
+  <style include="iron-flex shared-styles et2f-styles et2f-list-styles">
+
+    #add-filter-container {
+      border-right: 0px solid var(--gray-lighter);
+    }
+
+  </style>
+
+  <template>
+    <div class="background">
+
+      <etools-ajax url="[[listEndPoint]]"
+        params="{{ajaxParams}}"
+        loading="{{listLoading}}"
+        on-success="handleListResponse">
+      </etools-ajax>
+
+      <etools-ajax url="[[vendorEndPoint]]"
+        loading="{{listLoading}}"
+        on-success="handleVendors">
+      </etools-ajax>
+
+      <et2f-header title="Invoices"
+        show-export-button$="[[showExportButton]]"
+        export-list="[[exportList]]"
+        export-type="list"
+        data="[[data]]"
+        export-params="[[ajaxParams]]">
+      </et2f-header>
+
+      <paper-card class="second-header horizontal layout center">
+
+        <div class="flex horizontal layout wrap">
+
+          <!-- OMNIBOX -->
+          <paper-input
+              inline
+              id="search-input"
+              label="Keywords"
+              on-keydown="searchKeyDown"
+              always-float-label
+              placeholder="Type and search">
+            <iron-icon icon="search" prefix></iron-icon>
+          </paper-input>
+
+          <!-- FILTERS -->
+          <template is="dom-repeat" items="[[usedFilters]]">
+
+            <div class="layout horizontal">
+
+              <etools-searchable-multiselection-menu label="[[item.name]]"
+                class="filter-dropdown"
+                options="[[item.selection]]"
+                on-value-change="changeFilterValue"
+                placeholder="Select">
+              </etools-searchable-multiselection-menu>
+
+              <div class="filter-reset-button" on-click="removeFilter">X</div>
+            </div>
+          </template>
+
+        </div>
+
+        <!-- ADD FILTERS -->
+        <div id="add-filter-container">
+
+          <paper-menu-button>
+
+            <paper-button class="dropdown-trigger">
+              <iron-icon icon="filter-list"></iron-icon>
+              ADD FILTER
+            </paper-button>
+
+            <paper-menu class="dropdown-content">
+              <template is="dom-repeat" items="[[availableFilters]]">
+                <paper-item on-click="addFilter">[[item.name]]</paper-item>
+              </template>
+            </paper-menu>
+          </paper-menu-button>
+        </div>
+
+      </paper-card>
+
+      <paper-card class="data-table">
+
+        <span class="textprim data-card-heading">{{showingResults}} results to show</span>
+
+        <list-header
+          id="list-header"
+          data="[[headings]]"
+          order-obj="{{orderObj}}"
+          first-left-margin-class="w60">
+        </list-header>
+
+        <template is="dom-repeat" items="[[data]]">
+          <invoices-list-element
+            data="[[item]]"
+            route="{{route}}"
+            users="[[structure.users]]"
+            currencies="[[structure.currencies]]">
+          </invoices-list-element>
+        </template>
+
+        <list-pagination
+          id="list-pagination"
+          maxnr="{{datalength}}"
+          pages="{{pages}}"
+          showing-results="{{showingResults}}">
+        </list-pagination>
+      </paper-card>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'invoices-list',
+
+      behaviors: [ListBehavior],
+
+      properties: {
+        data: {
+          type: Array,
+          value: []
+        },
+        route: {
+          type: Object,
+          observer: '_routeObserver'
+        },
+        structure: {
+          type: Object
+        },
+        user: Object,
+        datalength: {
+          type: Number,
+          value: 0
+        },
+        listLoading: {
+          type: Boolean,
+          notify: true
+        },
+        showingResults: {
+          type: String,
+          computed: '_computeResultsToShow(pages, datalength, pages.page)'
+        },
+        headings: {
+          type: Array,
+          value: function() {
+            return this.getHeadings();
+          }
+        },
+        pages: {
+          type: Object,
+          value: {
+            itemsPerPage: 10,
+            page: 1
+          },
+          observer: '_changeParamsPages'
+        },
+        orderObj: {
+          type: Object,
+          value: {
+            orderedBy: 'Reference #',
+            reverse: true
+          },
+          observer: '_changeParamsOrder'
+        },
+        searchString: {
+          type: String,
+          value: '',
+          observer: '_searchStringChanged'
+        },
+        vendors: {
+          type: Array,
+          value: []
+        },
+        ajaxParams: {
+          type: Object,
+          value: {
+            sort_by: 'reference_number',
+            reverse: true,
+            page: 1,
+            page_size: 10,
+            search: ''
+          }
+        },
+        listEndPoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fInvoiceList.url
+        },
+        vendorEndPoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fVendorList.url
+        },
+        filters: {
+          type: Array,
+          computed: '_computeFilters(structure)',
+          observer: 'fillAvailableFilters'
+        },
+        availableFilters: {
+          type: Array
+        },
+        usedFilters: {
+          type: Array,
+          value: []
+        },
+        exportList: {
+          type: Array,
+          computed: '_computeExportList(user)'
+        },
+        showExportButton: {
+          type: Boolean,
+          value: false
+        }
+      },
+      // Returns an array with the header labels
+      getHeadings: function() {
+        return [
+          {
+            'size': 23,
+            'label': 'Reference #'
+          },
+          {
+            'size': 13,
+            'label': 'Vendor number'
+          },
+          {
+            'size': 13,
+            'label': 'TA Number'
+          },
+          {
+            'size': 13,
+            'label': 'Status'
+          },
+          {
+            'size': 13,
+            'label': 'Currency'
+          },
+          {
+            'size': 13,
+            'label': 'Amount'
+          },
+          {
+            'size': 13,
+            'label': 'VISION FI Doc'
+          }
+        ];
+      },
+
+      // Mapping of Labels / API names
+      labelLib: {
+        'Reference #': 'id',
+        'Vendor number': 'vendor_number',
+        'TA Number': 'ta_number',
+        'Status': 'status',
+        'Currency': 'currency',
+        'Amount': 'amount',
+        'VISION Fi Doc': 'vision_fi_id'
+      },
+
+      // Sets export properties if FFP
+      _computeExportList: function(user) {
+        var exportList = [];
+        var roles = user.t2f.roles;
+
+        if (roles.indexOf('Finance Focal Point') > -1) {
+          exportList.push({name: 'Invoice Export', endpoint: '/api/t2f/travels/invoice-export/'});
+          this.set('showExportButton', true);
+        } else {
+          this.set('showExportButton', false);
+        }
+
+        return exportList;
+      },
+
+      // Aggregating filters and collections into form useable by view
+      _computeFilters: function(structure) {
+        return [
+          {
+            name: 'Vendor number',
+            filterName: 'f_vendor_number',
+            selection: this.vendors
+          },
+          {
+            name: 'Status',
+            filterName: 'f_status',
+            selection: [
+              {
+                label: 'Success',
+                value: 0,
+                apiValue: 'success'
+              },
+              {
+                label: 'Failed',
+                value: 1,
+                apiValue: 'failed'
+              },
+              {
+                label: 'Processing',
+                value: 2,
+                apiValue: 'processing'
+              }
+            ]
+          }
+        ];
+      },
+
+      // Sets the chosen filter value to the params, auto call API
+      changeFilterValue: function(e) {
+
+        var key = e.model.item.filterName;
+        var id = e.detail.selectedValues.value;
+        var value;
+
+        if (key === 'f_status') {
+          value = this._computeFilters()[1].selection.filter(function(item) {
+            return item.value === id;
+          })[0].apiValue;
+        }
+
+        if (key === 'f_vendor_number') {
+          value = this.vendors.filter(function(item) {
+            return item.value === id;
+          })[0].apiValue;
+        }
+
+        var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
+        oldParams[key] = value;
+        this.set('ajaxParams', oldParams);
+      },
+
+      // Mapping data to the view
+      handleListResponse: function(event, data) {
+        this.set('datalength', data.total_count);
+        this.set('data', data.data);
+      },
+
+      // Maps the vendors to readable form
+      handleVendors: function(event, data) {
+        var self = this;
+
+        data.forEach(function(vendorStr, i) {
+          self.push('vendors', {
+            label: vendorStr,
+            value: i,
+            apiValue: vendorStr
+          });
+        });
+      },
+    });
+  </script>
+</dom-module>

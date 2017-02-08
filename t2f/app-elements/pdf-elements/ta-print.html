@@ -1,0 +1,395 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../app-config/etools-app-config.html">
+<link rel="import" href="./pdf-images.html">
+<link rel="import" href="pdf-make.html">
+<link rel="import" href="../../../bower_components/moment-element/moment-with-locales-import.html">
+<link rel="import" href="../../app-behaviors/pdf-behavior.html">
+
+<dom-module id="ta-print">
+
+  <template>
+    <pdf-make id="pdfMake" output="download" images="{{images}}" styles="[[printStyles]]" page-orientation="portrait"></pdf-make>
+    <pdf-images unicef-logo="{{unicefLogo}}" black-line="{{blackLine}}"> </pdf-images>
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'ta-print',
+
+      properties: {
+        data: {
+          type: Object,
+        },
+        structure: Object,
+        storedData: {
+          type: Object,
+          computed: '_computeStoredData(data, structure)',
+        },
+        printStyles: {
+          type: Object,
+          computed: '_computeStyles(data)',
+        },
+        unicefLogo: String,
+        blackLine: String,
+        images: {
+          type: Object,
+          computed: '_computeImages(unicefLogo, blackLine)'
+        }
+      },
+      behaviors: [et2fBehaviors.PDFBehavior],
+      _computeStyles: function() {
+        return {
+          bigBold: {
+            fontSize: 16,
+            bold: true,
+            color: '#000',
+          },
+          bold: {
+            bold: true
+          },
+          bottomMargin: {
+            margin: [0, 10]
+          }
+        };
+      },
+      _computeImages: function(unicefLogo, blackLine) {
+        return {
+          unicefLogo: unicefLogo,
+          blackLine: blackLine
+        };
+      },
+      _computeStoredData: function(incomingData, structure) {
+        if (!incomingData.baseDetails) {
+          return;
+        }
+        var cloned = JSON.parse(JSON.stringify(incomingData));
+        // if (cloned.baseDetails.traveler && cloned.baseDetails.traveler.groups) {
+        //   var groupsList = structure.groups.filter(function(group) {
+        //     return cloned.baseDetails.traveler.groups.indexOf(group.value) > -1;
+        //   });
+        //   cloned.baseDetails.traveler.groups = groupsList.map(function(g) { return g.label;}).join(' - ');
+        // }
+        return cloned;
+      },
+
+      _parseData: function() {
+        var data = this.storedData;
+        var dataToPrint = [];
+
+        var print = this._print;
+
+        var printDate = this._printDate;
+        var printX = this._printX;
+        var printFixed = this._printFixed;
+        var printCountryFromStr = this._printCountryFromStr;
+        var printCityFromStr = this._printCityFromStr;
+
+        var rawDSA = data.cost_summary.dsa.reduce(function(ret, act, i) {
+          return ret + parseFloat(act.amount_usd);
+        }, 0);
+
+        var dsa = parseFloat(data.cost_summary.dsa_total);
+        dsa = Number.isNaN(dsa) ? 0 : dsa;
+        var exp = parseFloat(data.cost_summary.expenses_total);
+        exp = Number.isNaN(exp) ? 0 : exp;
+        var ded = parseFloat(data.cost_summary.deductions_total);
+        ded = Number.isNaN(ded) ? 0 : ded;
+
+        function printAmount() {
+          return ((dsa + exp) - ded) + ' ' + data.baseDetails.currency.short;
+        }
+
+        var logo = {
+          image: 'unicefLogo',
+          fit: [212,50],
+          margin: [151,10]
+        };
+
+        //needs to be a function if used more than one time
+        var blackLine = function(margin) {
+          return {
+            image: 'blackLine',
+            fit: [515, 2],
+            margin: [0, margin || 20]
+          };
+        };
+
+        var firstLine = {
+          columns: [
+            {
+              columns: [
+                {text: 'Date: ', style: 'bold', width: 'auto', margin: [5,0]},
+                {text: printDate(Date.now())}
+              ]
+            },
+            {text: 'travel authorization'.toUpperCase(), style: 'bold', width: '*'},
+            {alignment: 'right',
+            columns: [
+                {text: 'Trip No. ', style: 'bold', width: 'auto'},
+                {text: data.baseDetails.reference_number}
+              ]
+            }
+          ]
+        };
+
+        var travelerData = {
+          columns: [
+            {stack: [
+                {text: 'Name', style: 'bold'},
+                {text: print(data.baseDetails.traveler), style: 'bottomMargin'},
+                {text: 'Vendor', style: 'bold'},
+                {text: print(data.baseDetails.traveler.profile.vendor_number), style: 'bottomMargin'},
+
+              ]
+            },
+            {stack: [
+                {text: 'Staff No.', style: 'bold'},
+                {text: print(data.baseDetails.id), style: 'bottomMargin'},
+                {text: print('')}
+              ]
+            },
+            {stack: [
+                {text: 'Title', style: 'bold'},
+                {text: print(data.baseDetails.traveler.profile.job_title), style: 'bottomMargin'}
+              ]
+            },
+            {stack: [
+                {text: 'Employee Group', style: 'bold'},
+                {text: print(''), style: 'bottomMargin'}
+              ]
+            }
+          ]
+        };
+
+        var departureDate = data.deductions[0] ? data.deductions[0].date : '' ;
+        var returnDate = data.deductions[data.deductions.length - 1] ?
+        data.deductions[data.deductions.length - 1].date : '';
+
+        var detailBlock = {
+          stack: [
+            {columns: [
+                {text: 'Purpose of travel:', style: 'bold', width: 'auto', margin: [5,0]},
+                {text: print(data.baseDetails.purpose)},
+              ]
+            },
+            {columns: [
+                {text: 'Departure date:', style: 'bold', width: 'auto', margin: [5,0]},
+                {text: printDate(departureDate)},
+                {text: 'Return date:', style: 'bold', width: 'auto', margin: [5,0]},
+                {text: printDate(returnDate)},
+              ]
+            },
+            {columns: [
+                {text: 'Itinerary:', style: 'bold', width: 'auto', margin: [5,0]},
+                {text: data.itinerary.reduce(function(result, current) {
+                  return result.concat(current.origin + ' - ' + current.destination);
+                }, []).join(' , ')},
+              ]
+            }
+          ]
+        };
+        var dsaDetailsBlock = {
+            stack: [
+              {text: 'DSA Details', alignment: 'center', style: 'bold'},
+              blackLine(5),
+              {layout: 'noBorders',
+                table: {
+                widths: [70,70,57,57,35,70,35,65],
+                headerRows: 1,
+                body: [
+                  [{text: 'Start date', style: 'bold', alignment: 'left'},
+                  {text: 'End Date', style: 'bold', alignment: 'left'},
+                  {text: 'Ctry', style: 'bold', alignment: 'center'},
+                  {text: 'City', style: 'bold', alignment: 'center'},
+                  {text: 'DSA Region', style: 'bold', alignment: 'center'},
+                  {text: 'Daily rate', style: 'bold', alignment: 'center'},
+                  {text: 'No. of Nights', style: 'bold', alignment: 'center'},
+                  {text: 'Amount', style: 'bold', alignment: 'right'}]
+                ].concat(data.cost_summary.dsa.map(function(dsa) {
+                    return [
+                      {text: printDate(dsa.start_date), alignment: 'left'},
+                      {text: printDate(dsa.end_Date), alignment: 'left'},
+                      {text: printCountryFromStr(dsa.dsa_region_name), alignment: 'center'},
+                      {text: printCityFromStr(dsa.dsa_region_name), alignment: 'center'},
+                      {text: print(dsa.dsa_region), alignment: 'center'},
+                      {text: print(dsa.daily_rate_usd), alignment: 'center'},
+                      {text: print(dsa.night_count), alignment: 'center'},
+                      {text: print(dsa.amount_usd), alignment: 'right'}
+                    ];
+                  }))
+              }},
+              blackLine(5),
+              {columns: [
+                   {text: 'Total amount for DSA', style: 'bold', alignment: 'left'},
+                   {text: printFixed(rawDSA), alignment: 'right'}
+                ]}
+            ]
+        };
+
+        var deductionsBlock = {
+          stack: [
+            {
+              text: 'Deductions',
+              alignment: 'center',
+              style: 'bold'
+            },
+            blackLine(5),
+            {
+              layout: 'noBorders',
+              table: {
+                widths: [97,97,97,97,97],
+                headerRows: 1,
+                body: [
+                  [
+                    {text: 'Date', style: 'bold', alignment: 'center'},
+                    {text: 'Breakfast', style: 'bold', alignment: 'center'},
+                    {text: 'Lunch', style: 'bold', alignment: 'center'},
+                    {text: 'Dinner', style: 'bold', alignment: 'center'},
+                    {text: 'Accomodation', style: 'bold', alignment: 'center'},
+                  ]
+                ].concat(data.deductions.map(function(dd) {
+                  return [
+                    {text: printDate(dd.date), alignment: 'center'},
+                    {text: printX(dd.breakfast), alignment: 'center'},
+                    {text: printX(dd.lunch), alignment: 'center'},
+                    {text: printX(dd.dinner), alignment: 'center'},
+                    {text: printX(dd.accomodation), alignment: 'center'}
+                  ];
+                }))
+            }},
+            blackLine(5),
+            {
+              columns: [
+                {
+                  text: 'Total amount of deductions',
+                  style: 'bold',
+                  alignment: 'left'
+                },
+                {
+                  text: printFixed(data.cost_summary.deductions_total),
+                  alignment: 'right'
+                }
+              ]
+            }
+          ]
+        };
+
+        var expensesBlock = {
+          stack: [
+              {text: 'Breakdown of expenses costs for the trip', alignment: 'center', style: 'bold'},
+              blackLine(5),
+              {layout: 'noBorders',
+                table: {
+                widths: [123,123,123,123],
+                headerRows: 1,
+                body: [
+                  [{text: 'Expense', style: 'bold', alignment: 'left'},
+                  {text: 'Document currency', style: 'bold', alignment: 'center'},
+                  {text: 'Exchange to USD', style: 'bold', alignment: 'center'},
+                  {text: 'Amount', style: 'bold', alignment: 'right'},]
+                ].concat(data.expenses.map(function(ee) {
+                    return [
+                      {text: print(ee.type), alignment: 'left'},
+                      {text: print(ee.document_currency), alignment: 'center'},
+                      {text: print(ee.document_currency.exchange_to_dollar), alignment: 'center'},
+                      {text: print(ee.amount), alignment: 'right'}
+                    ];
+                  }))
+              }},
+              blackLine(5),
+              {columns: [
+                   {text: 'Total Expense cost for the trip', style: 'bold', alignment: 'left'},
+                   {text: printFixed(exp), alignment: 'right'}
+                ]}
+          ]
+        };
+
+        var costAssignmentsBlock = {
+          stack: [
+              {text: 'Trip cost assignment', alignment: 'center', style: 'bold'},
+              blackLine(5),
+              {layout: 'noBorders',
+                table: {
+                widths: [123,123,123,123],
+                headerRows: 1,
+                body: [
+                  [{text: 'WBS', style: 'bold', alignment: 'left'},
+                  {text: 'Grant', style: 'bold', alignment: 'center'},
+                  {text: 'Fund', style: 'bold', alignment: 'center'},
+                  {text: 'Share', style: 'bold', alignment: 'right'},]
+                ].concat(data.cost_assignments.map(function(ca) {
+                    return [
+                      {text: print(ca.wbs), alignment: 'left'},
+                      {text: print(ca.grant), alignment: 'center'},
+                      {text: print(ca.fund), alignment: 'center'},
+                      {text: print(ca.share, '%'), alignment: 'right'},
+                    ];
+                  }))
+              }}
+          ]
+        };
+
+        var itineraryBlock = {
+          stack: [
+              {text: 'Details of the itinerary', alignment: 'center', style: 'bold'},
+              blackLine(5),
+              {layout: 'noBorders',
+                table: {
+                widths: [97,97,97,97,97],
+                headerRows: 1,
+                body: [
+                  [{text: 'Departing', style: 'bold', alignment: 'left'},
+                  {text: 'Arriving', style: 'bold', alignment: 'center'},
+                  {text: 'From', style: 'bold', alignment: 'center'},
+                  {text: 'To', style: 'bold', alignment: 'center'},
+                  {text: 'DSA Region', style: 'bold', alignment: 'right'}]
+                ].concat(data.itinerary.map(function(it) {
+                    return [
+                      {text: printDate(it.departure_date), alignment: 'left'},
+                      {text: printDate(it.arrival_date), alignment: 'center'},
+                      {text: print(it.origin), alignment: 'center'},
+                      {text: print(it.destination), alignment: 'center'},
+                      {text: print(it.dsa_region), alignment: 'right'}
+                    ];
+                  }))
+              }}
+          ]
+        };
+
+        var finalRow = {text: 'Amount due to the traveler: '.toUpperCase()
+        + printAmount(), style: 'bigBold', alignment: 'center'};
+        var additionalNote = {text: print(data.baseDetails.additional_note)};
+
+        dataToPrint.push(logo);
+        dataToPrint.push(firstLine);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(travelerData);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(detailBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(dsaDetailsBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(deductionsBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(expensesBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(costAssignmentsBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(itineraryBlock);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(finalRow);
+        dataToPrint.push(blackLine());
+        dataToPrint.push(additionalNote);
+        return dataToPrint;
+      },
+
+      printTa: function() {
+        var dataToPrint = this._parseData();
+        this.$.pdfMake.printPDF(dataToPrint);
+      }
+
+    });
+  </script>
+</dom-module>

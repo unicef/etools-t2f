@@ -12,8 +12,7 @@
     "t2f/pages/page-permission-matrix-edit.html"
   ],
   "sourceGlobs": [
-   "t2f/**/*",
-    "data/**/*",
+    "t2f/**/*",
     "bower.json",
     "manifest.json"
   ],
