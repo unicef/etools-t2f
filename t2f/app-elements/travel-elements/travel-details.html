@@ -379,7 +379,8 @@
           return parseInt(country.value, 10) === userCountry;
         });
 
-        var userBa = userCountry.business_area ? userCountry.business_area : structure.business_areas[0].id;
+        var userBa = userCountry && userCountry.business_area ?
+          userCountry.business_area : structure.business_areas[0].id;
 
         var businessArea = structure.business_areas.find(function(ba) {
           return parseInt(ba.id, 10) === parseInt(userBa, 10);
