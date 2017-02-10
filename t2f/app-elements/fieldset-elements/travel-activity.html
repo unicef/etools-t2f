@@ -192,7 +192,6 @@
           this.set('partnerships', []);
           this.set('activity.partnership', null);
         }
-
       },
 
       _addValidationFunction: function(changed) {
@@ -201,15 +200,12 @@
         }
       },
 
-      _validateType: function(self) {
+      _validateType: function() {
 
-        if (this.activity.travel_type || self.activity.travel_type) {
-
+        if (this.activity.travel_type) {
           this.$.trip_type.removeAttribute('invalid');
           return true;
-
         } else {
-
           this.$.trip_type.setAttribute('invalid', true);
           return false;
         }
