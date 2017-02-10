@@ -1,0 +1,229 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+
+<link rel="import" href="../../app-behaviors/permission-behavior.html">
+<link rel="import" href="../fieldset-elements/action-point.html">
+<link rel="import" href="../page-elements/et2f-header.html">
+<link rel="import" href="../travel-elements/form-errors.html">
+<link rel="import" href="action-points-status.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="show-action-point">
+
+  <style include="shared-styles et2f-styles iron-flex">
+    :host {
+      display: block;
+      width: 100%;
+    }
+
+    .container {
+      padding: 24px;
+      background-color: var(--gray-lighter);
+    }
+
+    paper-material {
+      padding: 0;
+    }
+
+    .card-heading {
+      font-size: 20px;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      height: 48px;
+      line-height: 48px;
+      color: white;
+      background-color: var(--et2f-sec-blue);
+      text-align: center;
+    }
+
+    action-point {
+      padding: 24px;
+      width: calc(100% - 48px);
+    }
+
+    action-point-status {
+      padding-left: 24px;
+    }
+  </style>
+
+  <template>
+    <etools-ajax url="[[actionPointUrl]]"
+      on-success="_handleData"
+      loading="{{loading}}">
+    </etools-ajax>
+
+    <etools-ajax
+      id="patchAjax"
+      method="PATCH"
+      body="[[patchBody]]"
+      url="[[actionPointUrl]]"
+      on-success="_handleData"
+      loading="{{loading}}"
+      on-fail="_patchError">
+    </etools-ajax>
+
+    <template is="dom-if" if="[[permissions]]" restamp>
+
+      <et2f-header title="[[actionPoint.action_point_number]]"></et2f-header>
+
+      <form-errors id="apierrors" errors="{{formErrors}}" ></form-errors>
+
+      <div class="container layout horizontal">
+
+        <paper-material class="flex" elevation="1">
+
+          <div class="card-heading">
+            Action Point Details
+          </div>
+          <action-point
+            view-mode
+            action-points="{{actionPoint}}"
+            structure="{{structure}}"
+            on-navigate-to="_navigateToTravel"
+            permissions-matrix="[[permissions.action_points]]"
+            action-points-permissions="[[actionPointsPermissions]]"
+            user="[[user]]">
+
+          </action-point>
+        </paper-material>
+
+        <action-point-status data="[[actionPoint]]" on-primary-click="_primaryClickHandler" on-secondary-click="_secondaryClickHandler">
+        </action-point-status>
+
+      </div>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'show-action-point',
+
+      properties: {
+        actionPoint: {
+          type: Object,
+        },
+        actionPointId: {
+          type: Number,
+        },
+        structure: Object,
+        loading: {
+          type: Boolean,
+          notify: true,
+        },
+        user: Object,
+        route: {
+          type: Object,
+          notify: true
+        },
+        actionPointUrl: {
+          type: String,
+          computed: '_computeUrl(actionPointId)',
+        },
+        et2fPermissions: {
+          type: Object,
+        }
+      },
+      observers: ['_computePermissions(et2fPermissions, user, actionPoint)'],
+      behaviors: [et2fBehaviors.ApiBehavior],
+      _computePermissions: function(globalPermissions, user, actionPoint) {
+        if (!actionPoint || !actionPoint.id) {
+          return;
+        }
+        var roles = ['Others'];
+        roles = roles.concat(user.t2f.roles);
+        if (actionPoint.assigned_by.value === user.id) {
+          roles.push('Assigner');
+        }
+        if (actionPoint.person_responsible.value === user.id) {
+          roles.push('PersonResponsible');
+        }
+
+        roles = roles.filter(function(role) {
+          return ['Others', 'Assigner', 'PersonResponsible', 'PME'].indexOf(role) > -1;
+        });
+
+        var permissions = globalPermissions.action_point;
+        var userPermissions = {};
+        var draft = permissions[roles[0]];
+        Object.keys(draft).forEach(function(field) {
+          var item = draft[field];
+          userPermissions[field] = {};
+          Object.keys(item).forEach(function(fieldPermission) {
+            userPermissions[field][fieldPermission] =  draft[field][fieldPermission];
+            roles.forEach(function(role) {
+               userPermissions[field][fieldPermission] =
+               userPermissions[field][fieldPermission]
+               || permissions[role][field][fieldPermission];
+            });
+          });
+
+        });
+        Object.keys(userPermissions).map(function(key) {
+          var perm = userPermissions[key];
+          perm.readOnly = perm.view && !perm.edit ? 'readOnly' : false;
+          perm.required = perm.view && perm.edit;
+        });
+        this.set('actionPointsPermissions', userPermissions);
+        this.set('permissions', globalPermissions.travel);
+      },
+      _computeUrl: function(actionPointId) {
+        if (this.listen && actionPointId && actionPointId !== '-1') {
+          return etoolsAppConfig.globals.computeTemplate('et2fActionPointDetail', {
+            id: actionPointId
+          }).url;
+        }
+      },
+      _handleData: function(e, data) {
+        var self = this;
+        var actionPoint = {};
+        var lib = self._structureLib().value.action_points;
+        Object.keys(data).forEach(function(key) {
+          var structureData = lib[key];
+          if (structureData) {
+            actionPoint[key] = self._processLib(structureData, data[key]);
+          } else {
+            actionPoint[key] = data[key];
+          }
+        });
+        this.set('actionPoint', actionPoint);
+      },
+      _navigateToTravel: function(e, d) {
+        var backup = this.route;
+        backup.path = backup.path.split('/');
+        backup.path.splice(-2, 2);
+        backup.path = backup.path.concat(['edit-travel', d]).join('/');
+        this.set('route', {});
+        this.set('route', backup);
+      },
+      _primaryClickHandler: function(e, data) {
+        var toSendData = JSON.parse(JSON.stringify(data));
+        delete toSendData._validationFunction;
+        toSendData.person_responsible = toSendData.person_responsible.value;
+        toSendData.status = toSendData.status.label.toLowerCase();
+
+        this.set('patchBody', toSendData);
+      },
+      _secondaryClickHandler: function(e, details) {
+        var data = details.data;
+        var status = details.status;
+        var toSendData = JSON.parse(JSON.stringify(data));
+        delete toSendData._validationFunction;
+        toSendData.person_responsible = toSendData.person_responsible.value;
+        toSendData.status = status;
+
+        this.set('patchBody', toSendData);
+      },
+      _patchError: function(e, i) {
+        this.set('formErrors', i.request.detail.request.xhr.response);
+        console.error('Api call failed: ', i.request.detail.request.xhr.response);
+      }
+    });
+  </script>
+</dom-module>

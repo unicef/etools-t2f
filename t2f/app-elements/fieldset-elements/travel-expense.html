@@ -1,0 +1,220 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import" href="../travel-elements/travel-status.html">
+
+<link rel="import" href="../../scripts/lodash/lodash.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="travel-expense">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+    </style>
+
+    <form is="iron-form" id="expense_form" class="layout vertical flex">
+
+      <div class="layout horizontal">
+
+        <etools-searchable-multiselection-menu label="Expense Type"
+          id="type"
+          class$="flex-3 [[computedPermission.type.readOnly]]"
+          disabled="[[computedPermission.type.disabled]]"
+          hidden$="[[computedPermission.type.hidden]]"
+          empty-value
+          options="[[expenseTypes]]"
+          value="{{expense.type}}"
+          placeholder="select"
+          required$="[[computedPermission.type.required]]"
+          on-paper-dropdown-close="_validateType"
+          auto-validate$="[[autoValidate]]"
+          starred>
+        </etools-searchable-multiselection-menu>
+
+        <paper-input label="Amount"
+          class$="flex-3 custom-margin [[computedPermission.amount.readOnly]]"
+          disabled="[[computedPermission.amount.disabled]]"
+          hidden$="[[computedPermission.amount.hidden]]"
+          pattern="^[0-9]+(\.[0-9]{1,2})?$"
+          placeholder="eg.: 567.12"
+          value="{{expense.amount}}"
+          error-message="*number required"
+          required$="[[computedPermission.amount.required]]"
+          auto-validate
+          starred>
+        </paper-input>
+
+        <etools-searchable-multiselection-menu label="Currency"
+          id="curr1"
+          class$="flex-3 [[computedPermission.document_currency.readOnly]]"
+          disabled="[[computedPermission.document_currency.disabled]]"
+          hidden$="[[computedPermission.document_currency.hidden]]"
+          empty-value
+          options="[[currOptions]]"
+          value="{{expense.document_currency}}"
+          placeholder="select"
+          required$="[[computedPermission.document_currency.required]]"
+          on-paper-dropdown-close="_validateDocCurr"
+          auto-validate$="[[autoValidate]]"
+          starred>
+        </etools-searchable-multiselection-menu>
+
+      </div>
+    </form>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'travel-expense',
+
+      properties: {
+
+        expense: {
+          type: Object,
+          notify: true,
+        },
+        currency: Object,
+        autoValidate: {
+          type: Boolean,
+          computed: '_computeAutoValidate(expense)'
+        },
+        structure: {
+          type: Object,
+          value: {}
+        },
+        selectedExpenses: {
+          type: Array,
+        },
+        expenseTypes: {
+          type: Array,
+          computed: '_computeExpenseTypes(structure.expense_types, selectedExpenses)',
+        },
+        currOptions: {
+          type: Array,
+          computed: '_getCurrOptions(documentCurrency, structure.currencies)'
+        }
+      },
+
+      _computeAutoValidate: function(data) {
+        return data !== undefined && Object.keys(data).length > 0;
+      },
+
+      behaviors: [et2fBehaviors.PermissionLayer],
+
+      observers: [
+        '_addValidationFunction(expense.*)',
+        '_setDefaultCurr(expense.*, currOptions)'
+      ],
+
+      // Returns the documents currency, and USD as options array for the dropdown
+      _getCurrOptions: function(documentCurrency, currencies) {
+        if (documentCurrency.short === 'USD') {
+          return [documentCurrency];
+        } else {
+          var options = currencies.filter(function(el) {
+            return el.short === 'USD';
+          });
+          options.push(documentCurrency);
+          return options;
+        }
+      },
+
+      // Defaults expenses currency (on type, or amount change)
+      _setDefaultCurr: function(changed, options) {
+        var isInit = changed.path === 'expense';
+        var currencyChanged = changed.path === 'expense.document_currency';
+        var currNotSet = ['', undefined, null].indexOf(this.expense.document_currency) > -1;
+        var toSet = options.length === 2 ? options[1] : options[0];
+
+        if (!isInit && !currencyChanged && currNotSet) {
+          this.set('expense.document_currency', toSet);
+        }
+      },
+
+      _computeExpenseTypes: function(structure, selectedExpenses) {
+        var self = this;
+        selectedExpenses = selectedExpenses.filter(function(selected) {
+          return selected && selected.unique && self.expense.type ? selected.value !== self.expense.type.value : true;
+        });
+        var result = _.difference(structure, selectedExpenses);
+
+        return result;
+      },
+
+      _addValidationFunction: function(changed) {
+
+        if (!changed.base._validationFunction) {
+          this.set('expense._validationFunction', this.validateExpense.bind(this, changed.base));
+        }
+      },
+
+      _validateType: function(self) {
+        if (!this.computedPermission.type.required) {
+          return true;
+        }
+
+        if (this.expense.type || self.expense.type) {
+
+          this.$.type.removeAttribute('invalid');
+          return true;
+
+        } else {
+
+          this.$.type.setAttribute('invalid', true);
+          return false;
+        }
+      },
+
+      _validateDocCurr: function(self) {
+
+        if (!this.computedPermission.document_currency.required) {
+          return true;
+        }
+
+        if ((this.expense && this.expense.document_currency) || (self.expense && self.expense.document_currency)) {
+
+          this.$.curr1.removeAttribute('invalid');
+          return true;
+
+        } else {
+
+          this.$.curr1.setAttribute('invalid', true);
+          return false;
+        }
+      },
+
+      allEmpty: function() {
+        var allEmpty = !this.expense.type &&
+          !this.expense.amount &&
+          !this.expense.document_currency &&
+          !this.expense.account_currency;
+
+        return allEmpty;
+      },
+
+      validateExpense: function() {
+
+        if (this.allEmpty) {
+          return true;
+        }
+
+        var typeValid = this._validateType(this);
+        var docCurr = this._validateDocCurr(this);
+        var formValid = this.$.expense_form.validate();
+
+        return typeValid && formValid && docCurr;
+      }
+    });
+  </script>
+</dom-module>

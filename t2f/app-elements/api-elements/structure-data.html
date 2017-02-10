@@ -235,7 +235,7 @@
           },
           business_areas: function(key) {
             data[key] = data[key].map(function(obj) {
-              obj.label = obj.name;
+              obj.label = obj.code + ' - ' + obj.name;
               obj.value = obj.id;
               obj.wbs = obj.wbs;
               return obj;
