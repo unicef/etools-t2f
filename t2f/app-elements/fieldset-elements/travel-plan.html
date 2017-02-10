@@ -208,7 +208,8 @@
           auto-validate$="[[autoValidate]]"
           starred>
         </date-time-picker-input>
-         <etools-searchable-multiselection-menu label="Currency of TA"
+
+        <etools-searchable-multiselection-menu label="Currency of TA"
           class$="flex-3 [[computedPermission.currency.readOnly]]"
           disabled="[[computedPermission.currency.disabled]]"
           hidden$="[[_hideOnTANotRequired(computedPermission.currency.hidden, baseDetails.ta_required)]]"
@@ -255,7 +256,11 @@
         },
         usersButMe: {
           type: Array,
-          computed: 'computeUsersButMe(structure.users, user)'
+          computed: '_computeUsersButMe(structure.users, user)'
+        },
+        currencyOptions: {
+          type: Array,
+          computed: '_computeCurrencyOptions(structure.currencies, baseDetails.currency)',
         },
         falseValue: {
           type: Boolean,
@@ -393,12 +398,22 @@
         this.set('baseDetails.ta_required', false);
       },
 
-      computeUsersButMe: function(users, user) {
+      _computeUsersButMe: function(users, user) {
         // Filters out logged in user
         return users.filter(function(actUser) {
           return actUser.value !== user.value;
         });
-      }
+      },
+
+      _computeCurrencyOptions: function(currencies, TACurrency) {
+        var optionsArr = currencies.filter(function(el) {
+          return el.short === 'USD';
+        });
+        if (TACurrency.short !== 'USD') {
+          optionsArr.push(TACurrency);
+        }
+        return optionsArr;
+      },
     });
   </script>
 </dom-module>
