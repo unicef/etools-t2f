@@ -306,8 +306,12 @@
           var userCountry = structure.countries.find(function(country) {
             return country.value === user.profile.country;
           });
+          var usd = structure.currencies.filter(function(curr) {
+            return curr.short === 'USD';
+          })[0];
+          // As soon as backend provides a currency mappable to the user, change USD to that
           baseDetails.currency = userCountry && userCountry.default_currency ?
-            userCountry.default_currency : structure.currencies[0];
+            userCountry.default_currency : usd;
         }
         if (!baseDetails.office) {
           baseDetails.office = structure.offices.find(function(office) {
@@ -411,9 +415,10 @@
         var optionsArr = currencies.filter(function(el) {
           return el.short === 'USD';
         });
-        if (TACurrency.short !== 'USD') {
-          optionsArr.push(TACurrency);
-        }
+        // Uncomment when we have the "TA Currency" mappable
+        // if (TACurrency.short !== 'USD') {
+        //   optionsArr.push(TACurrency);
+        // }
         return optionsArr;
       },
     });
