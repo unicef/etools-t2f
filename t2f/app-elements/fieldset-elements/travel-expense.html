@@ -60,7 +60,7 @@
           disabled="[[computedPermission.document_currency.disabled]]"
           hidden$="[[computedPermission.document_currency.hidden]]"
           empty-value
-          options="[[currOptions]]"
+          options="[[structure.currencies]]"
           value="{{expense.document_currency}}"
           placeholder="select"
           required$="[[computedPermission.document_currency.required]]"
@@ -84,6 +84,7 @@
           type: Object,
           notify: true,
         },
+        baseDetails: Object,
         currency: Object,
         autoValidate: {
           type: Boolean,
@@ -100,10 +101,6 @@
           type: Array,
           computed: '_computeExpenseTypes(structure.expense_types, selectedExpenses)',
         },
-        currOptions: {
-          type: Array,
-          computed: '_getCurrOptions(documentCurrency, structure.currencies)'
-        }
       },
 
       _computeAutoValidate: function(data) {
@@ -114,28 +111,15 @@
 
       observers: [
         '_addValidationFunction(expense.*)',
-        '_setDefaultCurr(expense.*, currOptions)'
+        '_setDefaultCurr(expense.*, baseDetails.currency)',
       ],
 
-      // Returns the documents currency, and USD as options array for the dropdown
-      _getCurrOptions: function(documentCurrency, currencies) {
-        if (documentCurrency.short === 'USD') {
-          return [documentCurrency];
-        } else {
-          var options = currencies.filter(function(el) {
-            return el.short === 'USD';
-          });
-          options.push(documentCurrency);
-          return options;
-        }
-      },
-
-      // Defaults expenses currency (on type, or amount change)
-      _setDefaultCurr: function(changed, options) {
+      // Defaults expenses currency (if empty, on type, or amount change)
+      _setDefaultCurr: function(changed, currency) {
         var isInit = changed.path === 'expense';
         var currencyChanged = changed.path === 'expense.document_currency';
         var currNotSet = ['', undefined, null].indexOf(this.expense.document_currency) > -1;
-        var toSet = options.length === 2 ? options[1] : options[0];
+        var toSet = currency;
 
         if (!isInit && !currencyChanged && currNotSet) {
           this.set('expense.document_currency', toSet);
