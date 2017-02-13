@@ -214,7 +214,7 @@
           disabled="[[computedPermission.currency.disabled]]"
           hidden$="[[_hideOnTANotRequired(computedPermission.currency.hidden, baseDetails.ta_required)]]"
           empty-value
-          options="[[structure.currencies]]"
+          options="[[currencyOptions]]"
           value="{{baseDetails.currency}}"
           placeholder="select">
         </etools-searchable-multiselection-menu>
@@ -405,6 +405,8 @@
         });
       },
 
+      // This makes the list of USD and the base travel currency
+      // TODO: later should be changed, because now it losts if saved with $
       _computeCurrencyOptions: function(currencies, TACurrency) {
         var optionsArr = currencies.filter(function(el) {
           return el.short === 'USD';
