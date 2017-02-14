@@ -116,6 +116,9 @@
         var B = b.label.toUpperCase();
         return A < B ? -1 : (A > B) ? 1 : 0;
       },
+      _sortByName: function() {
+        return a.name.localeCompare(b.name);
+      },
       _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users, groups) {
         var result = false;
         for (var i = 0; i < arguments.length; ++i) {
@@ -135,7 +138,7 @@
       _handleSections: function(e, data) {
         if (!data.parsed) {
           data = {
-            sections: data
+            sections: data.sort(_sortByName)
           };
           data = this._parseData(data);
         }
@@ -144,7 +147,7 @@
       _handleOffices: function(e, data) {
         if (!data.parsed) {
           data = {
-            offices: data
+            offices: data.sort(this._sortByName)
           };
           data = this._parseData(data);
         }
