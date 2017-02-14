@@ -260,7 +260,7 @@
         },
         currencyOptions: {
           type: Array,
-          computed: '_computeCurrencyOptions(structure.currencies, baseDetails.currency)',
+          computed: '_computeCurrencyOptions(structure.currencies, user.profile)',
         },
         falseValue: {
           type: Boolean,
@@ -411,14 +411,16 @@
 
       // This makes the list of USD and the base travel currency
       // TODO: later should be changed, because now it losts if saved with $
-      _computeCurrencyOptions: function(currencies, TACurrency) {
+      _computeCurrencyOptions: function(currencies, userProfile) {
         var optionsArr = currencies.filter(function(el) {
           return el.short === 'USD';
         });
-        // Uncomment when we have the "TA Currency" mappable
-        // if (TACurrency.short !== 'USD') {
-        //   optionsArr.push(TACurrency);
-        // }
+        //this is not working, it needs a new api and probably a variable name change but is a good placeholder
+        var localCurrency = userProfile.user_currency;
+        console.log(userProfile);
+        if (localCurrency && localCurrency.short !== 'USD') {
+          optionsArr.push(localCurrency);
+        }
         return optionsArr;
       },
     });
