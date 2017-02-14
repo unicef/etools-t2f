@@ -260,8 +260,15 @@
             });
           },
           expense_types: function(key) {
-             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, unique: obj.unique, vendor_number: obj.vendor_number};
+            data[key] = data[key].map(function(obj) {
+              return {
+                label: (obj.unique && obj.vendor_number) ?
+                  obj.vendor_number + ' - ' + obj.name :
+                  obj.name,
+                value: obj.id,
+                unique: obj.unique,
+                vendor_number: obj.vendor_number
+              };
             });
           },
           travel_modes: function(key) {
