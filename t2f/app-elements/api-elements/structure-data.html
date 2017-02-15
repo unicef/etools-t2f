@@ -116,7 +116,7 @@
         var B = b.label.toUpperCase();
         return A < B ? -1 : (A > B) ? 1 : 0;
       },
-      _sortByName: function() {
+      _sortByName: function(a, b) {
         return a.name.localeCompare(b.name);
       },
       _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users, groups) {
@@ -138,7 +138,7 @@
       _handleSections: function(e, data) {
         if (!data.parsed) {
           data = {
-            sections: data.sort(_sortByName)
+            sections: data.sort(this._sortByName)
           };
           data = this._parseData(data);
         }
