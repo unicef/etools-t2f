@@ -112,9 +112,10 @@
         }
       },
       _sortByLabel: function(a, b) {
-        var A = a.label.toUpperCase();
-        var B = b.label.toUpperCase();
-        return A < B ? -1 : (A > B) ? 1 : 0;
+        return a.label.localeCompare(b.label);
+      },
+      _sortByName: function(a, b) {
+        return a.name.localeCompare(b.name);
       },
       _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users, groups) {
         var result = false;
@@ -135,7 +136,7 @@
       _handleSections: function(e, data) {
         if (!data.parsed) {
           data = {
-            sections: data
+            sections: data.sort(this._sortByName)
           };
           data = this._parseData(data);
         }
@@ -144,7 +145,7 @@
       _handleOffices: function(e, data) {
         if (!data.parsed) {
           data = {
-            offices: data
+            offices: data.sort(this._sortByName)
           };
           data = this._parseData(data);
         }
@@ -260,8 +261,15 @@
             });
           },
           expense_types: function(key) {
-             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, unique: obj.unique, vendor_number: obj.vendor_number};
+            data[key] = data[key].map(function(obj) {
+              return {
+                label: (obj.unique && obj.vendor_number) ?
+                  obj.vendor_number + ' - ' + obj.name :
+                  obj.name,
+                value: obj.id,
+                unique: obj.unique,
+                vendor_number: obj.vendor_number
+              };
             });
           },
           travel_modes: function(key) {
