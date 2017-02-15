@@ -295,7 +295,7 @@
           },
           dsa_regions: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.long_name, value: parseInt(obj.id, 10)};
+              return {label: obj.area_name, value: parseInt(obj.id, 10)};
             });
             data[key] = data[key].sort(self._sortByLabel);
           },
