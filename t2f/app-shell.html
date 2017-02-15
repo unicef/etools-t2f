@@ -262,7 +262,6 @@
       },
 
       _pageChanged: function(page) {
-        console.log(page)
         var resolvedPageUrl = this.resolveUrl('pages/page-' + page + '.html');
         this.importHref(resolvedPageUrl, null, this._pageNotFound, true);
       },
