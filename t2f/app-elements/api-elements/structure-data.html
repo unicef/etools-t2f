@@ -112,9 +112,7 @@
         }
       },
       _sortByLabel: function(a, b) {
-        var A = a.label.toUpperCase();
-        var B = b.label.toUpperCase();
-        return A < B ? -1 : (A > B) ? 1 : 0;
+        return a.label.localeCompare(b.label);
       },
       _sortByName: function(a, b) {
         return a.name.localeCompare(b.name);
