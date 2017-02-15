@@ -62,23 +62,6 @@
       api.data = JSON.parse(JSON.stringify(data[JSONset]));
     }
 
-    // test('Kidus\'s example', function(done) {
-
-    //   fillData('kidussExample', true, false);
-
-    //   api._handlePostSuccess = function(e, data) {
-
-    //     // console.log('cost summary', data.cost_summary);
-
-    //     var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('5300.00');
-    //     var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('50.00');
-    //     if (baseDSAokay && deductionsOkay) console.log('✅');
-    //     done();
-    //   }
-
-    //   api.doRequest({endPoint: 'save'});
-    // });
-
     test('Andras\'s EXAMPLE CASE 1. (validated by Kidus)', function(done) {
 
       fillData('CASE1', true, false);
@@ -122,7 +105,7 @@
         // console.log('cost summary', data.cost_summary);
 
         var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('520.00');
-        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('20.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('25.00');
         if (baseDSAokay && deductionsOkay) console.log('✅');
         done();
       }
