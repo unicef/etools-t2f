@@ -3,6 +3,7 @@
 <link rel="import" href="../../../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../app-behaviors/api-behavior.html">
@@ -14,7 +15,7 @@
 
   <template>
 
-    <style include="shared-styles">
+    <style include="shared-styles iron-flex iron-flex-alignment">
 
       :host {
         display: block;
@@ -59,7 +60,8 @@
         detail-loading="{{subLoading}}"
         travel-id="[[travelId]]"
         et2f-permissions="[[et2fPermissions.travel]]"
-        structure="[[structure]]"></page-edit-travel>
+        structure="[[structure]]">
+        </page-edit-travel>
 
       <page-invoices-list name="invoices-list"
         user="[[user]]"
@@ -76,7 +78,8 @@
         detail-loading="{{subLoading}}"
         action-point-id="[[actionPointId]]"
         et2f-permissions="[[et2fPermissions]]"
-        structure="[[structure]]"></page-action-point>
+        structure="[[structure]]">
+        </page-action-point>
 
       <page-invoice-detail fullbleed
         name="invoice-detail"
@@ -85,9 +88,11 @@
         detail-loading="{{subLoading}}"
         invoice-id="[[invoiceId]]"
         et2f-permissions="[[et2fPermissions.travel]]"
-        structure="[[structure]]"></page-invoice-detail>
+        structure="[[structure]]">
+        </page-invoice-detail>
 
-      <page-not-found name="not-found"></page-not-found>
+      <page-not-found name="not-found">
+      </page-not-found>
 
       <page-permission-matrix-edit name="permission-matrix-edit"
       et2f-permissions="[[et2fPermissions.travel]]"
