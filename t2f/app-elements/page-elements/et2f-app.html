@@ -19,7 +19,6 @@
 
       :host {
         display: block;
-        width: 100%;
       }
 
     </style>
@@ -35,13 +34,11 @@
     <iron-pages id="pages"
       selected="[[page]]"
       attr-for-selected="name"
-      class="layout vertical flex"
       fallback-selection="not-found"
       role="main">
 
       <page-travel-list name="travel-list"
         user="[[user]]"
-        class="layout vertical flex"
         structure="[[structure]]"
         route="{{route}}"
         refresh-data="{{refreshData}}"

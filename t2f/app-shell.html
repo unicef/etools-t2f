@@ -28,6 +28,7 @@
 <link rel="import" href="styles/page-layout-styles.html">
 <link rel="import" href="styles/app-theme.html">
 <link rel="import" href="app-elements/page-elements/et2f-app.html">
+<link rel="import" href="app-elements/page-elements/page-footer.html">
 
 
 <dom-module id="app-shell">
@@ -99,7 +100,7 @@
       tail="{{subroute}}"></app-route>
 
 
-    <app-drawer-layout id="layout" responsive-width="850px" narrow="{{narrow}}" fullbleed class="layout vertical flex">
+    <app-drawer-layout id="layout" responsive-width="850px" narrow="{{narrow}}" fullbleed>
 
       <!-- Drawer content -->
       <app-drawer id="drawer" transition-duration="350">
@@ -129,8 +130,9 @@
 
       <app-header-layout>
         <template is="dom-if" id="privatePages" on-dom-change="_pagesStamped" if="{{permissions.loggedInDefault}}">
-          <et2f-app user="[[user]]" class="layout vertical flex" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}"></et2f-app>
+          <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}"></et2f-app>
         </template>
+        <page-footer></page-footer>
       </app-header-layout>
 
     </app-drawer-layout>
