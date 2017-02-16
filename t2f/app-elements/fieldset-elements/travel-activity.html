@@ -39,7 +39,7 @@
           value="{{activity.travel_type}}"
           required$="[[computedPermission.travel_type.required]]"
           placeholder="select"
-          on-paper-dropdown-close="_validateType"
+          on-value-change="_validateType"
           starred>
         </etools-searchable-multiselection-menu>
 
@@ -244,7 +244,6 @@
       },
 
       _validateType: function() {
-
         if (this.activity.travel_type) {
           this.$.trip_type.removeAttribute('invalid');
           return true;
