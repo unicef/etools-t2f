@@ -36,7 +36,7 @@
           value="{{expense.type}}"
           placeholder="select"
           required$="[[computedPermission.type.required]]"
-          on-paper-dropdown-close="_validateType"
+          on-value-change="_validateType"
           auto-validate$="[[autoValidate]]"
           starred>
         </etools-searchable-multiselection-menu>
@@ -64,7 +64,7 @@
           value="{{expense.document_currency}}"
           placeholder="select"
           required$="[[computedPermission.document_currency.required]]"
-          on-paper-dropdown-close="_validateDocCurr"
+          on-value-change="_validateDocCurr"
           auto-validate$="[[autoValidate]]"
           starred>
         </etools-searchable-multiselection-menu>
@@ -154,7 +154,7 @@
           return true;
         }
 
-        if (this.expense.type || self.expense.type) {
+        if (this.expense.type || (self && self.expense && self.expense.type)) {
 
           this.$.type.removeAttribute('invalid');
           return true;

@@ -387,6 +387,9 @@
             action_points: []
           };
 
+          //pointless to send back to the backend something just calculated, also create bug with expense
+          delete data.cost_summary;
+
           var returnByLabel = {
             action_points: {
               'status': true
