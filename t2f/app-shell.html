@@ -128,12 +128,12 @@
 
       </app-drawer>
 
-      <app-header-layout>
+
         <template is="dom-if" id="privatePages" on-dom-change="_pagesStamped" if="{{permissions.loggedInDefault}}">
           <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}"></et2f-app>
         </template>
         <page-footer></page-footer>
-      </app-header-layout>
+
 
     </app-drawer-layout>
 

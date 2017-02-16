@@ -44,8 +44,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       et2f-app {
-         width: 100%;
-        height: 100%;
+        width: 100%;
+        height: calc( 100% - 90px );
+      }
+
+      iron-pages {
+        padding-bottom: 50px;
+      }
+
+      page-footer {
+        position: fixed;
+        bottom: 0;
+        height: 90px;
+        background: #fff;
       }
 
       app-header div[main-title] {
