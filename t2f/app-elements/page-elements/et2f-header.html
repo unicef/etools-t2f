@@ -75,6 +75,7 @@
           </paper-menu-button>
 
           <paper-button
+          hidden$="[[hidePrintButton]]"
             class="grey-buttons"
             on-click="print">
 
@@ -104,6 +105,10 @@
           value: false
         },
         showExportButton: {
+          type: Boolean,
+          value: false
+        },
+        hidePrintButton: {
           type: Boolean,
           value: false
         },
