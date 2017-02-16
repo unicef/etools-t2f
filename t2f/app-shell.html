@@ -116,7 +116,7 @@
               <template is="dom-if" if="{{permissions.loggedInDefault}}">
 
                   <side-bar-item name="Travel2Field" value="travel-list" icon="maps:transfer-within-a-station" href$="[[baseUrl]]travel-list"></side-bar-item>
-                  <template is="dom-if" if="[[isFpp]]" restamp>
+                  <template is="dom-if" if="[[isFfp]]" restamp>
                     <side-bar-item name="invoices" value="invoices-list" icon="description" href$="[[baseUrl]]invoices-list"></side-bar-item>
                   </template>
                   <side-bar-item name="action points" value="action-points-list" icon="list" href$="[[baseUrl]]action-points-list"></side-bar-item>
@@ -132,7 +132,7 @@
 
 
         <template is="dom-if" id="privatePages" on-dom-change="_pagesStamped" if="{{permissions.loggedInDefault}}">
-          <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}"></et2f-app>
+          <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}" ffp="[[isFfp]]"></et2f-app>
         </template>
         <page-footer></page-footer>
 
@@ -183,9 +183,10 @@
         user: {
           type: Object,
         },
-        isFpp: {
+        isFfp: {
           type: Boolean,
-          computed: '_computeIsFpp(user)'
+          value: false,
+          computed: '_computeIsFfp(user)',
         },
         _toastQueue: {
           type: Array,
@@ -199,7 +200,7 @@
 
       behaviors: [etoolsAppConfig.globals, etoolsBehaviors.LoadingBehavior],
       observers: [
-        '_routePageChanged(routeData.page, isFpp)',
+        '_routePageChanged(routeData.page)',
         '_permissionsPagesStamped(permissions, _pagesAvailable)'
       ],
 
@@ -212,7 +213,7 @@
       attached: function() {
         this.baseUrl = this.basePath;
       },
-      _computeIsFpp: function(user) {
+      _computeIsFfp: function(user) {
         return user && user.t2f && user.t2f.roles && user.t2f.roles.indexOf('Finance Focal Point') > -1;
       },
       _permissionsPagesStamped: function(permissions, _pagesAvailable) {
@@ -265,13 +266,11 @@
         }
       },
 
-      _routePageChanged: function(page, ffp) {
-        if (!ffp && (page === 'invoices-list' || page === 'invoice-detail')) {
-          this.page = 'travel-list';
-          return;
-        }
+      _routePageChanged: function(page) {
         if (this._pagesAvailable || (['settings', 'etc'].indexOf(page) !== -1)) {
             this.page = page || 'travel-list';
+        } else {
+            // console.log('No permissions yet or page hasn\'t stampped', page);
         }
       },
 
