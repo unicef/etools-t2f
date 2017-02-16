@@ -208,12 +208,13 @@
           auto-validate$="[[autoValidate]]"
           starred>
         </date-time-picker-input>
-         <etools-searchable-multiselection-menu label="Currency of TA"
+
+        <etools-searchable-multiselection-menu label="Currency of TA"
           class$="flex-3 [[computedPermission.currency.readOnly]]"
           disabled="[[computedPermission.currency.disabled]]"
           hidden$="[[_hideOnTANotRequired(computedPermission.currency.hidden, baseDetails.ta_required)]]"
           empty-value
-          options="[[structure.currencies]]"
+          options="[[currencyOptions]]"
           value="{{baseDetails.currency}}"
           placeholder="select">
         </etools-searchable-multiselection-menu>
@@ -255,7 +256,11 @@
         },
         usersButMe: {
           type: Array,
-          computed: 'computeUsersButMe(structure.users, user)'
+          computed: '_computeUsersButMe(structure.users, user)'
+        },
+        currencyOptions: {
+          type: Array,
+          computed: '_computeCurrencyOptions(structure.currencies, user.profile)',
         },
         falseValue: {
           type: Boolean,
@@ -292,26 +297,43 @@
 
       observers: [
         '_valuesObserver(baseDetails.*)',
-        '_setDefaultCurrency(user, baseDetails.*, structure)'
+        '_setDefaultUserValues(user, baseDetails.*, structure)'
       ],
 
-      _setDefaultCurrency: function(user, dataChanged, structure) {
-        var countries = structure.countries;
-        var currencies = structure.currencies;
-        var currency = dataChanged.base.currency;
-        if (!currency) {
-          var userCountry = countries.find(function(country) {
+      _setDefaultUserValues: function(user, dataChanged, structure) {
+        var baseDetails = dataChanged.base;
+        if (!baseDetails.currency) {
+          var userCountry = structure.countries.find(function(country) {
             return country.value === user.profile.country;
           });
-          if (userCountry && userCountry.currency) {
-            var countryCurrency = currencies.find(function(currency) {
-              return currency.value === userCountry.currency;
-            });
-            this.set('baseDetails.currency', countryCurrency);
-          } else {
-            console.error('No country matching user profile, there is an error in the data');
-          }
+          var usd = structure.currencies.filter(function(curr) {
+            return curr.short === 'USD';
+          })[0];
+          // As soon as backend provides a currency mappable to the user, change USD to that
+          baseDetails.currency = userCountry && userCountry.default_currency ?
+            userCountry.default_currency : usd;
         }
+        if (!baseDetails.office) {
+          baseDetails.office = structure.offices.find(function(office) {
+            return office.label === user.profile.office;
+          });
+        }
+        if (!baseDetails.section) {
+          baseDetails.section = structure.sections.find(function(section) {
+            return section.label === user.profile.section;
+          });
+        }
+        if (!baseDetails.supervisor) {
+          baseDetails.supervisor = structure.users.find(function(supervisor) {
+            return supervisor.value === user.profile.supervisor;
+          });
+        }
+
+        this.set('baseDetails', baseDetails);
+        this.notifyPath('baseDetails.currency');
+        this.notifyPath('baseDetails.office');
+        this.notifyPath('baseDetails.section');
+        this.notifyPath('baseDetails.supervisor');
 
       },
 
@@ -380,12 +402,26 @@
         this.set('baseDetails.ta_required', false);
       },
 
-      computeUsersButMe: function(users, user) {
+      _computeUsersButMe: function(users, user) {
         // Filters out logged in user
         return users.filter(function(actUser) {
           return actUser.value !== user.value;
         });
-      }
+      },
+
+      // This makes the list of USD and the base travel currency
+      // TODO: later should be changed, because now it losts if saved with $
+      _computeCurrencyOptions: function(currencies, userProfile) {
+        var optionsArr = currencies.filter(function(el) {
+          return el.short === 'USD';
+        });
+        //this is not working, it needs a new api and probably a variable name change but is a good placeholder
+        var localCurrency = userProfile.user_currency;
+        if (localCurrency && localCurrency.short !== 'USD') {
+          optionsArr.push(localCurrency);
+        }
+        return optionsArr;
+      },
     });
   </script>
 </dom-module>

@@ -214,9 +214,9 @@
                       {text: printCountryFromStr(dsa.dsa_region_name), alignment: 'center'},
                       {text: printCityFromStr(dsa.dsa_region_name), alignment: 'center'},
                       {text: print(dsa.dsa_region), alignment: 'center'},
-                      {text: print(dsa.daily_rate_usd), alignment: 'center'},
+                      {text: printFixed(dsa.daily_rate_usd), alignment: 'center'},
                       {text: print(dsa.night_count), alignment: 'center'},
-                      {text: print(dsa.amount_usd), alignment: 'right'}
+                      {text: printFixed(dsa.amount_usd), alignment: 'right'}
                     ];
                   }))
               }},
@@ -294,7 +294,7 @@
                       {text: print(ee.type), alignment: 'left'},
                       {text: print(ee.document_currency), alignment: 'center'},
                       {text: print(ee.document_currency.exchange_to_dollar), alignment: 'center'},
-                      {text: print(ee.amount), alignment: 'right'}
+                      {text: printFixed(ee.amount), alignment: 'right'}
                     ];
                   }))
               }},

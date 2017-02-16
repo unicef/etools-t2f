@@ -87,7 +87,7 @@
               'endPoint': 'save'
             },
             'save_and_submit': {
-              'name': 'Save & submit',
+              'name': 'Save & Submit',
               'endPoint': 'save_and_submit'
             },
             'cancel': {
@@ -115,7 +115,7 @@
               'endPoint': 'send_for_payment'
             },
             'wentAsPlanned': {
-              'name': 'Travel went as planned',
+              'name': 'Went as planned',
               'endPoint': 'went_as_planned'
             },
             'submitCertificate': {
@@ -173,8 +173,8 @@
                 'secondary': ['save', 'save_and_submit', 'printTa']
               },
               'Sent for payment': {
-                'primary': 'wentAsPlanned',
-                'secondary': ['submitCertificate', 'sendForPayment', 'printTa', 'save']
+                'primary': 'save',
+                'secondary': ['submitCertificate', 'sendForPayment', 'printTa', 'wentAsPlanned']
               },
               'Certification submitted': {
                 'primary': 'approveCertificate',
@@ -255,20 +255,20 @@
                 'secondary': ['cancel']
               },
               'Cancelled': {
-                'primary': 'planned',
-                'secondary': ['save_and_submit']
+                'primary': 'save',
+                'secondary': ['planned','save_and_submit']
               },
               'Approved': {
                 'primary': 'printTa',
                 'secondary': ['save']
               },
               'Rejected': {
-                'primary': 'planned',
-                'secondary': ['save_and_submit', 'printTa']
+                'primary': 'save',
+                'secondary': ['planned', 'save_and_submit', 'printTa']
               },
               'Sent for payment': {
-                'primary': 'wentAsPlanned',
-                'secondary': ['submitCertificate', 'save', 'printTa']
+                'primary': 'save',
+                'secondary': ['submitCertificate', 'wentAsPlanned', 'printTa']
               },
               'Certification submitted': {
                 'primary': 'printTa',

@@ -62,26 +62,9 @@
       api.data = JSON.parse(JSON.stringify(data[JSONset]));
     }
 
-    test('Kidus\'s example', function(done) {
-
-      fillData('kidussExample', true, false);
-
-      api._handlePostSuccess = function(e, data) {
-
-        // console.log('cost summary', data.cost_summary);
-
-        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('5300.00');
-        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('50.00');
-        if (baseDSAokay && deductionsOkay) console.log('✅');
-        done();
-      }
-
-      api.doRequest({endPoint: 'save'});
-    });
-
     test('Andras\'s EXAMPLE CASE 1. (validated by Kidus)', function(done) {
 
-      fillData('case1', true, false);
+      fillData('CASE1', true, false);
 
       api._handlePostSuccess = function(e, data) {
 
@@ -96,203 +79,74 @@
       api.doRequest({endPoint: 'save'});
     });
 
-    test('Andras\'s EXAMPLE CASE 2. (validated by Kidus)', function(done) {done();});
+    test('Andras\'s EXAMPLE CASE 2. (validated by Kidus)', function(done) {
 
-    test('Andras\'s EXAMPLE CASE 3. (validated by Kidus)', function(done) {done();});
+      fillData('CASE2', true, false);
 
-    test('Andras\'s EXAMPLE CASE 4. (validated by Kidus)', function(done) {done();});
+      api._handlePostSuccess = function(e, data) {
 
-    test('Andras\'s EXAMPLE CASE 5. (validated by Kidus)', function(done) {done();});
+        // console.log('cost summary', data.cost_summary);
 
+        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('1160.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('460.00');
+        if (baseDSAokay && deductionsOkay) console.log('✅');
+        done();
+      }
 
-    // test('base#2 - the API sends data to the server, and we\'re getting it back', function(done) {
+      api.doRequest({endPoint: 'save'});
+    });
 
-    //   fillData('kidussExample', true, false);
+    test('Andras\'s EXAMPLE CASE 3. (validated by Kidus)', function(done) {
 
-    //   api._handlePostSuccess = function(e, data) {
+      fillData('CASE3', true, false);
 
-    //     if (expect(data).to.be.an('object')) console.log('✅');
-    //     done();
-    //   }
+      api._handlePostSuccess = function(e, data) {
 
-    //   api.doRequest({endPoint: 'save'});
-    // });
+        // console.log('cost summary', data.cost_summary);
 
+        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('520.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('25.00');
+        if (baseDSAokay && deductionsOkay) console.log('✅');
+        done();
+      }
 
-    // test('dsa#1 - Simple usecase (two days, there and back should be 140%, so 420$)', function(done) {
+      api.doRequest({endPoint: 'save'});
+    });
 
-    //   deductions.itinerary = data.simple.itinerary;
-    //   deductions.deductions = [];
-    //   data.simple.deductions = deductions.deductions;
+    test('Andras\'s EXAMPLE CASE 4. (validated by Kidus)', function(done) {
 
-    //   api.data = JSON.parse(JSON.stringify(data.simple));
+      fillData('CASE4', true, false);
 
-    //   api._handlePostSuccess = function(e, data) {
+      api._handlePostSuccess = function(e, data) {
 
-    //     var gotBackDsa = data.cost_summary.dsa_total;
-    //     if (expect(gotBackDsa).to.equal('420.00')) {console.log('✅')}
-    //     done();
-    //   };
+        // console.log('cost summary', data.cost_summary);
 
-    //   api.doRequest({endPoint: 'save'});
-    // });
+        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('12708.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('93.00');
+        if (baseDSAokay && deductionsOkay) console.log('✅');
+        done();
+      }
 
-    // test('dsa#2 - Over 60 days, (92 day long simple trip (back and forth, no deduction) should be 18.000 + 6200 + 80 = 24.280$)', function(done) {
+      api.doRequest({endPoint: 'save'});
+    });
 
-    //   deductions.itinerary = data.longerThan60.itinerary;
-    //   deductions.deductions = [];
-    //   data.longerThan60.deductions = deductions.deductions;
+    test('Andras\'s EXAMPLE CASE 5. (validated by Kidus)', function(done) {
 
-    //   api.data = JSON.parse(JSON.stringify(data.longerThan60));
+      fillData('CASE5', true, false);
 
-    //   api._handlePostSuccess = function(e, data) {
+      api._handlePostSuccess = function(e, data) {
 
-    //     var gotBackDsa = data.cost_summary.dsa_total;
-    //     if (expect(gotBackDsa).to.equal('24280.00')) {console.log('✅')}
-    //     done();
-    //   };
+        // console.log('cost summary', data.cost_summary);
 
-    //   api.doRequest({endPoint: 'save'});
-    // });
+        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('480.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('4.00');
+        if (baseDSAokay && deductionsOkay) console.log('✅');
+        done();
+      }
 
-    // test('dsa#3 - Same day travel, 8- hrs, (expected: 0$)', function(done) {
+      api.doRequest({endPoint: 'save'});
+    });
 
-    //   deductions.itinerary = data.sameDay.itinerary;
-    //   deductions.deductions = [];
-    //   data.sameDay.deductions = deductions.deductions;
-
-    //   api.data = JSON.parse(JSON.stringify(data.sameDay));
-
-    //   api._handlePostSuccess = function(e, data) {
-
-    //     var gotBackDsa = data.cost_summary.dsa_total;
-    //     if (expect(gotBackDsa).to.equal('0.00')) {console.log('✅')}
-    //     done();
-    //   };
-
-    //   api.doRequest({endPoint: 'save'});
-    // });
-
-    // test('dsa#4 - Same day travel, 8+ hours trip, back and forth, no deductions, expected DSA: (40%*300=) 120$', function(done) {
-
-    //   deductions.itinerary = data.sameDayLonger.itinerary;
-    //   deductions.deductions = [];
-    //   data.sameDayLonger.deductions = deductions.deductions;
-
-    //   api.data = JSON.parse(JSON.stringify(data.sameDayLonger));
-
-    //   api._handlePostSuccess = function(e, data) {
-
-    //     var gotBackDsa = data.cost_summary.dsa_total;
-    //     if (expect(gotBackDsa).to.equal('120.00')) {console.log('✅')}
-    //     done();
-    //   };
-
-    //   api.doRequest({endPoint: 'save'});
-    // });
-
-    // test('dsa#5 - Multiple areas, 3 travels, DSA rate switching date should be OK', function() {
-    //   console.warn('🚧  TODO');
-    // });
-
-    // test('deduction#1 - Overnight travel one day DSA is deducted, if checked', function() {
-
-    //   console.warn('🚧  TODO: Write a few easily modifiable testcase!!!');
-    //   console.warn('!!! Use a simple case where it is deducted if checked...');
-    //   console.warn('#2 - Should we allow it to be checked if the travel isnt taking over midnigth?');
-    // });
-
-    // test('deduction#2 - No DSA as deduction checked on the first day of case#1, expected baseDSA: 420$, expected deductions: 300$', function(done) {
-
-    //   deductions.itinerary = data.simple.itinerary;
-    //   deductions.deductions = [];
-    //   data.simple.deductions = deductions.deductions;
-
-    //   // Set no DSA for first day
-    //   deductionsItems()[0].no_dsa = true;
-
-    //   api.data = JSON.parse(JSON.stringify(data.simple));
-
-    //   api._handlePostSuccess = function(e, data) {
-
-    //     var gotBackDsa = data.cost_summary.dsa_total;
-    //     var gotDeductions = data.cost_summary.deductions_total;
-
-    //     if (
-    //       expect(gotBackDsa).to.equal('420.00') &&
-    //       expect(gotDeductions).to.equal('300.00')
-    //     ) {
-    //       console.log('✅')
-    //     }
-    //     done();
-    //   };
-
-    //   api.doRequest({endPoint: 'save'});
-    // });
-
-    // test('deduction#3 - Dinner, lunch, breakfast, accomodation (-80% deduction of first day, only 40% DSA for second(last) day, expected DSA: (300+120=) 420$, expected deductions: 240$)', function(done) {
-
-    //   deductions.itinerary = data.simple.itinerary;
-    //   deductions.deductions = [];
-    //   data.simple.deductions = deductions.deductions;
-
-    //   // Set deductions
-    //   deductionsItems()[0].accomodation = true;
-    //   deductionsItems()[0].breakfast = true;
-    //   deductionsItems()[0].dinner = true;
-    //   deductionsItems()[0].lunch = true;
-
-    //   api.data = JSON.parse(JSON.stringify(data.simple));
-
-    //   api._handlePostSuccess = function(e, data) {
-
-    //     var gotBackDsa = data.cost_summary.dsa_total;
-    //     var gotDeductions = data.cost_summary.deductions_total;
-
-    //     if (
-    //       expect(gotBackDsa).to.equal('420.00') &&
-    //       expect(gotDeductions).to.equal('240.00')
-    //     ) {
-    //       console.log('✅');
-    //     }
-    //     done();
-    //   };
-
-    //   api.doRequest({endPoint: 'save'});
-    // });
-
-    // test('deduction#4 - Multiple DSA regions with deductions, 3 travels', function() {
-    //   console.warn('🚧  TODO');
-    // });
-
-    // test('deduction#5 - Currency issues?', function() {
-    //   console.warn('🚧  TODO');
-    // });
-
-    // test('deduction#6 - Deducting over 60 days uses the correct daily DSA rates', function() {
-    //   console.warn('🚧  TODO');
-    // });
-
-    // test('complex#1 - Really complex calculation A', function() {
-    //   console.warn('🚧  TODO');
-    // });
-
-    // test('complex#2 - Really complex calculation B', function() {
-    //   console.warn('🚧  TODO');
-    // });
-
-    // test('complex#3 - Really complex calculation C', function() {
-    //   console.warn('🚧  TODO');
-    // });
-
-    // test('Questions', function() {
-    //   console.warn('TODO: Add tests from Kidus\'s comments on trello(Inbox)!');
-    //   console.warn('#1 - Should we consider last day -60% as a deduction/or remove from base DSA?');
-    //   console.warn('#2 - Should we consider overnight travel 100% as a deduction(visually not there)/or remove from base DSA?');
-    //   console.warn('#3 - Last days 40% always stays there, is it okay? Idea: Last, maybe different line on deductions?');
-    //   console.warn('');
-    //   console.warn('');
-    // });
   });
 </script>
 

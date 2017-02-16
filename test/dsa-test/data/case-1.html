@@ -2,34 +2,2468 @@
 
   window.caseScenarios = {};
 
-  window.caseScenarios.kidussExample = {
+  // window.caseScenarios.kidussExample = {
+  //   "action_points": [
+  //     {}
+  //   ],
+  //   "activities": [
+  //     {
+  //       "locations": [],
+  //       "partnership": null,
+  //       "primary_traveler": true
+  //     }
+  //   ],
+  //   "attachments": [],
+  //   "baseDetails": {
+  //     "currency": {
+  //       "label": "Euro",
+  //       "short": "EUR",
+  //       "value": 42
+  //     },
+  //     "international_travel": false,
+  //     "mode_of_travel": [],
+  //     "ta_required": true,
+  //     "traveler": {
+  //       "label": "Main User",
+  //       "value": 3742
+  //     }
+  //   },
+  //   "cost_assignments": [
+  //     {}
+  //   ],
+  //   "cost_summary": {},
+  //   "deductions": [
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-01",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-02",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-03",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-04",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-05",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-06",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-07",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-08",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-09",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-10",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-11",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-12",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-13",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-14",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-15",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-16",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-17",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-18",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-19",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-20",
+  //       "dinner": false,
+  //       "lunch": true,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-21",
+  //       "dinner": false,
+  //       "lunch": true,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-22",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-23",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-24",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-25",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-26",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-27",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-28",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-29",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": true,
+  //       "date": "2017-01-30",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     },
+  //     {
+  //       "accomodation": false,
+  //       "breakfast": false,
+  //       "date": "2017-01-31",
+  //       "dinner": false,
+  //       "lunch": false,
+  //       "no_dsa": false
+  //     }
+  //   ],
+  //   "expenses": [
+  //     {}
+  //   ],
+  //   "itinerary": [
+  //     {
+  //       "airlines": [],
+  //       "arrival_date": "2017-01-02T07:00:01.670Z",
+  //       "departure_date": "2016-12-31T23:00:01.660Z",
+  //       "destination": "Prague",
+  //       "dsa_region": {
+  //         "label": "Prague",
+  //         "value": 9
+  //       },
+  //       "mode_of_travel": {
+  //         "label": "bus",
+  //         "value": 1
+  //       },
+  //       "origin": "Washington"
+  //     },
+  //     {
+  //       "airlines": "",
+  //       "arrival_date": "2017-01-02T19:00:01.932Z",
+  //       "departure_date": "2017-01-02T17:00:01.904Z",
+  //       "destination": "Amsterdam",
+  //       "dsa_region": {
+  //         "label": "Amsterdam",
+  //         "value": 10
+  //       },
+  //       "mode_of_travel": {
+  //         "label": "bus",
+  //         "value": 1
+  //       },
+  //       "origin": "Prague"
+  //     },
+  //     {
+  //       "airlines": "",
+  //       "arrival_date": "2017-01-02T22:00:01.633Z",
+  //       "departure_date": "2017-01-02T21:00:01.601Z",
+  //       "destination": "Barcelona",
+  //       "dsa_region": {
+  //         "label": "Barcelona",
+  //         "value": 11
+  //       },
+  //       "mode_of_travel": {
+  //         "label": "bus",
+  //         "value": 1
+  //       },
+  //       "origin": "Amsterdam"
+  //     },
+  //     {
+  //       "airlines": "",
+  //       "arrival_date": "2017-01-03T04:00:01.214Z",
+  //       "departure_date": "2017-01-03T01:00:01.178Z",
+  //       "destination": "Budapest",
+  //       "dsa_region": {
+  //         "label": "Budapest",
+  //         "value": 12
+  //       },
+  //       "mode_of_travel": {
+  //         "label": "bus",
+  //         "value": 1
+  //       },
+  //       "origin": "Barcelona"
+  //     },
+  //     {
+  //       "airlines": "",
+  //       "arrival_date": "2017-01-10T05:00:01.862Z",
+  //       "departure_date": "2017-01-10T04:00:01.829Z",
+  //       "destination": "Geneva",
+  //       "dsa_region": {
+  //         "label": "Geneva",
+  //         "value": 13
+  //       },
+  //       "mode_of_travel": {
+  //         "label": "bus",
+  //         "value": 1
+  //       },
+  //       "origin": "Budapest"
+  //     },
+  //     {
+  //       "airlines": "",
+  //       "arrival_date": "2017-01-31T02:00:01.552Z",
+  //       "departure_date": "2017-01-30T21:00:01.523Z",
+  //       "destination": "Washington",
+  //       "dsa_region": {
+  //         "label": "Washington",
+  //         "value": 14
+  //       },
+  //       "mode_of_travel": {
+  //         "label": "bus",
+  //         "value": 1
+  //       },
+  //       "origin": "Geneva"
+  //     }
+  //   ],
+  //   "status": "Planned"
+  // };
+
+  window.caseScenarios.CASE1 = {
     "action_points": [
       {}
     ],
     "activities": [
       {
         "locations": [],
-        "partnership": null,
-        "primary_traveler": true
+        "partnership": null
       }
     ],
     "attachments": [],
     "baseDetails": {
       "currency": {
-        "label": "Euro",
-        "short": "EUR",
-        "value": 42
+        "exchange_to_dollar": 1,
+        "label": "US Dollar",
+        "short": "USD",
+        "value": 145
       },
-      "international_travel": false,
-      "mode_of_travel": [],
+      "international_travel": null,
+      "office": {
+        "label": "Tripoli",
+        "value": 201
+      },
+      "purpose": "CASE 1",
+      "section": {
+        "label": "Education",
+        "value": 10
+      },
       "ta_required": true,
       "traveler": {
         "label": "Main User",
-        "value": 3742
+        "profile": {
+          "countries_available": [
+            1,
+            2,
+            28,
+            18,
+            40,
+            3,
+            14,
+            11,
+            29,
+            43,
+            36,
+            22,
+            16,
+            48,
+            24,
+            26,
+            52,
+            19,
+            6,
+            23,
+            34,
+            25,
+            20,
+            42,
+            37,
+            53,
+            4,
+            32,
+            31,
+            30,
+            8,
+            35,
+            10,
+            7,
+            38,
+            15,
+            39,
+            44,
+            12,
+            13,
+            5,
+            27,
+            46,
+            47,
+            49,
+            50,
+            21,
+            54,
+            55,
+            9,
+            45
+          ],
+          "country": 48,
+          "country_override": 48,
+          "guid": null,
+          "installation_id": null,
+          "job_title": "Some title",
+          "office": 201,
+          "oic": null,
+          "org_unit_code": "",
+          "org_unit_name": "",
+          "partner_staff_member": null,
+          "phone_number": "",
+          "post_number": "",
+          "post_title": "",
+          "section": 10,
+          "section_code": "",
+          "staff_id": null,
+          "supervisor": null,
+          "vendor_number": "vend01"
+        },
+        "value": 4176
       }
     },
     "cost_assignments": [
+      {
+        "business_area": {
+          "code": "1430",
+          "default_currency": null,
+          "id": 28,
+          "label": "1430 - Fiji (Pacific Islands)",
+          "name": "Fiji (Pacific Islands)",
+          "region": {
+            "code": "60",
+            "name": "EAPR"
+          },
+          "value": 28,
+          "wbs": [
+            {
+              "label": "0240A005800003000",
+              "value": 1
+            },
+            {
+              "label": "0240A005800002000",
+              "value": 2
+            },
+            {
+              "label": "0240A004800002000",
+              "value": 3
+            },
+            {
+              "label": "0240A004004027000",
+              "value": 4
+            },
+            {
+              "label": "0240A004003006000",
+              "value": 5
+            },
+            {
+              "label": "0240A004004024000",
+              "value": 6
+            },
+            {
+              "label": "0240A005881003000",
+              "value": 7
+            },
+            {
+              "label": "0240A005880003000",
+              "value": 8
+            },
+            {
+              "label": "0240A004004030000",
+              "value": 9
+            },
+            {
+              "label": "0240A004004015000",
+              "value": 10
+            },
+            {
+              "label": "0240P004800005000",
+              "value": 11
+            },
+            {
+              "label": "0240A004005006000",
+              "value": 12
+            },
+            {
+              "label": "0240A004004022000",
+              "value": 13
+            },
+            {
+              "label": "0240A005880001000",
+              "value": 14
+            },
+            {
+              "label": "0240A004002016000",
+              "value": 15
+            },
+            {
+              "label": "0240A005884003000",
+              "value": 16
+            },
+            {
+              "label": "0240A005777004000",
+              "value": 17
+            },
+            {
+              "label": "0240A004001007000",
+              "value": 18
+            },
+            {
+              "label": "0240A005881002000",
+              "value": 19
+            },
+            {
+              "label": "0240A004004032000",
+              "value": 20
+            },
+            {
+              "label": "0240A004003007000",
+              "value": 21
+            },
+            {
+              "label": "0240A004001011000",
+              "value": 22
+            },
+            {
+              "label": "0240A004004016000",
+              "value": 23
+            },
+            {
+              "label": "0240A004001012000",
+              "value": 24
+            },
+            {
+              "label": "0240A004004026000",
+              "value": 25
+            },
+            {
+              "label": "0240A004004008000",
+              "value": 26
+            },
+            {
+              "label": "0240A005800004000",
+              "value": 27
+            },
+            {
+              "label": "0240A004800004000",
+              "value": 28
+            },
+            {
+              "label": "0240A004005005000",
+              "value": 29
+            },
+            {
+              "label": "0240A004777001000",
+              "value": 30
+            },
+            {
+              "label": "0240A004002011000",
+              "value": 31
+            },
+            {
+              "label": "0240A004004033000",
+              "value": 32
+            },
+            {
+              "label": "0240A004001008000",
+              "value": 33
+            },
+            {
+              "label": "0240A005883002000",
+              "value": 34
+            },
+            {
+              "label": "0240A004003008000",
+              "value": 35
+            },
+            {
+              "label": "0240A004002008000",
+              "value": 36
+            },
+            {
+              "label": "0240A004002009000",
+              "value": 37
+            },
+            {
+              "label": "0240A005777003000",
+              "value": 38
+            },
+            {
+              "label": "0240A004001009000",
+              "value": 39
+            },
+            {
+              "label": "0240A005884001000",
+              "value": 40
+            },
+            {
+              "label": "0240A005883004000",
+              "value": 41
+            },
+            {
+              "label": "0240A004004029000",
+              "value": 42
+            },
+            {
+              "label": "0240A005883001000",
+              "value": 43
+            },
+            {
+              "label": "0240A005885001000",
+              "value": 44
+            },
+            {
+              "label": "0240A005885002000",
+              "value": 45
+            },
+            {
+              "label": "0240A004005001000",
+              "value": 46
+            },
+            {
+              "label": "0240A005881004000",
+              "value": 47
+            },
+            {
+              "label": "0240A004002013000",
+              "value": 48
+            },
+            {
+              "label": "0240A004002012000",
+              "value": 49
+            },
+            {
+              "label": "0240A004001010000",
+              "value": 50
+            },
+            {
+              "label": "0240A004004021000",
+              "value": 51
+            },
+            {
+              "label": "0240A005882001000",
+              "value": 52
+            },
+            {
+              "label": "0240A004001014000",
+              "value": 53
+            },
+            {
+              "label": "0240A004005002000",
+              "value": 54
+            },
+            {
+              "label": "0240A004002014000",
+              "value": 55
+            },
+            {
+              "label": "0240A004003005000",
+              "value": 56
+            },
+            {
+              "label": "0240A004004019000",
+              "value": 57
+            },
+            {
+              "label": "0240A004004013000",
+              "value": 58
+            },
+            {
+              "label": "0240A004004034000",
+              "value": 59
+            },
+            {
+              "label": "0240A004003009000",
+              "value": 60
+            },
+            {
+              "label": "0240A004002017000",
+              "value": 61
+            },
+            {
+              "label": "0240A004003011000",
+              "value": 62
+            },
+            {
+              "label": "0240A005800001000",
+              "value": 63
+            },
+            {
+              "label": "0240A004800003000",
+              "value": 64
+            },
+            {
+              "label": "0240A004004020000",
+              "value": 65
+            },
+            {
+              "label": "0240A005881001000",
+              "value": 66
+            },
+            {
+              "label": "0240A004004028000",
+              "value": 67
+            },
+            {
+              "label": "0240A004004031000",
+              "value": 68
+            },
+            {
+              "label": "0240A004005004000",
+              "value": 69
+            },
+            {
+              "label": "0240A004002010000",
+              "value": 70
+            },
+            {
+              "label": "0240A004004025000",
+              "value": 71
+            },
+            {
+              "label": "0240A005882003000",
+              "value": 72
+            },
+            {
+              "label": "0240A005777005000",
+              "value": 73
+            },
+            {
+              "label": "0240A005882002000",
+              "value": 74
+            },
+            {
+              "label": "0240A004001006000",
+              "value": 75
+            },
+            {
+              "label": "0240DM01800999000",
+              "value": 76
+            },
+            {
+              "label": "0240A004005003000",
+              "value": 77
+            },
+            {
+              "label": "0240A004004023000",
+              "value": 78
+            },
+            {
+              "label": "0240A004002015000",
+              "value": 79
+            },
+            {
+              "label": "0240A005885004000",
+              "value": 80
+            },
+            {
+              "label": "0240A005883003000",
+              "value": 81
+            },
+            {
+              "label": "0240A004003010000",
+              "value": 82
+            },
+            {
+              "label": "0240A005777002000",
+              "value": 83
+            },
+            {
+              "label": "0240A004899001000",
+              "value": 84
+            },
+            {
+              "label": "0240A004800888000",
+              "value": 85
+            },
+            {
+              "label": "0240A005884002000",
+              "value": 86
+            },
+            {
+              "label": "0240A004002007000",
+              "value": 87
+            },
+            {
+              "label": "0240A004001013000",
+              "value": 88
+            },
+            {
+              "label": "0240A004800001000",
+              "value": 89
+            }
+          ]
+        },
+        "delegate": null,
+        "wbs": null
+      }
+    ],
+    "cost_summary": {},
+    "deductions": [
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-01-01",
+        "dinner": false,
+        "lunch": true,
+        "no_dsa": false
+      }
+    ],
+    "expenses": [
       {}
+    ],
+    "itinerary": [
+      {
+        "airlines": [],
+        "arrival_date": "2017-01-01T01:00:00.235Z",
+        "departure_date": "2017-01-01T00:00:00.225Z",
+        "destination": "Budapest",
+        "dsa_region": {
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "Amsterdam",
+        "overnight_travel": null
+      },
+      {
+        "airlines": "",
+        "arrival_date": "2017-01-01T14:00:00.511Z",
+        "departure_date": "2017-01-01T09:00:00.499Z",
+        "destination": "Amsterdam",
+        "dsa_region": {
+          "label": "Netherlands - DSA - Amsterdam",
+          "value": 1369
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "Budapest",
+        "overnight_travel": ""
+      }
+    ],
+    "status": "Planned"
+  };
+
+  window.caseScenarios.CASE2 = {
+    "action_points": [
+      {}
+    ],
+    "activities": [
+      {
+        "locations": [],
+        "partnership": null
+      }
+    ],
+    "attachments": [],
+    "baseDetails": {
+      "currency": {
+        "exchange_to_dollar": 1,
+        "label": "US Dollar",
+        "short": "USD",
+        "value": 145
+      },
+      "international_travel": null,
+      "office": {
+        "label": "Tripoli",
+        "value": 201
+      },
+      "section": {
+        "label": "Education",
+        "value": 10
+      },
+      "ta_required": true,
+      "traveler": {
+        "label": "Main User",
+        "profile": {
+          "countries_available": [
+            1,
+            2,
+            28,
+            18,
+            40,
+            3,
+            14,
+            11,
+            29,
+            43,
+            36,
+            22,
+            16,
+            48,
+            24,
+            26,
+            52,
+            19,
+            6,
+            23,
+            34,
+            25,
+            20,
+            42,
+            37,
+            53,
+            4,
+            32,
+            31,
+            30,
+            8,
+            35,
+            10,
+            7,
+            38,
+            15,
+            39,
+            44,
+            12,
+            13,
+            5,
+            27,
+            46,
+            47,
+            49,
+            50,
+            21,
+            54,
+            55,
+            9,
+            45
+          ],
+          "country": 48,
+          "country_override": 48,
+          "guid": null,
+          "installation_id": null,
+          "job_title": "Some title",
+          "office": 201,
+          "oic": null,
+          "org_unit_code": "",
+          "org_unit_name": "",
+          "partner_staff_member": null,
+          "phone_number": "",
+          "post_number": "",
+          "post_title": "",
+          "section": 10,
+          "section_code": "",
+          "staff_id": null,
+          "supervisor": null,
+          "vendor_number": "vend01"
+        },
+        "value": 4176
+      }
+    },
+    "cost_assignments": [
+      {
+        "business_area": {
+          "code": "1430",
+          "default_currency": null,
+          "id": 28,
+          "label": "1430 - Fiji (Pacific Islands)",
+          "name": "Fiji (Pacific Islands)",
+          "region": {
+            "code": "60",
+            "name": "EAPR"
+          },
+          "value": 28,
+          "wbs": [
+            {
+              "label": "0240A005800003000",
+              "value": 1
+            },
+            {
+              "label": "0240A005800002000",
+              "value": 2
+            },
+            {
+              "label": "0240A004800002000",
+              "value": 3
+            },
+            {
+              "label": "0240A004004027000",
+              "value": 4
+            },
+            {
+              "label": "0240A004003006000",
+              "value": 5
+            },
+            {
+              "label": "0240A004004024000",
+              "value": 6
+            },
+            {
+              "label": "0240A005881003000",
+              "value": 7
+            },
+            {
+              "label": "0240A005880003000",
+              "value": 8
+            },
+            {
+              "label": "0240A004004030000",
+              "value": 9
+            },
+            {
+              "label": "0240A004004015000",
+              "value": 10
+            },
+            {
+              "label": "0240P004800005000",
+              "value": 11
+            },
+            {
+              "label": "0240A004005006000",
+              "value": 12
+            },
+            {
+              "label": "0240A004004022000",
+              "value": 13
+            },
+            {
+              "label": "0240A005880001000",
+              "value": 14
+            },
+            {
+              "label": "0240A004002016000",
+              "value": 15
+            },
+            {
+              "label": "0240A005884003000",
+              "value": 16
+            },
+            {
+              "label": "0240A005777004000",
+              "value": 17
+            },
+            {
+              "label": "0240A004001007000",
+              "value": 18
+            },
+            {
+              "label": "0240A005881002000",
+              "value": 19
+            },
+            {
+              "label": "0240A004004032000",
+              "value": 20
+            },
+            {
+              "label": "0240A004003007000",
+              "value": 21
+            },
+            {
+              "label": "0240A004001011000",
+              "value": 22
+            },
+            {
+              "label": "0240A004004016000",
+              "value": 23
+            },
+            {
+              "label": "0240A004001012000",
+              "value": 24
+            },
+            {
+              "label": "0240A004004026000",
+              "value": 25
+            },
+            {
+              "label": "0240A004004008000",
+              "value": 26
+            },
+            {
+              "label": "0240A005800004000",
+              "value": 27
+            },
+            {
+              "label": "0240A004800004000",
+              "value": 28
+            },
+            {
+              "label": "0240A004005005000",
+              "value": 29
+            },
+            {
+              "label": "0240A004777001000",
+              "value": 30
+            },
+            {
+              "label": "0240A004002011000",
+              "value": 31
+            },
+            {
+              "label": "0240A004004033000",
+              "value": 32
+            },
+            {
+              "label": "0240A004001008000",
+              "value": 33
+            },
+            {
+              "label": "0240A005883002000",
+              "value": 34
+            },
+            {
+              "label": "0240A004003008000",
+              "value": 35
+            },
+            {
+              "label": "0240A004002008000",
+              "value": 36
+            },
+            {
+              "label": "0240A004002009000",
+              "value": 37
+            },
+            {
+              "label": "0240A005777003000",
+              "value": 38
+            },
+            {
+              "label": "0240A004001009000",
+              "value": 39
+            },
+            {
+              "label": "0240A005884001000",
+              "value": 40
+            },
+            {
+              "label": "0240A005883004000",
+              "value": 41
+            },
+            {
+              "label": "0240A004004029000",
+              "value": 42
+            },
+            {
+              "label": "0240A005883001000",
+              "value": 43
+            },
+            {
+              "label": "0240A005885001000",
+              "value": 44
+            },
+            {
+              "label": "0240A005885002000",
+              "value": 45
+            },
+            {
+              "label": "0240A004005001000",
+              "value": 46
+            },
+            {
+              "label": "0240A005881004000",
+              "value": 47
+            },
+            {
+              "label": "0240A004002013000",
+              "value": 48
+            },
+            {
+              "label": "0240A004002012000",
+              "value": 49
+            },
+            {
+              "label": "0240A004001010000",
+              "value": 50
+            },
+            {
+              "label": "0240A004004021000",
+              "value": 51
+            },
+            {
+              "label": "0240A005882001000",
+              "value": 52
+            },
+            {
+              "label": "0240A004001014000",
+              "value": 53
+            },
+            {
+              "label": "0240A004005002000",
+              "value": 54
+            },
+            {
+              "label": "0240A004002014000",
+              "value": 55
+            },
+            {
+              "label": "0240A004003005000",
+              "value": 56
+            },
+            {
+              "label": "0240A004004019000",
+              "value": 57
+            },
+            {
+              "label": "0240A004004013000",
+              "value": 58
+            },
+            {
+              "label": "0240A004004034000",
+              "value": 59
+            },
+            {
+              "label": "0240A004003009000",
+              "value": 60
+            },
+            {
+              "label": "0240A004002017000",
+              "value": 61
+            },
+            {
+              "label": "0240A004003011000",
+              "value": 62
+            },
+            {
+              "label": "0240A005800001000",
+              "value": 63
+            },
+            {
+              "label": "0240A004800003000",
+              "value": 64
+            },
+            {
+              "label": "0240A004004020000",
+              "value": 65
+            },
+            {
+              "label": "0240A005881001000",
+              "value": 66
+            },
+            {
+              "label": "0240A004004028000",
+              "value": 67
+            },
+            {
+              "label": "0240A004004031000",
+              "value": 68
+            },
+            {
+              "label": "0240A004005004000",
+              "value": 69
+            },
+            {
+              "label": "0240A004002010000",
+              "value": 70
+            },
+            {
+              "label": "0240A004004025000",
+              "value": 71
+            },
+            {
+              "label": "0240A005882003000",
+              "value": 72
+            },
+            {
+              "label": "0240A005777005000",
+              "value": 73
+            },
+            {
+              "label": "0240A005882002000",
+              "value": 74
+            },
+            {
+              "label": "0240A004001006000",
+              "value": 75
+            },
+            {
+              "label": "0240DM01800999000",
+              "value": 76
+            },
+            {
+              "label": "0240A004005003000",
+              "value": 77
+            },
+            {
+              "label": "0240A004004023000",
+              "value": 78
+            },
+            {
+              "label": "0240A004002015000",
+              "value": 79
+            },
+            {
+              "label": "0240A005885004000",
+              "value": 80
+            },
+            {
+              "label": "0240A005883003000",
+              "value": 81
+            },
+            {
+              "label": "0240A004003010000",
+              "value": 82
+            },
+            {
+              "label": "0240A005777002000",
+              "value": 83
+            },
+            {
+              "label": "0240A004899001000",
+              "value": 84
+            },
+            {
+              "label": "0240A004800888000",
+              "value": 85
+            },
+            {
+              "label": "0240A005884002000",
+              "value": 86
+            },
+            {
+              "label": "0240A004002007000",
+              "value": 87
+            },
+            {
+              "label": "0240A004001013000",
+              "value": 88
+            },
+            {
+              "label": "0240A004800001000",
+              "value": 89
+            }
+          ]
+        },
+        "delegate": null,
+        "wbs": null
+      }
+    ],
+    "cost_summary": {},
+    "deductions": [
+      {
+        "accomodation": true,
+        "breakfast": false,
+        "date": "2017-01-01",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": true,
+        "date": "2017-01-02",
+        "dinner": true,
+        "lunch": true,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-01-03",
+        "dinner": false,
+        "lunch": true,
+        "no_dsa": false
+      }
+    ],
+    "expenses": [
+      {}
+    ],
+    "itinerary": [
+      {
+        "airlines": [],
+        "arrival_date": "2017-01-01T01:00:00.174Z",
+        "departure_date": "2017-01-01T00:00:00.163Z",
+        "destination": "B",
+        "dsa_region": {
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "A",
+        "overnight_travel": null
+      },
+      {
+        "airlines": "",
+        "arrival_date": "2017-01-01T10:00:00.080Z",
+        "departure_date": "2017-01-01T09:00:00.067Z",
+        "destination": "C",
+        "dsa_region": {
+          "label": "Denmark - DSA - Copenhagen",
+          "value": 1371
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "B",
+        "overnight_travel": ""
+      },
+      {
+        "airlines": "",
+        "arrival_date": "2017-01-01T22:00:00.329Z",
+        "departure_date": "2017-01-01T21:00:00.317Z",
+        "destination": "D",
+        "dsa_region": {
+          "label": "Germany - DSA - Dusseldorf",
+          "value": 1372
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "C",
+        "overnight_travel": ""
+      },
+      {
+        "airlines": "",
+        "arrival_date": "2017-01-03T12:00:00.589Z",
+        "departure_date": "2017-01-03T09:00:00.578Z",
+        "destination": "A",
+        "dsa_region": {
+          "label": "Netherlands - DSA - Amsterdam",
+          "value": 1369
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "D",
+        "overnight_travel": ""
+      }
+    ],
+    "status": "Planned"
+  };
+
+  window.caseScenarios.CASE3 = {
+    "action_points": [
+      {}
+    ],
+    "activities": [
+      {
+        "partnership": null
+      }
+    ],
+    "attachments": [],
+    "baseDetails": {
+      "currency": {
+        "exchange_to_dollar": 1,
+        "label": "US Dollar",
+        "short": "USD",
+        "value": 145
+      },
+      "international_travel": null,
+      "office": {
+        "label": "Tripoli",
+        "value": 201
+      },
+      "section": {
+        "label": "Education",
+        "value": 10
+      },
+      "ta_required": true,
+      "traveler": {
+        "label": "Main User",
+        "value": 4176
+      }
+    },
+    "cost_assignments": [
+      {
+        "business_area": {
+          "code": "1430",
+          "default_currency": null,
+          "id": 28,
+          "label": "1430 - Fiji (Pacific Islands)",
+          "name": "Fiji (Pacific Islands)",
+          "region": {
+            "code": "60",
+            "name": "EAPR"
+          },
+          "value": 28,
+          "wbs": [
+            {
+              "label": "0240A005800003000",
+              "value": 1
+            },
+            {
+              "label": "0240A005800002000",
+              "value": 2
+            },
+            {
+              "label": "0240A004800002000",
+              "value": 3
+            },
+            {
+              "label": "0240A004004027000",
+              "value": 4
+            },
+            {
+              "label": "0240A004003006000",
+              "value": 5
+            },
+            {
+              "label": "0240A004004024000",
+              "value": 6
+            },
+            {
+              "label": "0240A005881003000",
+              "value": 7
+            },
+            {
+              "label": "0240A005880003000",
+              "value": 8
+            },
+            {
+              "label": "0240A004004030000",
+              "value": 9
+            },
+            {
+              "label": "0240A004004015000",
+              "value": 10
+            },
+            {
+              "label": "0240P004800005000",
+              "value": 11
+            },
+            {
+              "label": "0240A004005006000",
+              "value": 12
+            },
+            {
+              "label": "0240A004004022000",
+              "value": 13
+            },
+            {
+              "label": "0240A005880001000",
+              "value": 14
+            },
+            {
+              "label": "0240A004002016000",
+              "value": 15
+            },
+            {
+              "label": "0240A005884003000",
+              "value": 16
+            },
+            {
+              "label": "0240A005777004000",
+              "value": 17
+            },
+            {
+              "label": "0240A004001007000",
+              "value": 18
+            },
+            {
+              "label": "0240A005881002000",
+              "value": 19
+            },
+            {
+              "label": "0240A004004032000",
+              "value": 20
+            },
+            {
+              "label": "0240A004003007000",
+              "value": 21
+            },
+            {
+              "label": "0240A004001011000",
+              "value": 22
+            },
+            {
+              "label": "0240A004004016000",
+              "value": 23
+            },
+            {
+              "label": "0240A004001012000",
+              "value": 24
+            },
+            {
+              "label": "0240A004004026000",
+              "value": 25
+            },
+            {
+              "label": "0240A004004008000",
+              "value": 26
+            },
+            {
+              "label": "0240A005800004000",
+              "value": 27
+            },
+            {
+              "label": "0240A004800004000",
+              "value": 28
+            },
+            {
+              "label": "0240A004005005000",
+              "value": 29
+            },
+            {
+              "label": "0240A004777001000",
+              "value": 30
+            },
+            {
+              "label": "0240A004002011000",
+              "value": 31
+            },
+            {
+              "label": "0240A004004033000",
+              "value": 32
+            },
+            {
+              "label": "0240A004001008000",
+              "value": 33
+            },
+            {
+              "label": "0240A005883002000",
+              "value": 34
+            },
+            {
+              "label": "0240A004003008000",
+              "value": 35
+            },
+            {
+              "label": "0240A004002008000",
+              "value": 36
+            },
+            {
+              "label": "0240A004002009000",
+              "value": 37
+            },
+            {
+              "label": "0240A005777003000",
+              "value": 38
+            },
+            {
+              "label": "0240A004001009000",
+              "value": 39
+            },
+            {
+              "label": "0240A005884001000",
+              "value": 40
+            },
+            {
+              "label": "0240A005883004000",
+              "value": 41
+            },
+            {
+              "label": "0240A004004029000",
+              "value": 42
+            },
+            {
+              "label": "0240A005883001000",
+              "value": 43
+            },
+            {
+              "label": "0240A005885001000",
+              "value": 44
+            },
+            {
+              "label": "0240A005885002000",
+              "value": 45
+            },
+            {
+              "label": "0240A004005001000",
+              "value": 46
+            },
+            {
+              "label": "0240A005881004000",
+              "value": 47
+            },
+            {
+              "label": "0240A004002013000",
+              "value": 48
+            },
+            {
+              "label": "0240A004002012000",
+              "value": 49
+            },
+            {
+              "label": "0240A004001010000",
+              "value": 50
+            },
+            {
+              "label": "0240A004004021000",
+              "value": 51
+            },
+            {
+              "label": "0240A005882001000",
+              "value": 52
+            },
+            {
+              "label": "0240A004001014000",
+              "value": 53
+            },
+            {
+              "label": "0240A004005002000",
+              "value": 54
+            },
+            {
+              "label": "0240A004002014000",
+              "value": 55
+            },
+            {
+              "label": "0240A004003005000",
+              "value": 56
+            },
+            {
+              "label": "0240A004004019000",
+              "value": 57
+            },
+            {
+              "label": "0240A004004013000",
+              "value": 58
+            },
+            {
+              "label": "0240A004004034000",
+              "value": 59
+            },
+            {
+              "label": "0240A004003009000",
+              "value": 60
+            },
+            {
+              "label": "0240A004002017000",
+              "value": 61
+            },
+            {
+              "label": "0240A004003011000",
+              "value": 62
+            },
+            {
+              "label": "0240A005800001000",
+              "value": 63
+            },
+            {
+              "label": "0240A004800003000",
+              "value": 64
+            },
+            {
+              "label": "0240A004004020000",
+              "value": 65
+            },
+            {
+              "label": "0240A005881001000",
+              "value": 66
+            },
+            {
+              "label": "0240A004004028000",
+              "value": 67
+            },
+            {
+              "label": "0240A004004031000",
+              "value": 68
+            },
+            {
+              "label": "0240A004005004000",
+              "value": 69
+            },
+            {
+              "label": "0240A004002010000",
+              "value": 70
+            },
+            {
+              "label": "0240A004004025000",
+              "value": 71
+            },
+            {
+              "label": "0240A005882003000",
+              "value": 72
+            },
+            {
+              "label": "0240A005777005000",
+              "value": 73
+            },
+            {
+              "label": "0240A005882002000",
+              "value": 74
+            },
+            {
+              "label": "0240A004001006000",
+              "value": 75
+            },
+            {
+              "label": "0240DM01800999000",
+              "value": 76
+            },
+            {
+              "label": "0240A004005003000",
+              "value": 77
+            },
+            {
+              "label": "0240A004004023000",
+              "value": 78
+            },
+            {
+              "label": "0240A004002015000",
+              "value": 79
+            },
+            {
+              "label": "0240A005885004000",
+              "value": 80
+            },
+            {
+              "label": "0240A005883003000",
+              "value": 81
+            },
+            {
+              "label": "0240A004003010000",
+              "value": 82
+            },
+            {
+              "label": "0240A005777002000",
+              "value": 83
+            },
+            {
+              "label": "0240A004899001000",
+              "value": 84
+            },
+            {
+              "label": "0240A004800888000",
+              "value": 85
+            },
+            {
+              "label": "0240A005884002000",
+              "value": 86
+            },
+            {
+              "label": "0240A004002007000",
+              "value": 87
+            },
+            {
+              "label": "0240A004001013000",
+              "value": 88
+            },
+            {
+              "label": "0240A004800001000",
+              "value": 89
+            }
+          ]
+        },
+        "delegate": null,
+        "wbs": null
+      }
+    ],
+    "cost_summary": {},
+    "deductions": [
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-01-01",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": true,
+        "date": "2017-01-02",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": true,
+        "date": "2017-01-03",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      }
+    ],
+    "expenses": [],
+    "itinerary": [
+      {
+        "arrival_date": "2017-01-01T01:00:00.174Z",
+        "departure_date": "2017-01-01T00:00:00.163Z",
+        "destination": "B",
+        "dsa_region": {
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "A",
+        "overnight_travel": null
+      },
+      {
+        "airlines": [],
+        "arrival_date": "2017-01-03T01:00:00.976Z",
+        "departure_date": "2017-01-03T00:00:00.958Z",
+        "destination": "C",
+        "dsa_region": {
+          "label": "Denmark - DSA - Copenhagen",
+          "value": 1371
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "B",
+        "overnight_travel": ""
+      },
+      {
+        "airlines": [],
+        "arrival_date": "2017-01-03T10:30:00.660Z",
+        "departure_date": "2017-01-03T10:00:00.650Z",
+        "destination": "A",
+        "dsa_region": {
+          "label": "Netherlands - DSA - Amsterdam",
+          "value": 1369
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "C",
+        "overnight_travel": ""
+      }
+    ],
+    "status": "Planned"
+  };
+
+  window.caseScenarios.CASE4 = {
+    "action_points": [
+      {}
+    ],
+    "activities": [
+      {
+        "locations": [],
+        "partnership": null
+      }
+    ],
+    "attachments": [],
+    "baseDetails": {
+      "currency": {
+        "exchange_to_dollar": 1,
+        "label": "US Dollar",
+        "short": "USD",
+        "value": 145
+      },
+      "international_travel": null,
+      "office": {
+        "label": "Tripoli",
+        "value": 201
+      },
+      "section": {
+        "label": "Education",
+        "value": 10
+      },
+      "ta_required": true,
+      "traveler": {
+        "label": "Main User",
+        "profile": {
+          "countries_available": [
+            1,
+            2,
+            28,
+            18,
+            40,
+            3,
+            14,
+            11,
+            29,
+            43,
+            36,
+            22,
+            16,
+            48,
+            24,
+            26,
+            52,
+            19,
+            6,
+            23,
+            34,
+            25,
+            20,
+            42,
+            37,
+            53,
+            4,
+            32,
+            31,
+            30,
+            8,
+            35,
+            10,
+            7,
+            38,
+            15,
+            39,
+            44,
+            12,
+            13,
+            5,
+            27,
+            46,
+            47,
+            49,
+            50,
+            21,
+            54,
+            55,
+            9,
+            45
+          ],
+          "country": 48,
+          "country_override": 48,
+          "guid": null,
+          "installation_id": null,
+          "job_title": "Some title",
+          "office": 201,
+          "oic": null,
+          "org_unit_code": "",
+          "org_unit_name": "",
+          "partner_staff_member": null,
+          "phone_number": "",
+          "post_number": "",
+          "post_title": "",
+          "section": 10,
+          "section_code": "",
+          "staff_id": null,
+          "supervisor": null,
+          "vendor_number": "vend01"
+        },
+        "value": 4176
+      }
+    },
+    "cost_assignments": [
+      {
+        "business_area": {
+          "code": "1430",
+          "default_currency": null,
+          "id": 28,
+          "label": "1430 - Fiji (Pacific Islands)",
+          "name": "Fiji (Pacific Islands)",
+          "region": {
+            "code": "60",
+            "name": "EAPR"
+          },
+          "value": 28,
+          "wbs": [
+            {
+              "label": "0240A005800003000",
+              "value": 1
+            },
+            {
+              "label": "0240A005800002000",
+              "value": 2
+            },
+            {
+              "label": "0240A004800002000",
+              "value": 3
+            },
+            {
+              "label": "0240A004004027000",
+              "value": 4
+            },
+            {
+              "label": "0240A004003006000",
+              "value": 5
+            },
+            {
+              "label": "0240A004004024000",
+              "value": 6
+            },
+            {
+              "label": "0240A005881003000",
+              "value": 7
+            },
+            {
+              "label": "0240A005880003000",
+              "value": 8
+            },
+            {
+              "label": "0240A004004030000",
+              "value": 9
+            },
+            {
+              "label": "0240A004004015000",
+              "value": 10
+            },
+            {
+              "label": "0240P004800005000",
+              "value": 11
+            },
+            {
+              "label": "0240A004005006000",
+              "value": 12
+            },
+            {
+              "label": "0240A004004022000",
+              "value": 13
+            },
+            {
+              "label": "0240A005880001000",
+              "value": 14
+            },
+            {
+              "label": "0240A004002016000",
+              "value": 15
+            },
+            {
+              "label": "0240A005884003000",
+              "value": 16
+            },
+            {
+              "label": "0240A005777004000",
+              "value": 17
+            },
+            {
+              "label": "0240A004001007000",
+              "value": 18
+            },
+            {
+              "label": "0240A005881002000",
+              "value": 19
+            },
+            {
+              "label": "0240A004004032000",
+              "value": 20
+            },
+            {
+              "label": "0240A004003007000",
+              "value": 21
+            },
+            {
+              "label": "0240A004001011000",
+              "value": 22
+            },
+            {
+              "label": "0240A004004016000",
+              "value": 23
+            },
+            {
+              "label": "0240A004001012000",
+              "value": 24
+            },
+            {
+              "label": "0240A004004026000",
+              "value": 25
+            },
+            {
+              "label": "0240A004004008000",
+              "value": 26
+            },
+            {
+              "label": "0240A005800004000",
+              "value": 27
+            },
+            {
+              "label": "0240A004800004000",
+              "value": 28
+            },
+            {
+              "label": "0240A004005005000",
+              "value": 29
+            },
+            {
+              "label": "0240A004777001000",
+              "value": 30
+            },
+            {
+              "label": "0240A004002011000",
+              "value": 31
+            },
+            {
+              "label": "0240A004004033000",
+              "value": 32
+            },
+            {
+              "label": "0240A004001008000",
+              "value": 33
+            },
+            {
+              "label": "0240A005883002000",
+              "value": 34
+            },
+            {
+              "label": "0240A004003008000",
+              "value": 35
+            },
+            {
+              "label": "0240A004002008000",
+              "value": 36
+            },
+            {
+              "label": "0240A004002009000",
+              "value": 37
+            },
+            {
+              "label": "0240A005777003000",
+              "value": 38
+            },
+            {
+              "label": "0240A004001009000",
+              "value": 39
+            },
+            {
+              "label": "0240A005884001000",
+              "value": 40
+            },
+            {
+              "label": "0240A005883004000",
+              "value": 41
+            },
+            {
+              "label": "0240A004004029000",
+              "value": 42
+            },
+            {
+              "label": "0240A005883001000",
+              "value": 43
+            },
+            {
+              "label": "0240A005885001000",
+              "value": 44
+            },
+            {
+              "label": "0240A005885002000",
+              "value": 45
+            },
+            {
+              "label": "0240A004005001000",
+              "value": 46
+            },
+            {
+              "label": "0240A005881004000",
+              "value": 47
+            },
+            {
+              "label": "0240A004002013000",
+              "value": 48
+            },
+            {
+              "label": "0240A004002012000",
+              "value": 49
+            },
+            {
+              "label": "0240A004001010000",
+              "value": 50
+            },
+            {
+              "label": "0240A004004021000",
+              "value": 51
+            },
+            {
+              "label": "0240A005882001000",
+              "value": 52
+            },
+            {
+              "label": "0240A004001014000",
+              "value": 53
+            },
+            {
+              "label": "0240A004005002000",
+              "value": 54
+            },
+            {
+              "label": "0240A004002014000",
+              "value": 55
+            },
+            {
+              "label": "0240A004003005000",
+              "value": 56
+            },
+            {
+              "label": "0240A004004019000",
+              "value": 57
+            },
+            {
+              "label": "0240A004004013000",
+              "value": 58
+            },
+            {
+              "label": "0240A004004034000",
+              "value": 59
+            },
+            {
+              "label": "0240A004003009000",
+              "value": 60
+            },
+            {
+              "label": "0240A004002017000",
+              "value": 61
+            },
+            {
+              "label": "0240A004003011000",
+              "value": 62
+            },
+            {
+              "label": "0240A005800001000",
+              "value": 63
+            },
+            {
+              "label": "0240A004800003000",
+              "value": 64
+            },
+            {
+              "label": "0240A004004020000",
+              "value": 65
+            },
+            {
+              "label": "0240A005881001000",
+              "value": 66
+            },
+            {
+              "label": "0240A004004028000",
+              "value": 67
+            },
+            {
+              "label": "0240A004004031000",
+              "value": 68
+            },
+            {
+              "label": "0240A004005004000",
+              "value": 69
+            },
+            {
+              "label": "0240A004002010000",
+              "value": 70
+            },
+            {
+              "label": "0240A004004025000",
+              "value": 71
+            },
+            {
+              "label": "0240A005882003000",
+              "value": 72
+            },
+            {
+              "label": "0240A005777005000",
+              "value": 73
+            },
+            {
+              "label": "0240A005882002000",
+              "value": 74
+            },
+            {
+              "label": "0240A004001006000",
+              "value": 75
+            },
+            {
+              "label": "0240DM01800999000",
+              "value": 76
+            },
+            {
+              "label": "0240A004005003000",
+              "value": 77
+            },
+            {
+              "label": "0240A004004023000",
+              "value": 78
+            },
+            {
+              "label": "0240A004002015000",
+              "value": 79
+            },
+            {
+              "label": "0240A005885004000",
+              "value": 80
+            },
+            {
+              "label": "0240A005883003000",
+              "value": 81
+            },
+            {
+              "label": "0240A004003010000",
+              "value": 82
+            },
+            {
+              "label": "0240A005777002000",
+              "value": 83
+            },
+            {
+              "label": "0240A004899001000",
+              "value": 84
+            },
+            {
+              "label": "0240A004800888000",
+              "value": 85
+            },
+            {
+              "label": "0240A005884002000",
+              "value": 86
+            },
+            {
+              "label": "0240A004002007000",
+              "value": 87
+            },
+            {
+              "label": "0240A004001013000",
+              "value": 88
+            },
+            {
+              "label": "0240A004800001000",
+              "value": 89
+            }
+          ]
+        },
+        "delegate": null,
+        "wbs": null
+      }
     ],
     "cost_summary": {},
     "deductions": [
@@ -190,7 +2624,7 @@
         "breakfast": false,
         "date": "2017-01-20",
         "dinner": false,
-        "lunch": true,
+        "lunch": false,
         "no_dsa": false
       },
       {
@@ -198,7 +2632,7 @@
         "breakfast": false,
         "date": "2017-01-21",
         "dinner": false,
-        "lunch": true,
+        "lunch": false,
         "no_dsa": false
       },
       {
@@ -267,7 +2701,7 @@
       },
       {
         "accomodation": false,
-        "breakfast": true,
+        "breakfast": false,
         "date": "2017-01-30",
         "dinner": false,
         "lunch": false,
@@ -280,6 +2714,278 @@
         "dinner": false,
         "lunch": false,
         "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-01",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-02",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-03",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-04",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-05",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-06",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-07",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-08",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-09",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-10",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-11",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-12",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-13",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-14",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-15",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-16",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-17",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-18",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-19",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-20",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-21",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-22",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-23",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-24",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-25",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-26",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-27",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-28",
+        "dinner": true,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-01",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-02",
+        "dinner": true,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-03",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-04",
+        "dinner": true,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-05",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-06",
+        "dinner": true,
+        "lunch": false,
+        "no_dsa": false
       }
     ],
     "expenses": [
@@ -288,99 +2994,73 @@
     "itinerary": [
       {
         "airlines": [],
-        "arrival_date": "2017-01-02T07:00:01.670Z",
-        "departure_date": "2016-12-31T23:00:01.660Z",
-        "destination": "Prague",
+        "arrival_date": "2017-01-01T10:00:00.782Z",
+        "departure_date": "2017-01-01T09:00:00.767Z",
+        "destination": "B",
         "dsa_region": {
-          "label": "Prague",
-          "value": 9
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
         },
         "mode_of_travel": {
           "label": "bus",
           "value": 1
         },
-        "origin": "Washington"
+        "origin": "A",
+        "overnight_travel": null
       },
       {
         "airlines": "",
-        "arrival_date": "2017-01-02T19:00:01.932Z",
-        "departure_date": "2017-01-02T17:00:01.904Z",
-        "destination": "Amsterdam",
+        "arrival_date": "2017-03-04T10:00:00.892Z",
+        "departure_date": "2017-03-04T09:00:00.876Z",
+        "destination": "C",
         "dsa_region": {
-          "label": "Amsterdam",
-          "value": 10
+          "label": "Denmark - DSA - Copenhagen",
+          "value": 1371
         },
         "mode_of_travel": {
           "label": "bus",
           "value": 1
         },
-        "origin": "Prague"
+        "origin": "B",
+        "overnight_travel": ""
       },
       {
         "airlines": "",
-        "arrival_date": "2017-01-02T22:00:01.633Z",
-        "departure_date": "2017-01-02T21:00:01.601Z",
-        "destination": "Barcelona",
+        "arrival_date": "2017-03-05T10:00:00.442Z",
+        "departure_date": "2017-03-05T09:00:00.432Z",
+        "destination": "B",
         "dsa_region": {
-          "label": "Barcelona",
-          "value": 11
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
         },
         "mode_of_travel": {
           "label": "bus",
           "value": 1
         },
-        "origin": "Amsterdam"
+        "origin": "C",
+        "overnight_travel": ""
       },
       {
         "airlines": "",
-        "arrival_date": "2017-01-03T04:00:01.214Z",
-        "departure_date": "2017-01-03T01:00:01.178Z",
-        "destination": "Budapest",
+        "arrival_date": "2017-04-07T09:00:00.339Z",
+        "departure_date": "2017-03-07T09:00:00.328Z",
+        "destination": "A",
         "dsa_region": {
-          "label": "Budapest",
-          "value": 12
+          "label": "Netherlands - DSA - Amsterdam",
+          "value": 1369
         },
         "mode_of_travel": {
           "label": "bus",
           "value": 1
         },
-        "origin": "Barcelona"
-      },
-      {
-        "airlines": "",
-        "arrival_date": "2017-01-10T05:00:01.862Z",
-        "departure_date": "2017-01-10T04:00:01.829Z",
-        "destination": "Geneva",
-        "dsa_region": {
-          "label": "Geneva",
-          "value": 13
-        },
-        "mode_of_travel": {
-          "label": "bus",
-          "value": 1
-        },
-        "origin": "Budapest"
-      },
-      {
-        "airlines": "",
-        "arrival_date": "2017-01-31T02:00:01.552Z",
-        "departure_date": "2017-01-30T21:00:01.523Z",
-        "destination": "Washington",
-        "dsa_region": {
-          "label": "Washington",
-          "value": 14
-        },
-        "mode_of_travel": {
-          "label": "bus",
-          "value": 1
-        },
-        "origin": "Geneva"
+        "origin": "B",
+        "overnight_travel": ""
       }
     ],
     "status": "Planned"
   };
 
-  window.caseScenarios.case1 = {
+  window.caseScenarios.CASE5 = {
     "action_points": [
       {}
     ],
@@ -393,31 +3073,471 @@
     "attachments": [],
     "baseDetails": {
       "currency": {
-        "label": "Euro",
-        "short": "EUR",
-        "value": 42
+        "exchange_to_dollar": 1,
+        "label": "US Dollar",
+        "short": "USD",
+        "value": 145
       },
       "international_travel": null,
-      "mode_of_travel": [],
+      "office": {
+        "label": "Tripoli",
+        "value": 201
+      },
+      "purpose": "TestCase 5.",
+      "section": {
+        "label": "Education",
+        "value": 10
+      },
       "ta_required": true,
       "traveler": {
         "label": "Main User",
-        "value": 3742
+        "profile": {
+          "countries_available": [
+            1,
+            2,
+            28,
+            18,
+            40,
+            3,
+            14,
+            11,
+            29,
+            43,
+            36,
+            22,
+            16,
+            48,
+            24,
+            26,
+            52,
+            19,
+            6,
+            23,
+            34,
+            25,
+            20,
+            42,
+            37,
+            53,
+            4,
+            32,
+            31,
+            30,
+            8,
+            35,
+            10,
+            7,
+            38,
+            15,
+            39,
+            44,
+            12,
+            13,
+            5,
+            27,
+            46,
+            47,
+            49,
+            50,
+            21,
+            54,
+            55,
+            9,
+            45
+          ],
+          "country": 48,
+          "country_override": 48,
+          "guid": null,
+          "installation_id": null,
+          "job_title": "Some title",
+          "office": 201,
+          "oic": null,
+          "org_unit_code": "",
+          "org_unit_name": "",
+          "partner_staff_member": null,
+          "phone_number": "",
+          "post_number": "",
+          "post_title": "",
+          "section": 10,
+          "section_code": "",
+          "staff_id": null,
+          "supervisor": null,
+          "vendor_number": "vend01"
+        },
+        "value": 4176
       }
     },
     "cost_assignments": [
       {
         "business_area": {
-          "code": "0",
-          "id": 162,
-          "label": "Test area",
-          "name": "Test area",
+          "code": "1430",
+          "default_currency": null,
+          "id": 28,
+          "label": "1430 - Fiji (Pacific Islands)",
+          "name": "Fiji (Pacific Islands)",
           "region": {
-            "code": "00",
-            "name": "Test region"
+            "code": "60",
+            "name": "EAPR"
           },
-          "value": 162,
-          "wbs": []
+          "value": 28,
+          "wbs": [
+            {
+              "label": "0240A005800003000",
+              "value": 1
+            },
+            {
+              "label": "0240A005800002000",
+              "value": 2
+            },
+            {
+              "label": "0240A004800002000",
+              "value": 3
+            },
+            {
+              "label": "0240A004004027000",
+              "value": 4
+            },
+            {
+              "label": "0240A004003006000",
+              "value": 5
+            },
+            {
+              "label": "0240A004004024000",
+              "value": 6
+            },
+            {
+              "label": "0240A005881003000",
+              "value": 7
+            },
+            {
+              "label": "0240A005880003000",
+              "value": 8
+            },
+            {
+              "label": "0240A004004030000",
+              "value": 9
+            },
+            {
+              "label": "0240A004004015000",
+              "value": 10
+            },
+            {
+              "label": "0240P004800005000",
+              "value": 11
+            },
+            {
+              "label": "0240A004005006000",
+              "value": 12
+            },
+            {
+              "label": "0240A004004022000",
+              "value": 13
+            },
+            {
+              "label": "0240A005880001000",
+              "value": 14
+            },
+            {
+              "label": "0240A004002016000",
+              "value": 15
+            },
+            {
+              "label": "0240A005884003000",
+              "value": 16
+            },
+            {
+              "label": "0240A005777004000",
+              "value": 17
+            },
+            {
+              "label": "0240A004001007000",
+              "value": 18
+            },
+            {
+              "label": "0240A005881002000",
+              "value": 19
+            },
+            {
+              "label": "0240A004004032000",
+              "value": 20
+            },
+            {
+              "label": "0240A004003007000",
+              "value": 21
+            },
+            {
+              "label": "0240A004001011000",
+              "value": 22
+            },
+            {
+              "label": "0240A004004016000",
+              "value": 23
+            },
+            {
+              "label": "0240A004001012000",
+              "value": 24
+            },
+            {
+              "label": "0240A004004026000",
+              "value": 25
+            },
+            {
+              "label": "0240A004004008000",
+              "value": 26
+            },
+            {
+              "label": "0240A005800004000",
+              "value": 27
+            },
+            {
+              "label": "0240A004800004000",
+              "value": 28
+            },
+            {
+              "label": "0240A004005005000",
+              "value": 29
+            },
+            {
+              "label": "0240A004777001000",
+              "value": 30
+            },
+            {
+              "label": "0240A004002011000",
+              "value": 31
+            },
+            {
+              "label": "0240A004004033000",
+              "value": 32
+            },
+            {
+              "label": "0240A004001008000",
+              "value": 33
+            },
+            {
+              "label": "0240A005883002000",
+              "value": 34
+            },
+            {
+              "label": "0240A004003008000",
+              "value": 35
+            },
+            {
+              "label": "0240A004002008000",
+              "value": 36
+            },
+            {
+              "label": "0240A004002009000",
+              "value": 37
+            },
+            {
+              "label": "0240A005777003000",
+              "value": 38
+            },
+            {
+              "label": "0240A004001009000",
+              "value": 39
+            },
+            {
+              "label": "0240A005884001000",
+              "value": 40
+            },
+            {
+              "label": "0240A005883004000",
+              "value": 41
+            },
+            {
+              "label": "0240A004004029000",
+              "value": 42
+            },
+            {
+              "label": "0240A005883001000",
+              "value": 43
+            },
+            {
+              "label": "0240A005885001000",
+              "value": 44
+            },
+            {
+              "label": "0240A005885002000",
+              "value": 45
+            },
+            {
+              "label": "0240A004005001000",
+              "value": 46
+            },
+            {
+              "label": "0240A005881004000",
+              "value": 47
+            },
+            {
+              "label": "0240A004002013000",
+              "value": 48
+            },
+            {
+              "label": "0240A004002012000",
+              "value": 49
+            },
+            {
+              "label": "0240A004001010000",
+              "value": 50
+            },
+            {
+              "label": "0240A004004021000",
+              "value": 51
+            },
+            {
+              "label": "0240A005882001000",
+              "value": 52
+            },
+            {
+              "label": "0240A004001014000",
+              "value": 53
+            },
+            {
+              "label": "0240A004005002000",
+              "value": 54
+            },
+            {
+              "label": "0240A004002014000",
+              "value": 55
+            },
+            {
+              "label": "0240A004003005000",
+              "value": 56
+            },
+            {
+              "label": "0240A004004019000",
+              "value": 57
+            },
+            {
+              "label": "0240A004004013000",
+              "value": 58
+            },
+            {
+              "label": "0240A004004034000",
+              "value": 59
+            },
+            {
+              "label": "0240A004003009000",
+              "value": 60
+            },
+            {
+              "label": "0240A004002017000",
+              "value": 61
+            },
+            {
+              "label": "0240A004003011000",
+              "value": 62
+            },
+            {
+              "label": "0240A005800001000",
+              "value": 63
+            },
+            {
+              "label": "0240A004800003000",
+              "value": 64
+            },
+            {
+              "label": "0240A004004020000",
+              "value": 65
+            },
+            {
+              "label": "0240A005881001000",
+              "value": 66
+            },
+            {
+              "label": "0240A004004028000",
+              "value": 67
+            },
+            {
+              "label": "0240A004004031000",
+              "value": 68
+            },
+            {
+              "label": "0240A004005004000",
+              "value": 69
+            },
+            {
+              "label": "0240A004002010000",
+              "value": 70
+            },
+            {
+              "label": "0240A004004025000",
+              "value": 71
+            },
+            {
+              "label": "0240A005882003000",
+              "value": 72
+            },
+            {
+              "label": "0240A005777005000",
+              "value": 73
+            },
+            {
+              "label": "0240A005882002000",
+              "value": 74
+            },
+            {
+              "label": "0240A004001006000",
+              "value": 75
+            },
+            {
+              "label": "0240DM01800999000",
+              "value": 76
+            },
+            {
+              "label": "0240A004005003000",
+              "value": 77
+            },
+            {
+              "label": "0240A004004023000",
+              "value": 78
+            },
+            {
+              "label": "0240A004002015000",
+              "value": 79
+            },
+            {
+              "label": "0240A005885004000",
+              "value": 80
+            },
+            {
+              "label": "0240A005883003000",
+              "value": 81
+            },
+            {
+              "label": "0240A004003010000",
+              "value": 82
+            },
+            {
+              "label": "0240A005777002000",
+              "value": 83
+            },
+            {
+              "label": "0240A004899001000",
+              "value": 84
+            },
+            {
+              "label": "0240A004800888000",
+              "value": 85
+            },
+            {
+              "label": "0240A005884002000",
+              "value": 86
+            },
+            {
+              "label": "0240A004002007000",
+              "value": 87
+            },
+            {
+              "label": "0240A004001013000",
+              "value": 88
+            },
+            {
+              "label": "0240A004800001000",
+              "value": 89
+            }
+          ]
         },
         "delegate": null,
         "wbs": null
@@ -428,7 +3548,31 @@
       {
         "accomodation": false,
         "breakfast": false,
+        "date": "2016-12-31",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
         "date": "2017-01-01",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-01-02",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": true,
+        "date": "2017-01-03",
         "dinner": false,
         "lunch": false,
         "no_dsa": false
@@ -440,47 +3584,39 @@
     "itinerary": [
       {
         "airlines": [],
-        "arrival_date": "2017-01-01T01:00:00.718Z",
-        "departure_date": "2017-01-01T00:00:00.702Z",
-        "destination": "Budapest",
+        "arrival_date": "2017-01-01T02:00:00.427Z",
+        "departure_date": "2016-12-31T21:00:00.393Z",
+        "destination": "B",
         "dsa_region": {
-          "label": "Budapest",
-          "value": 5
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
         },
         "mode_of_travel": {
           "label": "bus",
           "value": 1
         },
-        "origin": "Amsterdam",
+        "origin": "A",
         "overnight_travel": null
       },
       {
         "airlines": "",
-        "arrival_date": "2017-01-01T14:00:00.800Z",
-        "departure_date": "2017-01-01T09:00:00.778Z",
-        "destination": "Amsterdam",
+        "arrival_date": "2017-01-04T03:00:00.168Z",
+        "departure_date": "2017-01-03T22:00:00.151Z",
+        "destination": "A",
         "dsa_region": {
-          "label": "Amsterdam",
-          "value": 10
+          "label": "Netherlands - DSA - Amsterdam",
+          "value": 1369
         },
         "mode_of_travel": {
           "label": "bus",
           "value": 1
         },
-        "origin": "Budapest",
+        "origin": "B",
         "overnight_travel": ""
       }
     ],
     "status": "Planned"
   };
-
-  window.caseScenarios.case2 = {};
-
-  window.caseScenarios.case3 = {};
-
-  window.caseScenarios.case4 = {};
-
-  window.caseScenarios.case5 = {};
 
   Object.keys(window.caseScenarios).forEach(function(key) {
     window.caseScenarios[key].itinerary.forEach(function(iti) {

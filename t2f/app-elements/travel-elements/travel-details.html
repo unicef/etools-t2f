@@ -266,6 +266,7 @@
           <template is="dom-repeat" items="{{data.expenses}}">
             <travel-expense permissions-matrix="[[travelPermissions.expenses]]"
               expense="{{item}}"
+              base-details="[[data.baseDetails]]"
               document-currency="{{data.baseDetails.currency}}"
               selected-expenses="[[selectedExpensesType]]"
               structure="[[structure]]">
@@ -379,7 +380,8 @@
           return parseInt(country.value, 10) === userCountry;
         });
 
-        var userBa = userCountry.business_area ? userCountry.business_area : structure.business_areas[0].id;
+        var userBa = userCountry && userCountry.business_area ?
+          userCountry.business_area : structure.business_areas[0].id;
 
         var businessArea = structure.business_areas.find(function(ba) {
           return parseInt(ba.id, 10) === parseInt(userBa, 10);
@@ -483,13 +485,21 @@
       _computeHideCertificationNote: function(data) {
         return data.status !== 'Certification submitted';
       },
-      _validateItinerarySize: function(invalids) {
-        if (this.data.itinerary.length === 0) {
-          return false;
+      _fieldSetSizeValidation: function(fieldSet, invalids) {
+        var size = fieldSet === 'Itinerary' ? 2 : 1;
+        var errorLabel = fieldSet + ' must have at least ' + size + ' valid entry(s)';
+        fieldSet = fieldSet.toLowerCase().split(' ').join('_');
+        var toValidate = this.data[fieldSet];
+        var success = true;
+
+        for (var i = 0; i < size; i ++) {
+          success = success && toValidate[i] && toValidate[i]._validationFunction(true);
         }
-        if (!this.data.itinerary[0]._validationFunction(true)) {
-          invalids.push('Itinerary must have at least one entry');
+
+        if (!success) {
+          invalids.push(errorLabel);
         }
+        return success;
       },
 
       _validateItineraryIntegrity: function(invalids) {
@@ -546,18 +556,22 @@
             var domFieldSet = self.$$('#' + fieldSet);
             if (domFieldSet && !domFieldSet.hidden && !domFieldSet.disabled) {
               if (!self.data[fieldSet].hidden) {
-                var result = true;
-                self.data[fieldSet].forEach(function(field) {
-                  result = field._validationFunction() && result;
-                });
-                if (!result) {
-                  invalids.push(area);
+                var sizeValid = self._fieldSetSizeValidation(area, invalids);
+                if (sizeValid) {
+                  var result = true;
+                  self.data[fieldSet].forEach(function(field) {
+                    result = field._validationFunction() && result;
+                  });
+                  if (!result) {
+                    invalids.push(area);
+                  }
                 }
               }
             }
           });
         }
 
+        //do not run validation for this set of actions
         if (['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0) {
           // Validating Trip plan
           if (!this.$.travel_plan._validateTravelPlan()) {
@@ -578,7 +592,7 @@
 
         if (action.name === 'Save' && !self.$$('#itinerary').hidden) {
           fieldSetValidation(['Itinerary']);
-          self._validateItinerarySize(invalids);
+          self._fieldSetSizeValidation('Itinerary', invalids);
           self._validateItineraryIntegrity(invalids);
         }
         return invalids;

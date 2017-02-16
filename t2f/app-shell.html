@@ -15,23 +15,27 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
 <link rel="import" href="../bower_components/etools-loading/etools-loading-behavior.html">
 
 <link rel="import" href="app-config/etools-app-config.html">
 <link rel="import" href="app-elements/user-data/user-data.html">
 <link rel="import" href="app-elements/page-elements/side-bar-item.html">
 
+
 <link rel="import" href="styles/shared-styles.html">
 <link rel="import" href="styles/page-layout-styles.html">
 <link rel="import" href="styles/app-theme.html">
 <link rel="import" href="app-elements/page-elements/et2f-app.html">
+<link rel="import" href="app-elements/page-elements/page-footer.html">
 
 
 <dom-module id="app-shell">
 
   <template>
 
-    <style include="shared-styles">
+    <style include="shared-styles iron-flex iron-flex-alignment">
 
       :host {
         display: block;
@@ -83,27 +87,6 @@
         border-bottom: 1px solid var(--dark-divider-color);
       }
 
-      .side-nav-wrapper .footer {
-        @apply(--layout-horizontal);
-        @apply(--layout-center-center);
-
-        margin-top: auto;
-        min-height: 26px;
-        padding: 16px 16px;
-        border-top: 1px solid var(--dark-divider-color);
-      }
-
-      #countries {
-        position: fixed;
-        top: 9px;
-        right: 20px;
-        z-index:1001;
-      }
-
-      #mainContent {
-        min-height: 100%;
-      }
-
     </style>
 
     <user-data permissions="{{permissions}}" user="{{user}}"></user-data>
@@ -126,43 +109,33 @@
 
           <app-toolbar class="header">
             <img id="etools-logo" src="images/etools_logo.svg" alt="etools logo">
-            <paper-icon-button id="app-select" on-tap="openAppMenu" class="dark" icon="apps"></paper-icon-button>
           </app-toolbar>
 
           <div class="nav-menu">
-            <iron-selector selected="[[page]]" attr-for-selected="name" selectable="side-bar-item" role="navigation">
+            <iron-selector selected="[[page]]" attr-for-selected="value" selectable="side-bar-item" role="navigation">
               <template is="dom-if" if="{{permissions.loggedInDefault}}">
 
-                  <side-bar-item name="Travel2Field" icon="maps:transfer-within-a-station" href="[[baseUrl]]travel-list"></side-bar-item>
-                  <side-bar-item name="invoices" icon="description" href="[[baseUrl]]invoices-list"></side-bar-item>
-                  <side-bar-item name="action points" icon="list" href="[[baseUrl]]action-points-list"></side-bar-item>
+                  <side-bar-item name="Travel2Field" value="travel-list" icon="maps:transfer-within-a-station" href$="[[baseUrl]]travel-list"></side-bar-item>
+                  <template is="dom-if" if="[[isFfp]]" restamp>
+                    <side-bar-item name="invoices" value="invoices-list" icon="description" href$="[[baseUrl]]invoices-list"></side-bar-item>
+                  </template>
+                  <side-bar-item name="action points" value="action-points-list" icon="list" href$="[[baseUrl]]action-points-list"></side-bar-item>
 
-                  <div class="divider"></div>
               </template>
-              <!-- Permissions example: only display settings if the user has permission -->
-              <side-bar-item hidden$="{{!permissions.userInfoMenu}}" name="settings" icon="settings" href="/settings"></side-bar-item>
-
-              <side-bar-item name="user support" icon="help" href="/support"></side-bar-item>
-              <side-bar-item name="discussions" icon="question-answer" href="/discussion"></side-bar-item>
-              <side-bar-item name="information" icon="info" href="/information"></side-bar-item>
 
             </iron-selector>
-          </div>
-
-          <div class="footer">
-            <img id="unicef-logo" src="images/UNICEF_logo.png" alt="UNICEF logo">
           </div>
 
         </div>
 
       </app-drawer>
 
-      <!-- Main content -->
-      <div id="mainContent">
+
         <template is="dom-if" id="privatePages" on-dom-change="_pagesStamped" if="{{permissions.loggedInDefault}}">
-          <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}"></et2f-app>
+          <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}" ffp="[[isFfp]]"></et2f-app>
         </template>
-      </div>
+        <page-footer></page-footer>
+
 
     </app-drawer-layout>
 
@@ -207,6 +180,14 @@
           value: false,
           observer: '_loadingObserver'
         },
+        user: {
+          type: Object,
+        },
+        isFfp: {
+          type: Boolean,
+          value: false,
+          computed: '_computeIsFfp(user)',
+        },
         _toastQueue: {
           type: Array,
           value: function() { return []; }
@@ -231,6 +212,9 @@
 
       attached: function() {
         this.baseUrl = this.basePath;
+      },
+      _computeIsFfp: function(user) {
+        return user && user.t2f && user.t2f.roles && user.t2f.roles.indexOf('Finance Focal Point') > -1;
       },
       _permissionsPagesStamped: function(permissions, _pagesAvailable) {
         if (!permissions || !_pagesAvailable) {

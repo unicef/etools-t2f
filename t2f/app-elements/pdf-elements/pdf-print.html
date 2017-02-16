@@ -627,6 +627,28 @@
               };
             }
           },
+          report: {
+            name: 'Report',
+            generator: function() {
+              return {
+                stack: [
+                  {
+                    table: {
+                      headerRows: 0,
+                      widths: [760],
+                      body: [
+                        [{
+                          columns: [
+                            {text: '' + data.report,}
+                          ]
+                        }]
+                      ]
+                    }
+                  },
+                ]
+              };
+            }
+          },
         };
 
         function mainHeaderGen(fieldSet) {

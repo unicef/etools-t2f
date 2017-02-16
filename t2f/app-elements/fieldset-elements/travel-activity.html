@@ -50,6 +50,7 @@
           empty-value
           options="[[structure.partners]]"
           value="{{activity.partner}}"
+          starred$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           placeholder="select"
           auto-validate$="[[autoValidate]]">
@@ -63,6 +64,7 @@
           options="[[partnerships]]"
           value="{{activity.partnership}}"
           required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
+          starred$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           placeholder="select"
           auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
@@ -75,6 +77,8 @@
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
           options="[[structure.results]]"
+          required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
+          starred$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           empty-value
           value="{{activity.result}}"
           placeholder="select">
@@ -185,6 +189,13 @@
       _computeTravelType: function(travel_type) {
        return travel_type;
       },
+      _travelTypeObserver: function(newValue, oldValue) {
+          if (oldValue === undefined && newValue !== undefined && newValue !== '') {
+            this.set('activity.primary_traveler', true);
+          } else if (oldValue === undefined && newValue === undefined) {
+            this.set('activity.primary_traveler', undefined);
+          }
+      },
       _computeAutoValidate: function(activity) {
           return activity !== undefined && Object.keys(activity).length > 0;
       },
@@ -197,9 +208,9 @@
         if (partner) {
           this.set('partnerships', partner.partnerships);
           if (partnership && this.partnerships.find(function(partnerPartnership) {
-            return partnerPartnership.value === partnership.value;
-          })) {
-             this.set('activity.partnership', partnership);
+              return partnerPartnership.value === partnership.value;
+            })) {
+            this.set('activity.partnership', partnership);
           } else {
             this.set('activity.partnership', null);
           }
@@ -232,27 +243,23 @@
         }
       },
 
-      _validateType: function(self) {
+      _validateType: function() {
 
-        if (this.activity.travel_type || self.activity.travel_type) {
-
+        if (this.activity.travel_type) {
           this.$.trip_type.removeAttribute('invalid');
           return true;
-
         } else {
-
           this.$.trip_type.setAttribute('invalid', true);
           return false;
         }
       },
       _progVisOrSpotCheck: function(travel_type) {
         return travel_type ?
-          [19, 20].indexOf(travel_type.value) > -1 :
+          ['Programmatic Visit', 'Spot Check'].indexOf(travel_type.label) > -1 :
           false;
       },
 
-      _validateActivities: function(activity) {
-
+      _validateActivities: function() {
         var typeVal = this._validateType(this);
         var activityVal = this.$.activities_form.validate();
 
