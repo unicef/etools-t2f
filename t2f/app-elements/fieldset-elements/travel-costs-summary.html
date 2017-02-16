@@ -33,6 +33,11 @@
         font-size: 16px;
         color: var(--gray-dark);
       }
+
+      .group.row {
+        height: auto;
+        line-height: 40px;
+      }
       .head {
         margin-left: 24px;
       }
@@ -71,14 +76,28 @@
         <div class="underline"></div>
       </div>
 
-      <div class="layout horizontal row">
-        <div class="flex-6 head">
-          Expenses Total
+      <div class="layout vertical group row">
+        <div class="layout horizontal">
+          <div class="flex-6 head">
+            Expenses Total
+          </div>
+          <div class="flex-6 right-align curr">
+            {{exp}} {{currency.short}}
+          </div>
+          <div class="underline"></div>
         </div>
-        <div class="flex-6 right-align curr">
-          {{exp}} {{currency.short}}
-        </div>
-        <div class="underline"></div>
+
+        <template is="dom-repeat" items="[[costSummary.expenses]]">
+          <div class="layout horizontal">
+            <div class="flex-6 head">
+              [[item.vendor_number]]
+            </div>
+            <div class="flex-6 right-align curr">
+              {{item.amount}} {{currency.short}}
+            </div>
+            <div class="underline"></div>
+          </div>
+        </template>
       </div>
 
       <div class="layout horizontal row">
@@ -111,7 +130,7 @@
       is: 'travel-cost-summary',
       properties: {
         costSummary: {
-          type: Object,
+          type: Object
         },
         total: {
           type: Number,
