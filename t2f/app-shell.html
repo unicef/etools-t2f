@@ -116,7 +116,9 @@
               <template is="dom-if" if="{{permissions.loggedInDefault}}">
 
                   <side-bar-item name="Travel2Field" value="travel-list" icon="maps:transfer-within-a-station" href$="[[baseUrl]]travel-list"></side-bar-item>
-                  <side-bar-item name="invoices" value="invoices-list" icon="description" href$="[[baseUrl]]invoices-list"></side-bar-item>
+                  <template is="dom-if" if="[[isFpp]]" restamp>
+                    <side-bar-item name="invoices" value="invoices-list" icon="description" href$="[[baseUrl]]invoices-list"></side-bar-item>
+                  </template>
                   <side-bar-item name="action points" value="action-points-list" icon="list" href$="[[baseUrl]]action-points-list"></side-bar-item>
 
               </template>
@@ -178,6 +180,13 @@
           value: false,
           observer: '_loadingObserver'
         },
+        user: {
+          type: Object,
+        },
+        isFpp: {
+          type: Boolean,
+          computed: '_computeIsFpp(user)'
+        },
         _toastQueue: {
           type: Array,
           value: function() { return []; }
@@ -190,7 +199,7 @@
 
       behaviors: [etoolsAppConfig.globals, etoolsBehaviors.LoadingBehavior],
       observers: [
-        '_routePageChanged(routeData.page)',
+        '_routePageChanged(routeData.page, isFpp)',
         '_permissionsPagesStamped(permissions, _pagesAvailable)'
       ],
 
@@ -202,6 +211,9 @@
 
       attached: function() {
         this.baseUrl = this.basePath;
+      },
+      _computeIsFpp: function(user) {
+        return user && user.t2f && user.t2f.roles && user.t2f.roles.indexOf('Finance Focal Point') > -1;
       },
       _permissionsPagesStamped: function(permissions, _pagesAvailable) {
         if (!permissions || !_pagesAvailable) {
@@ -253,11 +265,13 @@
         }
       },
 
-      _routePageChanged: function(page) {
+      _routePageChanged: function(page, ffp) {
+        if (!ffp && (page === 'invoices-list' || page === 'invoice-detail')) {
+          this.page = 'travel-list';
+          return;
+        }
         if (this._pagesAvailable || (['settings', 'etc'].indexOf(page) !== -1)) {
             this.page = page || 'travel-list';
-        } else {
-            // console.log('No permissions yet or page hasn\'t stampped', page);
         }
       },
 

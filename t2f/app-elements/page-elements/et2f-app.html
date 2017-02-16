@@ -71,6 +71,16 @@
         list-loading="{{subLoading}}">
       </page-invoices-list>
 
+      <page-invoice-detail fullbleed
+        name="invoice-detail"
+        user="[[user]]"
+        route="{{route}}"
+        detail-loading="{{subLoading}}"
+        invoice-id="[[invoiceId]]"
+        et2f-permissions="[[et2fPermissions.travel]]"
+        structure="[[structure]]">
+      </page-invoice-detail>
+
       <page-action-point fullbleed
         name="action-point"
         user="[[user]]"
@@ -81,15 +91,7 @@
         structure="[[structure]]">
         </page-action-point>
 
-      <page-invoice-detail fullbleed
-        name="invoice-detail"
-        user="[[user]]"
-        route="{{route}}"
-        detail-loading="{{subLoading}}"
-        invoice-id="[[invoiceId]]"
-        et2f-permissions="[[et2fPermissions.travel]]"
-        structure="[[structure]]">
-        </page-invoice-detail>
+
 
       <page-not-found name="not-found">
       </page-not-found>
