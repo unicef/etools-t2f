@@ -501,6 +501,12 @@
           })[0].apiValue;
         }
 
+        if (key === 'f_travel_type') {
+          value = this._computeFilters(this.structure)[5].selection.filter(function(item) {
+            return item.value === value;
+          })[0].label;
+        }
+
         var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
         oldParams[key] = value;
         this.set('ajaxParams', oldParams);

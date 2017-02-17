@@ -225,7 +225,7 @@
             });
           },
           currencies: function(key) {
-            data[key] = data[key].map(function(obj) {
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {
                 label: obj.name,
                 value: obj.id,
@@ -235,7 +235,7 @@
             });
           },
           business_areas: function(key) {
-            data[key] = data[key].map(function(obj) {
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
               obj.label = obj.code + ' - ' + obj.name;
               obj.value = obj.id;
               obj.wbs = obj.wbs;
@@ -244,19 +244,19 @@
           },
           wbs: function(key) {
             fillDependenceis(key, 'business_areas', 'business_area');
-             data[key] = data[key].map(function(obj) {
+             data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id, grants: obj.grants};
             });
           },
           grants: function(key) {
             fillDependenceis(key, 'wbs', 'wbs');
-            data[key] = data[key].map(function(obj) {
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id, funds: obj.funds};
             });
           },
           funds: function(key) {
             fillDependenceis('funds', 'grants', 'grant');
-            data[key] = data[key].map(function(obj) {
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id};
             });
           },
@@ -296,8 +296,7 @@
           dsa_regions: function(key) {
             data[key] = data[key].map(function(obj) {
               return {label: obj.area_name, value: parseInt(obj.id, 10)};
-            });
-            data[key] = data[key].sort(self._sortByLabel);
+            }).sort(self._sortByLabel);
           },
           countries: function(key) {
             data[key] = data[key].map(function(obj) {
