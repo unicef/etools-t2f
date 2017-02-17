@@ -277,7 +277,7 @@
         return details || profile;
       },
       _computeDataForTa: function(data, profile) {
-        if (!data.baseDetails || !data.baseDetails.traveler) {
+        if (!data.baseDetails || !data.baseDetails.traveler || !profile || !profile.profile) {
           return;
         }
         data.baseDetails.traveler.profile = profile.profile;

@@ -9,3 +9,4 @@ dist/
 diff.txt
 npm-debug.log
 /bs-test-config.js
+.sublimelinterrc
