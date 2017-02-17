@@ -34,6 +34,10 @@
         color: var(--gray-dark);
       }
 
+      .bold {
+        font-weight: 500;
+      }
+
       .group.row {
         height: auto;
         line-height: 40px;
@@ -66,7 +70,7 @@
 
     <div class="layout vertical flex">
 
-      <div class="layout horizontal row">
+     <!--  <div class="layout horizontal row">
         <div class="flex-6 head">
           DSA Total
         </div>
@@ -74,19 +78,18 @@
           {{dsa}} {{currency.short}}
         </div>
         <div class="underline"></div>
+      </div> -->
+      <div class="layout horizontal row">
+        <div class="flex-6 head bold">
+          Traveler's DSA
+        </div>
+        <div class="flex-6 right-align curr">
+          {{tdsa}} {{currency.short}}
+        </div>
+        <div class="underline"></div>
       </div>
 
       <div class="layout vertical group row">
-        <div class="layout horizontal">
-          <div class="flex-6 head">
-            Expenses Total
-          </div>
-          <div class="flex-6 right-align curr">
-            {{exp}} {{currency.short}}
-          </div>
-          <div class="underline"></div>
-        </div>
-
         <template is="dom-repeat" items="[[costSummary.expenses]]">
           <div class="layout horizontal">
             <div class="flex-6 head">
@@ -98,9 +101,19 @@
             <div class="underline"></div>
           </div>
         </template>
+
+        <div class="layout horizontal">
+          <div class="flex-6 head bold">
+            Expenses Total
+          </div>
+          <div class="flex-6 right-align curr">
+            {{exp}} {{currency.short}}
+          </div>
+        </div>
+        <div class="underline flex"></div>
       </div>
 
-      <div class="layout horizontal row">
+    <!--   <div class="layout horizontal row">
         <div class="flex-6 head">
           Deductions Total
         </div>
@@ -108,7 +121,7 @@
           {{ded}} {{currency.short}}
         </div>
         <div class="underline"></div>
-      </div>
+      </div> -->
 
       <div class="layout horizontal sum-row">
         <div class="flex-8 layout horizontal head small_row" hidden$="[[!ee]]">
@@ -144,15 +157,16 @@
 
       _calculateTotal: function(costSummary) {
         if (costSummary.value) {
-          var ee = parseFloat(costSummary.value.preserved_expenses);
-          this.ee = Number.isNaN(ee) ? 0 : ee;
+          var ee = parseFloat(costSummary.value.reserved_expenses);
+          this.ee = Number.isNaN(ee) ? 0 : ee.toFixed(2);
           var dsa = parseFloat(costSummary.value.dsa_total);
-          this.dsa = Number.isNaN(dsa) ? 0 : dsa;
+          this.dsa = Number.isNaN(dsa) ? 0 : dsa.toFixed(2);
           var exp = parseFloat(costSummary.value.expenses_total);
-          this.exp = Number.isNaN(exp) ? 0 : exp;
+          this.exp = Number.isNaN(exp) ? 0 : exp.toFixed(2);
           var ded = parseFloat(costSummary.value.deductions_total);
-          this.ded = Number.isNaN(ded) ? 0 : ded;
-          return (this.dsa + this.exp) - this.ded - this.ee;
+          this.ded = Number.isNaN(ded) ? 0 : ded.toFixed(2);
+          this.tdsa = (this.dsa - this.ded).toFixed(2);
+          return ((+this.tdsa) + (+this.exp) - (+this.ee)).toFixed(2);
         }
       }
     });
