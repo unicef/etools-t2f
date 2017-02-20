@@ -403,6 +403,15 @@
         this.$.invalid_modal.close();
       },
       onValidate: function(e, action) {
+        function dedupe(collection) {
+          if (!collection || !(collection instanceof Array)) {
+            return [];
+          }
+          return collection.filter(function(el, i, arr) {
+            return arr.indexOf(el) === i;
+          });
+        }
+
         this.set('invalids', {});
         var invalids = {
           details: [],
@@ -411,6 +420,8 @@
 
         invalids.details = this.$$('#travelDetails').doValidate(action);
         invalids.report = this.$$('#travelReport').doValidate(action);
+        invalids.details = dedupe(invalids.details);
+        invalids.report = dedupe(invalids.report);
 
         invalids.details = invalids.details.length > 0 ? invalids.details : false;
         invalids.report = invalids.report.length > 0 ? invalids.report : false;
