@@ -194,6 +194,7 @@
           this.$['date-input'].invalid = false;
           return;
         }
+        date = new Date(date);
         if (!this.internalDate) {
          this._updateComponentState(date);
         } else if (date.getTime() !== this.internalDate.getTime()) {

@@ -1,0 +1,121 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<!-- Styles for the list views in et2f application -->
+
+<dom-module id="et2f-list-styles">
+  <template>
+    <style>
+
+      :host {
+        display: block;
+        --paper-card:  {
+          background-color: white;
+          margin: 0 24px;
+          width: calc(100% - 48px);
+        }
+      }
+
+      .background {
+        background-color: var(--gray-lighter);
+      }
+
+      et2f-header {
+        margin-bottom: 12px;
+      }
+
+      .second-header {
+        min-height: 84px;
+        margin-bottom: 12px;
+      }
+      .second-header paper-input {
+        --paper-input-container: {
+          width: 240px;
+          margin-left: 26px;
+        };
+        --paper-input-container-color: var(--gray-light);
+      }
+      .second-header paper-input iron-icon {
+        color: var(--gray-mid);
+      }
+      .second-header .toggle-hidden-div {
+        margin-right: 26px;
+      }
+      .second-header .toggle-hidden-div span {
+        color: var(--gray-dark);
+        font-size: 16px;
+        margin-right: 8px;
+      }
+
+      .data-table {
+        margin-bottom: 24px;
+      }
+      .data-table .data-card-heading {
+        display: block;
+        font-size: 20px;
+        margin-left: 20px;
+        font-weight: 500;
+        line-height: 64px;
+      }
+
+      #add-filter-container {
+        border-left: 2px solid var(--gray-lighter);
+        border-right: 2px solid var(--gray-lighter);
+        margin-left: 16px;
+        margin-right: 16px;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+      #add-filter-container paper-button {
+        color: var(--et2f-primary);
+      }
+
+      .filter-dropdown {
+        margin-left: 20px;
+        width: 200px;
+      }
+      .filter-reset-button {
+        margin: auto 12px;
+        transform: translate(0, 8px);
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        line-height: 16px;
+        background-color: var(--et2f-error);
+        color: white;
+        font-weight: 500;
+        font-size: 12px;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      .w5 {
+        width: 5%;
+      }
+      .w7 {
+        width: 7%;
+      }
+      .w9 {
+        width: 9%;
+      }
+      .w11 {
+        width: 11%;
+      }
+      .w13 {
+        width: 13%;
+      }
+      .w15 {
+        width: 15%;
+      }
+      .w20 {
+        width: 20px;
+      }
+      .w23 {
+        @apply(--layout-flex);
+      }
+      .w60 {
+        width: 60px;
+      }
+
+    </style>
+  </template>
+</dom-module>

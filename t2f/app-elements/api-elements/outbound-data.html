@@ -387,6 +387,9 @@
             action_points: []
           };
 
+          //pointless to send back to the backend something just calculated, also create bug with expense
+          delete data.cost_summary;
+
           var returnByLabel = {
             action_points: {
               'status': true
@@ -898,6 +901,7 @@
             this.attachmentData = false;
             this.attachmentsEndpoint = undefined;
             this.fire('travel-post-success', this.travelId);
+            this._openSuccesModal();
           }
         },
 
@@ -911,7 +915,21 @@
           } else {
             this.set('inboundData', data);
             this.fire('travel-post-success', this.travelId);
+            this._openSuccesModal();
           }
+        },
+        _openSuccesModal: function() {
+          var self = this;
+          this.generalModalAction = function() {
+            self.$['general-modal'].close();
+          };
+
+          this.set('generalModal', {
+            opened: true,
+            heading: 'Confirmation',
+            text: 'Your action has been processed sucessfully',
+            buttonText: 'Ok'
+          });
         }
       });
     </script>

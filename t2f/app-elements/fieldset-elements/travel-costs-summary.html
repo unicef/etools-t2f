@@ -1,0 +1,174 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import" href="../travel-elements/travel-status.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="travel-cost-summary">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+
+      .right-align {
+        text-align: right;
+      }
+      .yellow-box {
+        background: var(--et2f-info-2);
+      }
+      .row {
+        border-bottom: 1px solid var(--gray-lighter);
+        height: 60px;
+        line-height: 60px;
+        margin-left: 12px;
+        margin-right: 12px;
+        font-size: 16px;
+        color: var(--gray-dark);
+      }
+
+      .bold {
+        font-weight: 500;
+      }
+
+      .group.row {
+        height: auto;
+        line-height: 40px;
+      }
+      .head {
+        margin-left: 24px;
+      }
+      .curr {
+        margin-right: 24px;
+      }
+      .sum-row {
+        margin-left: 12px;
+        margin-right: 12px;
+        height: 45px;
+        line-height: 45px;
+        font-size: 16px;
+        color: var(--gray-dark);
+        font-weight: 500;
+      }
+      .small_row {
+        font-size: 14px;
+        line-height: 48px;
+        font-weight: normal;
+        color: rgba(0,0,0,0.54);
+      }
+      .sum-curr {
+        padding-right: 24px;
+      }
+    </style>
+
+    <div class="layout vertical flex">
+
+     <!--  <div class="layout horizontal row">
+        <div class="flex-6 head">
+          DSA Total
+        </div>
+        <div class="flex-6 right-align curr">
+          {{dsa}} {{currency.short}}
+        </div>
+        <div class="underline"></div>
+      </div> -->
+      <div class="layout horizontal row">
+        <div class="flex-6 head bold">
+          Traveler's DSA
+        </div>
+        <div class="flex-6 right-align curr">
+          {{tdsa}} {{currency.short}}
+        </div>
+        <div class="underline"></div>
+      </div>
+
+      <div class="layout vertical group row">
+        <template is="dom-repeat" items="[[costSummary.expenses]]">
+          <div class="layout horizontal">
+            <div class="flex-6 head">
+              [[item.vendor_number]]
+            </div>
+            <div class="flex-6 right-align curr">
+              {{item.amount}} {{currency.short}}
+            </div>
+            <div class="underline"></div>
+          </div>
+        </template>
+
+        <div class="layout horizontal">
+          <div class="flex-6 head bold">
+            Expenses Total
+          </div>
+          <div class="flex-6 right-align curr">
+            {{exp}} {{currency.short}}
+          </div>
+        </div>
+        <div class="underline flex"></div>
+      </div>
+
+    <!--   <div class="layout horizontal row">
+        <div class="flex-6 head">
+          Deductions Total
+        </div>
+        <div class="flex-6 right-align curr">
+          {{ded}} {{currency.short}}
+        </div>
+        <div class="underline"></div>
+      </div> -->
+
+      <div class="layout horizontal sum-row">
+        <div class="flex-8 layout horizontal head small_row" hidden$="[[!ee]]">
+            Original Estimated Expenses: {{ee}} {{currency.short}}
+        </div>
+        <div class="flex-4 yellow-box right-align sum-curr">
+          {{total}} {{currency.short}}
+        </div>
+      </div>
+    </div>
+
+    <div class="layout horizontal " >
+
+      </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-cost-summary',
+      properties: {
+        costSummary: {
+          type: Object
+        },
+        total: {
+          type: Number,
+          computed: '_calculateTotal(costSummary.*)',
+          notify: true
+        },
+        currency: String
+      },
+
+      behaviors: [et2fBehaviors.PermissionLayer],
+
+      _calculateTotal: function(costSummary) {
+        if (costSummary.value) {
+          var ee = parseFloat(costSummary.value.reserved_expenses);
+          this.ee = Number.isNaN(ee) ? 0 : ee.toFixed(2);
+          var dsa = parseFloat(costSummary.value.dsa_total);
+          this.dsa = Number.isNaN(dsa) ? 0 : dsa.toFixed(2);
+          var exp = parseFloat(costSummary.value.expenses_total);
+          this.exp = Number.isNaN(exp) ? 0 : exp.toFixed(2);
+          var ded = parseFloat(costSummary.value.deductions_total);
+          this.ded = Number.isNaN(ded) ? 0 : ded.toFixed(2);
+          this.tdsa = (this.dsa - this.ded).toFixed(2);
+          return ((+this.tdsa) + (+this.exp) - (+this.ee)).toFixed(2);
+        }
+      }
+    });
+  </script>
+</dom-module>

@@ -112,9 +112,10 @@
         }
       },
       _sortByLabel: function(a, b) {
-        var A = a.label.toUpperCase();
-        var B = b.label.toUpperCase();
-        return A < B ? -1 : (A > B) ? 1 : 0;
+        return a.label.localeCompare(b.label);
+      },
+      _sortByName: function(a, b) {
+        return a.name.localeCompare(b.name);
       },
       _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users, groups) {
         var result = false;
@@ -135,7 +136,7 @@
       _handleSections: function(e, data) {
         if (!data.parsed) {
           data = {
-            sections: data
+            sections: data.sort(this._sortByName)
           };
           data = this._parseData(data);
         }
@@ -144,7 +145,7 @@
       _handleOffices: function(e, data) {
         if (!data.parsed) {
           data = {
-            offices: data
+            offices: data.sort(this._sortByName)
           };
           data = this._parseData(data);
         }
@@ -224,7 +225,7 @@
             });
           },
           currencies: function(key) {
-            data[key] = data[key].map(function(obj) {
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {
                 label: obj.name,
                 value: obj.id,
@@ -234,8 +235,8 @@
             });
           },
           business_areas: function(key) {
-            data[key] = data[key].map(function(obj) {
-              obj.label = obj.name;
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
+              obj.label = obj.code + ' - ' + obj.name;
               obj.value = obj.id;
               obj.wbs = obj.wbs;
               return obj;
@@ -243,25 +244,32 @@
           },
           wbs: function(key) {
             fillDependenceis(key, 'business_areas', 'business_area');
-             data[key] = data[key].map(function(obj) {
+             data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id, grants: obj.grants};
             });
           },
           grants: function(key) {
             fillDependenceis(key, 'wbs', 'wbs');
-            data[key] = data[key].map(function(obj) {
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id, funds: obj.funds};
             });
           },
           funds: function(key) {
             fillDependenceis('funds', 'grants', 'grant');
-            data[key] = data[key].map(function(obj) {
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id};
             });
           },
           expense_types: function(key) {
-             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, unique: obj.unique, vendor_number: obj.vendor_number};
+            data[key] = data[key].map(function(obj) {
+              return {
+                label: (obj.unique && obj.vendor_number) ?
+                  obj.vendor_number + ' - ' + obj.name :
+                  obj.name,
+                value: obj.id,
+                unique: obj.unique,
+                vendor_number: obj.vendor_number
+              };
             });
           },
           travel_modes: function(key) {
@@ -287,9 +295,8 @@
           },
           dsa_regions: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.long_name, value: parseInt(obj.id, 10)};
-            });
-            data[key] = data[key].sort(self._sortByLabel);
+              return {label: obj.area_name, value: parseInt(obj.id, 10)};
+            }).sort(self._sortByLabel);
           },
           countries: function(key) {
             data[key] = data[key].map(function(obj) {

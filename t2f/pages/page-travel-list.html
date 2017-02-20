@@ -4,8 +4,9 @@
 
 <link rel="import" href="../styles/shared-styles.html">
 <link rel="import" href="../styles/et2f-styles.html">
-<link rel="import" href="../app-elements/travel-list-elements/travel-list.html">
-<link rel="import" href="../app-elements/page-header-element/page-header.html">
+<link rel="import" href="../app-elements/travel-elements/travel-list.html">
+<link rel="import" href="../app-elements/page-elements/page-header.html">
+
 
 
 <dom-module id="page-travel-list">
@@ -25,7 +26,7 @@
 
       <app-header fixed shadow>
 
-       <page-header title="" countries="[[structure.countries]]"></page-header>
+        <page-header title="" user="[[user]]" ></page-header>
 
       </app-header>
 

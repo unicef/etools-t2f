@@ -1,0 +1,333 @@
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import" href="../../app-behaviors/list-behavior.html">
+
+<link rel="import" href="./action-points-list-element.html">
+<link rel="import" href="../list-elements/list-header.html">
+<link rel="import" href="../list-elements/list-pagination.html">
+<link rel="import" href="../page-elements/et2f-header.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+<link rel="import" href="../../styles/et2f-list-styles.html">
+
+
+<dom-module id="action-points-list">
+
+  <style include="iron-flex shared-styles et2f-styles et2f-list-styles">
+
+    #add-filter-container {
+      border-right: 0px solid var(--gray-lighter);
+    }
+
+  </style>
+
+  <template>
+    <div class="background">
+
+      <etools-ajax url="[[listEndPoint]]"
+          params="{{ajaxParams}}"
+          loading="{{listLoading}}"
+          on-success="handleListResponse">
+      </etools-ajax>
+
+      <et2f-header title="Action points"
+        export-type="list"
+        data="[[data]]"
+        export-params="[[ajaxParams]]"></et2f-header>
+
+      <paper-card class="second-header horizontal layout center">
+
+        <div class="flex horizontal layout wrap">
+
+          <!-- OMNIBOX -->
+          <paper-input
+              inline
+              id="search-input"
+              label="Keywords"
+              on-keydown="searchKeyDown"
+              always-float-label
+              placeholder="Type and search">
+            <iron-icon icon="search" prefix></iron-icon>
+          </paper-input>
+
+          <!-- FILTERS -->
+          <template is="dom-repeat" items="[[usedFilters]]">
+
+            <div class="layout horizontal">
+
+               <etools-searchable-multiselection-menu label="[[item.name]]" class="filter-dropdown"
+                options="[[item.selection]]"
+                on-value-change="changeFilterValue"
+                placeholder="Select">
+              </etools-searchable-multiselection-menu>
+
+              <div class="filter-reset-button" on-click="removeFilter">X</div>
+            </div>
+          </template>
+
+        </div>
+
+        <!-- ADD FILTERS -->
+        <div id="add-filter-container">
+
+          <paper-menu-button>
+
+            <paper-button class="dropdown-trigger">
+              <iron-icon icon="filter-list"></iron-icon>
+              ADD FILTER
+            </paper-button>
+
+            <paper-menu class="dropdown-content">
+              <template is="dom-repeat" items="[[availableFilters]]">
+                <paper-item on-click="addFilter">[[item.name]]</paper-item>
+              </template>
+            </paper-menu>
+          </paper-menu-button>
+        </div>
+      </paper-card>
+
+      <paper-card class="data-table">
+
+        <span class="textprim data-card-heading">{{showingResults}} results to show</span>
+
+        <list-header
+          id="list-header"
+          data="[[headings]]"
+          order-obj="{{orderObj}}"
+          first-left-margin-class="w20">
+        </list-header>
+
+        <template is="dom-repeat" items="[[data]]">
+          <action-points-list-element
+            data="[[item]]"
+            route="{{route}}"
+            users="[[structure.users]]"
+            offices="[[structure.offices]]"
+            sections="[[structure.sections]]">
+          </action-points-list-element>
+        </template>
+
+        <list-pagination
+            id="list-pagination"
+            maxnr="{{datalength}}"
+            pages="{{pages}}"
+            showing-results="{{showingResults}}">
+        </list-pagination>
+      </paper-card>
+    </div>
+  </template>
+
+  <script type="text/javascript">
+    /* globals ListBehavior */
+    Polymer({
+
+      is: 'action-points-list',
+
+      behaviors: [ListBehavior],
+
+      properties: {
+        route: {
+          type: Object,
+          observer: '_routeObserver'
+        },
+        data: {
+          type: Array,
+          value: []
+        },
+        structure: {
+          type: Object
+        },
+        datalength: {
+          type: Number,
+          value: 0
+        },
+        listLoading: {
+          type: Boolean,
+          notify: true
+        },
+        showingResults: {
+          type: String,
+          computed: '_computeResultsToShow(pages, datalength, pages.page)'
+        },
+        headings: {
+          type: Array,
+          value: function() {
+            return this.getHeadings();
+          }
+        },
+        pages: {
+          type: Object,
+          value: {
+            itemsPerPage: 10,
+            page: 1
+          },
+          observer: '_changeParamsPages'
+        },
+        orderObj: {
+          type: Object,
+          value: {
+            orderedBy: 'Action Point #',
+            reverse: true
+          },
+          observer: '_changeParamsOrder'
+        },
+        searchString: {
+          type: String,
+          value: '',
+          observer: '_searchStringChanged'
+        },
+        ajaxParams: {
+          type: Object,
+          value: {
+            sort_by: 'action_point',
+            reverse: true,
+            page: 1,
+            page_size: 10,
+            search: ''
+          }
+        },
+        listEndPoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fActionPointList.url
+        },
+        filters: {
+          type: Array,
+          computed: '_computeFilters(structure)',
+          observer: 'fillAvailableFilters'
+        },
+        availableFilters: {
+          type: Array
+        },
+        usedFilters: {
+          type: Array,
+          value: []
+        }
+      },
+
+      // Returns an array with the header labels
+      getHeadings: function() {
+        return [
+          {
+            'size': 13,
+            'label': 'Action Point #'
+          },
+          {
+            'size': 13,
+            'label': 'Trip Reference #'
+          },
+          {
+            'size': 23,
+            'label': 'Description'
+          },
+          {
+            'size': 9,
+            'label': 'Due Date'
+          },
+          {
+            'size': 15,
+            'label': 'Responsible Person'
+          },
+          {
+            'size': 15,
+            'label': 'Assigned By'
+          },
+          {
+            'size': 9,
+            'label': 'Status'
+          }
+        ];
+      },
+
+      // Mapping of Labels / API names
+      labelLib: {
+        'Action Point #': 'action_point_number',
+        'Trip Reference #': 'trip_reference_number',
+        'Description': 'description',
+        'Due Date': 'due_date',
+        'Responsible Person': 'person_responsible',
+        'Assigned By': 'assigned_by',
+        'Status': 'status',
+      },
+
+      // Aggregating filters and collections into form useable by view
+      _computeFilters: function(structure) {
+        return [
+          {
+            name: 'Responsible person',
+            filterName: 'f_person_responsible',
+            selection: structure.users
+          },
+          {
+            name: 'Assigned By',
+            filterName: 'f_assigned_by',
+            selection: structure.users
+          },
+          {
+            name: 'Status',
+            filterName: 'f_status',
+            selection: [
+              {
+                label: 'Open',
+                value: 0,
+                apiValue: 'open'
+              },
+              {
+                label: 'On-going',
+                value: 1,
+                apiValue: 'ongoing'
+              },
+              {
+                label: 'Completed',
+                value: 2,
+                apiValue: 'completed'
+              }
+            ]
+          }
+        ];
+      },
+
+      // Sets the chosen filter value to the params, auto call API
+      changeFilterValue: function(e) {
+
+        var key = e.model.item.filterName;
+        var value = e.detail.selectedValues.value;
+
+        if (key === 'f_status') {
+          value = this._computeFilters(this.structure)[2].selection.filter(function(item) {
+            return item.value === value;
+          })[0].apiValue;
+        }
+
+        var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
+        oldParams[key] = value;
+        this.set('ajaxParams', oldParams);
+      },
+
+      // Mapping data to the view
+      handleListResponse: function(event, data) {
+        this.set('datalength', data.total_count);
+        data.data.forEach(function(action) {
+          if (action.due_date) {
+            action.due_date = action.due_date.split('T')[0];
+          }
+        });
+        this.set('data', data.data);
+      },
+    });
+  </script>
+</dom-module>
