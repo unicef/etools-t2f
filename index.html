@@ -41,7 +41,7 @@
         dom: 'shadow',
         lazyRegister: true
       };
-     var serverBackend = window.location.port === '';
+     var serverBackend = window.location.port === '' || window.location.port === '8082';
      var baseUrl = serverBackend ? '/t2f' : '';
 
       // Load webcomponentsjs polyfill if browser does not support native Web Components
