@@ -188,7 +188,8 @@
             orderedBy: 'Reference #',
             reverse: true
           },
-          observer: '_changeParamsOrder'
+          // computed: '_computeOrderObj(route.__queryParams)',
+          observer: '_changeParamsOrder',
         },
         searchString: {
           type: String,
@@ -202,38 +203,27 @@
         },
         ajaxParams: {
           type: Object,
-          value: {
-            sort_by: 'reference_number',
-            reverse: true,
-            page: 1,
-            page_size: 10,
-            search: '',
-            show_hidden: false
-          }
+          computed: '_computeAjaxParams(route.__queryParams)',
         },
         listEndPoint: {
           type: String,
-          value: etoolsAppConfig.endpoints.et2fTravelList.url
+          value: etoolsAppConfig.endpoints.et2fTravelList.url,
         },
         filters: {
           type: Array,
           computed: '_computeFilters(structure)',
-          observer: 'fillAvailableFilters'
+          observer: 'fillAvailableFilters',
         },
         availableFilters: {
-          type: Array
+          type: Array,
         },
         usedFilters: {
           type: Array,
-          value: []
-        },
-        route: {
-          type: Object,
-          observer: '_routeObserver'
+          value: [],
         },
         exportList: {
           type: Array,
-          computed: '_computeExportList(user)'
+          computed: '_computeExportList(user)',
         }
       },
 
@@ -245,8 +235,15 @@
         'End date': 'end_date',
         'Status': 'status',
         'Office': 'office',
-        'Section': 'section'
+        'Section': 'section',
       },
+
+      // _computeOrderObj: function(queryParams) {
+      //   return {
+      //     orderedBy: queryParams.sort_by,
+      //     reverse: queryParams.reverse,
+      //   };
+      // },
 
       // Returns an array with the header labels
       getHeadings: function() {
@@ -492,6 +489,7 @@
 
       // Sets the chosen filter value to the params, auto call API
       changeFilterValue: function(e) {
+        console.log('Filter value changed')
         var key = e.model.item.filterName;
         var value = e.detail.selectedValues.value;
 
@@ -507,9 +505,12 @@
           })[0].label;
         }
 
-        var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
+        var oldParams = JSON.parse(JSON.stringify(this.route.__queryParams));
         oldParams[key] = value;
-        this.set('ajaxParams', oldParams);
+        this.set('route.queryParams', oldParams);
+        // var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
+        // oldParams[key] = value;
+        // this.set('ajaxParams', oldParams);
       },
 
       // Mapping data to the view
@@ -537,9 +538,12 @@
         if (typeof old === 'undefined') {
           return;
         }
-        var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+        var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
         backup.show_hidden = show;
-        this.set('ajaxParams', backup);
+        this.set('route.__queryParams', backup);
+        // var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+        // backup.show_hidden = show;
+        // this.set('ajaxParams', backup);
       },
     });
   </script>

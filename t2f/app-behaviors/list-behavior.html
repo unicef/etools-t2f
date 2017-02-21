@@ -1,6 +1,52 @@
+<link rel="import" href="../scripts/lodash/lodash.html">
+
 <script>
 
   var ListBehavior = {
+
+    properties: {
+
+      route: {
+        type: Object,
+        observer: '_routeObserver',
+      },
+
+      // queryParams: {
+      //   type: Object,
+      //   computed: '_computeAjaxParams(route.__queryParams)',
+      //   observer: '_warn',
+      // },
+    },
+
+    // Computes the ajax parameters from the URL params & the default ones
+    _computeAjaxParams: function(UrlParams) {
+      var defaultParams = {
+        reverse: true,
+        page: 1,
+        page_size: 10,
+        search: '',
+      };
+
+      defaultParams.sort_by = {
+        'travel-list': 'reference_number',
+        'action-points-list': 'action_point',
+        'invoices-list': 'reference_number',
+      }[this.is];
+
+      if (this.is === 'travel-list') {
+        defaultParams.show_hidden = false;
+      }
+
+      var ret = _.merge(defaultParams, UrlParams);
+
+      if (!_.isEqual(ret, UrlParams)) {
+        this.set('route.__queryParams', ret);
+        return;
+      }
+
+      // console.info('setting ajax params:', JSON.stringify(ret));
+      return ret;
+    },
 
     // If the old route could have change the content, refresh data
     _routeObserver: function(newValue, oldValue) {
@@ -17,9 +63,10 @@
     // Refresh data by triggering automatic API call
     _doRefreshData: function() {
 
-      var backup = this.ajaxParams;
-      this.set('ajaxParams', {});
-      this.set('ajaxParams', backup);
+      console.warn('TODO: refresh logic!');
+      // var backup = this.ajaxParams;
+      // this.set('ajaxParams', {});
+      // this.set('ajaxParams', backup);
     },
 
     // Changes the searchString prop only if it was "entered"
@@ -40,9 +87,12 @@
       if (typeof old === 'undefined') {
         return;
       }
-      var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+      var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
       backup.search = searchStr;
-      this.set('ajaxParams', backup);
+      this.set('route.__queryParams', backup);
+      // var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+      // backup.search = searchStr;
+      // this.set('ajaxParams', backup);
     },
 
     // Handle ordering change, reset to page 1, auto API call
@@ -52,11 +102,11 @@
         return;
       }
       this.set('pages.page', 1);
-      var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+      var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
       backup.page = 1;
       backup.reverse = orderObj.reverse;
       backup.sort_by = this.labelLib[orderObj.orderedBy];
-      this.set('ajaxParams', backup);
+      this.set('route.__queryParams', backup);
     },
 
     // Handle pagination change, auto API call
@@ -65,10 +115,10 @@
       if (typeof old === 'undefined') {
         return;
       }
-      var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+      var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
       backup.page = pages.page;
       backup.page_size = pages.itemsPerPage;
-      this.set('ajaxParams', backup);
+      this.set('route.__queryParams', backup);
     },
 
     // Stiches the string "0-10 of 35 trips" together
@@ -101,9 +151,9 @@
         return filter.name === filterName;
       })[0];
 
-      var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+      var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
       delete backup[e.model.item.filterName];
-      this.set('ajaxParams', backup);
+      this.set('route.__queryParams', backup);
 
       this.push('availableFilters', pristineFilter);
 
