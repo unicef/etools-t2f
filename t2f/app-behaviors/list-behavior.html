@@ -10,20 +10,35 @@
         type: Object,
         observer: '_routeObserver',
       },
-
-      // queryParams: {
-      //   type: Object,
-      //   computed: '_computeAjaxParams(route.__queryParams)',
-      //   observer: '_warn',
-      // },
     },
 
     // Computes the ajax parameters from the URL params & the default ones
     _computeAjaxParams: function(UrlParams) {
+      function shallowEqual(O1, O2) {
+        var keys1 = Object.keys(O1);
+        var keys2 = Object.keys(O2);
+
+        if (keys1.length !== keys2.length) {
+          console.log('Length problem!', keys1, keys2);
+          return false;
+        }
+
+        keys = _.union(keys1, keys2);
+        for (i = 0; i < keys.length; i++) {
+          if (O1[keys[i]] == O2[keys[i]]) {
+            continue;
+          } else {
+            console.log('Diff @', keys[0], O1[keys[i]], O2[keys[i]]);
+            return false;
+          }
+        }
+        return true;
+      }
+
       var defaultParams = {
-        reverse: true,
-        page: 1,
-        page_size: 10,
+        reverse: 'true',
+        page: '1',
+        page_size: '10',
         search: '',
       };
 
@@ -34,17 +49,17 @@
       }[this.is];
 
       if (this.is === 'travel-list') {
-        defaultParams.show_hidden = false;
+        defaultParams.show_hidden = 'false';
       }
 
       var ret = _.merge(defaultParams, UrlParams);
 
-      if (!_.isEqual(ret, UrlParams)) {
+      if (!shallowEqual(ret, UrlParams)) {
+        console.warn('this should only happen on list startup!!!');
         this.set('route.__queryParams', ret);
-        return;
       }
 
-      // console.info('setting ajax params:', JSON.stringify(ret));
+      console.info('SETTING AJAX PARAMS:', JSON.stringify(ret));
       return ret;
     },
 
@@ -98,15 +113,18 @@
     // Handle ordering change, reset to page 1, auto API call
     _changeParamsOrder: function(orderObj, old) {
 
-      if (typeof old === 'undefined') {
-        return;
-      }
-      this.set('pages.page', 1);
-      var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
-      backup.page = 1;
-      backup.reverse = orderObj.reverse;
-      backup.sort_by = this.labelLib[orderObj.orderedBy];
-      this.set('route.__queryParams', backup);
+      console.log('TODO: Should handle this one!!');
+      return;
+
+      // if (typeof old === 'undefined') {
+      //   return;
+      // }
+      // this.set('pages.page', 1);
+      // var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
+      // backup.page = 1;
+      // backup.reverse = orderObj.reverse;
+      // backup.sort_by = this.labelLib[orderObj.orderedBy];
+      // this.set('route.__queryParams', backup);
     },
 
     // Handle pagination change, auto API call

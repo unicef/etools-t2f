@@ -117,7 +117,9 @@
           id="list-header"
           data="[[headings]]"
           order-obj="{{orderObj}}"
-          first-left-margin-class="w60">
+          first-left-margin-class="w60"
+          route="{{route}}"
+          label-lib="[[labelLib]]">
         </list-header>
 
         <template is="dom-repeat" items="[[data]]">
@@ -184,12 +186,12 @@
         },
         orderObj: {
           type: Object,
-          value: {
-            orderedBy: 'Reference #',
-            reverse: true
-          },
-          // computed: '_computeOrderObj(route.__queryParams)',
-          observer: '_changeParamsOrder',
+          // value: {
+          //   orderedBy: this.route.__queryParams.sort_by,
+          //   reverse: this.route.__queryParams.reverse,
+          // },
+          computed: '_computeOrderObj(route.__queryParams)',
+          // observer: '_changeParamsOrder',
         },
         searchString: {
           type: String,
@@ -224,26 +226,33 @@
         exportList: {
           type: Array,
           computed: '_computeExportList(user)',
-        }
+        },
+        // Contains label to sort id mapping
+        labelLib: {
+          type: Object,
+          value: function() {
+            return {
+              'Reference #': 'reference_number',
+              'Purpose of travel': 'purpose',
+              'Traveler': 'traveler',
+              'Start Date': 'start_date',
+              'End Date': 'end_date',
+              'Status': 'status',
+              'Office': 'office',
+              'Section': 'section',
+              'Actions': 'unsortable',
+            };
+          },
+        },
       },
 
-      labelLib: {
-        'Reference #': 'id',
-        'Purpose of travel': 'purpose',
-        'Traveler': 'traveler',
-        'Start date': 'start_date',
-        'End date': 'end_date',
-        'Status': 'status',
-        'Office': 'office',
-        'Section': 'section',
-      },
 
-      // _computeOrderObj: function(queryParams) {
-      //   return {
-      //     orderedBy: queryParams.sort_by,
-      //     reverse: queryParams.reverse,
-      //   };
-      // },
+      _computeOrderObj: function(queryParams) {
+        return {
+          orderedBy: queryParams.sort_by,
+          reverse: queryParams.reverse,
+        };
+      },
 
       // Returns an array with the header labels
       getHeadings: function() {
@@ -489,7 +498,7 @@
 
       // Sets the chosen filter value to the params, auto call API
       changeFilterValue: function(e) {
-        console.log('Filter value changed')
+        // console.log('Filter value changed');
         var key = e.model.item.filterName;
         var value = e.detail.selectedValues.value;
 
@@ -539,11 +548,9 @@
           return;
         }
         var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
-        backup.show_hidden = show;
+        backup.show_hidden = '' + show;
         this.set('route.__queryParams', backup);
-        // var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-        // backup.show_hidden = show;
-        // this.set('ajaxParams', backup);
+
       },
     });
   </script>

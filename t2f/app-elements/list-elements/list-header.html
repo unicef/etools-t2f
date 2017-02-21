@@ -49,7 +49,7 @@
     <div class="heading-row-header clearfix layout horizontal">
       <div class$="[[firstLeftMarginClass]]"></div>
       <template is="dom-repeat" items="[[metaData]]">
-        <div on-click="_clickOnLabel" class$="local-headings [[_headingClassGenerator(item, orderObj.orderedBy)]]">
+        <div on-click="_clickOnLabel" class$="local-headings [[_headingClassGenerator(item, route.__queryParams.sort_by)]]">
           <span class="textsec heading">[[item.label]]</span>
 
           <iron-icon
@@ -87,17 +87,26 @@
         },
         metaData: {
           type: Array,
-          computed: '_getMetaData(data, orderObj)',
+          computed: '_getMetaData(data, route.__queryParams, labelLib)',
           notify: true
         },
         firstLeftMarginClass: String,
+        labelLib: Object,
+        route: Object,
       },
 
-      _headingClassGenerator: function(item, orderedBy) {
+      recoverLibKey: function(str) {
+        var self = this;
+        return Object.keys(self.labelLib).filter(function(key) {
+          return self.labelLib[key] === str;
+        })[0];
+      },
 
+      _headingClassGenerator: function(item, sort_by) {
+        var self = this;
         var returnClass = 'w' + item.size;
 
-        if (item.label === orderedBy) {
+        if (item.label === this.recoverLibKey(sort_by)) {
           returnClass += ' act';
         }
 
@@ -110,33 +119,32 @@
 
       _clickOnLabel: function(event) {
 
-        var newOrderBy = event.model.item.label;
-        if (newOrderBy === 'Actions') { return; }
+        var newOrderBy = this.labelLib[event.model.item.label];
+        if (newOrderBy === 'unsortable') {
+          return;
+        }
 
-        if (newOrderBy === this.orderObj.orderedBy) {
-          this.set('orderObj', {
-            orderedBy: newOrderBy,
-            reverse: !this.orderObj.reverse
-          });
+        if (newOrderBy === this.route.__queryParams.sort_by) {
+          var oldParams = JSON.parse(JSON.stringify(this.route.__queryParams));
+          oldParams.reverse = oldParams.reverse === 'true' ? 'false' : 'true';
+          this.set('route.__queryParams', oldParams);
         } else {
-          this.set('orderObj', {
-            orderedBy: newOrderBy,
-            reverse: false
-          });
+          var oldParams = JSON.parse(JSON.stringify(this.route.__queryParams));
+          oldParams.sort_by = newOrderBy;
+          oldParams.reverse = 'false';
+          this.set('route.__queryParams', oldParams);
         }
       },
 
-      _getMetaData: function(data, orderObj) {
+      _getMetaData: function(data, params, labelLib) {
+        var self = this;
 
-        var metaData = data.map(function(el) {
-          el.down = !(orderObj.orderedBy === el.label && !orderObj.reverse);
-          el.up = !(orderObj.orderedBy === el.label && orderObj.reverse);
+        return data.map(function(el) {
+          var itIsTheSorted = self.recoverLibKey(params.sort_by) === el.label;
+          el.down = !(itIsTheSorted && !params.reverse);
+          el.up = !(itIsTheSorted && params.reverse);
           return el;
         });
-
-        console.log('metaData', metaData);
-
-        return metaData;
       },
 
       _hidden: function(hidden, rev, orderedBy) {
