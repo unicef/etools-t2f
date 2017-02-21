@@ -591,7 +591,7 @@
           }
         }
 
-        if (action.name === 'Save & submit') {
+        if (action.name === 'Save & Submit') {
           fieldSetValidation(['Cost Assignments']);
         }
 
@@ -600,6 +600,11 @@
           self._fieldSetSizeValidation('Itinerary', invalids);
           self._validateItineraryIntegrity(invalids);
         }
+
+        if (action.name === 'Save') {
+          // console.log(self.data);
+        }
+
         return invalids;
       },
 
