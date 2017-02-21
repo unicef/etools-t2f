@@ -50,8 +50,8 @@
           value="{{expense.amount}}"
           error-message="*number required"
           required$="[[computedPermission.amount.required]]"
-          auto-validate
-          starred>
+          auto-validate$="[[autoValidate]]"
+          starred$="[[computedPermission.amount.required]]">
         </paper-input>
 
         <etools-searchable-multiselection-menu label="Currency"
@@ -88,7 +88,7 @@
         currency: Object,
         autoValidate: {
           type: Boolean,
-          computed: '_computeAutoValidate(expense)'
+          computed: '_computeAutoValidate(expense.*)'
         },
         structure: {
           type: Object,
@@ -104,7 +104,8 @@
       },
 
       _computeAutoValidate: function(data) {
-        return data !== undefined && Object.keys(data).length > 0;
+        data = data.base;
+        return data !== undefined && Object.keys(data).length > 1;
       },
 
       behaviors: [et2fBehaviors.PermissionLayer],

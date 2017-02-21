@@ -47,7 +47,9 @@
 
       <et2f-header title="Action points"
         export-type="list"
+        show-export-button
         data="[[data]]"
+        export-list="[[exportList]]"
         export-params="[[ajaxParams]]"></et2f-header>
 
       <paper-card class="second-header horizontal layout center">
@@ -216,6 +218,15 @@
         usedFilters: {
           type: Array,
           value: []
+        },
+        exportList: {
+          type: Array,
+          value: [
+            {
+              name: 'Action Point Export',
+              endpoint: etoolsAppConfig.endpoints.et2fActionPointCSVListExport.url
+            }
+          ]
         }
       },
 

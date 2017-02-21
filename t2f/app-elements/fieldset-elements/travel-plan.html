@@ -260,7 +260,7 @@
         },
         currencyOptions: {
           type: Array,
-          computed: '_computeCurrencyOptions(structure.currencies, user.profile)',
+          computed: '_computeCurrencyOptions(structure.currencies, user, localCurrency)',
         },
         falseValue: {
           type: Boolean,
@@ -290,6 +290,9 @@
         taEligible: {
           type: Boolean,
           computed: '_computeTaEligible(user, baseDetails.traveler, baseDetails.international_travel)',
+        },
+        localCurrency: {
+          type: Object,
         }
       },
 
@@ -297,21 +300,17 @@
 
       observers: [
         '_valuesObserver(baseDetails.*)',
-        '_setDefaultUserValues(user, baseDetails.*, structure)'
+        '_setDefaultUserValues(user, baseDetails.*, structure, localCurrency)'
       ],
 
-      _setDefaultUserValues: function(user, dataChanged, structure) {
+      _setDefaultUserValues: function(user, dataChanged, structure, localCurrency) {
         var baseDetails = dataChanged.base;
         if (!baseDetails.currency) {
-          var userCountry = structure.countries.find(function(country) {
-            return country.value === user.profile.country;
-          });
-          var usd = structure.currencies.filter(function(curr) {
+          var usd = structure.currencies.find(function(curr) {
             return curr.short === 'USD';
-          })[0];
-          // As soon as backend provides a currency mappable to the user, change USD to that
-          baseDetails.currency = userCountry && userCountry.default_currency ?
-            userCountry.default_currency : usd;
+          });
+
+          baseDetails.currency = localCurrency ? localCurrency : usd;
         }
         if (!baseDetails.office) {
           baseDetails.office = structure.offices.find(function(office) {
@@ -408,15 +407,11 @@
           return actUser.value !== user.value;
         });
       },
-
-      // This makes the list of USD and the base travel currency
-      // TODO: later should be changed, because now it losts if saved with $
-      _computeCurrencyOptions: function(currencies, userProfile) {
+      _computeCurrencyOptions: function(currencies, user, localCurrency) {
         var optionsArr = currencies.filter(function(el) {
           return el.short === 'USD';
         });
-        //this is not working, it needs a new api and probably a variable name change but is a good placeholder
-        var localCurrency = userProfile.user_currency;
+
         if (localCurrency && localCurrency.short !== 'USD') {
           optionsArr.push(localCurrency);
         }

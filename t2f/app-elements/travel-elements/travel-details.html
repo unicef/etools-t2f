@@ -178,6 +178,7 @@
             base-details="{{data.baseDetails}}"
             permissions-matrix="[[travelPermissions.baseDetails]]"
             structure="[[structure]]"
+            local-currency="[[localCurrency]]"
             user="[[user]]">
           </travel-plan>
         </etools-repeatable-field-set>
@@ -346,7 +347,11 @@
         user: Object,
         defaultBusinessArea: {
           type: Object,
-          computed: '_computeDefaultBusinssArea(user, structure)'
+          computed: '_computeDefaultBusinessArea(user, structure)'
+        },
+        localCurrency: {
+          type: Object,
+          computed: '_computeLocalCurrency(defaultBusinessArea, structure)'
         },
         hideCancelNote: {
           type: Boolean,
@@ -374,22 +379,22 @@
           computed: '_computeSelectedExpensesType(data.expenses.*)'
         }
       },
-      _computeDefaultBusinssArea: function(user, structure) {
-        var userCountry = parseInt(user.profile.country, 10);
-        userCountry = structure.countries.find(function(country) {
-          return parseInt(country.value, 10) === userCountry;
+      _computeDefaultBusinessArea: function(user, structure) {
+        var userBusinessArea = structure.business_areas.find(function(ba) {
+          return ba.value === user.t2f.business_area;
         });
-
-        var userBa = userCountry && userCountry.business_area ?
-          userCountry.business_area : structure.business_areas[0].id;
-
-        var businessArea = structure.business_areas.find(function(ba) {
-          return parseInt(ba.id, 10) === parseInt(userBa, 10);
-        });
-
-        return businessArea;
+        if (!userBusinessArea) {
+          console.error('Data error, the user does not have a default business_area associated');
+        }
+        return userBusinessArea || {};
       },
 
+      _computeLocalCurrency: function(defaultBusinessArea, structure) {
+        var localCurrency = structure.currencies.find(function(curr) {
+            return curr.value === defaultBusinessArea.default_currency;
+          });
+         return localCurrency || false;
+      },
       _computeSelectedExpensesType: function(expensesChanged) {
         var baseArray = expensesChanged.base;
         if (baseArray) {
@@ -586,7 +591,7 @@
           }
         }
 
-        if (action.name === 'Save & submit') {
+        if (action.name === 'Save & Submit') {
           fieldSetValidation(['Cost Assignments']);
         }
 
@@ -595,6 +600,11 @@
           self._fieldSetSizeValidation('Itinerary', invalids);
           self._validateItineraryIntegrity(invalids);
         }
+
+        if (action.name === 'Save') {
+          // console.log(self.data);
+        }
+
         return invalids;
       },
 
