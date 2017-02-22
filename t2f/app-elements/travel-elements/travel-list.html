@@ -186,12 +186,7 @@
         },
         orderObj: {
           type: Object,
-          // value: {
-          //   orderedBy: this.route.__queryParams.sort_by,
-          //   reverse: this.route.__queryParams.reverse,
-          // },
           computed: '_computeOrderObj(route.__queryParams)',
-          // observer: '_changeParamsOrder',
         },
         searchString: {
           type: String,
