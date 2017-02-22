@@ -55,14 +55,14 @@
           <iron-icon
             class$="down-icon [[isActionsDownIconClass(item)]]"
             icon="icons:arrow-downward"
-            hidden$="[[_hidden(item.down, orderObj.reverse, orderObj.orderedBy)]]">
+            hidden$="[[_hidden(item.down, route.__queryParams.reverse, route.__queryParams.sort_by)]]">
           </iron-icon>
 
           <iron-icon
             class="up-icon"
             icon="icons:arrow-upward"
-            downhidden$="[[_hidden(item.down, orderObj.reverse, orderObj.orderedBy)]]"
-            hidden$="[[_hidden(item.up, orderObj.reverse, orderObj.orderedBy)]]">
+            downhidden$="[[_hidden(item.down, route.__queryParams.reverse, route.__queryParams.sort_by)]]"
+            hidden$="[[_hidden(item.up, route.__queryParams.reverse, route.__queryParams.sort_by)]]">
           </iron-icon>
 
         </div>
@@ -143,8 +143,8 @@
 
         return data.map(function(el) {
           var itIsTheSorted = self.recoverLibKey(params.sort_by) === el.label;
-          el.down = !(itIsTheSorted && !params.reverse);
-          el.up = !(itIsTheSorted && params.reverse);
+          el.down = !(itIsTheSorted && !(params.reverse === 'true'));
+          el.up = !(itIsTheSorted && params.reverse === 'true');
           return el;
         });
       },
