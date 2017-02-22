@@ -185,7 +185,6 @@
         return onLast ? 'textsec' : '';
       },
       itemsNrChanged: function(event, item) {
-        console.log('Number selected', item.item.innerText, typeof item.item.innerText);
         if (item.item.innerText !== this.route.__queryParams.page_size) {
           var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
           backup.page = '1';

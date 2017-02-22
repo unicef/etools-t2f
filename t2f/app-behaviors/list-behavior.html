@@ -19,7 +19,7 @@
         var keys2 = Object.keys(O2);
 
         if (keys1.length !== keys2.length) {
-          console.log('Length problem!', keys1, keys2);
+          // console.log('Length problem!', keys1, keys2);
           return false;
         }
 
@@ -28,7 +28,7 @@
           if (O1[keys[i]] == O2[keys[i]]) {
             continue;
           } else {
-            console.log('Diff @', keys[0], O1[keys[i]], O2[keys[i]]);
+            // console.log('Diff @', keys[0], O1[keys[i]], O2[keys[i]]);
             return false;
           }
         }
@@ -44,7 +44,7 @@
 
       defaultParams.sort_by = {
         'travel-list': 'reference_number',
-        'action-points-list': 'action_point',
+        'action-points-list': 'action_point_number',
         'invoices-list': 'reference_number',
       }[this.is];
 
@@ -59,7 +59,7 @@
         this.set('route.__queryParams', ret);
       }
 
-      console.info('SETTING AJAX PARAMS:', JSON.stringify(ret));
+      // console.info('SETTING AJAX PARAMS:', JSON.stringify(ret));
       return ret;
     },
 
@@ -73,6 +73,20 @@
       if (newValue.path.indexOf(componentName) > -1 || !(oldValue.path.indexOf(componentName))) {
        this._doRefreshData();
       }
+    },
+
+    _computePagesObj: function(params) {
+      return {
+        itemsPerPage: params.page_size,
+        page: params.page,
+      };
+    },
+
+    _computeOrderObj: function(params) {
+      return {
+        orderedBy: params.sort_by,
+        reverse: params.reverse,
+      };
     },
 
     // Refresh data by triggering automatic API call
@@ -134,22 +148,6 @@
       this.push('usedFilters', newFilter);
     },
 
-    // Sets the value of a dropdown, if got one from URL params
-    getDefaultFilterValue: function(item, params) {
-
-      if (params.hasOwnProperty(item.filterName)) {
-
-        var selected = this._computeFilters(this.structure).filter(function(filt) {
-          return filt.filterName === item.filterName;
-        })[0].selection.filter(function(sel) {
-          return sel.value = params[item.filterName];
-        })[0];
-
-        return selected;
-      }
-      return; //Undefined, so dropdown remains empty
-    },
-
     // Removes filter from the view
     removeFilter: function(e) {
 
@@ -171,6 +169,51 @@
 
     fillAvailableFilters: function(filters) {
       this.set('availableFilters', filters);
+    },
+
+    // Sets the filter/search/toggle parameters if got from URL
+    attached: function() {
+
+      var self = this;
+      var params = this.route.__queryParams;
+
+      if (this.is === 'travel-list') {
+        var toggled = params.show_hidden === 'true';
+        this.$['show-hidden-toggle'].checked = toggled;
+      }
+
+      var searchStr = params.search || '';
+      this.$['search-input'].value = searchStr;
+
+      var filters = this._computeFilters(this.structure);
+
+      // Init filters
+      filters.forEach(function(filt) {
+        var isPresent = params.hasOwnProperty(filt.filterName);
+        if (isPresent) {
+          var clickMockObj = {
+            model: {
+              item: filt,
+            },
+          };
+          self.addFilter(clickMockObj);
+        }
+      });
+
+      // Prefill filters
+      filters.forEach(function(filt) {
+        var isPresent = params.hasOwnProperty(filt.filterName);
+        if (isPresent) {
+          var selected = filt.selection.filter(function(sel) {
+            return sel.value == params[filt.filterName];
+          })[0];
+
+          self.async(function() {
+            var ssm = Polymer.dom(this.root).querySelector('#' + filt.filterName);
+            ssm.value = selected;
+          });
+        }
+      });
     },
 
   };

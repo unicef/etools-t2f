@@ -40,9 +40,9 @@
     <div class="background">
 
       <etools-ajax url="[[listEndPoint]]"
-          params="{{ajaxParams}}"
-          loading="{{listLoading}}"
-          on-success="handleListResponse">
+        params="{{ajaxParams}}"
+        loading="{{listLoading}}"
+        on-success="handleListResponse">
       </etools-ajax>
 
       <et2f-header title="Action points"
@@ -72,7 +72,8 @@
 
             <div class="layout horizontal">
 
-               <etools-searchable-multiselection-menu label="[[item.name]]" class="filter-dropdown"
+              <etools-searchable-multiselection-menu label="[[item.name]]" class="filter-dropdown"
+                id="[[item.filterName]]"
                 options="[[item.selection]]"
                 on-value-change="changeFilterValue"
                 placeholder="Select">
@@ -111,7 +112,9 @@
           id="list-header"
           data="[[headings]]"
           order-obj="{{orderObj}}"
-          first-left-margin-class="w20">
+          first-left-margin-class="w20"
+          route="{{route}}"
+          label-lib="{{labelLib}}">
         </list-header>
 
         <template is="dom-repeat" items="[[data]]">
@@ -125,10 +128,11 @@
         </template>
 
         <list-pagination
-            id="list-pagination"
-            maxnr="{{datalength}}"
-            pages="{{pages}}"
-            showing-results="{{showingResults}}">
+          id="list-pagination"
+          maxnr="{{datalength}}"
+          pages="{{pages}}"
+          route="{{route}}"
+          showing-results="{{showingResults}}">
         </list-pagination>
       </paper-card>
     </div>
@@ -174,19 +178,11 @@
         },
         pages: {
           type: Object,
-          value: {
-            itemsPerPage: 10,
-            page: 1
-          },
-          observer: '_changeParamsPages'
+          computed: '_computePagesObj(route.__queryParams)',
         },
         orderObj: {
           type: Object,
-          value: {
-            orderedBy: 'Action Point #',
-            reverse: true
-          },
-          observer: '_changeParamsOrder'
+          computed: '_computeOrderObj(route.__queryParams)',
         },
         searchString: {
           type: String,
@@ -195,13 +191,7 @@
         },
         ajaxParams: {
           type: Object,
-          value: {
-            sort_by: 'action_point',
-            reverse: true,
-            page: 1,
-            page_size: 10,
-            search: ''
-          }
+          computed: '_computeAjaxParams(route.__queryParams)',
         },
         listEndPoint: {
           type: String,
@@ -227,6 +217,21 @@
               endpoint: etoolsAppConfig.endpoints.et2fActionPointCSVListExport.url
             }
           ]
+        },
+        // Contains label to sort id mapping
+        labelLib: {
+          type: Object,
+          value: function() {
+            return {
+              'Action Point #': 'action_point_number',
+              'Trip Reference #': 'trip_reference_number',
+              'Description': 'description',
+              'Due Date': 'due_date',
+              'Responsible Person': 'person_responsible',
+              'Assigned By': 'assigned_by',
+              'Status': 'status',
+            };
+          }
         }
       },
 
@@ -262,17 +267,6 @@
             'label': 'Status'
           }
         ];
-      },
-
-      // Mapping of Labels / API names
-      labelLib: {
-        'Action Point #': 'action_point_number',
-        'Trip Reference #': 'trip_reference_number',
-        'Description': 'description',
-        'Due Date': 'due_date',
-        'Responsible Person': 'person_responsible',
-        'Assigned By': 'assigned_by',
-        'Status': 'status',
       },
 
       // Aggregating filters and collections into form useable by view
@@ -314,7 +308,6 @@
 
       // Sets the chosen filter value to the params, auto call API
       changeFilterValue: function(e) {
-
         var key = e.model.item.filterName;
         var value = e.detail.selectedValues.value;
 
@@ -324,9 +317,12 @@
           })[0].apiValue;
         }
 
-        var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
-        oldParams[key] = value;
-        this.set('ajaxParams', oldParams);
+        // URL based default setting shouldnt trigger refresh
+        if (this.route.__queryParams[key] !== value) {
+          var oldParams = JSON.parse(JSON.stringify(this.route.__queryParams));
+          oldParams[key] = value;
+          this.set('route.__queryParams', oldParams);
+        }
       },
 
       // Mapping data to the view

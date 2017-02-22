@@ -71,7 +71,7 @@
             <div class="layout horizontal">
 
               <etools-searchable-multiselection-menu label="[[item.name]]" class="filter-dropdown"
-                value="[[getDefaultFilterValue(item, route.__queryParams)]]"
+                id="[[item.filterName]]"
                 options="[[item.selection]]"
                 on-value-change="changeFilterValue"
                 placeholder="Select">
@@ -239,20 +239,6 @@
             };
           },
         },
-      },
-
-      _computePagesObj: function(params) {
-        return {
-          itemsPerPage: params.page_size,
-          page: params.page,
-        };
-      },
-
-      _computeOrderObj: function(queryParams) {
-        return {
-          orderedBy: queryParams.sort_by,
-          reverse: queryParams.reverse,
-        };
       },
 
       // Returns an array with the header labels
@@ -553,30 +539,6 @@
         this.set('route.__queryParams', backup);
       },
 
-      // Sets the filter/search/toggle parameters if got from URL
-      ready: function() {
-        var self = this;
-        var params = this.route.__queryParams;
-
-        var toggled = params.show_hidden === 'true';
-        this.$['show-hidden-toggle'].checked = toggled;
-
-        var searchStr = params.search || '';
-        this.$['search-input'].value = searchStr;
-
-        // Filter inits
-        this._computeFilters(this.structure).forEach(function(filt) {
-          var isPresent = params.hasOwnProperty(filt.filterName);
-          if (isPresent) {
-            var clickMockObj = {
-              model: {
-                item: filt,
-              },
-            };
-            self.addFilter(clickMockObj);
-          }
-        });
-      },
     });
   </script>
 </dom-module>
