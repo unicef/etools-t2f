@@ -192,8 +192,11 @@
           this.set('route.__queryParams', backup);
         }
       },
-      ready: function() {
-        this.$.selecta.selected = this.rowSelection.indexOf(this.route.__queryParams.page_size);
+      attached: function() {
+        var self = this;
+        this.async(function() {
+          self.$.selecta.selected = this.rowSelection.indexOf(this.route.__queryParams.page_size);
+        });
       },
     });
   </script>
