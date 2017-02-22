@@ -19,16 +19,15 @@
         var keys2 = Object.keys(O2);
 
         if (keys1.length !== keys2.length) {
-          // console.log('Length problem!', keys1, keys2);
           return false;
         }
 
-        keys = _.union(keys1, keys2);
-        for (i = 0; i < keys.length; i++) {
+        var keys = _.union(keys1, keys2);
+        for (var i = 0; i < keys.length; i++) {
+          /* jshint eqeqeq: false */
           if (O1[keys[i]] == O2[keys[i]]) {
             continue;
           } else {
-            // console.log('Diff @', keys[0], O1[keys[i]], O2[keys[i]]);
             return false;
           }
         }
@@ -202,6 +201,7 @@
         var isPresent = params.hasOwnProperty(filt.filterName);
         if (isPresent) {
           var selected = filt.selection.filter(function(sel) {
+            /* jshint eqeqeq: false */
             return sel.value == params[filt.filterName];
           })[0];
 

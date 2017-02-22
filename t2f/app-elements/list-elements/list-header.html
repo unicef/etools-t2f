@@ -124,13 +124,14 @@
           return;
         }
 
+        var oldParams;
         if (newOrderBy === this.route.__queryParams.sort_by) {
-          var oldParams = JSON.parse(JSON.stringify(this.route.__queryParams));
+          oldParams = JSON.parse(JSON.stringify(this.route.__queryParams));
           oldParams.reverse = oldParams.reverse === 'true' ? 'false' : 'true';
           oldParams.page = 1;
           this.set('route.__queryParams', oldParams);
         } else {
-          var oldParams = JSON.parse(JSON.stringify(this.route.__queryParams));
+          oldParams = JSON.parse(JSON.stringify(this.route.__queryParams));
           oldParams.sort_by = newOrderBy;
           oldParams.reverse = 'false';
           oldParams.page = 1;
@@ -143,7 +144,7 @@
 
         return data.map(function(el) {
           var itIsTheSorted = self.recoverLibKey(params.sort_by) === el.label;
-          el.down = !(itIsTheSorted && !(params.reverse === 'true'));
+          el.down = !(itIsTheSorted && params.reverse === 'false');
           el.up = !(itIsTheSorted && params.reverse === 'true');
           return el;
         });
