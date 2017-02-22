@@ -79,6 +79,7 @@
             <div class="layout horizontal">
 
               <etools-searchable-multiselection-menu label="[[item.name]]"
+                id="[[item.filterName]]"
                 class="filter-dropdown"
                 options="[[item.selection]]"
                 on-value-change="changeFilterValue"
@@ -119,6 +120,8 @@
           id="list-header"
           data="[[headings]]"
           order-obj="{{orderObj}}"
+          route="{{route}}"
+          label-lib="{{labelLib}}"
           first-left-margin-class="w60">
         </list-header>
 
@@ -135,6 +138,7 @@
           id="list-pagination"
           maxnr="{{datalength}}"
           pages="{{pages}}"
+          route="{{route}}"
           showing-results="{{showingResults}}">
         </list-pagination>
       </paper-card>
@@ -182,19 +186,11 @@
         },
         pages: {
           type: Object,
-          value: {
-            itemsPerPage: 10,
-            page: 1
-          },
-          observer: '_changeParamsPages'
+          computed: '_computePagesObj(route.__queryParams)',
         },
         orderObj: {
           type: Object,
-          value: {
-            orderedBy: 'Reference #',
-            reverse: true
-          },
-          observer: '_changeParamsOrder'
+          computed: '_computeOrderObj(route.__queryParams)',
         },
         searchString: {
           type: String,
@@ -207,13 +203,7 @@
         },
         ajaxParams: {
           type: Object,
-          value: {
-            sort_by: 'reference_number',
-            reverse: true,
-            page: 1,
-            page_size: 10,
-            search: ''
-          }
+          computed: '_computeAjaxParams(route.__queryParams)',
         },
         listEndPoint: {
           type: String,
@@ -242,8 +232,24 @@
         showExportButton: {
           type: Boolean,
           value: false
+        },
+        // Contains label to sort id mapping
+        labelLib: {
+          type: Object,
+          value: function() {
+            return {
+              'Reference #': 'id',
+              'Vendor number': 'vendor_number',
+              'TA Number': 'ta_number',
+              'Status': 'status',
+              'Currency': 'currency',
+              'Amount': 'amount',
+              'VISION Fi Doc': 'vision_fi_id',
+            };
+          }
         }
       },
+
       // Returns an array with the header labels
       getHeadings: function() {
         return [
@@ -276,17 +282,6 @@
             'label': 'VISION FI Doc'
           }
         ];
-      },
-
-      // Mapping of Labels / API names
-      labelLib: {
-        'Reference #': 'id',
-        'Vendor number': 'vendor_number',
-        'TA Number': 'ta_number',
-        'Status': 'status',
-        'Currency': 'currency',
-        'Amount': 'amount',
-        'VISION Fi Doc': 'vision_fi_id'
       },
 
       // Sets export properties if FFP
@@ -355,9 +350,12 @@
           })[0].apiValue;
         }
 
-        var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
-        oldParams[key] = value;
-        this.set('ajaxParams', oldParams);
+        // URL based default setting shouldnt trigger refresh
+        if (this.route.__queryParams[key] !== value) {
+          var oldParams = JSON.parse(JSON.stringify(this.route.__queryParams));
+          oldParams[key] = value;
+          this.set('route.__queryParams', oldParams);
+        }
       },
 
       // Mapping data to the view

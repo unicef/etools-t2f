@@ -45,7 +45,7 @@
       defaultParams.sort_by = {
         'travel-list': 'reference_number',
         'action-points-list': 'action_point_number',
-        'invoices-list': 'reference_number',
+        'invoices-list': 'id',
       }[this.is];
 
       if (this.is === 'travel-list') {
@@ -121,9 +121,6 @@
       var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
       backup.search = searchStr;
       this.set('route.__queryParams', backup);
-      // var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-      // backup.search = searchStr;
-      // this.set('ajaxParams', backup);
     },
 
     // Stiches the string "0-10 of 35 trips" together
