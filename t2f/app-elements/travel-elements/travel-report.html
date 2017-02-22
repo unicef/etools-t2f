@@ -66,23 +66,26 @@
     <div class="container layout horizontal">
 
       <paper-material class="flex" elevation="1">
+        <form
+          is="iron-form"
+          id="report_form">
 
-        <div class="card-heading">
-          Trip Report
-        </div>
+          <div class="card-heading">
+            Trip Report
+          </div>
 
-        <paper-textarea
-          label="Add your report here*"
-          char-counter
-          maxlength="200000"
-          value="{{reportString}}"
-          disabled="[[!permissions.report.edit]]"
-          hidden$="[[!permissions.report.view]]">
-        </paper-textarea>
-
-        <paper-button raised on-click="saveReport" disabled="[[!permission.report.edit]]">
-          Save report
-        </paper-button>
+          <paper-textarea
+            label="Add your report here"
+            char-counter
+            maxlength="200000"
+            required
+            starred
+            auto-validate
+            value="{{reportString}}"
+            disabled="[[!permissions.report.edit]]"
+            hidden$="[[!permissions.report.view]]">
+          </paper-textarea>
+        </form>
       </paper-material>
     </div>
 
@@ -128,8 +131,6 @@
           type: Object,
           notify: true
         },
-        status: String,
-        userRoles: String,
         structure: Object,
         permissions: {
           type: Object,
@@ -139,10 +140,6 @@
 
       _setReportToData: function() {
         this.set('data.report', this.reportString);
-      },
-
-      saveReport: function() {
-        this.fire('form-action', {endPoint: 'save'});
       },
       doValidate: function(action) {
         var invalids = [];
@@ -155,6 +152,12 @@
         });
         if (!result) {
           invalids.push('Action Points');
+        }
+        if (action.endPoint === 'complete') {
+          result = this.$.report_form.validate();
+          if (!result) {
+            invalids.push('Trip Report');
+          }
         }
         return invalids;
       }

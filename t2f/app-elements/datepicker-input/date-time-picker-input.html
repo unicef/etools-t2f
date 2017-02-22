@@ -247,7 +247,8 @@
         internalDate.hour(this.hour);
         internalDate.minute(this.minute);
         minDate = moment(minDate);
-        return minDate.isAfter(internalDate);
+        internalDate.millisecond(999);
+        return minDate.isSameOrAfter(internalDate);
 
       },
       _computeShowMaxDateWarning: function(maxDate, internalDate, hour, minute) {
@@ -255,7 +256,7 @@
         internalDate.hour(this.hour);
         internalDate.minute(this.minute);
         maxDate = moment(maxDate);
-        return maxDate.isBefore(internalDate);
+        return maxDate.isSameOrBefore(internalDate);
       },
       _computeDisabledOkButton: function(minDateWarning, maxDateWarning) {
         return minDateWarning || maxDateWarning;

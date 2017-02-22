@@ -173,7 +173,7 @@
         <div class="dialog-intro-text">Please select the driver to share this travel plans itinerary with</div>
 
         <etools-searchable-multiselection-menu label="Select traveler" class="filter-dropdown"
-        options="[[users]]"
+        options="[[drivers]]"
         on-value-change="addDriverSetTraveler">
         </etools-searchable-multiselection-menu>
 
@@ -264,6 +264,7 @@
         },
         offices: Object,
         sections: Object,
+        drivers: Array,
         users: {
           type: Object
         },

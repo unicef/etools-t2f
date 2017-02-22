@@ -48,13 +48,17 @@
         <template is="dom-repeat" items="[[_limitErrorList(errorList, limit)]]">
           <paper-icon-item>
             <iron-icon icon="warning" item-icon></iron-icon>
-            <div class="flex">{{item.error}} : {{item.fieldSet}} / {{item.field}}</div>
-            <iron-icon icon="arrow-forward" class="arrow" on-tap="_goToElement"></iron-icon>
+            <div class="flex">
+            <span hidden$="[[!item.error]]">{{item.error}}</span>
+            <span hidden$="[[!item.fieldSet]]"> : {{item.fieldSet}}</span>
+            <span hidden$="[[!item.field]]"> / {{item.field}} </span>
+            </div>
+            <iron-icon icon="arrow-forward" hidden$="[[!item.fieldSet]]" class="arrow" on-tap="_goToElement"></iron-icon>
           </paper-icon-item>
         </template>
         <paper-item on-tap="_showHideFullList" class="show-more" hidden$="[[showListExtension]]">
-          <div hidden$="[[hideShow]]">Show list ({{errorList.length}})</div>
-          <div hidden$="[[!hideShow]]">Hide list ({{errorList.length}})</div>
+          <div hidden$="[[hideShow]]">Show more ({{errorList.length}})</div>
+          <div hidden$="[[!hideShow]]">Hide ({{errorList.length}})</div>
         </paper-item>
       </paper-listbox>
     </paper-material>
@@ -65,11 +69,11 @@
       is: 'form-errors',
       properties: {
         errors: {
-          type: Object,
-          value: {}
+          type: Object
         },
         showElement: {
           type: Boolean,
+          value: false,
           computed: '_computeShow(errorList)'
         },
         errorList: {
@@ -100,42 +104,39 @@
         return errorList.length > 0;
       },
       _computeErrorList: function(errors) {
-        /**
-         * backend 400 comes with a json object containing the reason for the error
-         * this object is in this form:
-         *  {"activities":[
-         *    {
-         *      "date":["This field is required."],
-         *      "partner":["This field is required."]
-         *    }
-         *  }
-         *   this function convert it in the flat form needed by the UX
-         *
-         */
-
         var errorList = [];
         if (errors) {
-          Object.keys(errors).forEach(function(category) {
-              errors[category].forEach(function(field) {
-                if (!(field instanceof Object)) {
-                  errorList.push({
-                    fieldSet: category,
-                    field: '',
-                    error: field
-                  });
-                } else {
-                  Object.keys(field).forEach(function(errors) {
-                    field[errors].forEach(function(message) {
-                      errorList.push({
-                        fieldSet: category,
-                        field: errors,
-                        error: message
+          if (errors instanceof Array) {
+            errors.forEach(function(error) {
+              errorList.push({
+                fieldSet: '',
+                field: '',
+                error: error
+              });
+            });
+          } else {
+            Object.keys(errors).forEach(function(category) {
+                errors[category].forEach(function(field) {
+                  if (!(field instanceof Object)) {
+                    errorList.push({
+                      fieldSet: category,
+                      field: '',
+                      error: field
+                    });
+                  } else {
+                    Object.keys(field).forEach(function(errors) {
+                      field[errors].forEach(function(message) {
+                        errorList.push({
+                          fieldSet: category,
+                          field: errors,
+                          error: message
+                        });
                       });
                     });
-                  });
-                }
-              });
-          });
+                  }
+                });
+            });
+          }
         }
         return errorList;
       },
@@ -143,7 +144,8 @@
         return errorList.slice(0, limit);
       },
       _showHideFullList: function() {
-        this.limit = this.limit === 3 ? this.errorList.length : 3;
+        var limit = this.limit === 3 ? this.errorList.length : 3;
+        this.set('limit', limit);
       },
       _computeHideShow: function(limit) {
         return limit !== 3;

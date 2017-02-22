@@ -41,7 +41,15 @@
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
-      <etools-ajax endpoint="[[groupsEndpoint]]"
+    <etools-ajax endpoint="[[usersEndpoint]]"
+      on-success="_handleDrivers"
+      loading="{{driversLoading}}"
+      params="[[driversEndpointParams]]"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
+    <etools-ajax endpoint="[[groupsEndpoint]]"
       on-success="_handleGroups"
       loading="{{groupsLoading}}"
       on-unauthorized="_redirectToLogin"
@@ -62,11 +70,12 @@
         sectionsLoading: Boolean,
         officesLoading: Boolean,
         t2fStaticDataLoading: Boolean,
+        driversLoading: Boolean,
         structure: {
           type: Object,
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
-          ' officesData, t2fStaticData, usersData, groupsData)'
+          ' officesData, t2fStaticData, usersData, groupsData, driversData)'
         },
         staticData: {
           type: Object,
@@ -81,7 +90,7 @@
           type: Boolean,
           notify: true,
           computed: '_computeLoading(staticDataLoading, sectionsLoading,' +
-          ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading)'
+          ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading, driversLoading)'
         },
         staticDataEndpoint: {
           type: String,
@@ -106,6 +115,9 @@
         usersEndpointParams: {
           value: {verbosity: 'minimal'}
         },
+        driversEndpointParams: {
+          value: {verbosity: 'minimal', drivers: 'true'}
+        },
         groupsEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.groups
@@ -117,7 +129,7 @@
       _sortByName: function(a, b) {
         return a.name.localeCompare(b.name);
       },
-      _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users, groups) {
+      _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users, groups, driversLoading) {
         var result = false;
         for (var i = 0; i < arguments.length; ++i) {
            result = result || arguments[i];
@@ -166,6 +178,15 @@
         }
         this.set('usersData', data);
       },
+      _handleDrivers: function(e, data) {
+        if (!data.parsed) {
+          data = {
+            drivers: data
+          };
+          data = this._parseData(data);
+        }
+        this.set('driversData', data);
+      },
       _handleGroups: function(e, data) {
         if (!data.parsed) {
           data = {
@@ -175,7 +196,7 @@
         }
         this.set('groupsData', data);
       },
-      _generateStructure: function(static, sections, offices, t2fStaticData, users, groups) {
+      _generateStructure: function(static, sections, offices, t2fStaticData, users, groups, drivers) {
           var data = static;
           data.sections = sections.sections;
           data.offices = offices.offices;
@@ -186,6 +207,7 @@
           data.action_point_statuses = t2fStaticData.action_point_statuses;
           data.users = users.users;
           data.groups = groups.groups;
+          data.drivers = drivers.drivers;
           Object.freeze(data);
           return data;
       },
@@ -289,8 +311,12 @@
           },
           users: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10),
-              profile: obj.profile, groups: obj.groups};
+              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
+            });
+          },
+          drivers: function(key) {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
             });
           },
           dsa_regions: function(key) {
