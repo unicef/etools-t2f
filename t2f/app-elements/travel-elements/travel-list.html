@@ -55,12 +55,13 @@
 
           <!-- OMNIBOX -->
           <paper-input
-              inline
-              id="search-input"
-              label="Keywords"
-              on-keydown="searchKeyDown"
-              always-float-label
-              placeholder="Type and search">
+            inline
+            id="search-input"
+            label="Keywords"
+            on-keydown="searchKeyDown"
+            always-float-label
+            placeholder="Type and search">
+
             <iron-icon icon="search" prefix></iron-icon>
           </paper-input>
 
@@ -70,6 +71,7 @@
             <div class="layout horizontal">
 
               <etools-searchable-multiselection-menu label="[[item.name]]" class="filter-dropdown"
+                value="[[getDefaultFilterValue(item, route.__queryParams)]]"
                 options="[[item.selection]]"
                 on-value-change="changeFilterValue"
                 placeholder="Select">
@@ -496,7 +498,6 @@
 
       // Sets the chosen filter value to the params, auto call API
       changeFilterValue: function(e) {
-        // console.log('Filter value changed');
         var key = e.model.item.filterName;
         var value = e.detail.selectedValues.value;
 
@@ -512,12 +513,12 @@
           })[0].label;
         }
 
-        var oldParams = JSON.parse(JSON.stringify(this.route.__queryParams));
-        oldParams[key] = value;
-        this.set('route.queryParams', oldParams);
-        // var oldParams = JSON.parse(JSON.stringify(this.ajaxParams));
-        // oldParams[key] = value;
-        // this.set('ajaxParams', oldParams);
+        // URL based default setting shouldnt trigger refresh
+        if (this.route.__queryParams[key] !== value) {
+          var oldParams = JSON.parse(JSON.stringify(this.route.__queryParams));
+          oldParams[key] = value;
+          this.set('route.__queryParams', oldParams);
+        }
       },
 
       // Mapping data to the view
@@ -549,11 +550,31 @@
         var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
         backup.show_hidden = '' + show;
         this.set('route.__queryParams', backup);
-
       },
+
+      // Sets the filter/search/toggle parameters if got from URL
       ready: function() {
-        var val = this.route.__queryParams.show_hidden === 'true' ? true : false;
-        this.$['show-hidden-toggle'].checked = val;
+        var self = this;
+        var params = this.route.__queryParams;
+
+        var toggled = params.show_hidden === 'true';
+        this.$['show-hidden-toggle'].checked = toggled;
+
+        var searchStr = params.search || '';
+        this.$['search-input'].value = searchStr;
+
+        // Filter inits
+        this._computeFilters(this.structure).forEach(function(filt) {
+          var isPresent = params.hasOwnProperty(filt.filterName);
+          if (isPresent) {
+            var clickMockObj = {
+              model: {
+                item: filt,
+              },
+            };
+            self.addFilter(clickMockObj);
+          }
+        });
       },
     });
   </script>

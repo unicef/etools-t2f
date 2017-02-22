@@ -134,6 +134,22 @@
       this.push('usedFilters', newFilter);
     },
 
+    // Sets the value of a dropdown, if got one from URL params
+    getDefaultFilterValue: function(item, params) {
+
+      if (params.hasOwnProperty(item.filterName)) {
+
+        var selected = this._computeFilters(this.structure).filter(function(filt) {
+          return filt.filterName === item.filterName;
+        })[0].selection.filter(function(sel) {
+          return sel.value = params[item.filterName];
+        })[0];
+
+        return selected;
+      }
+      return; //Undefined, so dropdown remains empty
+    },
+
     // Removes filter from the view
     removeFilter: function(e) {
 
