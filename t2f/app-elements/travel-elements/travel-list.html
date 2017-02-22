@@ -35,9 +35,9 @@
     <div class="background">
 
       <etools-ajax url="[[listEndPoint]]"
-          params="{{ajaxParams}}"
-          loading="{{listLoading}}"
-          on-success="handleListResponse">
+        params="{{ajaxParams}}"
+        loading="{{listLoading}}"
+        on-success="handleListResponse">
       </etools-ajax>
 
       <et2f-header title="List of Trips"
@@ -536,7 +536,8 @@
 
       // Toggles showing hiddens
       _changeShowHidden: function() {
-        this.set('showHidden', !this.showHidden);
+        var val = this.route.__queryParams.show_hidden === 'true' ? 'false' : 'true';
+        this.set('showHidden', val);
       },
 
       // Handles param changing on hidden toggled
@@ -549,6 +550,10 @@
         backup.show_hidden = '' + show;
         this.set('route.__queryParams', backup);
 
+      },
+      ready: function() {
+        var val = this.route.__queryParams.show_hidden === 'true' ? true : false;
+        this.$['show-hidden-toggle'].checked = val;
       },
     });
   </script>
