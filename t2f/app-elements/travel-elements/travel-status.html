@@ -248,11 +248,12 @@
 
               <div class="vertline flex"></div>
 
-              <div class="statuscont">
+              <div class$="statuscont [[_computeStatusClass('Certified', status, 2)]]">
                 <div class="circlenr">
-                  <span>4</span>
+                  <span class$="statuscont [[_computeStatusClass('Certified', status, 2)]]">4</span>
+                  <iron-icon class$="[[_computeStatusClass('Certified', status, 2)]]" icon="icons:done"></iron-icon>
                 </div>
-                <span class="status">Completed</span>
+                <span class="status">Certified</span>
               </div>
             </div>
 
@@ -346,7 +347,8 @@
         'Certification needed',
         'Certification submitted',
         'Certification rejected',
-        'Certification approved'
+        'Certification approved',
+        'Certified'
       ],
 
       _parseData: function(changed) {
