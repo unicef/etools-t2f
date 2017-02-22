@@ -79,6 +79,8 @@
     _doRefreshData: function() {
 
       console.warn('TODO: refresh logic!');
+      // this.notifyPath('route.__queryParams');
+
       // var backup = this.ajaxParams;
       // this.set('ajaxParams', {});
       // this.set('ajaxParams', backup);
@@ -108,18 +110,6 @@
       // var backup = JSON.parse(JSON.stringify(this.ajaxParams));
       // backup.search = searchStr;
       // this.set('ajaxParams', backup);
-    },
-
-    // Handle pagination change, auto API call
-    _changeParamsPages: function(pages, old) {
-
-      if (typeof old === 'undefined') {
-        return;
-      }
-      var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
-      backup.page = pages.page;
-      backup.page_size = pages.itemsPerPage;
-      this.set('route.__queryParams', backup);
     },
 
     // Stiches the string "0-10 of 35 trips" together

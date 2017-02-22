@@ -136,6 +136,7 @@
           id="list-pagination"
           maxnr="{{datalength}}"
           pages="{{pages}}"
+          route="{{route}}"
           showing-results="{{showingResults}}">
         </list-pagination>
       </paper-card>
@@ -178,11 +179,7 @@
         },
         pages: {
           type: Object,
-          value: {
-            itemsPerPage: 10,
-            page: 1
-          },
-          observer: '_changeParamsPages'
+          computed: '_computePagesObj(route.__queryParams)',
         },
         orderObj: {
           type: Object,
@@ -241,6 +238,12 @@
         },
       },
 
+      _computePagesObj: function(params) {
+        return {
+          itemsPerPage: params.page_size,
+          page: params.page,
+        };
+      },
 
       _computeOrderObj: function(queryParams) {
         return {

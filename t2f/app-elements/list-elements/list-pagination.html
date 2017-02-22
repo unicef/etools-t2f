@@ -72,6 +72,7 @@
         horizontal-align="right">
 
         <paper-listbox
+          id="selecta"
           class="dropdown-content"
           on-iron-select="itemsNrChanged"
           selected="0">
@@ -117,9 +118,12 @@
 
   <script>
     Polymer({
+
       is: 'list-pagination',
+
       properties: {
         maxnr: Number,
+        route: Object,
         pages: {
           type: Object,
           notify: true
@@ -134,50 +138,44 @@
         },
         rowSelection: {
           type: Array,
-          value: [10, 25, 50, 100]
+          value: ['10', '25', '50', '100']
         },
         showingResults: {
           type: String
         }
       },
       _onFirst: function(page, itemsPerPage, maxnr) {
-
-        return page === 1;
+        return page === '1';
       },
       _onLast: function(page, itemsPerPage, maxnr) {
-
-        return page === Math.ceil(maxnr / itemsPerPage);
+        return page === '' + Math.ceil(maxnr / itemsPerPage);
       },
       goToLeft: function() {
         if (!this.onFirst) {
-          this.set('pages', {
-            page: this.pages.page - 1,
-            itemsPerPage: this.pages.itemsPerPage
-          });
+          var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
+          backup.page = '' + (+this.pages.page - 1);
+          this.set('route.__queryParams', backup);
         }
       },
       goToRight: function() {
         if (!this.onLast) {
-          this.set('pages', {
-            page: this.pages.page + 1,
-            itemsPerPage: this.pages.itemsPerPage
-          });
+          var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
+          backup.page = '' + (+this.pages.page + 1);
+          this.set('route.__queryParams', backup);
         }
       },
       goToFirst: function() {
-        if (this.pages.page !== 1) {
-          this.set('pages', {
-            page: 1,
-            itemsPerPage: this.pages.itemsPerPage
-          });
+        if (this.pages.page !== '1') {
+          var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
+          backup.page = '1';
+          this.set('route.__queryParams', backup);
         }
       },
       goToLast: function() {
-        if (this.pages.page !== Math.ceil(this.maxnr / this.pages.itemsPerPage)) {
-          this.set('pages', {
-            page: Math.ceil(this.maxnr / this.pages.itemsPerPage),
-            itemsPerPage: this.pages.itemsPerPage
-          });
+        if (this.pages.page !== '' + Math.ceil(this.maxnr / this.pages.itemsPerPage)) {
+          var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
+          backup.page = '' + Math.ceil(this.maxnr / this.pages.itemsPerPage);
+          this.set('route.__queryParams', backup);
         }
       },
       _hollowFirst: function(onFirst) {
@@ -187,12 +185,17 @@
         return onLast ? 'textsec' : '';
       },
       itemsNrChanged: function(event, item) {
-
-        this.set('pages', {
-          page: 1,
-          itemsPerPage: +item.item.innerText
-        });
-      }
+        console.log('Number selected', item.item.innerText, typeof item.item.innerText);
+        if (item.item.innerText !== this.route.__queryParams.page_size) {
+          var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
+          backup.page = '1';
+          backup.page_size = item.item.innerText;
+          this.set('route.__queryParams', backup);
+        }
+      },
+      ready: function() {
+        this.$.selecta.selected = this.rowSelection.indexOf(this.route.__queryParams.page_size);
+      },
     });
   </script>
 </dom-module>
