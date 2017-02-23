@@ -147,10 +147,6 @@
       behaviors: [ListBehavior],
 
       properties: {
-        route: {
-          type: Object,
-          observer: '_routeObserver'
-        },
         data: {
           type: Array,
           value: []
@@ -191,7 +187,7 @@
         },
         ajaxParams: {
           type: Object,
-          computed: '_computeAjaxParams(route.__queryParams)',
+          computed: '_computeAjaxParams(route)',
         },
         listEndPoint: {
           type: String,

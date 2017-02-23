@@ -158,10 +158,6 @@
           type: Array,
           value: []
         },
-        route: {
-          type: Object,
-          observer: '_routeObserver'
-        },
         structure: {
           type: Object
         },
@@ -203,7 +199,7 @@
         },
         ajaxParams: {
           type: Object,
-          computed: '_computeAjaxParams(route.__queryParams)',
+          computed: '_computeAjaxParams(route)',
         },
         listEndPoint: {
           type: String,

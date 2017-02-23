@@ -5,15 +5,11 @@
   var ListBehavior = {
 
     properties: {
-
-      route: {
-        type: Object,
-        observer: '_routeObserver',
-      },
+      route: Object,
     },
 
     // Computes the ajax parameters from the URL params & the default ones
-    _computeAjaxParams: function(UrlParams) {
+    _computeAjaxParams: function(route) {
       function shallowEqual(O1, O2) {
         var keys1 = Object.keys(O1);
         var keys2 = Object.keys(O2);
@@ -21,6 +17,7 @@
         if (keys1.length !== keys2.length) {
           return false;
         }
+
 
         var keys = _.union(keys1, keys2);
         for (var i = 0; i < keys.length; i++) {
@@ -34,43 +31,35 @@
         return true;
       }
 
-      var defaultParams = {
-        reverse: 'true',
-        page: '1',
-        page_size: '10',
-        search: '',
-      };
+      // If the params are for another list, can run a lot!
+      if (route.path.indexOf(this.is) < 0) {
 
-      defaultParams.sort_by = {
-        'travel-list': 'reference_number',
-        'action-points-list': 'action_point_number',
-        'invoices-list': 'id',
-      }[this.is];
+        return this.ajaxParams;
 
-      if (this.is === 'travel-list') {
-        defaultParams.show_hidden = 'false';
-      }
+      } else {
 
-      var ret = _.merge(defaultParams, UrlParams);
+        var defaultParams = {
+          reverse: 'true',
+          page: '1',
+          page_size: '10',
+          search: '',
+        };
+        defaultParams.sort_by = {
+          'travel-list': 'reference_number',
+          'action-points-list': 'action_point_number',
+          'invoices-list': 'id',
+        }[this.is];
+        if (this.is === 'travel-list') {
+          defaultParams.show_hidden = 'false';
+        }
 
-      if (!shallowEqual(ret, UrlParams)) {
-        console.warn('this should only happen on list startup!!!');
-        this.set('route.__queryParams', ret);
-      }
+        var ret = _.merge(defaultParams, route.__queryParams);
 
-      // console.info('SETTING AJAX PARAMS:', JSON.stringify(ret));
-      return ret;
-    },
+        if (!shallowEqual(ret, route.__queryParams)) {
+          this.set('route.__queryParams', ret);
+        }
 
-    // If the old route could have change the content, refresh data
-    _routeObserver: function(newValue, oldValue) {
-
-      var componentName = this.is;
-      if (!oldValue || !newValue || !oldValue.path || !newValue.path) {
-        return;
-      }
-      if (newValue.path.indexOf(componentName) > -1 || !(oldValue.path.indexOf(componentName))) {
-       this._doRefreshData();
+        return ret;
       }
     },
 
@@ -86,17 +75,6 @@
         orderedBy: params.sort_by,
         reverse: params.reverse,
       };
-    },
-
-    // Refresh data by triggering automatic API call
-    _doRefreshData: function() {
-
-      console.warn('TODO: refresh logic!');
-      // this.notifyPath('route.__queryParams');
-
-      // var backup = this.ajaxParams;
-      // this.set('ajaxParams', {});
-      // this.set('ajaxParams', backup);
     },
 
     // Changes the searchString prop only if it was "entered"
