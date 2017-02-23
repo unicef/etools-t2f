@@ -40,6 +40,12 @@ var PDFBehavior = {
       return amount;
     }
   },
+  _printNested: function(base, key) {
+    if (!base) {
+      return '';
+    }
+    return base[key];
+  },
   _printCountryFromStr: function(str) {
     var splat = str.split(' - ');
     if (splat.length === 2) {

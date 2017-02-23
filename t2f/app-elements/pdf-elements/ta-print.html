@@ -79,7 +79,7 @@
         var dataToPrint = [];
 
         var print = this._print;
-
+        var printNested = this._printNested;
         var printDate = this._printDate;
         var printX = this._printX;
         var printFixed = this._printFixed;
@@ -140,7 +140,7 @@
                 {text: 'Name', style: 'bold'},
                 {text: print(data.baseDetails.traveler), style: 'bottomMargin'},
                 {text: 'Vendor', style: 'bold'},
-                {text: print(data.baseDetails.traveler.profile.vendor_number), style: 'bottomMargin'},
+                {text: print(printNested(data.baseDetails.traveler.profile, 'vendor_number')), style: 'bottomMargin'},
 
               ]
             },
@@ -152,7 +152,7 @@
             },
             {stack: [
                 {text: 'Title', style: 'bold'},
-                {text: print(data.baseDetails.traveler.profile.job_title), style: 'bottomMargin'}
+                {text: print(printNested(data.baseDetails.traveler.profile, 'job_title')), style: 'bottomMargin'}
               ]
             },
             {stack: [
@@ -268,7 +268,7 @@
                   alignment: 'left'
                 },
                 {
-                  text: printFixed(data.cost_summary.deductions_total),
+                  text: printFixed(printNested(data.cost_summary, 'deductions_total')),
                   alignment: 'right'
                 }
               ]
@@ -293,7 +293,7 @@
                     return [
                       {text: print(ee.type), alignment: 'left'},
                       {text: print(ee.document_currency), alignment: 'center'},
-                      {text: print(ee.document_currency.exchange_to_dollar), alignment: 'center'},
+                      {text: print(printNested(ee.document_currency, 'exchange_to_dollar')), alignment: 'center'},
                       {text: printFixed(ee.amount), alignment: 'right'}
                     ];
                   }))
