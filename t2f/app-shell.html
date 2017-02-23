@@ -29,6 +29,8 @@
 <link rel="import" href="styles/app-theme.html">
 <link rel="import" href="app-elements/page-elements/et2f-app.html">
 <link rel="import" href="app-elements/page-elements/page-footer.html">
+<link rel="import" href="app-elements/page-elements/system-notification.html">
+<link rel="import" href="app-elements/api-elements/settings-data.html">
 
 
 <dom-module id="app-shell">
@@ -87,9 +89,15 @@
         border-bottom: 1px solid var(--dark-divider-color);
       }
 
+      system-notification {
+        position: fixed;
+        bottom:120px;
+      }
+
     </style>
 
     <user-data permissions="{{permissions}}" user="{{user}}"></user-data>
+    <et2f-settings notifications="{{notifications}}"></et2f-settings>
 
     <app-location route="{{route}}"></app-location>
 
@@ -125,6 +133,8 @@
 
             </iron-selector>
           </div>
+
+          <system-notification notifications="[[notifications]]"></system-notification>
 
         </div>
 
@@ -195,6 +205,9 @@
         baseUrl: {
           type: String,
           value: baseUrl
+        },
+        notifications: {
+          type: Array
         }
       },
 

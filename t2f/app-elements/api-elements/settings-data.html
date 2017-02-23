@@ -1,0 +1,57 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../app-config/etools-app-config.html">
+
+
+<dom-module id="et2f-settings">
+  <template>
+    <etools-ajax endpoint="[[settingsEndpoint]]"
+      on-success="_handleSettingsData"
+      loading="{{loading}}"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
+
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'et2f-settings',
+
+      properties: {
+        settings: {
+          type: Object
+        },
+        loading: {
+          type: Boolean,
+          notify: true,
+        },
+        settingsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.settings
+        },
+        notifications: {
+          type: Array,
+          notify: true,
+          computed: '_computeNotifications(settings)'
+        }
+      },
+      _redirectToLogin: function() {
+        window.location.href = '/login/';
+      },
+      _handleSettingsData: function(e, data) {
+        this.set('settings', data);
+      },
+      _computeNotifications: function(settings) {
+        var notifications = [];
+        if (settings.disable_invoicing) {
+          notifications.push({header: 'System info', body: 'Invoicing functionality is temporarily unavailable!'});
+        }
+        return notifications;
+      }
+    });
+  </script>
+</dom-module>

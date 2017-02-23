@@ -1,0 +1,89 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
+
+<dom-module id="system-notification">
+
+  <template>
+    <style>
+      :host {
+        display: flex;
+        width: 100%;
+      }
+
+      .notification-container {
+        width: 100%;
+      }
+
+      .notification-box {
+        position: relative;
+        margin: 24px auto;
+        width: 172px;
+        height: 100px;
+        opacity: 0.9;
+        background-color: #FAED77;
+        box-shadow: 0 1px 1px 0 rgba(0,0,0,0.12);
+        border-radius: 2px;
+      }
+
+      .notification-tick {
+        position: absolute;
+        top:-9px;
+        left:75px;
+        width: 22px;
+        height: 18px;
+        opacity: 0.5;
+        background-color: #F4F4F4;
+        box-shadow: 0 1px 1px 0 rgba(0,0,0,0.24);
+      }
+      .notification-content {
+        padding: 24px 12px;
+      }
+
+      .notification-header {
+        font-family: Roboto;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 16px;
+        color: rgba(0,0,0,0.87);
+        margin-bottom: 4px;
+      }
+      .notification-body {
+        font-family: Roboto;
+        font-size: 12px;
+        line-height: 16px;
+        color: rgba(0,0,0,0.54);
+      }
+    </style>
+
+    <div class="notification-container">
+      <template is="dom-repeat" items="[[notifications]]">
+        <div class="notification-box">
+          <div class="notification-tick"></div>
+          <div class="notification-content">
+            <div class="notification-header">
+              {{item.header}}
+            </div>
+            <div class="notification-body">
+              {{item.body}}
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'system-notification',
+        properties: {
+         notifications: Array
+        }
+      });
+    })();
+  </script>
+
+</dom-module>
