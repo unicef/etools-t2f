@@ -172,6 +172,7 @@
             return this.getHeadings();
           }
         },
+        user: Object,
         pages: {
           type: Object,
           computed: '_computePagesObj(route.__queryParams)',
@@ -330,6 +331,11 @@
           }
         });
         this.set('data', data.data);
+      },
+
+      attached: function() {
+        var self = this;
+        this.commonAttached();
       },
     });
   </script>
