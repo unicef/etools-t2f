@@ -371,7 +371,12 @@
             apiValue: vendorStr
           });
         });
-      }
+      },
+
+      attached: function() {
+        this.commonAttached();
+      },
+
     });
   </script>
 </dom-module>

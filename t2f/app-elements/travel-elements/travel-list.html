@@ -539,6 +539,13 @@
         this.set('route.__queryParams', backup);
       },
 
+      attached: function() {
+        var params = this.route.__queryParams;
+        this.commonAttached();
+        var toggled = params.show_hidden === 'true';
+        this.$['show-hidden-toggle'].checked = toggled;
+      },
+
     });
   </script>
 </dom-module>
