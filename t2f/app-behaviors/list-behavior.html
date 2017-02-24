@@ -12,7 +12,7 @@
     _computeAjaxParams: function(route) {
       function shallowEqual(O1, O2) {
         if (!O1 || !O2) {
-          return true;
+          return false;
         }
         var keys1 = Object.keys(O1);
         var keys2 = Object.keys(O2);
