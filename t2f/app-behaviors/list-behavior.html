@@ -11,6 +11,9 @@
     // Computes the ajax parameters from the URL params & the default ones
     _computeAjaxParams: function(route) {
       function shallowEqual(O1, O2) {
+        if (!O1 || !O2) {
+          return true;
+        }
         var keys1 = Object.keys(O1);
         var keys2 = Object.keys(O2);
 
@@ -31,7 +34,7 @@
       }
 
       // If the params are for another list, can run a lot!
-      if (route.path.indexOf(this.is) < 0) {
+      if (route && route.path && route.path.indexOf(this.is) < 0) {
 
         return this.ajaxParams;
 
@@ -63,17 +66,21 @@
     },
 
     _computePagesObj: function(params) {
-      return {
-        itemsPerPage: params.page_size,
-        page: params.page,
-      };
+      if (params) {
+        return {
+          itemsPerPage: params.page_size,
+          page: params.page,
+        };
+      }
     },
 
     _computeOrderObj: function(params) {
-      return {
-        orderedBy: params.sort_by,
-        reverse: params.reverse,
-      };
+      if (params) {
+        return {
+          orderedBy: params.sort_by,
+          reverse: params.reverse,
+        };
+      }
     },
 
     // Changes the searchString prop only if it was "entered"
