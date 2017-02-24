@@ -157,40 +157,41 @@
       var self = this;
       var params = this.route.__queryParams;
 
-      var searchStr = params.search || '';
+      var searchStr = params && params.search ? params.search : '';
       this.$['search-input'].value = searchStr;
 
-      var filters = this._computeFilters(this.structure);
+      if (this._computeFilters && typeof this._computeFilters === 'function') {
+        var filters = this._computeFilters(this.structure);
 
-      // Init filters
-      filters.forEach(function(filt) {
-        var isPresent = params.hasOwnProperty(filt.filterName);
-        if (isPresent) {
-          var clickMockObj = {
-            model: {
-              item: filt,
-            },
-          };
-          self.addFilter(clickMockObj);
-        }
-      });
+        // Init filters
+        filters.forEach(function(filt) {
+          var isPresent = params.hasOwnProperty(filt.filterName);
+          if (isPresent) {
+            var clickMockObj = {
+              model: {
+                item: filt,
+              },
+            };
+            self.addFilter(clickMockObj);
+          }
+        });
 
-      // Prefill filters
-      filters.forEach(function(filt) {
-        var isPresent = params.hasOwnProperty(filt.filterName);
-        if (isPresent) {
-          var selected = filt.selection.filter(function(sel) {
-            /* jshint eqeqeq: false */
-            return sel.value == params[filt.filterName];
-          })[0];
+        // Prefill filters
+        filters.forEach(function(filt) {
+          var isPresent = params.hasOwnProperty(filt.filterName);
+          if (isPresent) {
+            var selected = filt.selection.filter(function(sel) {
+              /* jshint eqeqeq: false */
+              return sel.value == params[filt.filterName];
+            })[0];
 
-          self.async(function() {
-            var ssm = Polymer.dom(this.root).querySelector('#' + filt.filterName);
-            ssm.value = selected;
-          });
-        }
-      });
+            self.async(function() {
+              var ssm = Polymer.dom(this.root).querySelector('#' + filt.filterName);
+              ssm.value = selected;
+            });
+          }
+        });
+      }
     },
-
   };
 </script>
