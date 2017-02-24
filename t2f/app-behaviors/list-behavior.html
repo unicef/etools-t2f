@@ -5,7 +5,16 @@
   var ListBehavior = {
 
     properties: {
-      route: Object,
+      route: {
+        type: Object,
+        observer: '_routeObserver',
+      },
+    },
+
+    _routeObserver: function(newRoute, oldRoute) {
+      if (oldRoute && newRoute.path.indexOf(this.is) > -1) {
+        this.attached();
+      }
     },
 
     // Computes the ajax parameters from the URL params & the default ones
