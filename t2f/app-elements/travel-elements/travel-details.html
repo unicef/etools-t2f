@@ -476,7 +476,7 @@
       },
 
       _computeHideCancelNote: function(data) {
-        return data.status !== 'Cancelled' || data.cancellation_note.length === 0;
+        return !data.cancellation_note || data.status !== 'Cancelled' || data.cancellation_note.length === 0;
       },
 
       _computeHideRejectionNote: function(data) {

@@ -29,6 +29,8 @@
 <link rel="import" href="styles/app-theme.html">
 <link rel="import" href="app-elements/page-elements/et2f-app.html">
 <link rel="import" href="app-elements/page-elements/page-footer.html">
+<link rel="import" href="app-elements/page-elements/system-notification.html">
+<link rel="import" href="app-elements/api-elements/settings-data.html">
 
 
 <dom-module id="app-shell">
@@ -87,9 +89,15 @@
         border-bottom: 1px solid var(--dark-divider-color);
       }
 
+      system-notification {
+        position: fixed;
+        bottom:120px;
+      }
+
     </style>
 
     <user-data permissions="{{permissions}}" user="{{user}}"></user-data>
+    <et2f-settings notifications="{{notifications}}"></et2f-settings>
 
     <app-location route="{{route}}"></app-location>
 
@@ -115,16 +123,18 @@
             <iron-selector selected="[[page]]" attr-for-selected="value" selectable="side-bar-item" role="navigation">
               <template is="dom-if" if="{{permissions.loggedInDefault}}">
 
-                  <side-bar-item name="Travel2Field" value="travel-list" icon="maps:transfer-within-a-station" href$="[[baseUrl]]travel-list"></side-bar-item>
+                  <side-bar-item name="Travel2Field" value="travel-list" icon="maps:transfer-within-a-station" href$="[[baseUrl]]travel-list?reverse=true&page=1&page_size=10&search&sort_by=reference_number&show_hidden=false"></side-bar-item>
                   <template is="dom-if" if="[[isFfp]]" restamp>
-                    <side-bar-item name="invoices" value="invoices-list" icon="description" href$="[[baseUrl]]invoices-list"></side-bar-item>
+                    <side-bar-item name="invoices" value="invoices-list" icon="description" href$="[[baseUrl]]invoices-list?reverse=true&page=1&page_size=10&search&sort_by=id"></side-bar-item>
                   </template>
-                  <side-bar-item name="action points" value="action-points-list" icon="list" href$="[[baseUrl]]action-points-list"></side-bar-item>
+                  <side-bar-item name="action points" value="action-points-list" icon="list" href$="[[baseUrl]]action-points-list?reverse=true&page=1&page_size=10&search&sort_by=action_point_number&f_person_responsible=[[user.id]]"></side-bar-item>
 
               </template>
 
             </iron-selector>
           </div>
+
+          <system-notification notifications="[[notifications]]"></system-notification>
 
         </div>
 
@@ -195,6 +205,9 @@
         baseUrl: {
           type: String,
           value: baseUrl
+        },
+        notifications: {
+          type: Array
         }
       },
 
