@@ -37,6 +37,11 @@
         display: block;
       }
 
+      #second-logo {
+        height: 32px;
+        width: auto;
+      }
+
       .right-side {
         @apply(--layout-horizontal);
         @apply(--layout-center);
@@ -74,8 +79,7 @@
       <paper-icon-button id="menuButton" class="light" icon="menu" on-tap="openDrawer"></paper-icon-button>
       <div class="titlebar content-align">
         <app-selector id="selector"></app-selector>
-        <img src="../../images/etools_logo_icon.png">
-        eTools
+        <img id="second-logo" src="../../images/etools-logo-color-white.svg">
       </div>
       <div class="content-align">
         <countries-dropdown id="countries" countries="[[countries]]" current="[[user.profile.country]]"></countries-dropdown>
