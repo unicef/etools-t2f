@@ -27,6 +27,7 @@
 <link rel="import" href="styles/shared-styles.html">
 <link rel="import" href="styles/page-layout-styles.html">
 <link rel="import" href="styles/app-theme.html">
+<link rel="import" href="styles/et2f-styles.html">
 <link rel="import" href="app-elements/page-elements/et2f-app.html">
 <link rel="import" href="app-elements/page-elements/page-footer.html">
 <link rel="import" href="app-elements/page-elements/system-notification.html">
@@ -48,6 +49,12 @@
         --app-drawer-content-container: {
           background-color: var(--light-theme-content-color);
         };
+      }
+
+      app-toolbar {
+        background-color: #0061E9;
+        color: white;
+        --app-toolbar-font-size: 16px;
       }
 
       .side-nav-wrapper {
@@ -116,7 +123,8 @@
         <div class="side-nav-wrapper">
 
           <app-toolbar class="header">
-            <img id="etools-logo" src="images/etools_logo.svg" alt="etools logo">
+            <img id="etools-logo" src="images/panel-icons/ic-trip-management.svg">
+            FIELD<br>MONITORING
           </app-toolbar>
 
           <div class="nav-menu">
