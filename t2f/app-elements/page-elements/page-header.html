@@ -15,6 +15,7 @@
 
       app-toolbar {
         padding: 0 16px 0 0;
+        background-color: var(--nonprod-header-color, #233944);
       }
 
       div[main-title] {
@@ -133,7 +134,17 @@
             };
           }.bind(this));
           this.set('countries', arrayObj);
+        },
+        ready: function() {
+          var location = window.location.href;
+          var production = 'etools.unicef.com';
+
+          if (location.indexOf(production) === -1) {
+            console.log('Not production environment, changing header color to red');
+            this.customStyle['--nonprod-header-color'] = '#F03A47';
+            this.updateStyles();
           }
+        },
         });
     })();
   </script>

@@ -71,6 +71,9 @@
             border-right: 1px solid rgba(0, 0, 0, 0.12);
             min-width: 266px;
         }
+        .panel:hover {
+            background-color: var(--gray-lighter);
+        }
         .panel:nth-child(2){
             border-right: none;
         }
@@ -100,7 +103,7 @@
             <div class="panel-row">
                 <div class="content-wrapper panel">
                     <paper-icon-button class="panel-icon work" src="../../images/panel-icons/ic-dashboard.svg"></paper-icon-button>
-                    <div id="dash" on-tap="goToPage" class="app-title">Work <br>Planning</div>
+                    <div id="dash" on-tap="goToPage" class="app-title">Dashboards</div>
                 </div>
                 <div class="content-wrapper panel">
                     <paper-icon-button class="panel-icon partnership" on-tap="_pageChanged" src="../../images/panel-icons/ic-pm.svg"></paper-icon-button>
@@ -110,11 +113,11 @@
             <div class="panel-row">
                 <div class="content-wrapper panel">
                     <paper-icon-button class="panel-icon field" src="../../images/panel-icons/ic-trip-management.svg"></paper-icon-button>
-                    <div id="t2f" on-tap="goToPage" class="app-title">Field <br>Monitoring</div>
+                    <div id="t2f" on-tap="goToPage" class="app-title">Trip <br>management</div>
                 </div>
                 <div class="content-wrapper panel">
                     <paper-icon-button class="panel-icon data" src="../../images/panel-icons/ic-admin.svg"></paper-icon-button>
-                    <div id="data" on-tap="goToPage" class="app-title">Data <br>Sources</div>
+                    <div id="data" on-tap="goToPage" class="app-title">Admin  (Permission<br>required)</div>
                 </div>
             </div>
 

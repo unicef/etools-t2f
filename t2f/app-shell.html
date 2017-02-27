@@ -123,7 +123,6 @@
         <div class="side-nav-wrapper">
 
           <app-toolbar class="header">
-            <img id="etools-logo" src="images/panel-icons/ic-trip-management.svg">
             FIELD<br>MONITORING
           </app-toolbar>
 
@@ -135,7 +134,7 @@
                   <template is="dom-if" if="[[isFfp]]" restamp>
                     <side-bar-item name="invoices" value="invoices-list" icon="description" href$="[[baseUrl]]invoices-list?reverse=true&page=1&page_size=10&search&sort_by=id"></side-bar-item>
                   </template>
-                  <side-bar-item name="action points" value="action-points-list" icon="list" href$="[[baseUrl]]action-points-list?reverse=true&page=1&page_size=10&search&sort_by=action_point_number&f_person_responsible=[[user.id]]"></side-bar-item>
+                  <side-bar-item name="action points" value="action-points-list" icon="flag" href$="[[baseUrl]]action-points-list?reverse=true&page=1&page_size=10&search&sort_by=action_point_number&f_person_responsible=[[user.id]]"></side-bar-item>
 
               </template>
 
