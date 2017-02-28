@@ -139,8 +139,8 @@
           var location = window.location.href;
           var production = 'etools.unicef.com';
 
+          // If not production environment, changing header color to red
           if (location.indexOf(production) === -1) {
-            console.log('Not production environment, changing header color to red');
             this.customStyle['--nonprod-header-color'] = '#F03A47';
             this.updateStyles();
           }

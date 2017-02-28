@@ -5,6 +5,8 @@
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
+<link rel="import" href="page-footer.html">
+
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../app-behaviors/api-behavior.html">
 <link rel="import" href="../api-elements/structure-data.html">
@@ -19,6 +21,12 @@
 
       :host {
         display: block;
+        min-height: 100%;
+      }
+
+      iron-pages {
+        min-height: calc(100% - 60px);
+        padding-bottom: 0 !important;
       }
 
     </style>
@@ -107,6 +115,8 @@
 
 
     </iron-pages>
+
+    <page-footer></page-footer>
 
 
   </template>
