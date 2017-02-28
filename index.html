@@ -36,6 +36,17 @@
     <meta name="msapplication-tap-highlight" content="no">
 
     <script>
+      var UserVoice = window.UserVoice || [];
+      (function() {
+        var uv = document.createElement('script');
+        uv.type = 'text/javascript';
+        uv.async = true;
+        uv.src = '//widget.uservoice.com/s74dylVlP3CUCbVw6famA.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(uv, s);
+      })();
+      UserVoice.push(['addTrigger', {}]);
+
       // Setup Polymer options
       window.Polymer = {
         dom: 'shadow',
