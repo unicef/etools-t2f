@@ -78,10 +78,8 @@
           value: null
         }
       },
+
       behaviors: [etoolsAppConfig.globals],
-      attached: function() {
-        this.baseUrl = this.basePath;
-      },
 
       _statusMapping: function(status) {
         var statusLib = {
@@ -98,7 +96,12 @@
         return users.filter(function(user) {
           return user.value === id;
         })[0].label;
-      }
+      },
+
+      attached: function() {
+        this.baseUrl = this.basePath;
+      },
+
     });
   </script>
 </dom-module>

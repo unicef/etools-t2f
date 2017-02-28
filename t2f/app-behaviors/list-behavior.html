@@ -1,25 +1,95 @@
+<link rel="import" href="../scripts/lodash/lodash.html">
+
 <script>
 
   var ListBehavior = {
 
-    // If the old route could have change the content, refresh data
-    _routeObserver: function(newValue, oldValue) {
+    properties: {
+      route: {
+        type: Object,
+        observer: '_routeObserver',
+      },
+    },
 
-      var componentName = this.is;
-      if (!oldValue || !newValue || !oldValue.path || !newValue.path) {
-        return;
-      }
-      if (newValue.path.indexOf(componentName) > -1 || !(oldValue.path.indexOf(componentName))) {
-       this._doRefreshData();
+    _routeObserver: function(newRoute, oldRoute) {
+      if (oldRoute && newRoute.path.indexOf(this.is) > -1) {
+        this.attached();
       }
     },
 
-    // Refresh data by triggering automatic API call
-    _doRefreshData: function() {
+    // Computes the ajax parameters from the URL params & the default ones
+    _computeAjaxParams: function(route) {
+      function shallowEqual(O1, O2) {
+        if (!O1 || !O2) {
+          return false;
+        }
+        var keys1 = Object.keys(O1);
+        var keys2 = Object.keys(O2);
 
-      var backup = this.ajaxParams;
-      this.set('ajaxParams', {});
-      this.set('ajaxParams', backup);
+        if (keys1.length !== keys2.length) {
+          return false;
+        }
+
+        var keys = _.union(keys1, keys2);
+        for (var i = 0; i < keys.length; i++) {
+          /* jshint eqeqeq: false */
+          if (O1[keys[i]] == O2[keys[i]]) {
+            continue;
+          } else {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      // If the params are for another list, can run a lot!
+      if (route && route.path && route.path.indexOf(this.is) < 0) {
+
+        return this.ajaxParams;
+
+      } else {
+
+        var defaultParams = {
+          reverse: 'true',
+          page: '1',
+          page_size: '10',
+          search: '',
+        };
+        defaultParams.sort_by = {
+          'travel-list': 'reference_number',
+          'action-points-list': 'action_point_number',
+          'invoices-list': 'id',
+        }[this.is];
+        if (this.is === 'travel-list') {
+          defaultParams.show_hidden = 'false';
+        }
+
+        var ret = _.merge(defaultParams, route.__queryParams);
+
+        if (!shallowEqual(ret, route.__queryParams)) {
+          this.set('route.__queryParams', ret);
+        }
+
+        return ret;
+      }
+    },
+
+    _computePagesObj: function(params) {
+      if (params) {
+        return {
+          itemsPerPage: params.page_size,
+          page: params.page,
+        };
+      }
+    },
+
+    _computeOrderObj: function(params) {
+      if (params) {
+        return {
+          orderedBy: params.sort_by,
+          reverse: params.reverse,
+        };
+      }
     },
 
     // Changes the searchString prop only if it was "entered"
@@ -40,35 +110,9 @@
       if (typeof old === 'undefined') {
         return;
       }
-      var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+      var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
       backup.search = searchStr;
-      this.set('ajaxParams', backup);
-    },
-
-    // Handle ordering change, reset to page 1, auto API call
-    _changeParamsOrder: function(orderObj, old) {
-
-      if (typeof old === 'undefined') {
-        return;
-      }
-      this.set('pages.page', 1);
-      var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-      backup.page = 1;
-      backup.reverse = orderObj.reverse;
-      backup.sort_by = this.labelLib[orderObj.orderedBy];
-      this.set('ajaxParams', backup);
-    },
-
-    // Handle pagination change, auto API call
-    _changeParamsPages: function(pages, old) {
-
-      if (typeof old === 'undefined') {
-        return;
-      }
-      var backup = JSON.parse(JSON.stringify(this.ajaxParams));
-      backup.page = pages.page;
-      backup.page_size = pages.itemsPerPage;
-      this.set('ajaxParams', backup);
+      this.set('route.__queryParams', backup);
     },
 
     // Stiches the string "0-10 of 35 trips" together
@@ -101,9 +145,9 @@
         return filter.name === filterName;
       })[0];
 
-      var backup = JSON.parse(JSON.stringify(this.ajaxParams));
+      var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
       delete backup[e.model.item.filterName];
-      this.set('ajaxParams', backup);
+      this.set('route.__queryParams', backup);
 
       this.push('availableFilters', pristineFilter);
 
@@ -116,5 +160,47 @@
       this.set('availableFilters', filters);
     },
 
+    // Sets the filter/search/toggle parameters if got from URL
+    commonAttached: function() {
+
+      var self = this;
+      var params = this.route.__queryParams;
+
+      var searchStr = params && params.search ? params.search : '';
+      this.$['search-input'].value = searchStr;
+
+      if (this._computeFilters && typeof this._computeFilters === 'function') {
+        var filters = this._computeFilters(this.structure);
+
+        // Init filters
+        filters.forEach(function(filt) {
+          var isPresent = params.hasOwnProperty(filt.filterName);
+          if (isPresent) {
+            var clickMockObj = {
+              model: {
+                item: filt,
+              },
+            };
+            self.addFilter(clickMockObj);
+          }
+        });
+
+        // Prefill filters
+        filters.forEach(function(filt) {
+          var isPresent = params.hasOwnProperty(filt.filterName);
+          if (isPresent) {
+            var selected = filt.selection.filter(function(sel) {
+              /* jshint eqeqeq: false */
+              return sel.value == params[filt.filterName];
+            })[0];
+
+            self.async(function() {
+              var ssm = Polymer.dom(this.root).querySelector('#' + filt.filterName);
+              ssm.value = selected;
+            });
+          }
+        });
+      }
+    },
   };
 </script>

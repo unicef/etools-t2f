@@ -225,10 +225,7 @@
               var parentId = parentItem.id || parentItem.value;
               var childId = childItem.id || childItem.value;
               if (parentId === childItem[parentKey]) {
-                parentItem[child].push({
-                    label: childItem.name,
-                    value: parseInt(childId, 10)
-                });
+                parentItem[child].push(parseInt(childId, 10));
               }
             });
           });
@@ -271,13 +268,11 @@
             });
           },
           grants: function(key) {
-            fillDependenceis(key, 'wbs', 'wbs');
             data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id, funds: obj.funds};
             });
           },
           funds: function(key) {
-            fillDependenceis('funds', 'grants', 'grant');
             data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id};
             });
