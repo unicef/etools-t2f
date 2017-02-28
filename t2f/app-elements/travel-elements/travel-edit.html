@@ -416,9 +416,14 @@
         if (tProfile && tProfile.t2f && tProfile.t2f.travel_count) {
           travelCount = tProfile.t2f.travel_count;
         }
-
+        var localhost = window.location.host.indexOf('localhost') > -1;
         if (travelCount > 3) {
-          invalids.push('More than 3 active trips (' + travelCount + ')');
+          var errorMessage = 'More than 3 active trips (' + travelCount + ')';
+          if (!localhost) {
+            invalids.push(errorMessage);
+          } else {
+            console.error(errorMessage);
+          }
         }
 
         var endDate = this.data.baseDetails.end_date;
