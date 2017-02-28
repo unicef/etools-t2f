@@ -334,7 +334,8 @@
       },
 
       attached: function() {
-        var self = this;
+        this.set('availableFilters', this._computeFilters(this.structure));
+        this.splice('usedFilters', 0, this.usedFilters.length);
         this.commonAttached();
       },
     });

@@ -205,9 +205,9 @@
       _computeGrantOptions: function(grants, wbs, costAssignmentChanged) {
         if (wbs && wbs.base) {
           wbs = wbs.base;
-          var grantOptions =  grants.filter(function(grant) {
+          var grantOptions = grants.filter(function(grant) {
             return wbs.grants.some(function(item) {
-              return item.value === grant.value;
+              return item === grant.value;
             });
           });
           var grant = costAssignmentChanged.base.grant;
@@ -222,7 +222,7 @@
            grant = grant.base;
            var fundOptions =  funds.filter(function(fund) {
               return grant.funds.some(function(item) {
-                return item.value === fund.value;
+                return item === fund.value;
               });
            });
            var fund = costAssignmentChanged.base.fund;
@@ -239,7 +239,7 @@
            if (businessArea.wbs) {
              wbsOptions = wbsList.filter(function(wbs) {
                 return businessArea.wbs.some(function(item) {
-                  return item.value === wbs.value;
+                  return item === wbs.value;
                 });
              });
 
