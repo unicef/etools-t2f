@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "dev": "polymer serve --port 3000 & npm run watch",
+    "dev": "polymer serve --hostname 0.0.0.0 --port 3000 & npm run watch",
     "test": "polymer test",
     "dev-test": "browser-sync start --config bs-config-build.js",
     "watch": "browser-sync start --config bs-config.js"

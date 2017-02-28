@@ -1,5 +1,4 @@
 // jshint ignore: start
-console.log('find shim')
 if (!Array.prototype.find) {
   Object.defineProperty(Array.prototype, 'find', {
     value: function(predicate) {
@@ -43,5 +42,73 @@ if (!Array.prototype.find) {
     }
   });
 }
+Number.isNaN = Number.isNaN || function(value) {
+    return typeof value === 'number' && isNaN(value);
+};
 
-console.log(Array.prototype.find)
+if (!document.documentElement.classList) {
+    var prototype = Array.prototype;
+    var indexOf   = prototype.indexOf;
+    var slice     = prototype.slice;
+    var push      = prototype.push;
+    var splice    = prototype.splice;
+    var join      = prototype.join;
+
+    window.DOMTokenList = function(el) {
+        this._element = el;
+        if (el.className !== this._classCache) {
+            this._classCache = el.className;
+            if (!this._classCache) { return }
+            var classes = this._classCache.replace(/^\s+|\s+$/g, '').split(/\s+/);
+            console.log(classes);
+            var i;
+            for (i = 0; i < classes.length; i++) {
+                push.call(this, classes[i]);
+            }
+        }
+    };
+
+    window.DOMTokenList.prototype = {
+        add: function(token) {
+            if (this.contains(token)) { return; }
+            push.call(this, token);
+            this._element.className = slice.call(this, 0).join(' ');
+        },
+
+        contains: function(token) {
+            return indexOf.call(this, token) !== -1;
+        },
+
+        item: function(index) {
+            return this[index] || null;
+        },
+
+        remove: function(token) {
+            var i = indexOf.call(this, token);
+            if (i === -1) {
+                return;
+            }
+            splice.call(this, i, 1);
+            this._element.className = slice.call(this, 0).join(' ');
+        },
+
+        toString: function() {
+            return join.call(this, ' ');
+        },
+
+        toggle: function(token) {
+            if (!this.contains(token)) {
+                this.add(token);
+            } else {
+                this.remove(token);
+            }
+            return this.contains(token);
+        }
+    };
+
+    Object.defineProperty(Element.prototype, 'classList', {
+        get: function() {
+            return new window.DOMTokenList(this);
+        }
+    });
+}
