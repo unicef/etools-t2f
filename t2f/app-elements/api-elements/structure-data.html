@@ -216,7 +216,7 @@
         function capitalize(value) {
           return value.replace(/\b\w/g, function(l) { return l.toUpperCase(); });
         }
-        function fillDependenceis(child, parent, parentKey) {
+        function fillDependencyWithId(child, parent, parentKey) {
           data[child].forEach(function(childItem) {
             data[parent].forEach(function(parentItem) {
               if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
@@ -230,15 +230,32 @@
             });
           });
         }
+        function fillDependencyWithChild(child, parent, parentKey) {
+          data[child].forEach(function(childItem) {
+            data[parent].forEach(function(parentItem) {
+              if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
+                parentItem[child] = [];
+              }
+              var parentId = parentItem.id || parentItem.value;
+              var childId = childItem.id || childItem.value;
+              if (parentId === childItem[parentKey]) {
+                parentItem[child].push({
+                  value: parseInt(childId, 10),
+                  label: childItem.label || childItem.name,
+                });
+              }
+            });
+          });
+        }
 
         var parsingFunctions = {
-          partner: function(key) {
+          partners: function(key) {
              data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id, partnerships: obj.partnerships};
             });
           },
           partnerships: function(key) {
-            fillDependenceis(key, 'partners', 'partner');
+            fillDependencyWithChild(key, 'partners', 'partner');
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id};
             });
@@ -262,7 +279,7 @@
             });
           },
           wbs: function(key) {
-            fillDependenceis(key, 'business_areas', 'business_area');
+            fillDependencyWithId(key, 'business_areas', 'business_area');
              data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id, grants: obj.grants};
             });
