@@ -241,6 +241,15 @@
         if ((this.route.path === this.baseUrl) && permissions.loggedInDefault) {
           // setting the default path
           this.set('route.path', this.baseUrl + 'travel-list');
+          var defaultParams = {
+            reverse: true,
+            page: 1,
+            page_size: 10,
+            search: '',
+            sort_by: 'reference_number',
+            show_hidden: false
+          };
+          this.set('route.__queryParams', defaultParams);
         } else if (this.initialLoad) {
           // reseting the page as the pages might not have been stamped
           this._routePageChanged(this.routeData.page);
