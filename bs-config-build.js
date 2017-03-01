@@ -28,13 +28,13 @@ module.exports = {
             'port': 8080
         }
     },
-    'files': [''],
+    'files': ['/build/t2f/'],
     'watchOptions': {},
-    'server': false,
+    'server': true,
     'proxy': '',
     'port': 3001,
     'middleware': [backendProxy],
-    'serveStatic': ['.'],
+    'serveStatic': ['/build/t2f/'],
     'ghostMode': false,
     'logLevel': 'info',
     'logPrefix': 'BS',
@@ -54,6 +54,14 @@ module.exports = {
     'scrollRestoreTechnique': 'window.name',
     'scrollElements': [],
     'scrollElementMapping': [],
+    'snippetOptions': {
+        rule: {
+            match: /<\/head>/i,
+            fn: function(snippet, match) {
+                return snippet + match;
+            }
+        }
+    },
     'reloadDelay': 0,
     'reloadDebounce': 0,
     'reloadThrottle': 0,
