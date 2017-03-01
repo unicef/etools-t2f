@@ -45,9 +45,6 @@ App global configuration
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
           cachingKey: 'groups-list'
         },
-        travelerProfile: {
-          template: '/api/users/<%=id%>',
-        },
         staticData: {
           url: '/api/static_data/',
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
@@ -80,8 +77,6 @@ App global configuration
         },
         et2fTravelDetail: {
           template: '/api/t2f/travels/<%=id%>/',
-//          cachingKeyTemplate: 'et2f_travel_detail_<%=id%>',
-//          exp: 60 * 1000
         },
         et2fTravelAttachments: {
           template: '/api/t2f/travels/<%=id%>/attachments/',

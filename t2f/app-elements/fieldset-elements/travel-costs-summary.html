@@ -66,6 +66,15 @@
       .sum-curr {
         padding-right: 24px;
       }
+
+      .sub-row {
+        padding-left:24px;
+        padding-right: 35px;
+        font-family: Roboto;
+        font-size: 14px;
+        line-height: 48px;
+        color: rgba(0,0,0,0.54);
+      }
     </style>
 
     <div class="layout vertical flex">
@@ -91,9 +100,9 @@
 
       <div class="layout vertical group row">
         <template is="dom-repeat" items="[[costSummary.expenses]]">
-          <div class="layout horizontal">
+          <div class="layout horizontal sub-row">
             <div class="flex-6 head">
-              [[item.vendor_number]]
+              -- [[item.vendor_number]]
             </div>
             <div class="flex-6 right-align curr">
               {{item.amount}} {{currency.short}}

@@ -208,6 +208,12 @@
           data.users = users.users;
           data.groups = groups.groups;
           data.drivers = drivers.drivers;
+          data.attachment_types = [
+            {value: 0, label: 'Ticket Doc'},
+            {value: 1, label: 'Email corespondance'},
+            {value: 3, label: 'Cleareance Doc'},
+            {value: 4, label: 'Other'}
+          ];
           Object.freeze(data);
           return data;
       },
@@ -216,7 +222,21 @@
         function capitalize(value) {
           return value.replace(/\b\w/g, function(l) { return l.toUpperCase(); });
         }
-        function fillDependenceis(child, parent, parentKey) {
+        function fillDependencyWithId(child, parent, parentKey) {
+          data[child].forEach(function(childItem) {
+            data[parent].forEach(function(parentItem) {
+              if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
+                parentItem[child] = [];
+              }
+              var parentId = parentItem.id || parentItem.value;
+              var childId = childItem.id || childItem.value;
+              if (parentId === childItem[parentKey]) {
+                parentItem[child].push(parseInt(childId, 10));
+              }
+            });
+          });
+        }
+        function fillDependencyWithChild(child, parent, parentKey) {
           data[child].forEach(function(childItem) {
             data[parent].forEach(function(parentItem) {
               if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
@@ -226,8 +246,8 @@
               var childId = childItem.id || childItem.value;
               if (parentId === childItem[parentKey]) {
                 parentItem[child].push({
-                    label: childItem.name,
-                    value: parseInt(childId, 10)
+                  value: parseInt(childId, 10),
+                  label: childItem.label || childItem.name,
                 });
               }
             });
@@ -235,13 +255,13 @@
         }
 
         var parsingFunctions = {
-          partner: function(key) {
+          partners: function(key) {
              data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id, partnerships: obj.partnerships};
             });
           },
           partnerships: function(key) {
-            fillDependenceis(key, 'partners', 'partner');
+            fillDependencyWithChild(key, 'partners', 'partner');
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id};
             });
@@ -265,19 +285,17 @@
             });
           },
           wbs: function(key) {
-            fillDependenceis(key, 'business_areas', 'business_area');
+            fillDependencyWithId(key, 'business_areas', 'business_area');
              data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id, grants: obj.grants};
             });
           },
           grants: function(key) {
-            fillDependenceis(key, 'wbs', 'wbs');
             data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id, funds: obj.funds};
             });
           },
           funds: function(key) {
-            fillDependenceis('funds', 'grants', 'grant');
             data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id};
             });

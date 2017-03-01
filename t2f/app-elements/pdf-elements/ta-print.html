@@ -87,7 +87,7 @@
         var printCityFromStr = this._printCityFromStr;
 
         var rawDSA = data.cost_summary.dsa.reduce(function(ret, act, i) {
-          return ret + parseFloat(act.amount_usd);
+          return ret + parseFloat(act.amount);
         }, 0);
 
         var dsa = parseFloat(data.cost_summary.dsa_total);
@@ -210,13 +210,13 @@
                 ].concat(data.cost_summary.dsa.map(function(dsa) {
                     return [
                       {text: printDate(dsa.start_date), alignment: 'left'},
-                      {text: printDate(dsa.end_Date), alignment: 'left'},
+                      {text: printDate(dsa.end_date), alignment: 'left'},
                       {text: printCountryFromStr(dsa.dsa_region_name), alignment: 'center'},
                       {text: printCityFromStr(dsa.dsa_region_name), alignment: 'center'},
                       {text: print(dsa.dsa_region), alignment: 'center'},
-                      {text: printFixed(dsa.daily_rate_usd), alignment: 'center'},
+                      {text: printFixed(dsa.daily_rate), alignment: 'center'},
                       {text: print(dsa.night_count), alignment: 'center'},
-                      {text: printFixed(dsa.amount_usd), alignment: 'right'}
+                      {text: printFixed(dsa.amount), alignment: 'right'}
                     ];
                   }))
               }},

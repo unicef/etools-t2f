@@ -83,7 +83,6 @@
         </date-time-picker-input>
 
         <date-time-picker-input label="Arrival Date"
-          id="arrival_date"
           class$="flex-4 [[computedPermission.arrival_date.readOnly]]"
           disabled="[[arrivalDateDisabled]]"
           hidden$="[[computedPermission.arrival_date.hidden]]"
@@ -96,7 +95,8 @@
           placeholder="select">
         </date-time-picker-input>
 
-        <etools-searchable-multiselection-menu class$="flex-2 capitalize [[computedPermission.mode_of_travel.readOnly]]"
+        <etools-searchable-multiselection-menu
+          class$="flex-2 capitalize [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.travel_modes]]"
