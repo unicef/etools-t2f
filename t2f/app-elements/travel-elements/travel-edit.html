@@ -344,12 +344,14 @@
         } else {
           travelRole = 'Traveler';
         }
-        var urlParams = new URLSearchParams(window.location.search);
-        var forcedTravelRole = urlParams.get('travelRole');
 
-        if (forcedTravelRole) {
-          travelRole = forcedTravelRole;
-        }
+        // var urlParams = new URLSearchParams(window.location.search);
+        // var forcedTravelRole = urlParams.get('travelRole');
+
+        // if (forcedTravelRole) {
+        //   travelRole = forcedTravelRole;
+        // }
+
         var userTravelRoles = travelRole ? user.t2f.roles.concat(travelRole) : user.t2f.roles;
         console.debug('user roles for this travel: ', userTravelRoles);
         userTravelRoles = userTravelRoles.filter(function(role) {

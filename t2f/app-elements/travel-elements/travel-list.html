@@ -299,6 +299,9 @@
 
       // Aggregating filters and collections into form useable by view
       _computeFilters: function(structure) {
+        if (!structure) {
+          return;
+        }
         return [
           {
             name: 'Traveler',

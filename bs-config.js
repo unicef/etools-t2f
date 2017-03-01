@@ -54,6 +54,14 @@ module.exports = {
     'scrollRestoreTechnique': 'window.name',
     'scrollElements': [],
     'scrollElementMapping': [],
+    'snippetOptions': {
+        rule: {
+            match: /<\/head>/i,
+            fn: function(snippet, match) {
+                return snippet + match;
+            }
+        }
+    },
     'reloadDelay': 0,
     'reloadDebounce': 0,
     'reloadThrottle': 0,

@@ -34,7 +34,6 @@
     <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
     <meta name="msapplication-TileColor" content="#3f51b5">
     <meta name="msapplication-tap-highlight" content="no">
-
     <script>
       var UserVoice = window.UserVoice || [];
       (function() {
@@ -60,13 +59,17 @@
         'use strict';
 
         var onload = function() {
-          // For native Imports, manually fire WebComponentsReady so user code
-          // can use the same code path for native and polyfill'd imports.
-          if (!window.HTMLImports) {
-            document.dispatchEvent(
-                new CustomEvent('WebComponentsReady', {bubbles: true})
-            );
-          }
+          var shim = document.createElement('script');
+          shim.async = false;
+          shim.src = baseUrl + '/t2f/scripts/ie-shims.js';
+          shim.onload = function() {
+            if (!window.HTMLImports) {
+              document.dispatchEvent(
+                  new CustomEvent('WebComponentsReady', {bubbles: true})
+              );
+            }
+          };
+          document.head.appendChild(shim);
         };
 
         var webComponentsSupported = (
@@ -78,7 +81,7 @@
         if (!webComponentsSupported) {
           var script = document.createElement('script');
           script.async = true;
-          script.src = baseUrl + 'bower_components/webcomponentsjs/webcomponents-lite.min.js';
+          script.src = baseUrl + '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
           script.onload = onload;
           document.head.appendChild(script);
         } else {
