@@ -427,16 +427,18 @@
           }
         }
 
-        var endDate = this.data.baseDetails.end_date;
-        if (endDate) {
-          var now = Date.now();
-          endDate = new Date(endDate).getTime();
-          var diff = now - endDate;
-          var threshold = 1000 * 60 * 60 * 24 * 15; //15 days
-          if (diff > threshold) {
-            invalids.push('More than 15 days since trip completition');
-          }
-        }
+        // Disabled end_date validation and delegated to the backend to avoid
+        //  API overhead on profile endpoint call
+        // var endDate = this.data.baseDetails.end_date;
+        // if (endDate) {
+        //   var now = Date.now();
+        //   endDate = new Date(endDate).getTime();
+        //   var diff = now - endDate;
+        //   var threshold = 1000 * 60 * 60 * 24 * 15; //15 days
+        //   if (diff > threshold) {
+        //     invalids.push('More than 15 days since trip completition');
+        //   }
+        // }
 
         return invalids;
       },

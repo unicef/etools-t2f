@@ -119,7 +119,7 @@
                 errors[category].forEach(function(field) {
                   if (!(field instanceof Object)) {
                     errorList.push({
-                      fieldSet: category,
+                      fieldSet: category === 'non_field_errors' ? '' : category,
                       field: '',
                       error: field
                     });
