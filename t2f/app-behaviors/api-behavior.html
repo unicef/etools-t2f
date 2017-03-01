@@ -19,7 +19,7 @@
     },
     _searchByLabel: function(structureData, value) {
       return this.structure[structureData].find(function(item) {
-        return item.label.toLowerCase() === value;
+        return item.label.toLowerCase() === value.toLowerCase();
       });
     },
     _multiFieldConversion: function(subField, fieldName, fieldSet) {
@@ -42,9 +42,7 @@
     },
     _log: function(structureData, value) {
       console.log(structureData, value);
-      var result = this.structure[structureData].find(function(item) {
-        return item.value === value;
-      });
+      var result = this._processLib(structureData, value);
       console.log(result);
       return result;
     },
@@ -92,16 +90,7 @@
             fund: 'funds'
           },
           attachments: {
-            type: function(value) {
-              var list = [
-                {value: 0, label: 'Report'},
-                {value: 1, label: 'Document'},
-                {value: 3, label: 'Image'}
-              ];
-              return list.find(function(item) {
-                return item.label === value;
-              });
-            }
+            type: this._searchByLabel.bind(this, 'attachment_types')
           },
           rejection_note: 'rejection_note',
           cert_rejection_note: 'cert_rejection_note',

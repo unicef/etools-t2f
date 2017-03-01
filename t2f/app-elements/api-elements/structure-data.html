@@ -208,6 +208,12 @@
           data.users = users.users;
           data.groups = groups.groups;
           data.drivers = drivers.drivers;
+          data.attachment_types = [
+            {value: 0, label: 'Ticket Doc'},
+            {value: 1, label: 'Email corespondance'},
+            {value: 3, label: 'Cleareance Doc'},
+            {value: 4, label: 'Other'}
+          ];
           Object.freeze(data);
           return data;
       },
