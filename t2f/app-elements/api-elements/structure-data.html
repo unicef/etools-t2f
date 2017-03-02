@@ -79,8 +79,7 @@
         t2fStaticDataLoading: Boolean,
         driversLoading: Boolean,
         vendorNumbersLoading: {
-          type: Boolean,
-          observer: '_warn'
+          type: Boolean
         },
         structure: {
           type: Object,
@@ -152,7 +151,6 @@
         return result;
       },
       _checkJSON: function(data) {
-        console.log(data);
         if (typeof data === 'string') {
           data = JSON.parse(data);
         }
