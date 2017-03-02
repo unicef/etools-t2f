@@ -12,8 +12,8 @@
     },
 
     _routeObserver: function(newRoute, oldRoute) {
-      if (oldRoute && newRoute.path.indexOf(this.is) > -1) {
-        this.attached();
+      if (oldRoute && oldRoute.path && oldRoute.path.indexOf(this.is) === -1 && newRoute.path.indexOf(this.is) > -1) {
+        this.attached(true);
       }
     },
 
@@ -161,7 +161,7 @@
     },
 
     // Sets the filter/search/toggle parameters if got from URL
-    commonAttached: function() {
+    commonAttached: function(forced) {
 
       var self = this;
       var params = this.route.__queryParams;
@@ -169,13 +169,36 @@
       var searchStr = params && params.search ? params.search : '';
       this.$['search-input'].value = searchStr;
 
-      if (this._computeFilters && typeof this._computeFilters === 'function') {
+      if (this.structure && this._computeFilters && typeof this._computeFilters === 'function') {
         var filters = this._computeFilters(this.structure);
 
-        // Init filters
+        // Delete all filters there
         filters.forEach(function(filt) {
-          var isPresent = params.hasOwnProperty(filt.filterName);
-          if (isPresent) {
+          var isInParams = window.location.toString().indexOf(filt.filterName) > -1
+            || params.hasOwnProperty(filt.filterName);
+          var isOnView = self.usedFilters.some(function(usedFilt) {
+            return usedFilt.filtName === filt.filtName;
+          });
+
+          if (isOnView && !isInParams) {
+            var indexToRemove = self.usedFilters.reduce(function(ret, el, i) {
+              return el.filterName === filt.filterName ? i : ret;
+            }, 0);
+            var removed = self.splice('usedFilters', indexToRemove, 1)[0];
+            self.push('availableFilters', removed);
+          }
+        });
+        Polymer.dom.flush();
+
+        // Init filter
+        filters.forEach(function(filt) {
+          var isInParams = window.location.toString().indexOf(filt.filterName) > -1
+            || params.hasOwnProperty(filt.filterName);
+          var isOnView = self.usedFilters.some(function(usedFilt) {
+            return usedFilt.filtName === filt.filtName;
+          });
+
+          if (isInParams && (!isOnView || !forced)) {
             var clickMockObj = {
               model: {
                 item: filt,
@@ -184,19 +207,37 @@
             self.addFilter(clickMockObj);
           }
         });
+        Polymer.dom.flush();
 
-        // Prefill filters
+        // Prefill filter
         filters.forEach(function(filt) {
-          var isPresent = params.hasOwnProperty(filt.filterName);
-          if (isPresent) {
+          var isInParams = window.location.toString().indexOf(filt.filterName) > -1
+            || params.hasOwnProperty(filt.filterName);
+          var isOnView = self.usedFilters.some(function(usedFilt) {
+            return usedFilt.filtName === filt.filtName;
+          });
+
+          if (isInParams && isOnView) {
             var selected = filt.selection.filter(function(sel) {
+
+              // Fallback, because somehow the params prop doesnt always cantain the actual queryset
+              var urlValue = window.location.search.slice(1).split('&').reduce(function(ret, el) {
+                return el.indexOf(filt.filterName === 0) ? el.split('=')[1] : ret;
+              }, false);
+              var apiValue = params[filt.filterName] || urlValue;
+
               /* jshint eqeqeq: false */
-              return sel.value == params[filt.filterName];
+              return sel.value == apiValue ||
+                (sel.apiValue && sel.apiValue == apiValue) ||
+                (sel.label && sel.label.replace('%20', ' ') == apiValue);
             })[0];
 
             self.async(function() {
+              Polymer.dom.flush();
               var ssm = Polymer.dom(this.root).querySelector('#' + filt.filterName);
-              ssm.value = selected;
+              if (ssm) {
+                ssm.value = selected;
+              }
             });
           }
         });

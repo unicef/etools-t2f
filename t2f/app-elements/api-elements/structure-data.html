@@ -56,6 +56,13 @@
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
+    <etools-ajax url="[[vendorEndPoint]]"
+      loading="{{vendorNumbersLoading}}"
+      on-success="_handleVendorNumbers"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
 
 
   </template>
@@ -71,11 +78,12 @@
         officesLoading: Boolean,
         t2fStaticDataLoading: Boolean,
         driversLoading: Boolean,
+        vendorNumbersLoading: Boolean,
         structure: {
           type: Object,
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
-          ' officesData, t2fStaticData, usersData, groupsData, driversData)'
+          ' officesData, t2fStaticData, usersData, groupsData, driversData, vendorNumbers)'
         },
         staticData: {
           type: Object,
@@ -90,7 +98,7 @@
           type: Boolean,
           notify: true,
           computed: '_computeLoading(staticDataLoading, sectionsLoading,' +
-          ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading, driversLoading)'
+          ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading, driversLoading, vendorNumbersLoading)'
         },
         staticDataEndpoint: {
           type: String,
@@ -121,7 +129,11 @@
         groupsEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.groups
-        }
+        },
+        vendorEndPoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fVendorList.url
+        },
       },
       _sortByLabel: function(a, b) {
         return a.label.localeCompare(b.label);
@@ -129,7 +141,7 @@
       _sortByName: function(a, b) {
         return a.name.localeCompare(b.name);
       },
-      _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users, groups, driversLoading) {
+      _computeLoading: function() {
         var result = false;
         for (var i = 0; i < arguments.length; ++i) {
            result = result || arguments[i];
@@ -187,6 +199,15 @@
         }
         this.set('driversData', data);
       },
+      _handleVendorNumbers: function(e, data) {
+        if (!data.parsed) {
+          data = {
+            vendorNumbers: data
+          };
+          data = this._parseData(data);
+        }
+        this.set('vendorNumbers', data);
+      },
       _handleGroups: function(e, data) {
         if (!data.parsed) {
           data = {
@@ -196,7 +217,7 @@
         }
         this.set('groupsData', data);
       },
-      _generateStructure: function(static, sections, offices, t2fStaticData, users, groups, drivers) {
+      _generateStructure: function(static, sections, offices, t2fStaticData, users, groups, drivers, vendorNumbers) {
           var data = static;
           data.sections = sections.sections;
           data.offices = offices.offices;
@@ -208,12 +229,16 @@
           data.users = users.users;
           data.groups = groups.groups;
           data.drivers = drivers.drivers;
+          data.vendorNumbers = vendorNumbers.vendorNumbers;
           Object.freeze(data);
           return data;
       },
       _parseData: function(data) {
         var self = this;
         function capitalize(value) {
+          if (value === null || value === undefined) {
+            return '';
+          }
           return value.replace(/\b\w/g, function(l) { return l.toUpperCase(); });
         }
         function fillDependencyWithId(child, parent, parentKey) {
@@ -340,6 +365,11 @@
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: parseInt(obj.id, 10),
                 currency: obj.currency, business_area: obj.business_area};
+            });
+          },
+          vendorNumbers: function(key) {
+            data[key] = data[key].map(function(obj, index) {
+              return {label: capitalize(obj), value: index};
             });
           },
 
