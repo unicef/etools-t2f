@@ -16,6 +16,7 @@
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="../bower_components/etools-loading/etools-loading-behavior.html">
 
@@ -25,7 +26,6 @@
 <link rel="import" href="app-config/etools-app-config.html">
 <link rel="import" href="app-elements/user-data/user-data.html">
 <link rel="import" href="app-elements/page-elements/side-bar-item.html">
-
 
 <link rel="import" href="styles/shared-styles.html">
 <link rel="import" href="styles/page-layout-styles.html">
@@ -40,7 +40,7 @@
 
   <template>
 
-    <style include="shared-styles iron-flex iron-flex-alignment">
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment">
 
       :host {
         display: block;
@@ -103,10 +103,30 @@
         border-bottom: 1px solid var(--dark-divider-color);
       }
 
+      .nav-menu, .flexy {
+        @apply(--layout-flex);
+      }
+
       system-notification {
-        position: fixed;
         width: 220px;
-        bottom:120px;
+        bottom: 120px;
+      }
+      .secondary-header {
+        color: var(--gray-dark);
+        height: 60px;
+        line-height: 60px;
+        text-align: center;
+        font-size: 12px;
+        border-top: 1px solid var(--gray-lighter);
+      }
+
+      .last-one {
+        margin-bottom: 10px;
+      }
+
+      .lighter-item {
+        --dark-icon-color: var(--gray-light);
+        --dark-primary-text-color: var(--gray-light);
       }
 
     </style>
@@ -134,31 +154,37 @@
             trip<br>management
           </app-toolbar>
 
-          <div class="nav-menu">
+          <div class="nav-menu layout vertical">
             <iron-selector selected="[[page]]" attr-for-selected="value" selectable="side-bar-item" role="navigation">
               <template is="dom-if" if="{{permissions.loggedInDefault}}">
 
-                  <side-bar-item name="Travel2Field" value="travel-list" icon="maps:transfer-within-a-station" href$="[[baseUrl]]travel-list?reverse=true&page=1&page_size=10&search&sort_by=reference_number&show_hidden=false"></side-bar-item>
-                  <template is="dom-if" if="[[isFfp]]" restamp>
-                    <side-bar-item name="invoices" value="invoices-list" icon="description" href$="[[baseUrl]]invoices-list?reverse=true&page=1&page_size=10&search&sort_by=id"></side-bar-item>
-                  </template>
-                  <side-bar-item name="action points" value="action-points-list" icon="flag" href$="[[baseUrl]]action-points-list?reverse=true&page=1&page_size=10&search&sort_by=action_point_number&f_person_responsible=[[user.id]]"></side-bar-item>
+                <side-bar-item name="Travel2Field" value="travel-list" icon="maps:transfer-within-a-station" href$="[[baseUrl]]travel-list?reverse=true&page=1&page_size=10&search&sort_by=reference_number&show_hidden=false"></side-bar-item>
+
+                <template is="dom-if" if="[[isFfp]]" restamp>
+                  <side-bar-item name="invoices" value="invoices-list" icon="description" href$="[[baseUrl]]invoices-list?reverse=true&page=1&page_size=10&search&sort_by=id"></side-bar-item>
+                </template>
+
+                <side-bar-item name="action points" value="action-points-list" icon="flag" href$="[[baseUrl]]action-points-list?reverse=true&page=1&page_size=10&search&sort_by=action_point_number&f_person_responsible=[[user.id]]"></side-bar-item>
 
               </template>
-
             </iron-selector>
+
+            <div class="flexy"></div>
+
+            <system-notification notifications="[[notifications]]"></system-notification>
+
+              <div class="secondary-header">eTools Community Channels</div>
+              <side-bar-item name="Knowledge base" class="lighter-item" icon="maps:local-library" href="https://etools.uservoice.com"></side-bar-item>
+              <side-bar-item name="Discussion" class="lighter-item" icon="icons:question-answer" href="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"></side-bar-item>
+              <side-bar-item name="Information" class="lighter-item last-one" icon="icons:info" href=""></side-bar-item>
+
           </div>
-
-          <system-notification notifications="[[notifications]]"></system-notification>
-
         </div>
-
       </app-drawer>
 
-
-        <template is="dom-if" id="privatePages" on-dom-change="_pagesStamped" if="{{permissions.loggedInDefault}}">
-          <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}" ffp="[[isFfp]]"></et2f-app>
-        </template>
+      <template is="dom-if" id="privatePages" on-dom-change="_pagesStamped" if="{{permissions.loggedInDefault}}">
+        <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}" ffp="[[isFfp]]"></et2f-app>
+      </template>
 
     </app-drawer-layout>
 
