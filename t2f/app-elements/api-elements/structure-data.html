@@ -229,7 +229,16 @@
           data.users = users.users;
           data.groups = groups.groups;
           data.drivers = drivers.drivers;
+<<<<<<< HEAD
           data.vendorNumbers = vendorNumbers.vendorNumbers;
+=======
+          data.attachment_types = [
+            {value: 0, label: 'Ticket Doc'},
+            {value: 1, label: 'Email corespondance'},
+            {value: 3, label: 'Cleareance Doc'},
+            {value: 4, label: 'Other'}
+          ];
+>>>>>>> 03a5895fb65987cc77e93ed6ba726579801505e8
           Object.freeze(data);
           return data;
       },

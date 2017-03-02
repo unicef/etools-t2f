@@ -50,6 +50,7 @@
                             hidden$="[[!attachmentsPermission.view]]"
                             files="{{attachments}}"
                             deleted-files="{{deletedAttachments}}"
+                            type-options="[[structure.attachment_types]]"
                             multiple>
                     </et2f-file-upload>
                 </etools-repeatable-field-set>
@@ -98,7 +99,8 @@
           },
           notePermission: {
             type: Object
-          }
+          },
+          structure: Object
         },
         observers: [
             '_attachmentsModified(attachments.*)',
