@@ -18,9 +18,12 @@
       return '' + parseFloat(item).toFixed(2);
     },
     _searchByLabel: function(structureData, value) {
-      return this.structure[structureData].find(function(item) {
-        return item.label.toLowerCase() === value.toLowerCase();
-      });
+      if (value) {
+        return this.structure[structureData].find(function(item) {
+          return item && item.label && (item.label.toLowerCase() === value.toLowerCase());
+        });
+      }
+      return;
     },
     _multiFieldConversion: function(subField, fieldName, fieldSet) {
       var self = this;
