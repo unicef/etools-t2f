@@ -17,6 +17,7 @@
     "manifest.json"
   ],
   "extraDependencies": [
-    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js",
+    "bower_components/es5-shim/es5-shim.min.js"
   ]
 }
