@@ -63,18 +63,12 @@
         'use strict';
 
         var onload = function() {
-          var shim = document.createElement('script');
-          shim.async = false;
-          shim.src = baseUrl + '/t2f/scripts/ie-shims.js';
-          shim.onload = function() {
-            if (!window.HTMLImports) {
-              document.dispatchEvent(
-                  new CustomEvent('WebComponentsReady', {bubbles: true})
-              );
-            }
-            loadUserVoice();
-          };
-          document.head.appendChild(shim);
+          if (!window.HTMLImports) {
+            document.dispatchEvent(
+                new CustomEvent('WebComponentsReady', {bubbles: true})
+            );
+          }
+          loadUserVoice();
         };
 
         var webComponentsSupported = (
