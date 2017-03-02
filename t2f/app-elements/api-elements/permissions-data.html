@@ -32,7 +32,14 @@
           value: etoolsAppConfig.endpoints.et2fPermissionsMatrix
         }
       },
+      _checkJSON: function(data) {
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+        return data;
+      },
       _handlePermissions: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = this._parsePermissions(data);
         }

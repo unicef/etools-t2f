@@ -126,6 +126,7 @@
           return 'flag-icon ' + 'flag-icon-' + flagIdMap[id];
         },
         _updateCountriesList: function(countries) {
+          console.log(countries)
           var arrayObj = countries.map(function(arrayItem) {
             return {
               id: arrayItem.id,
