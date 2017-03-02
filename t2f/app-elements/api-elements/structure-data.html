@@ -152,6 +152,7 @@
         return result;
       },
       _checkJSON: function(data) {
+        console.log(data);
         if (typeof data === 'string') {
           data = JSON.parse(data);
         }
