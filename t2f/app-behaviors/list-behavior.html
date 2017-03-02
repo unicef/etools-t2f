@@ -170,7 +170,7 @@
       this.$['search-input'].value = searchStr;
 
       if (this._computeFilters && typeof this._computeFilters === 'function') {
-        var filters = this._computeFilters(this.structure);
+        var filters = this._computeFilters(this.structure) || [];
 
         // Init filters
         filters.forEach(function(filt) {
