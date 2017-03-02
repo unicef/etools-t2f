@@ -161,6 +161,9 @@
       },
       _handleStaticData: function(e, data) {
         data = this._checkJSON(data);
+        if (!data.parsed) {
+          data = this._parseData(data);
+        }
         this.set('staticData', data);
       },
       _handleSections: function(e, data) {
