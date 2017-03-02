@@ -148,16 +148,21 @@
         }
         return result;
       },
+      _checkJSON: function(data) {
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+        return data;
+      },
       _redirectToLogin: function() {
         window.location.href = '/login/';
       },
       _handleStaticData: function(e, data) {
-        if (!data.parsed) {
-          data = this._parseData(data);
-        }
+        data = this._checkJSON(data);
         this.set('staticData', data);
       },
       _handleSections: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = {
             sections: data.sort(this._sortByName)
@@ -167,6 +172,7 @@
         this.set('sectionsData', data);
       },
       _handleOffices: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = {
             offices: data.sort(this._sortByName)
@@ -176,12 +182,14 @@
         this.set('officesData', data);
       },
       _handlet2fStaticData: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = this._parseData(data);
         }
         this.set('t2fStaticData', data);
       },
       _handleUsers: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = {
             users: data
@@ -191,6 +199,7 @@
         this.set('usersData', data);
       },
       _handleDrivers: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = {
             drivers: data
@@ -200,6 +209,7 @@
         this.set('driversData', data);
       },
       _handleVendorNumbers: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = {
             vendorNumbers: data
@@ -209,6 +219,7 @@
         this.set('vendorNumbers', data);
       },
       _handleGroups: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = {
             groups: data
@@ -380,8 +391,6 @@
           },
 
         };
-        console.log(data);
-        console.log(Object.assign);
         var dataKeys = Object.keys(data).sort();
         dataKeys.forEach(function(key) {
           var parsingFunction = parsingFunctions[key];
