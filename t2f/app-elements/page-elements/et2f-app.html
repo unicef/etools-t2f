@@ -131,7 +131,10 @@
           type: Boolean,
           value: false
         },
-        structure: Object,
+        structure: {
+          type: Object,
+          observer: '_warn'
+        },
         et2fPermissions: Object,
         user: {
           type: Object
