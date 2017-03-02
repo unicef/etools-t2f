@@ -338,10 +338,8 @@
         this.set('data', data.data);
       },
 
-      attached: function() {
-        this.set('availableFilters', this._computeFilters(this.structure));
-        this.splice('usedFilters', 0, this.usedFilters.length);
-        this.commonAttached();
+      attached: function(forced) {
+        this.commonAttached(forced);
       },
     });
   </script>

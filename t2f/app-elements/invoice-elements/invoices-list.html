@@ -45,11 +45,6 @@
         on-success="handleListResponse">
       </etools-ajax>
 
-      <etools-ajax url="[[vendorEndPoint]]"
-        loading="{{listLoading}}"
-        on-success="handleVendors">
-      </etools-ajax>
-
       <et2f-header title="Invoices"
         show-export-button$="[[showExportButton]]"
         export-list="[[exportList]]"
@@ -193,10 +188,6 @@
           value: '',
           observer: '_searchStringChanged'
         },
-        vendors: {
-          type: Array,
-          value: []
-        },
         ajaxParams: {
           type: Object,
           computed: '_computeAjaxParams(route)',
@@ -204,10 +195,6 @@
         listEndPoint: {
           type: String,
           value: etoolsAppConfig.endpoints.et2fInvoiceList.url
-        },
-        vendorEndPoint: {
-          type: String,
-          value: etoolsAppConfig.endpoints.et2fVendorList.url
         },
         filters: {
           type: Array,
@@ -301,7 +288,7 @@
           {
             name: 'Vendor number',
             filterName: 'f_vendor_number',
-            selection: this.vendors
+            selection: structure.vendorNumbers
           },
           {
             name: 'Status',
@@ -340,15 +327,15 @@
         var value;
 
         if (key === 'f_status') {
-          value = this._computeFilters()[1].selection.filter(function(item) {
+          value = this._computeFilters(this.structure)[1].selection.filter(function(item) {
             return item.value === id;
           })[0].apiValue;
         }
 
         if (key === 'f_vendor_number') {
-          value = this.vendors.filter(function(item) {
+          value = this._computeFilters(this.structure)[0].selection.filter(function(item) {
             return item.value === id;
-          })[0].apiValue;
+          })[0].label;
         }
 
         // URL based default setting shouldnt trigger refresh
@@ -365,21 +352,8 @@
         this.set('data', data.data);
       },
 
-      // Maps the vendors to readable form
-      handleVendors: function(event, data) {
-        var self = this;
-
-        data.forEach(function(vendorStr, i) {
-          self.push('vendors', {
-            label: vendorStr,
-            value: i,
-            apiValue: vendorStr
-          });
-        });
-      },
-
-      attached: function() {
-        this.commonAttached();
+      attached: function(forced) {
+        this.commonAttached(forced);
       },
 
     });

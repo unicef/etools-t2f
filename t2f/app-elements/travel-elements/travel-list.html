@@ -542,9 +542,9 @@
         this.set('route.__queryParams', backup);
       },
 
-      attached: function() {
+      attached: function(forced) {
         var params = this.route.__queryParams;
-        this.commonAttached();
+        this.commonAttached(forced);
         var toggled = params.show_hidden === 'true';
         this.$['show-hidden-toggle'].checked = toggled;
       },

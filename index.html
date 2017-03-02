@@ -35,17 +35,21 @@
     <meta name="msapplication-TileColor" content="#3f51b5">
     <meta name="msapplication-tap-highlight" content="no">
     <script>
-      var UserVoice = window.UserVoice || [];
-      (function() {
+      // var UserVoice = window.UserVoice || [];
+      // UserVoice.push(['addTrigger', {}]);
+      function loadUserVoice() {
         var uv = document.createElement('script');
         uv.type = 'text/javascript';
         uv.async = true;
         uv.src = '//widget.uservoice.com/s74dylVlP3CUCbVw6famA.js';
+        uv.onload = function() {
+          setTimeout(function() {
+            window.UserVoice.push(['addTrigger'], {});
+          }, 500);
+        };
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(uv, s);
-      })();
-      UserVoice.push(['addTrigger', {}]);
-
+      }
       // Setup Polymer options
       window.Polymer = {
         dom: 'shadow',
@@ -59,17 +63,12 @@
         'use strict';
 
         var onload = function() {
-          var shim = document.createElement('script');
-          shim.async = false;
-          shim.src = baseUrl + '/t2f/scripts/ie-shims.js';
-          shim.onload = function() {
-            if (!window.HTMLImports) {
-              document.dispatchEvent(
-                  new CustomEvent('WebComponentsReady', {bubbles: true})
-              );
-            }
-          };
-          document.head.appendChild(shim);
+          if (!window.HTMLImports) {
+            document.dispatchEvent(
+                new CustomEvent('WebComponentsReady', {bubbles: true})
+            );
+          }
+          loadUserVoice();
         };
 
         var webComponentsSupported = (
