@@ -78,7 +78,10 @@
         officesLoading: Boolean,
         t2fStaticDataLoading: Boolean,
         driversLoading: Boolean,
-        vendorNumbersLoading: Boolean,
+        vendorNumbersLoading: {
+          type: Boolean,
+          observer: '_warn'
+        },
         structure: {
           type: Object,
           notify: true,
