@@ -193,6 +193,13 @@
         invoiceUrl: {
           type: String,
           computed: '_computeUrl(invoiceId)',
+        },
+        data: {
+          type: Object
+        },
+        invoice: {
+          type: Object,
+          computed: '_parseInvoice(data, structure)',
         }
       },
       behaviors: [et2fBehaviors.ApiBehavior],
@@ -204,6 +211,10 @@
         }
       },
       _handleData: function(e, data) {
+        this.set('data', {});
+        this.set('data', data);
+      },
+      _parseInvoice: function(data, structure) {
         var self = this;
         var invoice = {};
         var lib = self._structureLib().value.invoice;
@@ -229,8 +240,7 @@
             });
           }
         });
-        this.set('invoice', {});
-        this.set('invoice', invoice);
+        return invoice;
       },
       _printAsFixed2: function(value) {
         return parseFloat(value).toFixed(2);
