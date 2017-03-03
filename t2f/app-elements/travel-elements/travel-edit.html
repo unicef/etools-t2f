@@ -471,7 +471,7 @@
           invalids[category] = invalids[category] && invalids[category].length > 0 ? dedupe(invalids[category]) : false;
         });
 
-        if (invalids.details.length > 0 || invalids.report.length > 0) {
+        if (invalids.details.length > 0 || invalids.report.length > 0 || invalids.general.length > 0) {
           this.set('invalids', invalids);
           this.$.invalid_modal.open();
         } else {
