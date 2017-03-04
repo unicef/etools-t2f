@@ -43,7 +43,7 @@
       deductions = dom.querySelector('#deductions');
       deductionsItems = function() {
         return deductions.$.deductions_list.items;
-      }; // LOLOLOLOL TROLROLOLO
+      };
 
       api = dom.querySelector('#api');
       dom.flush();
@@ -140,6 +140,24 @@
 
         var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('480.00');
         var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('10.00');
+        if (baseDSAokay && deductionsOkay) console.log('✅');
+        done();
+      }
+
+      api.doRequest({endPoint: 'save'});
+    });
+
+    test('Example case for last day totally deducted, (CASE4 modified)', function(done) {
+
+      fillData('CASE4', true, false);
+      api.data.deductions[65].no_dsa = true;
+
+      api._handlePostSuccess = function(e, data) {
+
+        // console.log('cost summary', data.cost_summary);
+
+        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('12708.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('141.00');
         if (baseDSAokay && deductionsOkay) console.log('✅');
         done();
       }

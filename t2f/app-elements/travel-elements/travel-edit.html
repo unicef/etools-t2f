@@ -300,6 +300,21 @@
           itinerary: [{
             overnight_travel: null
           }],
+          // itinerary: [{
+          //   'origin': 'this',
+          //   'destination': 'there',
+          //   'dsa_region': {label: 'fake', value: 799},
+          //   'departure_date': new Date('2017-02-01T05:00:00.000Z'),
+          //   'arrival_date': new Date('2017-02-01T22:40:00.000Z'),
+          //   'mode_of_travel': {label: 'bus', value: 1}
+          // },
+          // {
+          //   'origin': 'there',
+          //   'destination': 'this',
+          //   'departure_date': new Date('2017-02-28T05:00:00.000Z'),
+          //   'arrival_date': new Date('2017-02-28T10:00:00.000Z'),
+          //   'mode_of_travel': {label: 'boat', value: 3},
+          // }],
           cost_assignments: [{
             delegate: null
           }],
@@ -471,7 +486,7 @@
           invalids[category] = invalids[category] && invalids[category].length > 0 ? dedupe(invalids[category]) : false;
         });
 
-        if (invalids.details.length > 0 || invalids.report.length > 0) {
+        if (invalids.details.length > 0 || invalids.report.length > 0 || invalids.general.length > 0) {
           this.set('invalids', invalids);
           this.$.invalid_modal.open();
         } else {

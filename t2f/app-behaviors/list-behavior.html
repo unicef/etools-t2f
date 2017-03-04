@@ -8,17 +8,22 @@
       route: {
         type: Object,
         observer: '_routeObserver',
-      },
+      }
     },
-
     _routeObserver: function(newRoute, oldRoute) {
-      if (oldRoute && oldRoute.path && oldRoute.path.indexOf(this.is) === -1 && newRoute.path.indexOf(this.is) > -1) {
+      if (oldRoute && oldRoute.path && oldRoute.path.indexOf(this.is) === -1
+        && newRoute && newRoute.path && newRoute.path.indexOf(this.is) > -1) {
         this.attached(true);
       }
     },
 
     // Computes the ajax parameters from the URL params & the default ones
     _computeAjaxParams: function(route) {
+
+      if (route && !route.path) {
+        return;
+      }
+
       function shallowEqual(O1, O2) {
         if (!O1 || !O2) {
           return false;
