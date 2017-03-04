@@ -2,34 +2,397 @@
 
   window.caseScenarios = {};
 
-  window.caseScenarios.kidussExample = {
+  window.caseScenarios.CASE1 = {
     "action_points": [
       {}
     ],
     "activities": [
       {
         "locations": [],
-        "partnership": null,
-        "primary_traveler": false
+        "partnership": null
+      }
+    ],
+    "attachments": [],
+    "baseDetails": {
+      "international_travel": null,
+      "purpose": "CASE 1",
+      "ta_required": true,
+      "traveler": {
+        "label": "Main User",
+        "value": 4176
+      }
+    },
+    "cost_assignments": [
+      {
+        "business_area": {
+          "code": "1430",
+          "default_currency": null,
+          "id": 28,
+          "label": "1430 - Fiji (Pacific Islands)",
+          "name": "Fiji (Pacific Islands)",
+          "region": {
+            "code": "60",
+            "name": "EAPR"
+          },
+          "value": 28,
+        },
+        "delegate": null,
+        "wbs": null
+      }
+    ],
+    "cost_summary": {},
+    "deductions": [
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-01-01",
+        "dinner": false,
+        "lunch": true,
+        "no_dsa": false
+      }
+    ],
+    "expenses": [
+      {}
+    ],
+    "itinerary": [
+      {
+        "airlines": [],
+        "arrival_date": "2017-01-01T01:00:00.235Z",
+        "departure_date": "2017-01-01T00:00:00.225Z",
+        "destination": "Budapest",
+        "dsa_region": {
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "Amsterdam",
+        "overnight_travel": null
+      },
+      {
+        "airlines": "",
+        "arrival_date": "2017-01-01T14:00:00.511Z",
+        "departure_date": "2017-01-01T09:00:00.499Z",
+        "destination": "Amsterdam",
+        "dsa_region": {
+          "label": "Netherlands - DSA - Amsterdam",
+          "value": 1369
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "Budapest",
+        "overnight_travel": ""
+      }
+    ],
+    "status": "Planned"
+  };
+
+  window.caseScenarios.CASE2 = {
+    "action_points": [
+      {}
+    ],
+    "activities": [
+      {
+        "locations": [],
+        "partnership": null
       }
     ],
     "attachments": [],
     "baseDetails": {
       "currency": {
-        "label": "Euro",
-        "short": "EUR",
-        "value": 42
+        "exchange_to_dollar": 1,
+        "label": "US Dollar",
+        "short": "USD",
+        "value": 145
       },
-      "international_travel": false,
-      "mode_of_travel": [],
+      "purpose": "CASE2",
+      "international_travel": null,
       "ta_required": true,
       "traveler": {
         "label": "Main User",
-        "value": 3742
+        "value": 4176
       }
     },
     "cost_assignments": [
+      {
+        "business_area": {
+          "code": "1430",
+          "default_currency": null,
+          "id": 28,
+          "label": "1430 - Fiji (Pacific Islands)",
+          "name": "Fiji (Pacific Islands)",
+          "region": {
+            "code": "60",
+            "name": "EAPR"
+          },
+          "value": 28,
+        },
+        "delegate": null,
+        "wbs": null
+      }
+    ],
+    "cost_summary": {},
+    "deductions": [
+      {
+        "accomodation": true,
+        "breakfast": false,
+        "date": "2017-01-01",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": true,
+        "date": "2017-01-02",
+        "dinner": true,
+        "lunch": true,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-01-03",
+        "dinner": false,
+        "lunch": true,
+        "no_dsa": false
+      }
+    ],
+    "expenses": [
       {}
+    ],
+    "itinerary": [
+      {
+        "airlines": [],
+        "arrival_date": "2017-01-01T01:00:00Z",
+        "departure_date": "2017-01-01T00:00:00Z",
+        "destination": "B",
+        "dsa_region": {
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "A",
+        "overnight_travel": null
+      },
+      {
+        "airlines": "",
+        "arrival_date": "2017-01-01T10:00:00Z",
+        "departure_date": "2017-01-01T09:00:00Z",
+        "destination": "C",
+        "dsa_region": {
+          "label": "Denmark - DSA - Copenhagen",
+          "value": 1371
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "B",
+        "overnight_travel": ""
+      },
+      {
+        "airlines": "",
+        "arrival_date": "2017-01-01T22:00:00Z",
+        "departure_date": "2017-01-01T21:00:00Z",
+        "destination": "D",
+        "dsa_region": {
+          "label": "Germany - DSA - Dusseldorf",
+          "value": 1372
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "C",
+        "overnight_travel": ""
+      },
+      {
+        "airlines": "",
+        "arrival_date": "2017-01-03T12:00:00Z",
+        "departure_date": "2017-01-03T09:00:00Z",
+        "destination": "A",
+        "dsa_region": {
+          "label": "Netherlands - DSA - Amsterdam",
+          "value": 1369
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "D",
+        "overnight_travel": ""
+      }
+    ],
+    "status": "Planned"
+  };
+
+  window.caseScenarios.CASE3 = {
+    "action_points": [
+      {}
+    ],
+    "activities": [
+      {
+        "partnership": null
+      }
+    ],
+    "attachments": [],
+    "baseDetails": {
+      "currency": {
+        "exchange_to_dollar": 1,
+        "label": "US Dollar",
+        "short": "USD",
+        "value": 145
+      },
+      "purpose": "CASE3",
+      "international_travel": null,
+      "ta_required": true,
+      "traveler": {
+        "label": "Main User",
+        "value": 4176
+      }
+    },
+    "cost_assignments": [
+      {
+        "business_area": {
+          "id": 28,
+          "label": "1430 - Fiji (Pacific Islands)",
+          "value": 28,
+        },
+        "delegate": null,
+        "wbs": null
+      }
+    ],
+    "cost_summary": {},
+    "deductions": [
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-01-01",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": true,
+        "date": "2017-01-02",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": true,
+        "date": "2017-01-03",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      }
+    ],
+    "expenses": [],
+    "itinerary": [
+      {
+        "arrival_date": "2017-01-01T01:00:00.174Z",
+        "departure_date": "2017-01-01T00:00:00.163Z",
+        "destination": "B",
+        "dsa_region": {
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "A",
+        "overnight_travel": null
+      },
+      {
+        "airlines": [],
+        "arrival_date": "2017-01-03T01:00:00.976Z",
+        "departure_date": "2017-01-03T00:00:00.958Z",
+        "destination": "C",
+        "dsa_region": {
+          "label": "Denmark - DSA - Copenhagen",
+          "value": 1371
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "B",
+        "overnight_travel": ""
+      },
+      {
+        "airlines": [],
+        "arrival_date": "2017-01-03T10:30:00.660Z",
+        "departure_date": "2017-01-03T10:00:00.650Z",
+        "destination": "A",
+        "dsa_region": {
+          "label": "Netherlands - DSA - Amsterdam",
+          "value": 1369
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "C",
+        "overnight_travel": ""
+      }
+    ],
+    "status": "Planned"
+  };
+
+  window.caseScenarios.CASE4 = {
+    "action_points": [
+      {}
+    ],
+    "activities": [
+      {
+        "locations": [],
+        "partnership": null
+      }
+    ],
+    "attachments": [],
+    "baseDetails": {
+      "currency": {
+        "exchange_to_dollar": 1,
+        "label": "US Dollar",
+        "short": "USD",
+        "value": 145
+      },
+      "purpose": "CASE4",
+      "international_travel": null,
+      "ta_required": true,
+      "traveler": {
+        "label": "Main User",
+        "value": 4176
+      }
+    },
+    "cost_assignments": [
+      {
+        "business_area": {
+          "code": "1430",
+          "default_currency": null,
+          "id": 28,
+          "label": "1430 - Fiji (Pacific Islands)",
+          "name": "Fiji (Pacific Islands)",
+          "region": {
+            "code": "60",
+            "name": "EAPR"
+          },
+          "value": 28,
+        },
+        "delegate": null,
+        "wbs": null
+      }
     ],
     "cost_summary": {},
     "deductions": [
@@ -190,7 +553,7 @@
         "breakfast": false,
         "date": "2017-01-20",
         "dinner": false,
-        "lunch": true,
+        "lunch": false,
         "no_dsa": false
       },
       {
@@ -198,7 +561,7 @@
         "breakfast": false,
         "date": "2017-01-21",
         "dinner": false,
-        "lunch": true,
+        "lunch": false,
         "no_dsa": false
       },
       {
@@ -267,7 +630,7 @@
       },
       {
         "accomodation": false,
-        "breakfast": true,
+        "breakfast": false,
         "date": "2017-01-30",
         "dinner": false,
         "lunch": false,
@@ -280,6 +643,286 @@
         "dinner": false,
         "lunch": false,
         "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-01",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-02",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-03",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-04",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-05",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-06",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-07",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-08",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-09",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-10",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-11",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-12",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-13",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-14",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-15",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-16",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-17",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-18",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-19",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-20",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-21",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-22",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-23",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-24",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-25",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-26",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-27",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-02-28",
+        "dinner": true,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-01",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-02",
+        "dinner": true,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-03",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-04",
+        "dinner": true,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-05",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-06",
+        "dinner": true,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-03-07",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
       }
     ],
     "expenses": [
@@ -288,495 +931,190 @@
     "itinerary": [
       {
         "airlines": [],
-        "arrival_date": "2017-01-02T07:00:01.670Z",
-        "departure_date": "2016-12-31T23:00:01.660Z",
-        "destination": "Prague",
+        "arrival_date": "2017-01-01T10:00:00.782Z",
+        "departure_date": "2017-01-01T09:00:00.767Z",
+        "destination": "B",
         "dsa_region": {
-          "label": "Prague",
-          "value": 9
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
         },
         "mode_of_travel": {
           "label": "bus",
           "value": 1
         },
-        "origin": "Washington"
+        "origin": "A",
+        "overnight_travel": null
       },
       {
         "airlines": "",
-        "arrival_date": "2017-01-02T19:00:01.932Z",
-        "departure_date": "2017-01-02T17:00:01.904Z",
-        "destination": "Amsterdam",
+        "arrival_date": "2017-03-04T10:00:00.892Z",
+        "departure_date": "2017-03-04T09:00:00.876Z",
+        "destination": "C",
         "dsa_region": {
-          "label": "Amsterdam",
-          "value": 10
+          "label": "Denmark - DSA - Copenhagen",
+          "value": 1371
         },
         "mode_of_travel": {
           "label": "bus",
           "value": 1
         },
-        "origin": "Prague"
+        "origin": "B",
+        "overnight_travel": ""
       },
       {
         "airlines": "",
-        "arrival_date": "2017-01-02T22:00:01.633Z",
-        "departure_date": "2017-01-02T21:00:01.601Z",
-        "destination": "Barcelona",
+        "arrival_date": "2017-03-05T10:00:00.442Z",
+        "departure_date": "2017-03-05T09:00:00.432Z",
+        "destination": "B",
         "dsa_region": {
-          "label": "Barcelona",
-          "value": 11
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
         },
         "mode_of_travel": {
           "label": "bus",
           "value": 1
         },
-        "origin": "Amsterdam"
+        "origin": "C",
+        "overnight_travel": ""
       },
       {
         "airlines": "",
-        "arrival_date": "2017-01-03T04:00:01.214Z",
-        "departure_date": "2017-01-03T01:00:01.178Z",
-        "destination": "Budapest",
+        "arrival_date": "2017-04-07T09:00:00.339Z",
+        "departure_date": "2017-03-07T09:00:00.328Z",
+        "destination": "A",
         "dsa_region": {
-          "label": "Budapest",
-          "value": 12
+          "label": "Netherlands - DSA - Amsterdam",
+          "value": 1369
         },
         "mode_of_travel": {
           "label": "bus",
           "value": 1
         },
-        "origin": "Barcelona"
-      },
-      {
-        "airlines": "",
-        "arrival_date": "2017-01-10T05:00:01.862Z",
-        "departure_date": "2017-01-10T04:00:01.829Z",
-        "destination": "Geneva",
-        "dsa_region": {
-          "label": "Geneva",
-          "value": 13
-        },
-        "mode_of_travel": {
-          "label": "bus",
-          "value": 1
-        },
-        "origin": "Budapest"
-      },
-      {
-        "airlines": "",
-        "arrival_date": "2017-01-31T02:00:01.552Z",
-        "departure_date": "2017-01-30T21:00:01.523Z",
-        "destination": "Washington",
-        "dsa_region": {
-          "label": "Washington",
-          "value": 14
-        },
-        "mode_of_travel": {
-          "label": "bus",
-          "value": 1
-        },
-        "origin": "Geneva"
+        "origin": "B",
+        "overnight_travel": ""
       }
     ],
     "status": "Planned"
   };
 
-  // window.caseScenarios.simple = {
-  //   "action_points": [
-  //     {}
-  //   ],
-  //   "activities": [
-  //     {
-  //       "id": 7,
-  //       "locations": [],
-  //       "partnership": null,
-  //       "primary_traveler": false
-  //     }
-  //   ],
-  //   "attachments": [],
-  //   "baseDetails": {
-  //     "additional_note": null,
-  //     "end_date": "2017-01-15T12:51:16.755Z",
-  //     "estimated_travel_cost": "0.00",
-  //     "id": 7,
-  //     "international_travel": false,
-  //     "mode_of_travel": [
-  //       {
-  //         "label": "Bus",
-  //         "value": 2
-  //       }
-  //     ],
-  //     "office": {
-  //       "label": "Pulilab",
-  //       "value": 195
-  //     },
-  //     "purpose": "#1 Test scenario - basic",
-  //     "reference_number": "2017/000007",
-  //     "section": {
-  //       "label": "SPPME",
-  //       "value": 1
-  //     },
-  //     "start_date": "2017-01-14T12:51:16.719Z",
-  //     "status": "planned",
-  //     "supervisor": {
-  //       "label": "Puli Lab",
-  //       "value": 3741
-  //     },
-  //     "ta_required": true,
-  //     "traveler": {
-  //       "label": "Puli Lab",
-  //       "value": 3742
-  //     }
-  //   },
-  //   "canceled_at": null,
-  //   "cancellation_note": null,
-  //   "certification_note": null,
-  //   "clearances": {
-  //     "id": 7,
-  //     "medical_clearance": "not_applicable",
-  //     "security_clearance": "not_applicable",
-  //     "security_course": "not_applicable"
-  //   },
-  //   "completed_at": null,
-  //   "cost_assignments": [
-  //     {}
-  //   ],
-  //   "cost_summary": {
-  //     "deductions_total": "0.00",
-  //     "dsa": [
-  //       {
-  //         "amount_usd": "600.0000",
-  //         "daily_rate_usd": "300.0000",
-  //         "dsa_region": 3,
-  //         "dsa_region_name": "Hungary - Budapest",
-  //         "end_date": "2017-01-15",
-  //         "night_count": 2,
-  //         "start_date": "2017-01-14"
-  //       }
-  //     ],
-  //     "dsa_total": "600.00",
-  //     "expenses_delta": "0.00",
-  //     "expenses_total": "0.00",
-  //     "preserved_expenses": null
-  //   },
-  //   "deductions": [
-  //     {
-  //       "accomodation": false,
-  //       "breakfast": false,
-  //       "date": "2017-01-14",
-  //       "day_of_the_week": "Sat",
-  //       "dinner": false,
-  //       "id": 525,
-  //       "lunch": false,
-  //       "no_dsa": false
-  //     }
-  //   ],
-  //   "expenses": [
-  //     {}
-  //   ],
-  //   "itinerary": [
-  //     {
-  //       "airlines": [],
-  //       "arrival_date": "2017-01-14T20:50:18.107Z",
-  //       "departure_date": "2017-01-14T12:51:18.092Z",
-  //       "destination": "B",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": 10,
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "A",
-  //       "overnight_travel": false
-  //     },
-  //     {
-  //       "airlines": [],
-  //       "arrival_date": "2017-01-15T08:50:18.107Z",
-  //       "departure_date": "2017-01-15T00:51:18.092Z",
-  //       "destination": "A",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": 11,
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "B",
-  //       "overnight_travel": false
-  //     }
-  //   ],
-  //   "misc_expenses": null,
-  //   "rejection_note": null,
-  //   "report": "",
-  //   "status": "Planned"
-  // };
-
-  // window.caseScenarios.longerThan60 = {
-  //   "action_points": [
-  //     {}
-  //   ],
-  //   "activities": [
-  //     {
-  //       "id": 7,
-  //       "locations": [],
-  //       "partnership": null,
-  //       "primary_traveler": false
-  //     }
-  //   ],
-  //   "attachments": [],
-  //   "baseDetails": {
-  //     "additional_note": null,
-  //     "end_date": "2017-04-15T11:51:16.755Z",
-  //     "estimated_travel_cost": "0.00",
-  //     "id": 7,
-  //     "international_travel": false,
-  //     "mode_of_travel": [
-  //       {
-  //         "label": "Bus",
-  //         "value": 2
-  //       }
-  //     ],
-  //     "office": {
-  //       "label": "Pulilab",
-  //       "value": 195
-  //     },
-  //     "purpose": "#1 Test scenario - basic",
-  //     "reference_number": "2017/000007",
-  //     "section": {
-  //       "label": "SPPME",
-  //       "value": 1
-  //     },
-  //     "start_date": "2017-01-14T12:51:16.719Z",
-  //     "status": "planned",
-  //     "supervisor": {
-  //       "label": "Puli Lab",
-  //       "value": 3741
-  //     },
-  //     "ta_required": true,
-  //     "traveler": {
-  //       "label": "Puli Lab",
-  //       "value": 3742
-  //     }
-  //   },
-  //   "canceled_at": null,
-  //   "cancellation_note": null,
-  //   "certification_note": null,
-  //   "clearances": {
-  //     "id": 7,
-  //     "medical_clearance": "not_applicable",
-  //     "security_clearance": "not_applicable",
-  //     "security_course": "not_applicable"
-  //   },
-  //   "completed_at": null,
-  //   "cost_assignments": [
-  //     {}
-  //   ],
-  //   "cost_summary": {
-  //     "deductions_total": "0.00",
-  //     "dsa": [
-  //       {
-  //         "amount_usd": "600.0000",
-  //         "daily_rate_usd": "300.0000",
-  //         "dsa_region": 3,
-  //         "dsa_region_name": "Hungary - Budapest",
-  //         "end_date": "2017-01-15",
-  //         "night_count": 2,
-  //         "start_date": "2017-01-14"
-  //       }
-  //     ],
-  //     "dsa_total": "600.00",
-  //     "expenses_delta": "0.00",
-  //     "expenses_total": "0.00",
-  //     "preserved_expenses": null
-  //   },
-  //   "deductions": [],
-  //   "expenses": [
-  //     {}
-  //   ],
-  //   "itinerary": [
-  //     {
-  //       "airlines": [],
-  //       "arrival_date": "2017-01-14T20:50:18.107Z",
-  //       "departure_date": "2017-01-14T12:51:18.092Z",
-  //       "destination": "B",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": 10,
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "A",
-  //       "overnight_travel": false
-  //     },
-  //     {
-  //       "airlines": [],
-  //       "arrival_date": "2017-04-15T07:50:18.107Z",
-  //       "departure_date": "2017-04-14T23:51:18.092Z",
-  //       "destination": "A",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": 11,
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "B",
-  //       "overnight_travel": false
-  //     }
-  //   ],
-  //   "misc_expenses": null,
-  //   "rejection_note": null,
-  //   "report": "",
-  //   "status": "Planned"
-  // };
-
-  // window.caseScenarios.sameDay = {
-  //   "action_points": [
-  //     {}
-  //   ],
-  //   "activities": [
-  //     {
-  //       "id": 8,
-  //       "locations": [],
-  //       "partnership": null,
-  //       "primary_traveler": false
-  //     }
-  //   ],
-  //   "attachments": [],
-  //   "baseDetails": {
-  //     "additional_note": null,
-  //     "end_date": "2017-01-17T10:56:49.966Z",
-  //     "estimated_travel_cost": "0.00",
-  //     "id": 10,
-  //     "international_travel": false,
-  //     "mode_of_travel": [
-  //       {
-  //         "label": "Bus",
-  //         "value": 2
-  //       }
-  //     ],
-  //     "office": {
-  //       "label": "Pulilab",
-  //       "value": 195
-  //     },
-  //     "purpose": null,
-  //     "reference_number": "2017/000010",
-  //     "section": {
-  //       "label": "Enginnering",
-  //       "value": 2
-  //     },
-  //     "start_date": "2017-01-16T10:56:49.939Z",
-  //     "status": "planned",
-  //     "supervisor": {
-  //       "label": "Puli Lab",
-  //       "value": 3741
-  //     },
-  //     "ta_required": true,
-  //     "traveler": {
-  //       "label": "Main User",
-  //       "value": 3742
-  //     }
-  //   },
-  //   "canceled_at": null,
-  //   "cancellation_note": null,
-  //   "certification_note": null,
-  //   "clearances": {
-  //     "id": 10,
-  //     "medical_clearance": "not_applicable",
-  //     "security_clearance": "not_applicable",
-  //     "security_course": "not_applicable"
-  //   },
-  //   "completed_at": null,
-  //   "cost_assignments": [
-  //     {}
-  //   ],
-  //   "cost_summary": {
-  //     "deductions_total": "0.00",
-  //     "dsa": [
-  //       {
-  //         "amount_usd": "120.0000",
-  //         "daily_rate_usd": "300.0000",
-  //         "dsa_region": 3,
-  //         "dsa_region_name": "Hungary - Budapest",
-  //         "end_date": "2017-01-16",
-  //         "night_count": 1,
-  //         "start_date": "2017-01-16"
-  //       }
-  //     ],
-  //     "dsa_total": "120.00",
-  //     "expenses_delta": "0.00",
-  //     "expenses_total": "0.00",
-  //     "preserved_expenses": null
-  //   },
-  //   "deductions": [
-  //     {
-  //       "accomodation": false,
-  //       "breakfast": false,
-  //       "date": "2017-01-16",
-  //       "day_of_the_week": "Mon",
-  //       "dinner": false,
-  //       "id": 1667,
-  //       "lunch": false,
-  //       "no_dsa": false
-  //     }
-  //   ],
-  //   "expenses": [
-  //     {}
-  //   ],
-  //   "itinerary": [
-  //     {
-  //       "airlines": [],
-  //       "arrival_date": "2017-01-17T01:10:51.122Z",
-  //       "departure_date": "2017-01-17T01:00:51.110Z",
-  //       "destination": "B",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": 14,
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "A",
-  //       "overnight_travel": false
-  //     },
-  //     {
-  //       "airlines": "",
-  //       "arrival_date": "2017-01-17T07:10:02.109Z",
-  //       "departure_date": "2017-01-17T07:00:02.073Z",
-  //       "destination": "A",
-  //       "dsa_region": {
-  //         "label": "Hungary - Budapest",
-  //         "value": 3
-  //       },
-  //       "id": "",
-  //       "mode_of_travel": {
-  //         "label": "Bus",
-  //         "value": 2
-  //       },
-  //       "origin": "B",
-  //       "overnight_travel": ""
-  //     }
-  //   ],
-  //   "misc_expenses": null,
-  //   "rejection_note": null,
-  //   "report": "",
-  //   "status": "Planned"
-  // };
-
-  // window.caseScenarios.sameDayLonger = JSON.parse(JSON.stringify(window.caseScenarios.sameDay));
-  // window.caseScenarios.sameDayLonger.itinerary[1].arrival_date = "2017-01-17T17:10:02.109Z";
-  // window.caseScenarios.sameDayLonger.itinerary[1].departure_date = "2017-01-17T17:00:02.073Z";
+  window.caseScenarios.CASE5 = {
+    "action_points": [
+      {}
+    ],
+    "activities": [
+      {
+        "locations": [],
+        "partnership": null
+      }
+    ],
+    "attachments": [],
+    "baseDetails": {
+      "currency": {
+        "exchange_to_dollar": 1,
+        "label": "US Dollar",
+        "short": "USD",
+        "value": 145
+      },
+      "international_travel": null,
+      "purpose": "CASE5",
+      "ta_required": true,
+      "traveler": {
+        "label": "Main User",
+        "value": 4176
+      }
+    },
+    "cost_assignments": [
+      {
+        "business_area": {
+          "code": "1430",
+          "default_currency": null,
+          "id": 28,
+          "label": "1430 - Fiji (Pacific Islands)",
+          "name": "Fiji (Pacific Islands)",
+          "region": {
+            "code": "60",
+            "name": "EAPR"
+          },
+          "value": 28,
+        },
+        "delegate": null,
+        "wbs": null
+      }
+    ],
+    "cost_summary": {},
+    "deductions": [
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2016-12-31",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-01-01",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": false,
+        "date": "2017-01-02",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      },
+      {
+        "accomodation": false,
+        "breakfast": true,
+        "date": "2017-01-03",
+        "dinner": false,
+        "lunch": false,
+        "no_dsa": false
+      }
+    ],
+    "expenses": [
+      {}
+    ],
+    "itinerary": [
+      {
+        "airlines": [],
+        "arrival_date": "2017-01-01T02:00:00.427Z",
+        "departure_date": "2016-12-31T21:00:00.393Z",
+        "destination": "B",
+        "dsa_region": {
+          "label": "Hungary - DSA - Budapest",
+          "value": 1370
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "A",
+        "overnight_travel": null
+      },
+      {
+        "airlines": "",
+        "arrival_date": "2017-01-04T03:00:00.168Z",
+        "departure_date": "2017-01-03T22:00:00.151Z",
+        "destination": "A",
+        "dsa_region": {
+          "label": "Netherlands - DSA - Amsterdam",
+          "value": 1369
+        },
+        "mode_of_travel": {
+          "label": "bus",
+          "value": 1
+        },
+        "origin": "B",
+        "overnight_travel": ""
+      }
+    ],
+    "status": "Planned"
+  };
 
   Object.keys(window.caseScenarios).forEach(function(key) {
     window.caseScenarios[key].itinerary.forEach(function(iti) {

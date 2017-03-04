@@ -1,0 +1,57 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../app-config/etools-app-config.html">
+
+
+<dom-module id="et2f-profile-data">
+  <template>
+    <etools-ajax endpoint="[[profileEndpoint]]"
+      on-success="_handleProfileData"
+      loading="{{loading}}"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
+
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'et2f-profile-data',
+
+      properties: {
+        profile: {
+          type: Object,
+          notify: true
+        },
+        userId: {
+          type: Number,
+        },
+        loading: {
+          type: Boolean,
+          notify: true,
+        },
+        profileEndpoint: {
+          type: String,
+          computed: '_computePrfileUrl(userId)',
+        },
+      },
+      _computePrfileUrl: function(userId) {
+        if (userId) {
+          userId = parseInt(userId, 10);
+          return etoolsAppConfig.globals.computeTemplate('profile', {
+              id: userId
+            });
+        }
+      },
+      _redirectToLogin: function() {
+        window.location.href = '/login/';
+      },
+      _handleProfileData: function(e, data) {
+        this.set('profile', data);
+      },
+    });
+  </script>
+</dom-module>

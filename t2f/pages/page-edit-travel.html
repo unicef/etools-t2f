@@ -6,8 +6,8 @@
 
 
 
-<link rel="import" href="../app-elements/travel-editing-elements/travel-edit.html">
-<link rel="import" href="../app-elements/page-header-element/page-header.html">
+<link rel="import" href="../app-elements/travel-elements/travel-edit.html">
+<link rel="import" href="../app-elements/page-elements/page-header.html">
 
 <link rel="import" href="../styles/shared-styles.html">
 
@@ -27,12 +27,12 @@
 
       <app-header fixed shadow>
 
-        <page-header title="" countries="[[structure.countries]]"></page-header>
+        <page-header title="" user="[[user]]"></page-header>
 
       </app-header>
     </app-header-layout>
     <template is="dom-if" if="[[showTravelEdit]]" restamp>
-      <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" detail-loading="{{detailLoading}}" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
+      <travel-edit travel-id="[[travelId]]" et2f-permissions="[[et2fPermissions]]" travel-data-loading="{{detailLoading}}" structure="[[structure]]" user="[[user]]" route="{{route}}" ></travel-edit>
     </template>
   </template>
 

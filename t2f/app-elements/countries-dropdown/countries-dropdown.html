@@ -2,12 +2,10 @@
 <link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../styles/countries-flags/country-flag-styles.html">
-
 
 <dom-module id="countries-dropdown">
   <template>
-    <style include="country-flag-styles">
+    <style>
 
       :host {
         display: block;
@@ -32,10 +30,6 @@
           display: none;
         };
 
-        --paper-input-container-input: {
-          color: var(--light-primary-text-color);
-        };
-
         --paper-dropdown-menu-icon: {
           color: var(--light-icon-color);
         };
@@ -44,6 +38,7 @@
           top: 4px;
         };
         --paper-input-container-input: {
+          text-align: right;
           margin-bottom: 2px;
           color: var(--light-primary-text-color);
           cursor: pointer;
@@ -74,15 +69,17 @@
 
     </style>
 
-    <iron-icon class$="[[country.imgClass]]" prefix></iron-icon>
+    <etools-ajax
+      id="ajax"
+      method="POST"
+      on-success="_handleResponse"
+      on-fail="_handleError">
+    </etools-ajax>
 
     <paper-dropdown-menu id="menu" label="Country" noink no-label-float>
-      <paper-listbox class="dropdown-content" on-iron-select="_countrySelected">
+      <paper-listbox id="countriesListbox" class="dropdown-content" on-iron-select="_countrySelected" attr-for-selected="countryId" selected="[[current]]">
         <template id="repeat" is="dom-repeat" items="[[countries]]">
-          <paper-item>
-            <iron-icon class$="[[item.imgClass]]" item-icon></iron-icon>
-            [[item.label]]
-          </paper-item>
+          <paper-item country-id="[[item.id]]">[[item.name]]</paper-item>
         </template>
       </paper-listbox>
 
@@ -99,12 +96,30 @@
       properties: {
         countries: {
           type: Array,
-        }
+        },
+        current: Number
       },
 
       _countrySelected: function(e) {
+        if (e.detail.item.countryId !== this.current) {
+            //send post request to change_coutry endpoint
+            console.log('change_country_request');
+            this.$.ajax.body = {country: e.detail.item.countryId};
+            this.$.ajax.endpoint = window.etoolsAppConfig.globals.getEndpoint('changeCountry');
+          }
         this.set('country', this.$.repeat.itemForElement(e.detail.item));
-      }
+      },
+
+      _handleResponse: function(res) {
+        this.fire('main_refresh');
+      },
+
+      _handleError: function(rsp, err) {
+        console.log(rsp);
+        console.log(err);
+        this.$.countriesListbox.selected = this.current;
+        this.fire('toast', {text: 'Something went wrong changing your workspace. Please try again'});
+      },
 
     });
 

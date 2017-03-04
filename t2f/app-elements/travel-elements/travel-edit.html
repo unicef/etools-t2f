@@ -1,0 +1,499 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../../bower_components/etools-dialog/etools-dialog.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="travel-details.html">
+<link rel="import" href="./travel-attachments.html">
+<link rel="import" href="./travel-report.html">
+<link rel="import" href="../api-elements/inbound-data.html">
+<link rel="import" href="../api-elements/outbound-data.html">
+<link rel="import" href="../api-elements/profile-data.html">
+<link rel="import" href="../pdf-elements/ta-print.html">
+<link rel="import" href="../page-elements/et2f-header.html">
+<link rel="import" href="./form-errors.html">
+<link rel="import" href="travel-status.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="travel-edit">
+
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+
+      #label-sec-clear, #label-med, #label-sec-course {
+        display: inline-block;
+        width: 220px;
+      }
+      travel-status {
+        margin-top: 24px;
+        margin-right: 24px;
+      }
+      .dialog-heading {
+          font-size: 20px;
+          padding-top: 8px;
+          color: var(--gray-dark);
+          font-weight: 500;
+      }
+      .dismiss-dialog-button {
+        cursor: pointer;
+      }
+      .dialog-intro-text {
+          color: var(--gray-mid);
+          font-size: 16px;
+          margin-bottom: 24px;
+      }
+      .missing-action {
+        color: var(--et2f-warning);
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+      }
+      .missing-action-header {
+        color: var(--gray-dark);
+        text-align: center;
+        font-size: 18px;
+        font-weight: 500;
+      }
+      .dialog-confirm-button {
+          color: var(--et2f-primary);
+          font-weight: 500;
+          height: 40px;
+          float: right;
+      }
+      paper-tab iron-icon {
+        display: none;
+        width: 18px;
+        height: 18px;
+        margin-left:2px;
+        color: var(--et2f-error);
+      }
+      paper-tab[error] iron-icon {
+        display:block;
+      }
+    </style>
+
+    <et2f-inbound-data loading="{{detailLoading}}"
+      route="{{route}}"
+      et2f-data="{{data}}"
+      travel-id="[[travelId]]"
+      structure="[[structure]]"
+      data-to-serialize="[[incomingData]]">
+    </et2f-inbound-data>
+
+    <et2f-profile-data
+      user-id="[[data.baseDetails.traveler.value]]"
+      loading="{{profileLoading}}"
+      profile="{{travelerProfile}}">
+    </et2f-profile-data>
+
+    <et2f-outbound-data loading="{{detailLoading}}"
+      id="outbound-data" form-errors="{{formErrors}}"
+      data="[[data]]"
+      travel-id="[[travelId]]"
+      structure="[[structure]]"
+      inbound-data="{{incomingData}}">
+    </et2f-outbound-data>
+
+    <ta-print id="taPrint" data="[[dataForTa]]" structure="[[structure]]"></ta-print>
+
+    <paper-dialog id="invalid_modal" with-backdrop>
+
+      <div class="dialog-head-container layout horizontal">
+        <div class="dialog-heading flex">Warning</div>
+        <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+      </div>
+      <div class="dialog-intro-text">You are not allowed to take this action, until you correct the following missing or badly formatted information below:</div>
+
+      <div class="missing-action-header flex" hidden$="[[!invalids.general]]">Trip</div>
+      <template is="dom-repeat" items="[[invalids.general]]">
+        <div class="missing-action">[[item]]</div>
+      </template>
+
+      <div class="missing-action-header flex" hidden$="[[!invalids.details]]">Trip Details</div>
+      <template is="dom-repeat" items="[[invalids.details]]">
+        <div class="missing-action">[[item]]</div>
+      </template>
+
+      <div class="missing-action-header flex" hidden$="[[!invalids.report]]">Report</div>
+      <template is="dom-repeat" items="[[invalids.report]]">
+        <div class="missing-action">[[item]]</div>
+      </template>
+
+      <paper-button
+        class="dialog-confirm-button"
+        on-click="closeInvalidModal">
+          I understand
+      </paper-button>
+    </paper-dialog>
+
+
+    <et2f-header title="Edit Trip"
+      data="[[data]]"
+      export-type="details">
+      <paper-tabs scrollable
+        selected="{{selected}}">
+        <paper-tab error$="[[invalids.details]]">
+          DETAILS
+          <iron-icon icon="warning"></iron-icon>
+        </paper-tab>
+         <paper-tab error$="[[invalids.report]]">
+          REPORT
+          <iron-icon icon="warning"></iron-icon>
+        </paper-tab>
+        <paper-tab>
+          ATTACHMENTS &#38; NOTES
+        </paper-tab>
+      </paper-tabs>
+    </et2f-header>
+
+    <form-errors id="apierrors" errors="{{formErrors}}" error-selected="{{errorSelected}}"></form-errors>
+    <div class="layout horizontal">
+      <iron-pages selected="{{selected}}" class="flex">
+
+        <travel-details
+          id="travelDetails"
+          scroll-to-fieldset="[[errorSelected]]"
+          structure="[[structure]]"
+          travel-permissions="[[travelPermissions]]"
+          data="{{data}}"
+          user-roles="[[userRoles]]"
+          user="[[user]]">
+        </travel-details>
+
+         <travel-report
+          id="travelReport"
+          structure="[[structure]]"
+          permissions="[[travelPermissions]]"
+          data="{{data}}"
+          report-string="[[data.report]]"
+          user-roles="[[userRoles]]"
+          user="[[user]]">
+        </travel-report>
+
+        <travel-attachments
+          structure="[[structure]]"
+          attachments-permission="[[travelPermissions.attachments]]"
+          notes-permission="[[travelPermissions.additional_notes]]"
+          base-details="{{data.baseDetails}}"
+          attachments="{{data.attachments}}"
+          deleted-attachments="{{data.deletedAttachments}}"
+          status="[[data.status]]"
+          user-roles="[[userRoles]]">
+        </travel-attachments>
+
+      </iron-pages>
+
+    <travel-status
+      id="travelStatus"
+      user-roles="[[userRoles]]"
+      data="[[data]]"
+      scroll-top-margin="84"
+      on-validate="onValidate">
+    </travel-status>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-edit',
+      properties: {
+        data: {
+          type: Object,
+          notify: true,
+        },
+        travelDataLoading: {
+          type: Boolean,
+          notify: true,
+          computed: '_computeLoading(detailLoading, profileLoading)',
+        },
+        profileLoading: {
+          type: Boolean,
+        },
+        detailLoading: {
+          type: Boolean,
+        },
+        structure: {
+          type: Object,
+        },
+        et2fPermissions: {
+          type: Object
+        },
+        status: {
+          type: String,
+          computed: '_computeStatus(data)'
+        },
+        user: {
+          type: Object,
+        },
+        userRoles: {
+          type: Array,
+        },
+        travelPermissions: {
+          type: Object,
+          notify: true,
+        },
+        selected: {
+          type: Number,
+          value: 0
+        },
+        travelId: {
+          type: String
+        },
+        errorSelected: {
+          type: String,
+          notify: true
+        },
+        route: {
+          type: Object,
+          notify: true,
+          observer: '_routeObserver'
+        },
+        formErrors: {
+          type: Object,
+          observer: '_formErrorObserver'
+        },
+        travelerProfile: Object,
+        dataForTa: {
+          type: Object,
+          computed: '_computeDataForTa(data, travelerProfile)'
+        }
+
+      },
+      observers: [
+        '_computeTravelPermission(et2fPermissions, status, user, data)'
+      ],
+      _computeLoading: function(details, profile) {
+        return details || profile;
+      },
+      _computeDataForTa: function(data, profile) {
+        if (!data.baseDetails || !data.baseDetails.traveler || !profile || !profile.profile) {
+          return;
+        }
+        data.baseDetails.traveler.profile = profile.profile;
+        return JSON.parse(JSON.stringify(data));
+      },
+      _loadDefault: function() {
+        this.set('data', {});
+        this.set('data', {
+          baseDetails: {
+            ta_required: true,
+            international_travel: null
+          },
+          activities: [{
+            primary_traveler: null
+          }],
+          itinerary: [{
+            overnight_travel: null
+          }],
+          // itinerary: [{
+          //   'origin': 'this',
+          //   'destination': 'there',
+          //   'dsa_region': {label: 'fake', value: 799},
+          //   'departure_date': new Date('2017-02-01T05:00:00.000Z'),
+          //   'arrival_date': new Date('2017-02-01T22:40:00.000Z'),
+          //   'mode_of_travel': {label: 'bus', value: 1}
+          // },
+          // {
+          //   'origin': 'there',
+          //   'destination': 'this',
+          //   'departure_date': new Date('2017-02-28T05:00:00.000Z'),
+          //   'arrival_date': new Date('2017-02-28T10:00:00.000Z'),
+          //   'mode_of_travel': {label: 'boat', value: 3},
+          // }],
+          cost_assignments: [{
+            delegate: null
+          }],
+          cost_summary: {},
+          deductions: [],
+          expenses: [{}],
+          attachments: [],
+          action_points: [{}],
+          status: 'Planned'
+        });
+        this.set('invalids', {});
+      },
+      _formErrorObserver: function(newValue, old) {
+          if (newValue) {
+            this.async(function() {
+              window.scrollTo(1, 1);
+            });
+          }
+      },
+      _routeObserver: function(route) {
+        this.$.travelStatus.resetPosition();
+        if (route.path && route.path.indexOf('edit-travel/-1') > -1) {
+          this._loadDefault();
+        }
+      },
+      _computeStatus: function(data) {
+        if (data.status) {
+          return data.status.toLowerCase().replace(/ /g, '_');
+        }
+      },
+
+      _computeTravelPermission: function(permissions, status, user, data) {
+        var travelRole;
+        if (data.baseDetails.id) {
+          if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
+            travelRole = 'Traveler';
+          }
+          if (data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
+            travelRole = 'Supervisor';
+          }
+
+        } else {
+          travelRole = 'Traveler';
+        }
+
+        // var urlParams = new URLSearchParams(window.location.search);
+        // var forcedTravelRole = urlParams.get('travelRole');
+
+        // if (forcedTravelRole) {
+        //   travelRole = forcedTravelRole;
+        // }
+
+        var userTravelRoles = travelRole ? user.t2f.roles.concat(travelRole) : user.t2f.roles;
+        console.debug('user roles for this travel: ', userTravelRoles);
+        userTravelRoles = userTravelRoles.filter(function(role) {
+          return ['Others', 'Assigner', 'PersonResponsible', 'PME'].indexOf(role) === -1;
+        });
+        if (userTravelRoles.length > 0) {
+          var userPermissions = {};
+          var draft = permissions[userTravelRoles[0]][status];
+          Object.keys(draft).forEach(function(fieldSet) {
+            userPermissions[fieldSet] = {};
+              Object.keys(draft[fieldSet]).forEach(function(field) {
+                var item = draft[fieldSet][field];
+                if (typeof(item) === 'boolean') {
+                  userPermissions[fieldSet][field] = item;
+                  userTravelRoles.forEach(function(role) {
+                    userPermissions[fieldSet][field] = userPermissions[fieldSet][field]
+                    || permissions[role][status][fieldSet][field];
+                  });
+                } else {
+                  userPermissions[fieldSet][field] = {};
+                  Object.keys(item).forEach(function(fieldPermission) {
+                    userPermissions[fieldSet][field][fieldPermission] =  draft[fieldSet][field][fieldPermission];
+                    userTravelRoles.forEach(function(role) {
+                       userPermissions[fieldSet][field][fieldPermission] =
+                       userPermissions[fieldSet][field][fieldPermission]
+                       || permissions[role][status][fieldSet][field][fieldPermission];
+                    });
+                  });
+                }
+              });
+          });
+          // console.debug('Current user roles: ', userTravelRoles);
+          this.set('userRoles', userTravelRoles);
+          this.set('travelPermissions', {});
+          this.set('travelPermissions', userPermissions);
+        }
+
+        var self = this;
+        if ((!self.travelId || self.travelId === -1) && data.baseDetails) {
+          data.baseDetails.traveler = {
+            label: user.full_name,
+            value: user.id
+          };
+          self.notifyPath('data.baseDetails.traveler');
+        }
+      },
+
+      _handleFormAction: function(details) {
+       if (details.endPoint === 'printTa') {
+          this.$.taPrint.printTa();
+       } else {
+         this.$['outbound-data'].doRequest(details);
+       }
+      },
+      closeInvalidModal: function() {
+        this.$.invalid_modal.close();
+      },
+
+      _validateConstraints: function() {
+        var invalids = [];
+        var tProfile = this.travelerProfile;
+        var travelCount = 0;
+        if (tProfile && tProfile.t2f && tProfile.t2f.travel_count) {
+          travelCount = tProfile.t2f.travel_count;
+        }
+        var localhost = window.location.host.indexOf('localhost') > -1;
+        if (travelCount > 3) {
+          var errorMessage = 'More than 3 active trips (' + travelCount + ')';
+          if (!localhost) {
+            invalids.push(errorMessage);
+          } else {
+            console.error(errorMessage);
+          }
+        }
+
+        // Disabled end_date validation and delegated to the backend to avoid
+        //  API overhead on profile endpoint call
+        // var endDate = this.data.baseDetails.end_date;
+        // if (endDate) {
+        //   var now = Date.now();
+        //   endDate = new Date(endDate).getTime();
+        //   var diff = now - endDate;
+        //   var threshold = 1000 * 60 * 60 * 24 * 15; //15 days
+        //   if (diff > threshold) {
+        //     invalids.push('More than 15 days since trip completition');
+        //   }
+        // }
+
+        return invalids;
+      },
+      onValidate: function(e, action) {
+        function dedupe(collection) {
+          if (!collection || !(collection instanceof Array)) {
+            return [];
+          }
+          return collection.filter(function(el, i, arr) {
+            return arr.indexOf(el) === i;
+          });
+        }
+
+        this.set('invalids', {});
+        var invalids = {
+          details: [],
+          report: [],
+          general: []
+        };
+        //check for travel_count and end_date
+
+        if (action.endPoint === 'save_and_submit') {
+          invalids.general = this._validateConstraints();
+        }
+
+        invalids.details = this.$$('#travelDetails').doValidate(action);
+        invalids.report = this.$$('#travelReport').doValidate(action);
+
+        Object.keys(invalids).forEach(function(category) {
+          invalids[category] = invalids[category] && invalids[category].length > 0 ? dedupe(invalids[category]) : false;
+        });
+
+        if (invalids.details.length > 0 || invalids.report.length > 0 || invalids.general.length > 0) {
+          this.set('invalids', invalids);
+          this.$.invalid_modal.open();
+        } else {
+          this._handleFormAction(action);
+        }
+      }
+
+    });
+  </script>
+</dom-module>

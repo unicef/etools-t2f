@@ -1,0 +1,216 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/paper-card/paper-card.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+<link rel="import" href="action-points-button.html">
+
+<dom-module id="action-point-status">
+
+  <style include="shared-styles et2f-styles iron-flex iron-flex-alignment" is="custom-style">
+
+    :host {
+      display: block;
+    }
+    .float-container {
+      position: relative;
+      top: 0;
+      width: 200px;
+      height: 100%;
+    }
+
+    paper-card {
+      position: absolute;
+      top: 0;
+
+      background-color: white;
+      --paper-card-header-color: white;
+      --paper-card-header-text: {
+        font-size: 20px;
+        text-align: center;
+        padding-top: 9px;
+        padding-bottom: 9px;
+      }
+      --paper-card-header: {
+        background-color: var(--etools-blue);
+        height: 48px;
+        padding: 0;
+      }
+      --paper-card-content: {
+        min-width: 200px;
+        background-color: white;
+        padding: 24px;
+      }
+      --paper-card-actions: {
+        padding: 0;
+        background-color: white;
+      }
+    }
+    .card-content {
+      height: 250px;
+      box-sizing: border-box;
+    }
+    .reject.blue {
+      display: block;
+    }
+    .circlenr {
+      display: block;
+      float: left;
+      width: 24px;
+      height: 24px;
+      background-color: var(--gray-light);
+      color: white;
+      font-size: 12px;
+      line-height: 24px;
+      border-radius: 50%;
+      text-align: center;
+    }
+    .circlenr iron-icon {
+      color: white;
+      display: none;
+    }
+    .circlenr span.green {
+      display: none;
+    }
+    .circlenr iron-icon.green {
+      display: block;
+    }
+    .circlenr iron-icon.green {
+      width: 18px;
+      padding-left: 3px;
+    }
+    .circlenr iron-icon.green.thumbs {
+      width: 16px;
+      padding-left: 4px;
+    }
+    .red, .statuscont span.status.red {
+      color: var(--et2f-error);
+    }
+    .status {
+      color: var(--gray-mid);
+      font-size: 14px;
+      padding-left: 6px;
+    }
+    .status.black {
+      color: var(--gray-dark);
+      font-weight: 500;
+    }
+    .statusdate {
+      color: var(--gray-mid);
+      font-size: 12px;
+      line-height: 20px;
+      padding-left: 6px;
+    }
+    .statuscont.appr.rejected {
+      display: none;
+    }
+    .statuscont.green .status {
+      color: var(--gray-dark);
+      font-weight: 500;
+    }
+    .statuscont.green .circlenr {
+      background-color: var(--et2f-sec-lightgreen);
+    }
+
+    .statuscont.blue .status {
+      color: var(--gray-dark);
+      font-weight: 500;
+    }
+    .statuscont.blue .circlenr {
+      background-color: var(--et2f-primary);
+    }
+    .vertline {
+      margin: 7px 12px;
+      border-left: 2px solid var(--gray-light);
+      transform: translate(-1px,0);
+    }
+  </style>
+
+  <template>
+    <div class="float-container">
+      <paper-card id="main-card" heading="Status">
+
+        <div class="card-content vertical layout">
+
+          <div class$="statuscont [[_computeStatusClass('open', status)]]">
+            <div class="circlenr">
+              <span class$="[[_computeStatusClass('open', status)]]">1</span>
+              <iron-icon class$="[[_computeStatusClass('open', status)]]" icon="icons:done"></iron-icon>
+            </div>
+            <span class="status">Open</span>
+          </div>
+
+          <div class="vertline flex"></div>
+
+          <div class$="statuscont [[_computeStatusClass('ongoing', status)]]">
+            <div class="circlenr">
+              <span class$="[[_computeStatusClass('ongoing', status)]]">2</span>
+              <iron-icon class$="[[_computeStatusClass('ongoing', status)]]" icon="icons:done"></iron-icon>
+            </div>
+            <span class="status">Onoing</span>
+          </div>
+
+          <div class="vertline flex"></div>
+
+          <div class$="statuscont appr [[_computeStatusClass('completed', status)]]">
+            <div class="circlenr">
+              <span class$="[[_computeStatusClass('completed', status)]]">3</span>
+              <iron-icon class$="[[_computeStatusClass('completed', status)]]" icon="icons:done"></iron-icon>
+            </div>
+            <span class="status">Completed</span>
+          </div>
+
+        </div>
+
+        <div class="card-actions">
+          <action-points-button user-roles="[[userRoles]]" status="[[status]]" data="[[data]]">
+          </action-points-button>
+        </div>
+
+      </paper-card>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'action-point-status',
+
+      properties: {
+        status: {
+          type: String,
+          computed: '_computeStatus(data)'
+        },
+        data: {
+          type: Object
+        },
+        userRoles: {
+          type: Array,
+        }
+      },
+
+      statuses: [
+        'open',
+        'ongoing',
+        'completed'
+      ],
+
+      _computeStatusClass: function(label, status) {
+        var statClass = label === status ? 'blue' : '';
+        if (this.statuses.indexOf(label) < this.statuses.indexOf(status)) {
+          statClass = 'green';
+        }
+        return statClass;
+      },
+      _computeStatus: function(data) {
+        if (data && data.status) {
+          return data.status.label.toLowerCase();
+        }
+      }
+
+    });
+  </script>
+
+</dom-module>

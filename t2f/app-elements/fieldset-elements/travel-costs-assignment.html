@@ -1,0 +1,259 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import" href="../travel-elements/travel-status.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="travel-cost-assignment">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+
+      :host {
+        display: block;
+        width: 100%;
+      }
+
+    </style>
+
+    <form is="iron-form"
+      id="cost_assignment_form"
+      class="layout vertical flex">
+
+
+      <div class="layout horizontal">
+
+        <etools-searchable-multiselection-menu label="Business Area"
+          class$="flex-4 [[computedPermission.business_area.readOnly]]"
+          options="[[structure.business_areas]]"
+          empty-value
+          value="{{costAssignment.business_area}}"
+          disabled="[[disableBusinessArea]]"
+          hidden$="[[computedPermission.business_area.hidden]]"
+          placeholder="select"
+          required$="[[computedPermission.business_area.required]]"
+          starred>
+        </etools-searchable-multiselection-menu>
+
+        <paper-checkbox class$="custom-margin self-end flex-3 [[computedPermission.delegate.readOnly]]"
+          hidden$="[[computedPermission.delegate.hidden]]"
+          checked="{{costAssignment.delegate}}"
+          disabled="[[computedPermission.delegate.disabled]]"
+          >Delegate
+        </paper-checkbox>
+
+        <div class="flex-5"></div>
+      </div>
+
+      <div class="layout horizontal">
+
+        <etools-searchable-multiselection-menu label="WBS"
+          class$="flex-4 [[computedPermission.wbs.readOnly]]"
+          options="[[wbsOptions]]"
+          empty-value
+          value="{{costAssignment.wbs}}"
+          disabled="[[computedPermission.wbs.disabled]]"
+          hidden$="[[computedPermission.wbs.hidden]]"
+          placeholder="select"
+          required$="[[computedPermission.wbs.required]]"
+          starred>
+        </etools-searchable-multiselection-menu>
+
+        <etools-searchable-multiselection-menu label="Grant"
+          class$="flex-3 [[computedPermission.grant.readOnly]]"
+          options="[[grantOptions]]"
+          value="{{costAssignment.grant}}"
+          disabled="[[disableGrant]]"
+          hidden$="[[computedPermission.grant.hidden]]"
+          empty-value
+          required$="[[computedPermission.grant.required]]"
+          placeholder="select"
+          starred>
+        </etools-searchable-multiselection-menu>
+
+        <etools-searchable-multiselection-menu label="Fund"
+          class$="flex-3 [[computedPermission.fund.readOnly]]"
+          options="[[fundOptions]]"
+          value="{{costAssignment.fund}}"
+          disabled="[[disableFund]]"
+          empty-value
+          hidden$="[[computedPermission.fund.hidden]]"
+          required$="[[computedPermission.fund.required]]"
+          placeholder="select"
+          starred>
+        </etools-searchable-multiselection-menu>
+
+        <paper-input label="Share (%)"
+          class$="flex-2 custom-margin [[computedPermission.share.readOnly]]"
+          value="{{costAssignment.share}}"
+          disabled="[[disableShare]]"
+          hidden$="[[computedPermission.share.hidden]]"
+          type="number"
+          min="0"
+          max="100"
+          required$="[[computedPermission.share.required]]"
+          step="1"
+          pattern="^(100|([1-9]{0,1})?([0-9]{0,1})?)$"
+          placeholder="add"
+          invalid="[[invalidShares]]"
+          starred>
+          <span suffix>%</span>
+        </paper-input>
+      </div>
+    </form>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-cost-assignment',
+      properties: {
+        costAssignment: {
+          type: Object,
+          notify: true,
+        },
+        structure: {
+          type: Object,
+          value: {}
+        },
+        invalidShares: {
+          type: Boolean,
+          value: false
+        },
+        defaultBusinessArea: {
+          type: Object,
+        },
+        disableBusinessArea: {
+          type: Boolean,
+          value: true,
+          computed: '_computeDisableBusinessArea(computedPermission.business_area.disabled, costAssignment.delegate)'
+        },
+        disableGrant: {
+          type: Boolean,
+          value: true,
+          computed: '_computeDisableGrant(computedPermission.grant.disabled, costAssignment.wbs)'
+        },
+        disableFund: {
+          type: Boolean,
+          value: true,
+          computed: '_computeDisableFund(computedPermission.fund.disabled, costAssignment.grant)'
+        },
+        disableShare: {
+          type: Boolean,
+          value: true,
+          computed: '_computeDisableShare(computedPermission.share.disabled, costAssignment.fund)'
+        },
+        grantOptions: {
+          type: Array,
+          computed: '_computeGrantOptions(structure.grants, costAssignment.wbs.*, costAssignment.*)',
+        },
+        fundOptions: {
+          type: Array,
+          computed: '_computeFundOptions(structure.funds, costAssignment.grant.*, costAssignment.*)',
+        },
+        wbsOptions: {
+          type: Array,
+          computed: '_computeWbsOptions(structure.wbs, costAssignment.*)',
+        },
+      },
+      behaviors: [et2fBehaviors.PermissionLayer],
+      observers: [
+        '_observeDefaultBusinessArea(defaultBusinessArea, costAssignment.*)',
+        '_costAssignmentObserver(costAssignment.*)',
+      ],
+      _isInList: function(list, value) {
+        if (!value || !list) {
+          return false;
+        }
+        return list.some(function(item) {
+          return item.value === value.value;
+        });
+      },
+      _observeDefaultBusinessArea: function(defaultBusinessArea, costAssignmentChanged) {
+        var businessArea = defaultBusinessArea;
+        if (costAssignmentChanged && costAssignmentChanged.base) {
+          businessArea = costAssignmentChanged.base.business_area;
+          businessArea = businessArea ? businessArea : defaultBusinessArea;
+        }
+        this.set('costAssignment.business_area', businessArea);
+      },
+      _costAssignmentObserver: function(costAssignmentChanged) {
+        if (costAssignmentChanged.base && !costAssignmentChanged.base._validationFunction) {
+            costAssignmentChanged.base._validationFunction = this._validateCostAssignment.bind(this);
+        }
+        this[costAssignmentChanged.path] = costAssignmentChanged.value;
+      },
+      _computeDisableBusinessArea: function(permission, delegate, businessArea) {
+        if (!delegate) {
+          this.set('costAssignment.business_area', this.defaultBusinessArea);
+        }
+        return permission || !delegate;
+      },
+      _computeDisableGrant: function(permission, wbs) {
+        return permission || !(wbs && wbs.grants !== []);
+      },
+      _computeDisableFund: function(permission, grant) {
+        return permission || !(grant && grant.funds !== []);
+      },
+      _computeDisableShare: function(permission, fund) {
+        return permission || !fund;
+      },
+      _computeGrantOptions: function(grants, wbs, costAssignmentChanged) {
+        if (wbs && wbs.base) {
+          wbs = wbs.base;
+          var grantOptions = grants.filter(function(grant) {
+            return wbs.grants.some(function(item) {
+              return item === grant.value;
+            });
+          });
+          var grant = costAssignmentChanged.base.grant;
+          if (!this._isInList(grantOptions, grant)) {
+            this.set('costAssignment.grant', null);
+          }
+          return grantOptions;
+        }
+      },
+      _computeFundOptions: function(funds, grant, costAssignmentChanged) {
+         if (grant && grant.base) {
+           grant = grant.base;
+           var fundOptions =  funds.filter(function(fund) {
+              return grant.funds.some(function(item) {
+                return item === fund.value;
+              });
+           });
+           var fund = costAssignmentChanged.base.fund;
+           if (!this._isInList(fundOptions, fund)) {
+              this.set('costAssignment.fund', null);
+           }
+           return fundOptions;
+         }
+      },
+      _computeWbsOptions: function(wbsList, costAssignment) {
+        var wbsOptions = [];
+        if (costAssignment && costAssignment.base && costAssignment.base.business_area) {
+           var businessArea = costAssignment.base.business_area;
+           if (businessArea.wbs) {
+             wbsOptions = wbsList.filter(function(wbs) {
+                return businessArea.wbs.some(function(item) {
+                  return item === wbs.value;
+                });
+             });
+
+             var wbs = costAssignment.base.wbs;
+             if (!this._isInList(wbsOptions, wbs)) {
+                this.set('costAssignment.wbs', null);
+             }
+          }
+          return wbsOptions;
+         }
+      },
+      _validateCostAssignment: function() {
+        return this.$.cost_assignment_form.validate();
+      }
+    });
+  </script>
+</dom-module>

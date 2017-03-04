@@ -80,9 +80,7 @@
     <paper-dialog id="timePickerDialog" modal on-iron-overlay-closed="_setNewDate">
       <div class="flex layout horizontal no-margin">
         <paper-date-picker date="{{internalDate}}" min-date="[[calculatedMinDate]]" max-date="[[calculatedMaxDate]]" force-narrow ></paper-date-picker>
-        <template is="dom-if" if="[[timePicker]]">
-          <paper-time-picker force-narrow time="[[time]]" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
-        </template>
+        <paper-time-picker force-narrow time="[[time]]" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
       </div>
       <div class="flex layout horizontal no-margin error" hidden$="[[!showMinDateWarning]]">
         Please select a date-time greater or equal than: [[prettyMinDate]]
@@ -178,7 +176,7 @@
         showMaxDateWarning: {
           type: Boolean,
           value: false,
-          computed: '_computeShowMaxDateWarning(calculatedMaxDate, internalDate, hour, minute)'
+          computed: '_computeShowMaxDateWarning(maxDateCalculated, internalDate, hour, minute)'
         },
         dialogButtonDisabled: {
           type: Boolean,
@@ -194,6 +192,7 @@
           this.$['date-input'].invalid = false;
           return;
         }
+        date = new Date(date);
         if (!this.internalDate) {
          this._updateComponentState(date);
         } else if (date.getTime() !== this.internalDate.getTime()) {
@@ -234,9 +233,9 @@
         if (date) {
           date = moment(new Date(date));
           this.set('prettyMaxDate', date.format(this.format));
-          date.hour('00');
-          date.minute('00');
-          date.second('00');
+          date.hour('23');
+          date.minute('59');
+          date.second('59');
           date.millisecond(999);
           return date.toDate();
         }
@@ -246,7 +245,8 @@
         internalDate.hour(this.hour);
         internalDate.minute(this.minute);
         minDate = moment(minDate);
-        return minDate.isAfter(internalDate);
+        internalDate.millisecond(999);
+        return minDate.isSameOrAfter(internalDate);
 
       },
       _computeShowMaxDateWarning: function(maxDate, internalDate, hour, minute) {
@@ -254,7 +254,7 @@
         internalDate.hour(this.hour);
         internalDate.minute(this.minute);
         maxDate = moment(maxDate);
-        return maxDate.isBefore(internalDate);
+        return maxDate.isSameOrBefore(internalDate);
       },
       _computeDisabledOkButton: function(minDateWarning, maxDateWarning) {
         return minDateWarning || maxDateWarning;

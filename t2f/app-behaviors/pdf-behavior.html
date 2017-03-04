@@ -30,15 +30,21 @@ var PDFBehavior = {
   },
   _printFixed: function(amount) {
     if (+amount === amount) {
-      return amount.toFixed(4);
+      return amount.toFixed(2);
     } else if (typeof amount === 'string') {
       var parsed = parseFloat(amount);
-      return isNaN(parsed) ? amount : parsed.toFixed(4);
+      return isNaN(parsed) ? amount : parsed.toFixed(2);
     } else if (!amount) {
       return '';
     } else {
       return amount;
     }
+  },
+  _printNested: function(base, key) {
+    if (!base) {
+      return '';
+    }
+    return base[key];
   },
   _printCountryFromStr: function(str) {
     var splat = str.split(' - ');

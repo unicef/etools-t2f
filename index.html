@@ -34,29 +34,41 @@
     <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
     <meta name="msapplication-TileColor" content="#3f51b5">
     <meta name="msapplication-tap-highlight" content="no">
-
     <script>
+      // var UserVoice = window.UserVoice || [];
+      // UserVoice.push(['addTrigger', {}]);
+      function loadUserVoice() {
+        var uv = document.createElement('script');
+        uv.type = 'text/javascript';
+        uv.async = true;
+        uv.src = '//widget.uservoice.com/s74dylVlP3CUCbVw6famA.js';
+        uv.onload = function() {
+          setTimeout(function() {
+            window.UserVoice.push(['addTrigger'], {});
+          }, 500);
+        };
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(uv, s);
+      }
       // Setup Polymer options
       window.Polymer = {
         dom: 'shadow',
         lazyRegister: true
       };
-     var serverBackend = (window.location.port !== '8080');
-    //we work with browsersync and it assign the port dinamically but always on the 300X range
-     var isDev = ('' + window.location.port).indexOf('300') > -1;
-      var baseUrl = serverBackend ? 't2f' : '';
+     var serverBackend = window.location.port === '' || window.location.port === '8082';
+     var baseUrl = serverBackend ? '/t2f' : '';
+
       // Load webcomponentsjs polyfill if browser does not support native Web Components
       (function() {
         'use strict';
 
         var onload = function() {
-          // For native Imports, manually fire WebComponentsReady so user code
-          // can use the same code path for native and polyfill'd imports.
           if (!window.HTMLImports) {
             document.dispatchEvent(
                 new CustomEvent('WebComponentsReady', {bubbles: true})
             );
           }
+          loadUserVoice();
         };
 
         var webComponentsSupported = (
@@ -68,17 +80,18 @@
         if (!webComponentsSupported) {
           var script = document.createElement('script');
           script.async = true;
-          script.src = baseUrl + 'bower_components/webcomponentsjs/webcomponents-lite.min.js';
+          script.src = baseUrl + '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
           script.onload = onload;
           document.head.appendChild(script);
         } else {
           onload();
         }
       })();
+
       // add base tag with href set to baseUrl
-      //var base = document.createElement('base');
-      //base.href = baseUrl;
-      //document.head.appendChild(base);
+      // var base = document.createElement('base');
+      // base.href = baseUrl;
+      // document.head.appendChild(base);
 
       // Load pre-caching Service Worker
       if ('serviceWorker' in navigator && false) {
@@ -86,11 +99,12 @@
           navigator.serviceWorker.register('service-worker.js');
         });
       }
-
       // set app shell import path based on baseUrl
       var appShellImport = document.createElement('link');
       appShellImport.rel = 'import';
-      appShellImport.href = isDev ? '/t2f/app-shell.html' : '/t2f/' + baseUrl + '/app-shell.html';
+      var appShellUrl = '/t2f' + baseUrl + '/app-shell.html';
+      console.debug(appShellUrl);
+      appShellImport.href = window.location.origin + appShellUrl;
       document.head.appendChild(appShellImport);
 
     </script>

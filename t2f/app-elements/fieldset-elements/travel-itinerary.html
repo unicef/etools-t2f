@@ -1,0 +1,228 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+
+<link rel="import" href="../travel-elements/travel-status.html">
+<link rel="import" href="../datepicker-input/date-time-picker-input.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="travel-itinerary">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
+      :host {
+        display: block;
+        width: 100%;
+      }
+
+      .overnight-label {
+        line-height: 24px;
+        font-size: 16px;
+        color: var(--gray-dark);
+        padding-right: 8px;
+      }
+    </style>
+
+    <form
+      is="iron-form"
+      id="itinerary_form"
+      class="layout vertical flex">
+
+      <div class="layout horizontal">
+
+        <paper-input label="From"
+          class$="flex-4 custom-margin [[computedPermission.origin.readOnly]]"
+          disabled="[[computedPermission.origin.disabled]]"
+          hidden$="[[computedPermission.origin.hidden]]"
+          value="{{itinerary.origin}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.origin.required]]"
+          placeholder="place of departure">
+        </paper-input>
+
+        <paper-input label="To"
+          class$="flex-4 custom-margin [[computedPermission.destination.readOnly]]"
+          disabled="[[computedPermission.destination.disabled]]"
+          hidden$="[[computedPermission.destination.hidden]]"
+          value="{{itinerary.destination}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.destination.required]]"
+          placeholder="place of arrival">
+        </paper-input>
+
+        <etools-searchable-multiselection-menu label="DSA Area"
+          class$="flex-4 [[computedPermission.dsa_region.readOnly]]"
+          disabled="[[computedPermission.dsa_region.disabled]]"
+          hidden$="[[computedPermission.dsa_region.hidden]]"
+          options="[[structure.dsa_regions]]"
+          value="{{itinerary.dsa_region}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[dsaAreaRequired]]"
+          empty-value="[[!dsaAreaRequired]]"
+          placeholder="[[dsaAreaPlaceholder]]">
+        </etools-searchable-multiselection-menu>
+      </div>
+
+      <div class="layout horizontal">
+
+        <date-time-picker-input label="Departure Date"
+          class$="flex-4 [[computedPermission.departure_date.readOnly]]"
+          disabled="[[computedPermission.departure_date.disabled]]"
+          hidden$="[[computedPermission.departure_date.hidden]]"
+          time-picker
+          min-date="[[minDate]]"
+          max-date="[[maxDate]]"
+          date="{{itinerary.departure_date}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.departure_date.required]]"
+          placeholder="select">
+        </date-time-picker-input>
+
+        <date-time-picker-input label="Arrival Date"
+          class$="flex-4 [[computedPermission.arrival_date.readOnly]]"
+          disabled="[[arrivalDateDisabled]]"
+          hidden$="[[computedPermission.arrival_date.hidden]]"
+          time-picker
+          min-date="[[itinerary.departure_date]]"
+          max-date="[[maxDate]]"
+          date="{{itinerary.arrival_date}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.arrival_date.required]]"
+          placeholder="select">
+        </date-time-picker-input>
+
+        <etools-searchable-multiselection-menu
+          class$="flex-2 capitalize [[computedPermission.mode_of_travel.readOnly]]"
+          disabled="[[computedPermission.mode_of_travel.disabled]]"
+          hidden$="[[computedPermission.mode_of_travel.hidden]]"
+          options="[[structure.travel_modes]]"
+          capitalize-input-shown
+          label="Mode of Travel"
+          value="{{itinerary.mode_of_travel}}"
+          auto-validate$="[[autoValidate]]"
+          required$="[[computedPermission.mode_of_travel.required]]"
+          placeholder="select">
+        </etools-searchable-multiselection-menu>
+
+        <div class="flex-2 custom-margin self-end layout horizontal">
+          <paper-checkbox
+            class$="[[computedPermission.overnight_travel.readOnly]]"
+            disabled="[[computedPermission.overnight_travel.disabled]]"
+            hidden$="[[computedPermission.overnight_travel.hidden]]"
+            checked="{{itinerary.overnight_travel}}">
+          </paper-checkbox>
+
+          <span class="flex self-center overnight-label">Overnight Travel</span>
+        </div>
+      </div>
+
+      <div class="layout horizontal" hidden$="[[hideAirline]]">
+
+        <etools-searchable-multiselection-menu label="Airline(s)"
+          class$="flex-8 [[computedPermission.airlines.readOnly]]"
+          disabled="[[computedPermission.airlines.disabled]]"
+          hidden$="[[computedPermission.airlines.hidden]]"
+          options="[[structure.airlines]]"
+          multi
+          value="{{itinerary.airlines}}"
+          placeholder="select">
+        </etools-searchable-multiselection-menu>
+        <div class="flex-4"></div>
+      </div>
+
+    </form>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-itinerary',
+      properties: {
+        itinerary: {
+          type: Object,
+          notify: true,
+        },
+        structure: {
+          type: Object,
+          value: {}
+        },
+        minDate: Date,
+        maxDate: Date,
+        collectionSize: Number,
+        index: Number,
+        isLastEntry: {
+          type: Boolean,
+          computed: '_computeIsLastEntry(collectionSize, index)'
+        },
+        dsaAreaPlaceholder: {
+          type: String,
+          computed: '_computeDsaAreaPlaceholder(isLastEntry)'
+        },
+        dsaAreaRequired: {
+          type: Boolean,
+          computed: '_computedDsaAreaRequired(computedPermission.dsa_region.required, isLastEntry)'
+        },
+        autoValidate: {
+          type: Boolean,
+          computed: '_computeAutoValidate(itinerary)'
+        },
+        hideAirline: {
+          type: Boolean,
+          computed: '_computeHideAirline(itinerary.mode_of_travel)'
+        },
+        arrivalDateDisabled: {
+          type: Boolean,
+          computed: '_computeDisableArrivalDate(computedPermission.departure_date.disabled,' +
+            ' itinerary.*)',
+        },
+      },
+
+      behaviors: [et2fBehaviors.PermissionLayer],
+
+      observers: ['_itineraryObserver(itinerary.*)'],
+      _itineraryObserver: function(changed) {
+        this._addValidationFunction(changed);
+      },
+
+      _computeIsLastEntry: function(collection, index) {
+        return (collection - 1) === index;
+      },
+      _computedDsaAreaRequired: function(permission, isLastEntry) {
+        return permission && !isLastEntry;
+      },
+
+      _computeAutoValidate: function(itinerary) {
+          return itinerary !== undefined && Object.keys(itinerary).length > 0;
+      },
+      _computeDsaAreaPlaceholder: function(last) {
+        return last ? 'No DSA' : 'select';
+      },
+      _computeHideAirline: function(modeOfTravel) {
+        if (modeOfTravel) {
+          return modeOfTravel.label.toLowerCase() !== 'plane';
+        }
+        return true;
+      },
+      validateItinerary: function(validateEmpty) {
+        var keys = Object.keys(this.itinerary);
+        if (keys.length === 0 && !validateEmpty) {
+          return true;
+        }
+        return this.$.itinerary_form.validate();
+      },
+      _addValidationFunction: function(changed) {
+
+        if (!changed.base._validationFunction) {
+          this.set('itinerary._validationFunction', this.validateItinerary.bind(this));
+        }
+      },
+      _computeDisableArrivalDate: function(permission, changed) {
+        return permission || !changed.base.departure_date;
+      },
+    });
+  </script>
+</dom-module>

@@ -36,6 +36,29 @@
     <etools-ajax endpoint="[[usersEndpoint]]"
       on-success="_handleUsers"
       loading="{{usersLoading}}"
+      params="[[usersEndpointParams]]"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
+    <etools-ajax endpoint="[[usersEndpoint]]"
+      on-success="_handleDrivers"
+      loading="{{driversLoading}}"
+      params="[[driversEndpointParams]]"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
+    <etools-ajax endpoint="[[groupsEndpoint]]"
+      on-success="_handleGroups"
+      loading="{{groupsLoading}}"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
+    <etools-ajax url="[[vendorEndPoint]]"
+      loading="{{vendorNumbersLoading}}"
+      on-success="_handleVendorNumbers"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
@@ -54,11 +77,15 @@
         sectionsLoading: Boolean,
         officesLoading: Boolean,
         t2fStaticDataLoading: Boolean,
+        driversLoading: Boolean,
+        vendorNumbersLoading: {
+          type: Boolean
+        },
         structure: {
           type: Object,
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
-          ' officesData, t2fStaticData, usersData)'
+          ' officesData, t2fStaticData, usersData, groupsData, driversData, vendorNumbers)'
         },
         staticData: {
           type: Object,
@@ -73,7 +100,7 @@
           type: Boolean,
           notify: true,
           computed: '_computeLoading(staticDataLoading, sectionsLoading,' +
-          ' officesLoading, t2fStaticDataLoading, usersLoading)'
+          ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading, driversLoading, vendorNumbersLoading)'
         },
         staticDataEndpoint: {
           type: String,
@@ -94,49 +121,80 @@
         usersEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.users
-        }
+        },
+        usersEndpointParams: {
+          value: {verbosity: 'minimal'}
+        },
+        driversEndpointParams: {
+          value: {verbosity: 'minimal', drivers: 'true'}
+        },
+        groupsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.groups
+        },
+        vendorEndPoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.et2fVendorList.url
+        },
       },
-      _computeLoading: function(structure, sections, offices, t2fStaticDataLoading, users) {
+      _sortByLabel: function(a, b) {
+        return a.label.localeCompare(b.label);
+      },
+      _sortByName: function(a, b) {
+        return a.name.localeCompare(b.name);
+      },
+      _computeLoading: function() {
         var result = false;
         for (var i = 0; i < arguments.length; ++i) {
            result = result || arguments[i];
         }
         return result;
       },
+      _checkJSON: function(data) {
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+        return data;
+      },
       _redirectToLogin: function() {
         window.location.href = '/login/';
       },
       _handleStaticData: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = this._parseData(data);
         }
         this.set('staticData', data);
       },
       _handleSections: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = {
-            sections: data
+            sections: data.sort(this._sortByName)
           };
           data = this._parseData(data);
         }
         this.set('sectionsData', data);
       },
       _handleOffices: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = {
-            offices: data
+            offices: data.sort(this._sortByName)
           };
           data = this._parseData(data);
         }
         this.set('officesData', data);
       },
       _handlet2fStaticData: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = this._parseData(data);
         }
         this.set('t2fStaticData', data);
       },
       _handleUsers: function(e, data) {
+        data = this._checkJSON(data);
         if (!data.parsed) {
           data = {
             users: data
@@ -145,7 +203,37 @@
         }
         this.set('usersData', data);
       },
-      _generateStructure: function(static, sections, offices, t2fStaticData, users) {
+      _handleDrivers: function(e, data) {
+        data = this._checkJSON(data);
+        if (!data.parsed) {
+          data = {
+            drivers: data
+          };
+          data = this._parseData(data);
+        }
+        this.set('driversData', data);
+      },
+      _handleVendorNumbers: function(e, data) {
+        data = this._checkJSON(data);
+        if (!data.parsed) {
+          data = {
+            vendorNumbers: data
+          };
+          data = this._parseData(data);
+        }
+        this.set('vendorNumbers', data);
+      },
+      _handleGroups: function(e, data) {
+        data = this._checkJSON(data);
+        if (!data.parsed) {
+          data = {
+            groups: data
+          };
+          data = this._parseData(data);
+        }
+        this.set('groupsData', data);
+      },
+      _generateStructure: function(static, sections, offices, t2fStaticData, users, groups, drivers, vendorNumbers) {
           var data = static;
           data.sections = sections.sections;
           data.offices = offices.offices;
@@ -155,14 +243,41 @@
           data.partnerships = t2fStaticData.partnerships;
           data.action_point_statuses = t2fStaticData.action_point_statuses;
           data.users = users.users;
+          data.groups = groups.groups;
+          data.drivers = drivers.drivers;
+          data.vendorNumbers = vendorNumbers.vendorNumbers;
+          data.attachment_types = [
+            {value: 0, label: 'Ticket Doc'},
+            {value: 1, label: 'Email corespondance'},
+            {value: 3, label: 'Cleareance Doc'},
+            {value: 4, label: 'Other'}
+          ];
           Object.freeze(data);
           return data;
       },
       _parseData: function(data) {
+        var self = this;
         function capitalize(value) {
+          if (value === null || value === undefined) {
+            return '';
+          }
           return value.replace(/\b\w/g, function(l) { return l.toUpperCase(); });
         }
-        function fillDependenceis(child, parent, parentKey) {
+        function fillDependencyWithId(child, parent, parentKey) {
+          data[child].forEach(function(childItem) {
+            data[parent].forEach(function(parentItem) {
+              if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
+                parentItem[child] = [];
+              }
+              var parentId = parentItem.id || parentItem.value;
+              var childId = childItem.id || childItem.value;
+              if (parentId === childItem[parentKey]) {
+                parentItem[child].push(parseInt(childId, 10));
+              }
+            });
+          });
+        }
+        function fillDependencyWithChild(child, parent, parentKey) {
           data[child].forEach(function(childItem) {
             data[parent].forEach(function(parentItem) {
               if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
@@ -172,8 +287,8 @@
               var childId = childItem.id || childItem.value;
               if (parentId === childItem[parentKey]) {
                 parentItem[child].push({
-                    label: childItem.name,
-                    value: parseInt(childId, 10)
+                  value: parseInt(childId, 10),
+                  label: childItem.label || childItem.name,
                 });
               }
             });
@@ -181,19 +296,19 @@
         }
 
         var parsingFunctions = {
-          partner: function(key) {
+          partners: function(key) {
              data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id, partnerships: obj.partnerships};
             });
           },
           partnerships: function(key) {
-            fillDependenceis(key, 'partners', 'partner');
+            fillDependencyWithChild(key, 'partners', 'partner');
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: obj.id};
             });
           },
           currencies: function(key) {
-            data[key] = data[key].map(function(obj) {
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {
                 label: obj.name,
                 value: obj.id,
@@ -203,34 +318,39 @@
             });
           },
           business_areas: function(key) {
-            data[key] = data[key].map(function(obj) {
-              obj.label = obj.name;
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
+              obj.label = obj.code + ' - ' + obj.name;
               obj.value = obj.id;
               obj.wbs = obj.wbs;
               return obj;
             });
           },
           wbs: function(key) {
-            fillDependenceis(key, 'business_areas', 'business_area');
-             data[key] = data[key].map(function(obj) {
+            fillDependencyWithId(key, 'business_areas', 'business_area');
+             data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id, grants: obj.grants};
             });
           },
           grants: function(key) {
-            fillDependenceis(key, 'wbs', 'wbs');
-            data[key] = data[key].map(function(obj) {
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id, funds: obj.funds};
             });
           },
           funds: function(key) {
-            fillDependenceis('funds', 'grants', 'grant');
-            data[key] = data[key].map(function(obj) {
+            data[key] = data[key].sort(self._sortByName).map(function(obj) {
               return {label: obj.name, value: obj.id};
             });
           },
           expense_types: function(key) {
-             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, unique: obj.unique, vendor_number: obj.vendor_number};
+            data[key] = data[key].map(function(obj) {
+              return {
+                label: (obj.unique && obj.vendor_number) ?
+                  obj.vendor_number + ' - ' + obj.name :
+                  obj.name,
+                value: obj.id,
+                unique: obj.unique,
+                vendor_number: obj.vendor_number
+              };
             });
           },
           travel_modes: function(key) {
@@ -250,18 +370,28 @@
           },
           users: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.full_name, value: parseInt(obj.user_id, 10)};
+              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
+            });
+          },
+          drivers: function(key) {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
             });
           },
           dsa_regions: function(key) {
             data[key] = data[key].map(function(obj) {
               return {label: obj.area_name, value: parseInt(obj.id, 10)};
-            });
+            }).sort(self._sortByLabel);
           },
           countries: function(key) {
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: parseInt(obj.id, 10),
                 currency: obj.currency, business_area: obj.business_area};
+            });
+          },
+          vendorNumbers: function(key) {
+            data[key] = data[key].map(function(obj, index) {
+              return {label: capitalize(obj), value: index};
             });
           },
 

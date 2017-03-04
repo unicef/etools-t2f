@@ -42,7 +42,7 @@ module.exports = {
     'logFileChanges': true,
     'logSnippet': false,
     'rewriteRules': [],
-    'open': 'local',
+    'open': '',
     'browser': 'default',
     'cors': false,
     'xip': false,
@@ -54,6 +54,14 @@ module.exports = {
     'scrollRestoreTechnique': 'window.name',
     'scrollElements': [],
     'scrollElementMapping': [],
+    'snippetOptions': {
+        rule: {
+            match: /<\/head>/i,
+            fn: function(snippet, match) {
+                return snippet + match;
+            }
+        }
+    },
     'reloadDelay': 0,
     'reloadDebounce': 0,
     'reloadThrottle': 0,

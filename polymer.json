@@ -5,11 +5,14 @@
     "t2f/pages/page-not-found.html",
     "t2f/pages/page-edit-travel.html",
     "t2f/pages/page-travel-list.html",
+    "t2f/pages/page-action-points-list.html",
+    "t2f/pages/page-action-point.html",
+    "t2f/pages/page-invoices-list.html",
+    "t2f/pages/page-invoice-detail.html",
     "t2f/pages/page-permission-matrix-edit.html"
   ],
   "sourceGlobs": [
-   "t2f/**/*",
-    "data/**/*",
+    "t2f/**/*",
     "bower.json",
     "manifest.json"
   ],

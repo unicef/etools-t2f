@@ -21,10 +21,11 @@ App global configuration
           exp: 30 * 60 * 1000, // 30min
           cachingKey: 'userData'
         },
-        countries: {
-          url: 'data/countries.json',
-          exp: 6 * 60 * 60 * 1000, // 6h
-          cachingKey: 'countries'
+        settings: {
+          url: '/api/t2f/settings/'
+        },
+        changeCountry: {
+          url: '/users/api/changecountry/'
         },
         testTemplateEndpointUse: {
           template: '/api/country/<%=id%>',
@@ -32,9 +33,17 @@ App global configuration
           cachingKey: 'countries'
         },
         users: {
-          url: '/users/api/',
+          url: '/api/users',
           exp: 1000 * 60 * 60, //1 hour
           cachingKey: 'user-list'
+        },
+        profile: {
+          template: '/api/users/<%=id%>/',
+        },
+        groups: {
+          url: '/api/groups',
+          exp: 7 * 24 * 60 * 60 * 1000, // 1 week
+          cachingKey: 'groups-list'
         },
         staticData: {
           url: '/api/static_data/',
@@ -68,8 +77,6 @@ App global configuration
         },
         et2fTravelDetail: {
           template: '/api/t2f/travels/<%=id%>/',
-//          cachingKeyTemplate: 'et2f_travel_detail_<%=id%>',
-//          exp: 60 * 1000
         },
         et2fTravelAttachments: {
           template: '/api/t2f/travels/<%=id%>/attachments/',
@@ -103,6 +110,9 @@ App global configuration
           template: '/api/t2f/invoices/<%=id%>/'
         },
 
+         et2fActionPointCSVListExport: {
+          url: '/api/t2f/action_points/export/'
+        },
         et2fCSVListExport: {
           url: '/api/t2f/travels/export/'
         }

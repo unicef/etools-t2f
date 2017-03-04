@@ -15,23 +15,31 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
 <link rel="import" href="../bower_components/etools-loading/etools-loading-behavior.html">
+
+<link rel="import" href="scripts/shims.html">
 
 <link rel="import" href="app-config/etools-app-config.html">
 <link rel="import" href="app-elements/user-data/user-data.html">
-<link rel="import" href="app-elements/side-bar-item/side-bar-item.html">
+<link rel="import" href="app-elements/page-elements/side-bar-item.html">
 
 <link rel="import" href="styles/shared-styles.html">
 <link rel="import" href="styles/page-layout-styles.html">
 <link rel="import" href="styles/app-theme.html">
-<link rel="import" href="app-elements/main-elements/et2f-app.html">
+<link rel="import" href="styles/et2f-styles.html">
+<link rel="import" href="app-elements/page-elements/et2f-app.html">
+<link rel="import" href="app-elements/page-elements/system-notification.html">
+<link rel="import" href="app-elements/api-elements/settings-data.html">
 
 
 <dom-module id="app-shell">
 
   <template>
 
-    <style include="shared-styles">
+    <style include="shared-styles et2f-styles iron-flex iron-flex-alignment">
 
       :host {
         display: block;
@@ -40,8 +48,14 @@
       app-drawer {
         --app-drawer-width: 220px;
         --app-drawer-content-container: {
-          background-color: var(--light-theme-content-color);
+          background-color: rgba(255,255,255,.3);
         };
+      }
+
+      app-toolbar {
+        background-color: #0061E9;
+        color: white;
+        --app-toolbar-font-size: 16px;
       }
 
       .side-nav-wrapper {
@@ -55,6 +69,7 @@
 
       .side-nav-wrapper .header {
         min-height: 60px;
+        line-height: 18px;
         border-bottom: 1px solid var(--dark-divider-color);
       }
 
@@ -74,6 +89,10 @@
         height: 47px;
       }
 
+      .uppercase {
+        text-transform: uppercase;
+      }
+
       .side-nav-wrapper .nav-menu {
         padding: 8px 0;
       }
@@ -83,30 +102,36 @@
         border-bottom: 1px solid var(--dark-divider-color);
       }
 
-      .side-nav-wrapper .footer {
-        @apply(--layout-horizontal);
-        @apply(--layout-center-center);
-
-        margin-top: auto;
-        min-height: 26px;
-        padding: 16px 16px;
-        border-top: 1px solid var(--dark-divider-color);
+      .nav-menu, .flexy {
+        @apply(--layout-flex);
       }
 
-      #countries {
-        position: fixed;
-        top: 9px;
-        right: 20px;
-        z-index:1001;
+      system-notification {
+        width: 220px;
+        bottom: 120px;
+      }
+      .secondary-header {
+        color: var(--gray-dark);
+        height: 60px;
+        line-height: 60px;
+        text-align: center;
+        font-size: 12px;
+        border-top: 1px solid var(--gray-lighter);
       }
 
-      #mainContent {
-        min-height: 100%;
+      .last-one {
+        margin-bottom: 10px;
+      }
+
+      .lighter-item {
+        --dark-icon-color: var(--gray-light);
+        --dark-primary-text-color: var(--gray-light);
       }
 
     </style>
 
     <user-data permissions="{{permissions}}" user="{{user}}"></user-data>
+    <et2f-settings notifications="{{notifications}}"></et2f-settings>
 
     <app-location route="{{route}}"></app-location>
 
@@ -124,45 +149,41 @@
 
         <div class="side-nav-wrapper">
 
-          <app-toolbar class="header">
-            <img id="etools-logo" src="images/etools_logo.svg" alt="etools logo">
-            <paper-icon-button id="app-select" on-tap="openAppMenu" class="dark" icon="apps"></paper-icon-button>
+          <app-toolbar class="header uppercase">
+            trip<br>management
           </app-toolbar>
 
-          <div class="nav-menu">
-            <iron-selector selected="[[page]]" attr-for-selected="name" selectable="side-bar-item" role="navigation">
+          <div class="nav-menu layout vertical">
+            <iron-selector selected="[[page]]" attr-for-selected="value" selectable="side-bar-item" role="navigation">
               <template is="dom-if" if="{{permissions.loggedInDefault}}">
 
-                  <side-bar-item name="Travel2Field" icon="maps:transfer-within-a-station" href="[[baseUrl]]travel-list"></side-bar-item>
-                  <side-bar-item name="invoices" icon="description" href="[[baseUrl]]invoices-list"></side-bar-item>
-                  <side-bar-item name="action points" icon="list" href="[[baseUrl]]action-points-list"></side-bar-item>
+                <side-bar-item name="Travel2Field" value="travel-list" icon="maps:transfer-within-a-station" href$="[[baseUrl]]travel-list?reverse=true&page=1&page_size=10&search&sort_by=reference_number&show_hidden=false"></side-bar-item>
 
-                  <div class="divider"></div>
+                <template is="dom-if" if="[[isFfp]]" restamp>
+                  <side-bar-item name="invoices" value="invoices-list" icon="description" href$="[[baseUrl]]invoices-list?reverse=true&page=1&page_size=10&search&sort_by=id"></side-bar-item>
+                </template>
+
+                <side-bar-item name="action points" value="action-points-list" icon="flag" href$="[[baseUrl]]action-points-list?reverse=true&page=1&page_size=10&search&sort_by=action_point_number&f_person_responsible=[[user.id]]"></side-bar-item>
+
               </template>
-              <!-- Permissions example: only display settings if the user has permission -->
-              <side-bar-item hidden$="{{!permissions.userInfoMenu}}" name="settings" icon="settings" href="/settings"></side-bar-item>
-
-              <side-bar-item name="user support" icon="help" href="/support"></side-bar-item>
-              <side-bar-item name="discussions" icon="question-answer" href="/discussion"></side-bar-item>
-              <side-bar-item name="information" icon="info" href="/information"></side-bar-item>
-
             </iron-selector>
-          </div>
 
-          <div class="footer">
-            <img id="unicef-logo" src="images/UNICEF_logo.png" alt="UNICEF logo">
-          </div>
+            <div class="flexy"></div>
 
+            <system-notification notifications="[[notifications]]"></system-notification>
+
+              <div class="secondary-header">eTools Community Channels</div>
+              <side-bar-item name="Knowledge base" class="lighter-item" icon="maps:local-library" href="https://etools.uservoice.com"></side-bar-item>
+              <side-bar-item name="Discussion" class="lighter-item" icon="icons:question-answer" href="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"></side-bar-item>
+              <side-bar-item name="Information" class="lighter-item last-one" icon="icons:info" href="http://etools.unicefresults.org"></side-bar-item>
+
+          </div>
         </div>
-
       </app-drawer>
 
-      <!-- Main content -->
-      <div id="mainContent">
-        <template is="dom-if" id="privatePages" on-dom-change="_pagesStamped" if="{{permissions.loggedInDefault}}">
-          <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}"></et2f-app>
-        </template>
-      </div>
+      <template is="dom-if" id="privatePages" on-dom-change="_pagesStamped" if="{{permissions.loggedInDefault}}">
+        <et2f-app user="[[user]]" route="{{route}}" page="[[page]]" subroute="[[subroute]]" loading="{{loading}}" ffp="[[isFfp]]"></et2f-app>
+      </template>
 
     </app-drawer-layout>
 
@@ -207,6 +228,14 @@
           value: false,
           observer: '_loadingObserver'
         },
+        user: {
+          type: Object,
+        },
+        isFfp: {
+          type: Boolean,
+          value: false,
+          computed: '_computeIsFfp(user)',
+        },
         _toastQueue: {
           type: Array,
           value: function() { return []; }
@@ -214,6 +243,9 @@
         baseUrl: {
           type: String,
           value: baseUrl
+        },
+        notifications: {
+          type: Array
         }
       },
 
@@ -232,6 +264,9 @@
       attached: function() {
         this.baseUrl = this.basePath;
       },
+      _computeIsFfp: function(user) {
+        return user && user.t2f && user.t2f.roles && user.t2f.roles.indexOf('Finance Focal Point') > -1;
+      },
       _permissionsPagesStamped: function(permissions, _pagesAvailable) {
         if (!permissions || !_pagesAvailable) {
             return;
@@ -239,6 +274,15 @@
         if ((this.route.path === this.baseUrl) && permissions.loggedInDefault) {
           // setting the default path
           this.set('route.path', this.baseUrl + 'travel-list');
+          var defaultParams = {
+            reverse: true,
+            page: 1,
+            page_size: 10,
+            search: '',
+            sort_by: 'reference_number',
+            show_hidden: false
+          };
+          this.set('route.__queryParams', defaultParams);
         } else if (this.initialLoad) {
           // reseting the page as the pages might not have been stamped
           this._routePageChanged(this.routeData.page);
@@ -284,7 +328,7 @@
 
       _routePageChanged: function(page) {
         if (this._pagesAvailable || (['settings', 'etc'].indexOf(page) !== -1)) {
-            this.page = page || 'travel-list';
+          this.page = page || 'travel-list';
         } else {
             // console.log('No permissions yet or page hasn\'t stampped', page);
         }
