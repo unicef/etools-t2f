@@ -87,7 +87,7 @@
         var printCityFromStr = this._printCityFromStr;
 
         var rawDSA = data.cost_summary.dsa.reduce(function(ret, act, i) {
-          return ret + parseFloat(act.amount);
+          return ret + parseFloat(act.total_amount);
         }, 0);
 
         var dsa = parseFloat(data.cost_summary.dsa_total);
@@ -216,7 +216,7 @@
                       {text: print(dsa.dsa_region), alignment: 'center'},
                       {text: printFixed(dsa.daily_rate), alignment: 'center'},
                       {text: print(dsa.night_count), alignment: 'center'},
-                      {text: printFixed(dsa.amount), alignment: 'right'}
+                      {text: printFixed(dsa.total_amount), alignment: 'right'}
                     ];
                   }))
               }},
@@ -239,7 +239,7 @@
             {
               layout: 'noBorders',
               table: {
-                widths: [97,97,97,97,97],
+                widths: [80,80,80,80,80,80],
                 headerRows: 1,
                 body: [
                   [
@@ -248,6 +248,7 @@
                     {text: 'Lunch', style: 'bold', alignment: 'center'},
                     {text: 'Dinner', style: 'bold', alignment: 'center'},
                     {text: 'Accomodation', style: 'bold', alignment: 'center'},
+                    {text: 'Not applicable', style: 'bold', alignment: 'center'},
                   ]
                 ].concat(data.deductions.map(function(dd) {
                   return [
@@ -255,7 +256,8 @@
                     {text: printX(dd.breakfast), alignment: 'center'},
                     {text: printX(dd.lunch), alignment: 'center'},
                     {text: printX(dd.dinner), alignment: 'center'},
-                    {text: printX(dd.accomodation), alignment: 'center'}
+                    {text: printX(dd.accomodation), alignment: 'center'},
+                    {text: printX(dd.no_dsa), alignment: 'center'},
                   ];
                 }))
             }},
