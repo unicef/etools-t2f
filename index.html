@@ -62,10 +62,26 @@
       (function() {
         'use strict';
 
+        // Polyfill CustomEvent for IE11
+        (function(){
+          if ( typeof window.CustomEvent === "function" ) return false;
+
+          function CustomEvent ( event, params ) {
+            params = params || { bubbles: false, cancelable: false, detail: undefined };
+            var evt = document.createEvent( 'CustomEvent' );
+            evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+            return evt;
+          }
+
+          CustomEvent.prototype = window.Event.prototype;
+
+          window.CustomEvent = CustomEvent;
+        })();
+
         var onload = function() {
           if (!window.HTMLImports) {
             document.dispatchEvent(
-                new CustomEvent('WebComponentsReady', {bubbles: true})
+              new CustomEvent('WebComponentsReady', {bubbles: true})
             );
           }
           loadUserVoice();
