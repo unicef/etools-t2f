@@ -390,13 +390,6 @@
           // pointless to send back to the backend something just calculated, also create bug with expense
           delete data.cost_summary;
 
-          // Strip milliseconds causing problems with 8hour DSA calc on backend
-          data.itinerary = data.itinerary.map(function(it) {
-            it.arrival_date = it.arrival_date.replace(/\.\d*/, '.000');
-            it.departure_date = it.departure_date.replace(/\.\d*/, '.000');
-            return it;
-          });
-
           var returnByLabel = {
             action_points: {
               'status': true
@@ -535,6 +528,15 @@
               self.serverData[serverKey] = data[serverKey];
             }
           });
+
+          if (data.itinerary) {
+            // Strip milliseconds causing problems with 8hour DSA calc on backend
+            data.itinerary = data.itinerary.map(function(it) {
+              it.arrival_date = it.arrival_date.replace(/\.\d*/, '.000');
+              it.departure_date = it.departure_date.replace(/\.\d*/, '.000');
+              return it;
+            });
+          }
 
           var leftoverKeys = Object.keys(data);
           leftoverKeys.forEach(function(key) {
