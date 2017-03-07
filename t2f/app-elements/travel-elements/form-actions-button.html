@@ -942,7 +942,7 @@
         var status = data.base.status;
         var taRequired = data.base.baseDetails.ta_required;
 
-        var lib = (isInternational || taRequired) ? internationalTravelPermissions : permissions;
+        var lib = isInternational ? internationalTravelPermissions : permissions;
         var performFor = ['ta_required', 'international_travel', 'status'];
         var pathArray = data.path.split('.');
         var currentPath = pathArray.length > 0 ? pathArray[pathArray.length - 1] : false;
@@ -963,12 +963,12 @@
             return result.concat(secondary);
           }, mainActions);
 
-          // if (taRequired === false) {
-          //   var notTaKeys = ['save', 'cancel', 'complete'];
-          //   allActions = allActions.filter(function(action) {
-          //     return notTaKeys.indexOf(action) > -1;
-          //   });
-          // }
+          if (taRequired === false) {
+            var notTaKeys = ['save', 'cancel', 'complete'];
+            allActions = allActions.filter(function(action) {
+              return notTaKeys.indexOf(action) > -1;
+            });
+          }
 
           var availableActions = {
             primary: actList[allActions.shift()],
