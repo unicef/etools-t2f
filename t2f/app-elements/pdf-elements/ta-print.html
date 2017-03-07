@@ -250,7 +250,9 @@
                     {text: 'Accomodation', style: 'bold', alignment: 'center'},
                     {text: 'Not applicable', style: 'bold', alignment: 'center'},
                   ]
-                ].concat(data.deductions.map(function(dd) {
+                ].concat(data.deductions.sort(function(a, b) {
+                  return a.date.localeCompare(b.date);
+                }).map(function(dd) {
                   return [
                     {text: printDate(dd.date), alignment: 'center'},
                     {text: printX(dd.breakfast), alignment: 'center'},
