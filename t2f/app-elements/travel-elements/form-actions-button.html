@@ -964,7 +964,7 @@
           }, mainActions);
 
           if (taRequired === false) {
-            var notTaKeys = ['save', 'cancel'];
+            var notTaKeys = ['save', 'cancel', 'complete'];
             allActions = allActions.filter(function(action) {
               return notTaKeys.indexOf(action) > -1;
             });
