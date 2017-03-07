@@ -1,5 +1,6 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
+<link rel="import" href="../../app-behaviors/pdf-behavior.html">
 
 <dom-module id="pdf-print">
 
@@ -30,7 +31,7 @@
           value: 'list'
         }
       },
-
+      behaviors: [et2fBehaviors.PDFBehavior],
       _computeStyles: function() {
         return {
           mainHeader: {
@@ -95,6 +96,7 @@
 
         var data = this.storedData;
         var dataToPrint = [];
+        var behav = window.et2fBehaviors.PDFBehavior;
         var innerTableVars = {
           widths: [380, 380],
           margin: [-5, 0],
@@ -138,9 +140,12 @@
         };
 
         function innerColumnGen(label, value) {
-          return [
+          return (label && value) ? [
             {text: label + ': ', margin: [5,0]},
             {text: '' + value, style: 'rightAlign', margin: [5,0]}
+          ] : [
+            {text: '', margin: [5,0]},
+            {text: '', margin: [5,0]}
           ];
         }
         function concatManyToMany(value) {
@@ -154,7 +159,7 @@
         }
         var titleLib = {
           baseDetails: {
-            name: 'Travel Plan',
+            name: 'Overview',
             generator: function() {
               return {
                 stack: [
@@ -188,7 +193,7 @@
                                   '' + data.baseDetails.reference_number),
                                 innerColumnGen('Traveler', data.baseDetails.traveler ?
                                   data.baseDetails.traveler.label : ''),
-                                innerColumnGen('Start Date', '' + data.baseDetails.start_date),
+                                innerColumnGen('Start Date', '' + behav._printDate(data.baseDetails.start_date)),
                                 innerColumnGen('Est. Travel cost',
                                   '' + data.baseDetails.estimated_travel_cost),
                               ]
@@ -203,9 +208,8 @@
                                 innerColumnGen('Travel Status', '' + data.baseDetails.status),
                                 innerColumnGen('Supervisor', data.baseDetails.supervisor ?
                                   data.baseDetails.supervisor.label : ''),
-                                innerColumnGen('End date', '' + data.baseDetails.end_date),
-                                innerColumnGen('Mode of travel',
-                                  concatManyToMany(data.baseDetails.mode_of_travel)),
+                                innerColumnGen('End date', '' + behav._printDate(data.baseDetails.end_date)),
+                                innerColumnGen('', ''),
                               ]
                             }
                           }
@@ -228,7 +232,7 @@
             }
           },
           activities: {
-            name: 'Travel Activities (' + data.activities.length + ')',
+            name: 'Trip Activities (' + data.activities.length + ')',
             generator: function() {
               var mainStack = data.activities.map(function(activity, index) {
                 return {
@@ -242,8 +246,8 @@
                             {text: '' + (index + 1), style: 'checkbox'},
                             {
                               columns: [
-                                {text: 'Travel type: '},
-                                {text: '' + activity.travel_type, style: 'rightAlign'}
+                                {text: 'Trip type: '},
+                                {text: '' + activity.travel_type.label, style: 'rightAlign'}
                               ]
                             },
                             {text: 'Primary Traveler?'},
@@ -269,7 +273,7 @@
                                 body: [
                                   innerColumnGen('Partner', activity.partner ?
                                     activity.partner.label : ''),
-                                  innerColumnGen('When?', '' + activity.date),
+                                  innerColumnGen('When', '' + behav._printDate(activity.date)),
                                   innerColumnGen('Result to be monitored', activity.result ?
                                     activity.result.label : ''),
                                 ]
@@ -283,7 +287,6 @@
                                 body: [
                                   innerColumnGen('Partnership', activity.partnership ?
                                     activity.partnership.label : ''),
-                                  innerColumnGen('Mode of travel', '' + activity.mode_of_travel),
                                   innerColumnGen('Locations', concatManyToMany(activity.locations)),
                                 ]
                               }
