@@ -56,7 +56,8 @@
     "iron-form": "PolymerElements/iron-form#^1.1.4",
     "paper-tooltip": "PolymerElements/paper-tooltip#^1.1.3",
     "paper-time-picker": "^1.1.4",
-    "es5-shim": "https://github.com/es-shims/es5-shim.git"
+    "es5-shim": "https://github.com/es-shims/es5-shim.git",
+    "webcomponentsjs": "^0.7.24"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

@@ -16,7 +16,7 @@
     "bower.json",
     "manifest.json"
   ],
-  "extraDependencies": [
+  "includeDependencies": [
     "bower_components/webcomponentsjs/webcomponents-lite.min.js"
   ]
 }
