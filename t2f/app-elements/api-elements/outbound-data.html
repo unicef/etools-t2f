@@ -468,7 +468,21 @@
             });
           }
 
+          function divideGovernmentPartners(activities) {
+            activities = activities.map(function(act) {
+              if (act.partnership && act.partnership.type === 'government_partnerships') {
+                act.government_partnership = JSON.parse(JSON.stringify(act.partnership));
+                act.partnership = null;
+              } else if (act.partnership && act.partnership.type === 'partnerships') {
+                act.government_partnerships = null;
+              }
+            });
+          }
+
           function handleArray(arr, fieldSet) {
+            if (fieldSet === 'activities') {
+              divideGovernmentPartners(arr);
+            }
             arr = duplicateIdPurging(arr);
             arr = emptyIdPurging(arr);
             arr.forEach(function(obj) {
