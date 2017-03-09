@@ -584,13 +584,14 @@
 
         // Validation of nonTA complete action
         if (isItNonTAComplete) {
+          // Validating Trip plan
           if (!this.$.travel_plan._validateTravelPlan()) {
             invalids.push('Trip Plan');
           }
           fieldSetValidation(['Activities']);
         }
 
-        // Run validation besides for thess actions
+        // Run "default" validation
         if (nonDefultValidatableAction && !isItNonTAComplete) {
           // Validating Trip plan
           if (!this.$.travel_plan._validateTravelPlan()) {
