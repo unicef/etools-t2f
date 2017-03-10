@@ -18,7 +18,14 @@
         display: block;
         width: 100%;
       }
-
+      div.standalone {
+        color: var(--gray-dark);
+        font-size: 16px;
+        padding-left: 12px;
+      }
+      div.standalone.lighter {
+        color: var(--gray-light);
+      }
       .overnight-label {
         line-height: 24px;
         font-size: 16px;
@@ -35,7 +42,7 @@
       <div class="layout horizontal">
 
         <paper-input label="From"
-          class$="flex-4 custom-margin [[computedPermission.origin.readOnly]]"
+          class$="flex-3 custom-margin [[computedPermission.origin.readOnly]]"
           disabled="[[computedPermission.origin.disabled]]"
           hidden$="[[computedPermission.origin.hidden]]"
           value="{{itinerary.origin}}"
@@ -45,7 +52,7 @@
         </paper-input>
 
         <paper-input label="To"
-          class$="flex-4 custom-margin [[computedPermission.destination.readOnly]]"
+          class$="flex-3 custom-margin [[computedPermission.destination.readOnly]]"
           disabled="[[computedPermission.destination.disabled]]"
           hidden$="[[computedPermission.destination.hidden]]"
           value="{{itinerary.destination}}"
@@ -55,7 +62,7 @@
         </paper-input>
 
         <etools-searchable-multiselection-menu label="DSA Area"
-          class$="flex-4 [[computedPermission.dsa_region.readOnly]]"
+          class$="flex-3 [[computedPermission.dsa_region.readOnly]]"
           disabled="[[computedPermission.dsa_region.disabled]]"
           hidden$="[[computedPermission.dsa_region.hidden]]"
           options="[[structure.dsa_regions]]"
@@ -65,6 +72,11 @@
           empty-value="[[!dsaAreaRequired]]"
           placeholder="[[dsaAreaPlaceholder]]">
         </etools-searchable-multiselection-menu>
+
+        <div class="flex-3 layout horizontal center">
+          <div class="flex standalone">[[_formatCurrency(itinerary.dsa_region.dsa_amount_usd)]]</div>
+          <div class="flex standalone lighter">[[_formatCurrency(itinerary.dsa_region.dsa_amount_60plus_usd)]]</div>
+        </div>
       </div>
 
       <div class="layout horizontal">
@@ -223,6 +235,9 @@
       _computeDisableArrivalDate: function(permission, changed) {
         return permission || !changed.base.departure_date;
       },
+      _formatCurrency: function(str) {
+        return str ? str.split('.')[0] + '$' : '';
+      }
     });
   </script>
 </dom-module>
