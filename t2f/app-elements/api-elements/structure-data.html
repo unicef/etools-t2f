@@ -78,9 +78,7 @@
         officesLoading: Boolean,
         t2fStaticDataLoading: Boolean,
         driversLoading: Boolean,
-        vendorNumbersLoading: {
-          type: Boolean
-        },
+        vendorNumbersLoading: Boolean,
         structure: {
           type: Object,
           notify: true,
@@ -241,6 +239,7 @@
           data.results = t2fStaticData.results;
           data.partners = t2fStaticData.partners;
           data.partnerships = t2fStaticData.partnerships;
+          data.government_partnerships = t2fStaticData.government_partnerships;
           data.action_point_statuses = t2fStaticData.action_point_statuses;
           data.users = users.users;
           data.groups = groups.groups;
@@ -286,25 +285,62 @@
               var parentId = parentItem.id || parentItem.value;
               var childId = childItem.id || childItem.value;
               if (parentId === childItem[parentKey]) {
-                parentItem[child].push({
+                var toPush = {
                   value: parseInt(childId, 10),
                   label: childItem.label || childItem.name,
-                });
+                };
+                if (child === 'partnerships' || child === 'government_partnerships') {
+                  toPush.type = child;
+                }
+                parentItem[child].push(toPush);
               }
             });
           });
+        }
+        function fillPartnershipsWithResults() {
+          function fillPship(pship) {
+            pship.results = pship.results.map(function(innerResId) {
+              var rawOne = data.results.find(function(rawRes) {
+                return rawRes.id === innerResId;
+              });
+              return {
+                value: parseInt(rawOne.id, 10),
+                label: rawOne.label || rawOne.name
+              };
+            });
+            return pship;
+          }
+          data.partnerships = data.partnerships.map(fillPship);
+          data.government_partnerships = data.government_partnerships.map(fillPship);
         }
 
         var parsingFunctions = {
           partners: function(key) {
              data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, partnerships: obj.partnerships};
+              return {
+                label: obj.name,
+                value: obj.id,
+                partnerships: obj.partnerships,
+                government_partnerships: obj.government_partnerships,
+              };
             });
           },
           partnerships: function(key) {
             fillDependencyWithChild(key, 'partners', 'partner');
             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id};
+              return {label: obj.name, value: obj.id, type: key, results: obj.results};
+            });
+          },
+          government_partnerships: function(key) {
+            fillDependencyWithChild(key, 'partners', 'partner');
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: obj.id, type: key, results: obj.results};
+            });
+          },
+          results: function(key) {
+            fillPartnershipsWithResults();
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: parseInt(obj.id, 10)};
             });
           },
           currencies: function(key) {
@@ -394,8 +430,8 @@
               return {label: capitalize(obj), value: index};
             });
           },
-
         };
+
         var dataKeys = Object.keys(data).sort();
         dataKeys.forEach(function(key) {
           var parsingFunction = parsingFunctions[key];
@@ -411,7 +447,6 @@
               data[key] = {label: item.name, value: parseInt(item.id, 10)};
             }
           }
-
         });
         data.parsed = true;
         return data;

@@ -368,7 +368,7 @@
         // }
 
         var userTravelRoles = travelRole ? user.t2f.roles.concat(travelRole) : user.t2f.roles;
-        console.debug('user roles for this travel: ', userTravelRoles);
+        // console.debug('user roles for this travel: ', userTravelRoles);
         userTravelRoles = userTravelRoles.filter(function(role) {
           return ['Others', 'Assigner', 'PersonResponsible', 'PME'].indexOf(role) === -1;
         });
@@ -415,12 +415,14 @@
       },
 
       _handleFormAction: function(details) {
-       if (details.endPoint === 'printTa') {
+        // console.log(details);
+        if (details.endPoint === 'printTa') {
           this.$.taPrint.printTa();
-       } else {
-         this.$['outbound-data'].doRequest(details);
-       }
+        } else {
+          this.$['outbound-data'].doRequest(details);
+        }
       },
+
       closeInvalidModal: function() {
         this.$.invalid_modal.close();
       },
@@ -457,6 +459,8 @@
 
         return invalids;
       },
+
+      // Triggered from the form-actions-button handled under the hood in polymer
       onValidate: function(e, action) {
         function dedupe(collection) {
           if (!collection || !(collection instanceof Array)) {

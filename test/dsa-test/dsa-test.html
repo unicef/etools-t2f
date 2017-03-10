@@ -79,6 +79,29 @@
       api.doRequest({endPoint: 'save'});
     });
 
+    test('Andras\'s EXAMPLE CASE 1.5 (one destination, less than 8 hours stay on one day)', function(done) {
+
+      fillData('CASE1', true, false);
+
+      api.data.itinerary[0].departure_date = new Date('2017-01-01T02:00:00.499Z');
+      api.data.itinerary[0].arrival_date = new Date('2017-01-01T05:00:00.511Z');
+
+      api.data.itinerary[1].departure_date = new Date('2017-01-01T09:00:00.499Z');
+      api.data.itinerary[1].arrival_date = new Date('2017-01-01T10:00:00.511Z');
+
+      api._handlePostSuccess = function(e, data) {
+
+        // console.log('cost summary', data.cost_summary);
+
+        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('0.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('0.00');
+        if (baseDSAokay && deductionsOkay) console.log('✅');
+        done();
+      }
+
+      api.doRequest({endPoint: 'save'});
+    });
+
     test('Andras\'s EXAMPLE CASE 2. (validated by Kidus)', function(done) {
 
       fillData('CASE2', true, false);
@@ -104,8 +127,8 @@
 
         // console.log('cost summary', data.cost_summary);
 
-        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('520.00');
-        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('25.00');
+        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('480.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('20.00');
         if (baseDSAokay && deductionsOkay) console.log('✅');
         done();
       }

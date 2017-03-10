@@ -76,7 +76,7 @@
           class$="flex-4 [[computedPermission.travel_type.readOnly]]"
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
-          options="[[structure.results]]"
+          options="[[results]]"
           required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           starred$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           empty-value
@@ -156,6 +156,10 @@
           type: Array,
           value: []
         },
+        results: {
+          type: Array,
+          value: [],
+        },
         minDate: Date,
         maxDate: Date,
         disablePartnerships: {
@@ -182,12 +186,13 @@
 
       observers: [
         '_activityObserver(activity.*)',
+        '_partnershipChanged(activity.partnership)',
       ],
       _computeHidePrimaryTraveler: function(permission, primaryTraveler) {
         return permission || primaryTraveler;
       },
       _computeTravelType: function(travel_type) {
-       return travel_type;
+        return travel_type;
       },
       _travelTypeObserver: function(newValue, oldValue) {
           if (oldValue === undefined && newValue !== undefined && newValue !== '') {
@@ -197,26 +202,60 @@
           }
       },
       _computeAutoValidate: function(activity) {
-          return activity !== undefined && Object.keys(activity).length > 0;
+        return activity !== undefined && Object.keys(activity).length > 0;
       },
       _computeDisablePartnerships: function(partnerships, permissionDisabled) {
         return partnerships.length === 0 || permissionDisabled;
       },
       _partnerPartnershipsHandling: function(changed) {
+        if ([
+          'activity._validationFunction',
+          'activity.primary_traveler',
+          'activity.partnership',
+          'activity.government_partnership',
+        ].indexOf(changed.path) > -1) {
+          return;
+        }
         var partner = changed.base.partner;
         var partnership = changed.base.partnership;
+        var government_partnership = changed.base.government_partnership;
         if (partner) {
-          this.set('partnerships', partner.partnerships);
+          this.set('partnerships', partner.partnerships.concat(partner.government_partnerships));
           if (partnership && this.partnerships.find(function(partnerPartnership) {
-              return partnerPartnership.value === partnership.value;
-            })) {
+              return partnerPartnership.value === partnership.value &&
+                partnerPartnership.type === partnership.type;
+          })) {
             this.set('activity.partnership', partnership);
+          } else if (government_partnership && this.partnerships.find(function(partnerPartnership) {
+              return partnerPartnership.value === government_partnership.value &&
+                partnerPartnership.type === government_partnership.type;
+          })) {
+            // setting initial gvmnt partnership & cleaning up data
+            this.set('activity.partnership', government_partnership);
+            this.set('activity.government_partnership', null);
           } else {
             this.set('activity.partnership', null);
           }
         } else {
           this.set('partnerships', []);
           this.set('activity.partnership', null);
+        }
+      },
+      // Sets the results for the partnership
+      _partnershipChanged: function(partnership) {
+        if (partnership !== undefined && partnership !== null) {
+          if (partnership.type === 'partnerships') {
+            this.set('results', this.structure.partnerships.find(function(pship) {
+              return pship.value === partnership.value;
+            }).results);
+          } else if (partnership.type === 'government_partnerships') {
+            this.set('results', this.structure.government_partnerships.find(function(pship) {
+              return pship.value === partnership.value;
+            }).results);
+          }
+        } else {
+          this.set('results', []);
+          this.set('activity.result', null);
         }
       },
       _primaryTravelerHandling: function(changed) {

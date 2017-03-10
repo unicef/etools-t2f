@@ -379,6 +379,7 @@
           computed: '_computeSelectedExpensesType(data.expenses.*)'
         }
       },
+
       _computeDefaultBusinessArea: function(user, structure) {
         var userBusinessArea = structure.business_areas.find(function(ba) {
           return ba.value === user.t2f.business_area;
@@ -395,6 +396,7 @@
           });
          return localCurrency || false;
       },
+
       _computeSelectedExpensesType: function(expensesChanged) {
         var baseArray = expensesChanged.base;
         if (baseArray) {
@@ -490,6 +492,7 @@
       _computeHideCertificationNote: function(data) {
         return data.status !== 'Certification submitted';
       },
+
       _fieldSetSizeValidation: function(fieldSet, invalids) {
         var size = fieldSet === 'Itinerary' ? 2 : 1;
         var errorLabel = fieldSet + ' must have at least ' + size + ' valid entry(s)';
@@ -547,9 +550,9 @@
         if (overlappingError) {
           invalids.push('Itinerary: Two or more line items have overlapping dates');
         }
-
       },
 
+      // Called in travel edits onValidate
       doValidate: function(action) {
         var self = this;
         // this.fire('form-action', action); // to debug the backend validation
@@ -576,8 +579,20 @@
           });
         }
 
-        //do not run validation for this set of actions
-        if (['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0) {
+        var isItNonTAComplete = action.name === 'Complete' && !this.data.baseDetails.ta_required;
+        var nonDefultValidatableAction = ['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0;
+
+        // Validation of nonTA complete action
+        if (isItNonTAComplete) {
+          // Validating Trip plan
+          if (!this.$.travel_plan._validateTravelPlan()) {
+            invalids.push('Trip Plan');
+          }
+          fieldSetValidation(['Activities']);
+        }
+
+        // Run "default" validation
+        if (nonDefultValidatableAction && !isItNonTAComplete) {
           // Validating Trip plan
           if (!this.$.travel_plan._validateTravelPlan()) {
             invalids.push('Trip Plan');
@@ -599,10 +614,6 @@
           fieldSetValidation(['Itinerary']);
           self._fieldSetSizeValidation('Itinerary', invalids);
           self._validateItineraryIntegrity(invalids);
-        }
-
-        if (action.name === 'Save') {
-          // console.log(self.data);
         }
 
         return invalids;
