@@ -15,6 +15,7 @@
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="../../app-behaviors/list-behavior.html">
+<link rel="import" href="../../../bower_components/moment-element/moment-import.html">
 
 <link rel="import" href="./action-points-list-element.html">
 <link rel="import" href="../list-elements/list-header.html">
@@ -139,7 +140,7 @@
   </template>
 
   <script type="text/javascript">
-    /* globals ListBehavior */
+    /* globals ListBehavior, moment */
     Polymer({
 
       is: 'action-points-list',
@@ -332,7 +333,7 @@
         this.set('datalength', data.total_count);
         data.data.forEach(function(action) {
           if (action.due_date) {
-            action.due_date = action.due_date.split('T')[0];
+            action.due_date = moment(new Date(action.due_date)).format('LL');
           }
         });
         this.set('data', data.data);
