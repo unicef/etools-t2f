@@ -76,7 +76,7 @@
           class$="flex-4 [[computedPermission.travel_type.readOnly]]"
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
-          options="[[structure.results]]"
+          options="[[results]]"
           required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           starred$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           empty-value
@@ -156,6 +156,10 @@
           type: Array,
           value: []
         },
+        results: {
+          type: Array,
+          value: [],
+        },
         minDate: Date,
         maxDate: Date,
         disablePartnerships: {
@@ -182,6 +186,7 @@
 
       observers: [
         '_activityObserver(activity.*)',
+        '_partnershipChanged(activity.partnership)',
       ],
       _computeHidePrimaryTraveler: function(permission, primaryTraveler) {
         return permission || primaryTraveler;
@@ -234,6 +239,23 @@
         } else {
           this.set('partnerships', []);
           this.set('activity.partnership', null);
+        }
+      },
+      // Sets the results for the partnership
+      _partnershipChanged: function(partnership) {
+        if (partnership !== undefined && partnership !== null) {
+          if (partnership.type === 'partnerships') {
+            this.set('results', this.structure.partnerships.find(function(pship) {
+              return pship.value === partnership.value;
+            }).results);
+          } else if (partnership.type === 'government_partnerships') {
+            this.set('results', this.structure.government_partnerships.find(function(pship) {
+              return pship.value === partnership.value;
+            }).results);
+          }
+        } else {
+          this.set('results', []);
+          this.set('activity.result', null);
         }
       },
       _primaryTravelerHandling: function(changed) {

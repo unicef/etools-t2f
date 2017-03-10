@@ -297,6 +297,22 @@
             });
           });
         }
+        function fillPartnershipsWithResults() {
+          function fillPship(pship) {
+            pship.results = pship.results.map(function(innerResId) {
+              var rawOne = data.results.find(function(rawRes) {
+                return rawRes.id === innerResId;
+              });
+              return {
+                value: parseInt(rawOne.id, 10),
+                label: rawOne.label || rawOne.name
+              };
+            });
+            return pship;
+          }
+          data.partnerships = data.partnerships.map(fillPship);
+          data.government_partnerships = data.government_partnerships.map(fillPship);
+        }
 
         var parsingFunctions = {
           partners: function(key) {
@@ -312,13 +328,19 @@
           partnerships: function(key) {
             fillDependencyWithChild(key, 'partners', 'partner');
             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, type: key};
+              return {label: obj.name, value: obj.id, type: key, results: obj.results};
             });
           },
           government_partnerships: function(key) {
             fillDependencyWithChild(key, 'partners', 'partner');
             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, type: key};
+              return {label: obj.name, value: obj.id, type: key, results: obj.results};
+            });
+          },
+          results: function(key) {
+            fillPartnershipsWithResults();
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: parseInt(obj.id, 10)};
             });
           },
           currencies: function(key) {
@@ -408,8 +430,8 @@
               return {label: capitalize(obj), value: index};
             });
           },
-
         };
+
         var dataKeys = Object.keys(data).sort();
         dataKeys.forEach(function(key) {
           var parsingFunction = parsingFunctions[key];
@@ -425,7 +447,6 @@
               data[key] = {label: item.name, value: parseInt(item.id, 10)};
             }
           }
-
         });
         data.parsed = true;
         return data;
