@@ -15,6 +15,7 @@
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
 <link rel="import" href="../../app-behaviors/list-behavior.html">
+<link rel="import" href="../../../bower_components/moment-element/moment-import.html">
 
 <link rel="import" href="travel-list-element.html">
 <link rel="import" href="../list-elements/list-header.html">
@@ -147,7 +148,7 @@
   </template>
 
   <script type="text/javascript">
-    /* globals ListBehavior */
+    /* globals ListBehavior, moment */
     Polymer({
 
       is: 'travel-list',
@@ -516,10 +517,10 @@
         this.set('datalength', data.total_count);
         data.data.forEach(function(travel) {
           if (travel.start_date) {
-            travel.start_date = travel.start_date.split('T')[0];
+            travel.start_date = moment(travel.start_date).format('LL');
           }
           if (travel.end_date) {
-            travel.end_date = travel.end_date.split('T')[0];
+            travel.end_date = moment(travel.end_date).format('LL');
           }
         });
         this.set('data', data.data);
