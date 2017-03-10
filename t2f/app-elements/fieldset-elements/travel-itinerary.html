@@ -20,11 +20,26 @@
       }
       div.standalone {
         color: var(--gray-dark);
+        position: relative;
         font-size: 16px;
         padding-left: 12px;
       }
       div.standalone.lighter {
         color: var(--gray-light);
+      }
+      div.standalone.dsa-rate-label:before {
+        content: 'daily rate';
+        position: absolute;
+        top: -20px;
+        left: 0;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 20px;
+        color: var(--gray-light);
+        padding-left: 12px;
+      }
+      div.standalone.plus60:before {
+        content: '60+ daily rate';
       }
       .overnight-label {
         line-height: 24px;
@@ -73,10 +88,13 @@
           placeholder="[[dsaAreaPlaceholder]]">
         </etools-searchable-multiselection-menu>
 
-        <div class="flex-3 layout horizontal center">
-          <div class="flex standalone">[[_formatCurrency(itinerary.dsa_region.dsa_amount_usd)]]</div>
-          <div class="flex standalone lighter">[[_formatCurrency(itinerary.dsa_region.dsa_amount_60plus_usd)]]</div>
-        </div>
+        <template is="dom-if" if="itinerary.dsa_region">
+          <div class="flex-3 layout horizontal center">
+            <div class="flex standalone dsa-rate-label">[[_formatCurrency(itinerary.dsa_region.dsa_amount_usd)]]</div>
+            <!-- <div class="flex standalone 60plus-label">[[_formatCurrency(itinerary.dsa_region.dsa_amount_60plus_usd)]]</div> -->
+            <div class="flex standalone dsa-rate-label plus60">[[_formatCurrency(itinerary.dsa_region.dsa_amount_60plus_usd)]]</div>
+          </div>
+        </template>
       </div>
 
       <div class="layout horizontal">
