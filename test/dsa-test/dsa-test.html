@@ -93,8 +93,8 @@
 
         // console.log('cost summary', data.cost_summary);
 
-        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('80.00');
-        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('20.00');
+        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('0.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('0.00');
         if (baseDSAokay && deductionsOkay) console.log('✅');
         done();
       }
@@ -127,8 +127,8 @@
 
         // console.log('cost summary', data.cost_summary);
 
-        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('520.00');
-        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('25.00');
+        var baseDSAokay = expect(data.cost_summary.dsa_total).to.equal('480.00');
+        var deductionsOkay = expect(data.cost_summary.deductions_total).to.equal('20.00');
         if (baseDSAokay && deductionsOkay) console.log('✅');
         done();
       }
