@@ -267,6 +267,8 @@
           <template is="dom-repeat" items="{{data.expenses}}">
             <travel-expense permissions-matrix="[[travelPermissions.expenses]]"
               expense="{{item}}"
+              user="[[user]]"
+              local-currency=[[localCurrency]]
               base-details="[[data.baseDetails]]"
               document-currency="{{data.baseDetails.currency}}"
               selected-expenses="[[selectedExpensesType]]"
