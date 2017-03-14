@@ -186,27 +186,27 @@
       <div class="layout horizontal">
 
         <date-time-picker-input label="Start Date"
+          id="start_date"
           class$="flex-3 [[computedPermission.start_date.readOnly]]"
-          disabled="[[computedPermission.start_date.disabled]]"
           hidden$="[[computedPermission.start_date.hidden]]"
           required$="[[computedPermission.start_date.required]]"
           auto-validate$="[[autoValidate]]"
           placeholder="select"
-          date="{{baseDetails.start_date}}"
-          starred>
+          disabled
+          starred$="[[not(baseDetails.ta_required)]]"
+          date="[[baseDetails.start_date]]">
         </date-time-picker-input>
 
         <date-time-picker-input label="End Date"
           id="end_date"
-          min-date=[[baseDetails.start_date]]
           class$="flex-3 [[computedPermission.end_date.readOnly]]"
-          disabled="[[endDateDisabled]]"
           hidden$="[[computedPermission.end_date.hidden]]"
           required$="[[computedPermission.end_date.required]]"
           placeholder="select"
-          date="{{baseDetails.end_date}}"
-          auto-validate$="[[autoValidate]]"
-          starred>
+          date="[[baseDetails.end_date]]"
+          starred$="[[not(baseDetails.ta_required)]]"
+          disabled
+          auto-validate$="[[autoValidate]]">
         </date-time-picker-input>
 
         <etools-searchable-multiselection-menu label="Currency of TA"
@@ -245,6 +245,7 @@
     Polymer({
       is: 'travel-plan',
       properties: {
+        data: Object,
         baseDetails: {
           type: Object,
           value: {},
@@ -300,8 +301,54 @@
 
       observers: [
         '_valuesObserver(baseDetails.*)',
-        '_setDefaultUserValues(user, baseDetails.*, structure, localCurrency)'
+        '_setDefaultUserValues(user, baseDetails.*, structure, localCurrency)',
+        '_computeStartAndEndDates(data.itinerary.*, data.activities.*, baseDetails.ta_required)',
       ],
+
+      not: function(a) {
+        return !a;
+      },
+
+      _computeStartAndEndDates: function(itCh, actCh, taReq) {
+        if (taReq) {
+          if (
+            itCh.path === 'data.itinerary' && actCh.path === 'data.activities' ||
+            (itCh.path + actCh.path).indexOf('date') >= 0
+          ) {
+            var itineraryDates = this.data.itinerary ? this.data.itinerary.reduce(function(ret, it) {
+              if (it.arrival_date) {
+                ret.push(it.arrival_date);
+              }
+              if (it.departure_date) {
+                ret.push(it.departure_date);
+              }
+              return ret;
+            }, []) : [];
+
+            var activitiesDates = this.data.activities ? this.data.activities.reduce(function(ret, act) {
+              if (act.date) {
+                ret.push(act.date);
+              }
+              return ret;
+            }, []) : [];
+
+            var allDates = itineraryDates.concat(activitiesDates);
+
+            var start_date = allDates.length ? new Date(Math.min.apply(null, allDates)) : undefined;
+            var end_date = allDates.length ? new Date(Math.max.apply(null, allDates)) : undefined;
+
+            this.set('baseDetails.start_date', start_date);
+            this.set('baseDetails.end_date', end_date);
+          }
+        } else {
+          if (!this.computedPermission.start_date.disabled) {
+            this.$.start_date.removeAttribute('disabled');
+          }
+          if (!this.computedPermission.end_date.disabled) {
+            this.$.end_date.removeAttribute('disabled');
+          }
+        }
+      },
 
       _setDefaultUserValues: function(user, dataChanged, structure, localCurrency) {
         var baseDetails = dataChanged.base;
@@ -333,7 +380,6 @@
         this.notifyPath('baseDetails.office');
         this.notifyPath('baseDetails.section');
         this.notifyPath('baseDetails.supervisor');
-
       },
 
       _computeTaEligible: function(user, traveler, international) {

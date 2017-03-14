@@ -100,8 +100,6 @@
         <date-time-picker-input label="Date of Visit"
           class$="flex-4 [[computedPermission.date.readOnly]]"
           disabled="[[computedPermission.date.disabled]]"
-          min-date="[[minDate]]"
-          max-date="[[maxDate]]"
           clearable
           hidden$="[[computedPermission.date.hidden]]"
           date="{{activity.date}}"
@@ -125,8 +123,7 @@
             options="[[structure.users]]"
             empty-value
             placeholder="select"
-            auto-validate$="[[autoValidate]]"
-            >
+            auto-validate$="[[autoValidate]]">
           </etools-searchable-multiselection-menu>
         </div>
       </div>
@@ -160,8 +157,6 @@
           type: Array,
           value: [],
         },
-        minDate: Date,
-        maxDate: Date,
         disablePartnerships: {
           type: Boolean,
           computed: '_computeDisablePartnerships(partnerships, computedPermission.partnership.disabled)'
