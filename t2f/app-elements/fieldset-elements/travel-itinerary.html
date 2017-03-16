@@ -91,7 +91,6 @@
         <template is="dom-if" if="itinerary.dsa_region">
           <div class="flex-3 layout horizontal center">
             <div class="flex standalone dsa-rate-label">[[_formatCurrency(itinerary.dsa_region.dsa_amount_usd)]]</div>
-            <!-- <div class="flex standalone 60plus-label">[[_formatCurrency(itinerary.dsa_region.dsa_amount_60plus_usd)]]</div> -->
             <div class="flex standalone dsa-rate-label plus60">[[_formatCurrency(itinerary.dsa_region.dsa_amount_60plus_usd)]]</div>
           </div>
         </template>
@@ -254,7 +253,9 @@
         return permission || !changed.base.departure_date;
       },
       _formatCurrency: function(str) {
-        return str ? str.split('.')[0] + '$' : '';
+        return str ?
+          str.split('.')[0] + '$' :
+          ' - ';
       }
     });
   </script>
