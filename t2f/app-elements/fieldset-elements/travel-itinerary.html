@@ -74,8 +74,6 @@
           disabled="[[computedPermission.departure_date.disabled]]"
           hidden$="[[computedPermission.departure_date.hidden]]"
           time-picker
-          min-date="[[minDate]]"
-          max-date="[[maxDate]]"
           date="{{itinerary.departure_date}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.departure_date.required]]"
@@ -88,20 +86,18 @@
           hidden$="[[computedPermission.arrival_date.hidden]]"
           time-picker
           min-date="[[itinerary.departure_date]]"
-          max-date="[[maxDate]]"
           date="{{itinerary.arrival_date}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.arrival_date.required]]"
           placeholder="select">
         </date-time-picker-input>
 
-        <etools-searchable-multiselection-menu
+        <etools-searchable-multiselection-menu label="Mode of Travel"
           class$="flex-2 capitalize [[computedPermission.mode_of_travel.readOnly]]"
           disabled="[[computedPermission.mode_of_travel.disabled]]"
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.travel_modes]]"
           capitalize-input-shown
-          label="Mode of Travel"
           value="{{itinerary.mode_of_travel}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.mode_of_travel.required]]"
