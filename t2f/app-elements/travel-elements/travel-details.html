@@ -179,7 +179,8 @@
             permissions-matrix="[[travelPermissions.baseDetails]]"
             structure="[[structure]]"
             local-currency="[[localCurrency]]"
-            user="[[user]]">
+            user="[[user]]"
+            data="[[data]]">
           </travel-plan>
         </etools-repeatable-field-set>
 
@@ -201,8 +202,6 @@
             <travel-activities
               class="travel_activity"
               activity="{{item}}"
-              min-date="[[data.baseDetails.start_date]]"
-              max-date="[[data.baseDetails.end_date]]"
               permissions-matrix="[[travelPermissions.activities]]"
               structure="[[structure]]"
               activity-validation-array="{{activityValidationArray}}">
@@ -228,8 +227,6 @@
               itinerary="{{item}}"
               index="[[index]]"
               collection-size="[[data.itinerary.length]]"
-              min-date="[[data.baseDetails.start_date]]"
-              max-date="[[data.baseDetails.end_date]]"
               structure="[[structure]]">
             </travel-itinerary>
           </template>
