@@ -8,6 +8,8 @@
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 
+<link rel="import" href="../../scripts/lodash/lodash.html">
+
 <dom-module id="form-errors">
   <style include="iron-flex shared-styles et2f-styles">
     :host {
@@ -104,6 +106,9 @@
         return errorList.length > 0;
       },
       _computeErrorList: function(errors) {
+        if (typeof errors === 'string') {
+          errors = JSON.parse(errors);
+        }
         var errorList = [];
         if (errors) {
           if (errors instanceof Array) {
@@ -115,7 +120,7 @@
               });
             });
           } else {
-            Object.keys(errors).forEach(function(category) {
+            _.keys(errors).forEach(function(category) {
                 errors[category].forEach(function(field) {
                   if (!(field instanceof Object)) {
                     errorList.push({
@@ -124,7 +129,7 @@
                       error: field
                     });
                   } else {
-                    Object.keys(field).forEach(function(errors) {
+                    _.keys(field).forEach(function(errors) {
                       field[errors].forEach(function(message) {
                         errorList.push({
                           fieldSet: category,
