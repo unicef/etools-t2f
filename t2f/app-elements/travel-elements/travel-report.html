@@ -5,7 +5,7 @@
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 
-
+<link rel="import" href="../../scripts/lodash/lodash.html">
 <link rel="import" href="../fieldset-elements/action-point.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
@@ -104,10 +104,10 @@
             strip-whitespace>
 
             <action-point
-            action-points="{{item}}"
-            structure="{{structure}}"
-            permissions-matrix="[[permissions.action_points]]"
-            user="[[user]]">
+              action-points="{{item}}"
+              structure="{{structure}}"
+              permissions-matrix="[[permissions.action_points]]"
+              user="[[user]]">
 
             </action-point>
 

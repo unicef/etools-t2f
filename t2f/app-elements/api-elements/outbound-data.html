@@ -8,6 +8,8 @@
 <link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
+<link rel="import" href="../../scripts/lodash/lodash.html">
+
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
@@ -429,7 +431,7 @@
 
           function emptyCollectionPurging(collection) {
             return collection.filter(function(item) {
-                return Object.keys(item).length > 0;
+                return _.keys(item).length > 0;
             });
           }
           function valueForServer(item, key, fieldSet) {
@@ -446,7 +448,7 @@
 
           function handleObject(obj, fieldSet) {
             if (!obj) {return;}
-            var keys = Object.keys(obj);
+            var keys = _.keys(obj);
             keys.forEach(function(key) {
               if (obj[key] === null || obj[key] === undefined || obj[key] === '') {
                 delete obj[key];
@@ -464,7 +466,7 @@
 
           function checkCostAssignments(arr) {
             return arr.filter(function(item) {
-              return Object.keys(item).length > 1;
+              return _.keys(item).length > 1;
             });
           }
 
@@ -495,7 +497,7 @@
             return arr;
           }
 
-          var dataKeys = Object.keys(data);
+          var dataKeys = _.keys(data);
 
           dataKeys.forEach(function(fieldSet) {
             if (data[fieldSet] instanceof Array) {
@@ -505,11 +507,11 @@
             }
           });
 
-          var serverKeys = Object.keys(this.serverData);
+          var serverKeys = _.keys(this.serverData);
 
           serverKeys.forEach(function(serverKey) {
             if (data[serverKey] instanceof Array && data[serverKey][0]) {
-              if (Object.keys(data[serverKey][0]).length === 0) {
+              if (_.keys(data[serverKey][0]).length === 0) {
                 delete self.serverData[serverKey];
               }
 
@@ -517,8 +519,8 @@
               //   which would otherwise fail on backend validation
               if (serverKey === 'activities' &&
                 data.activities.length === 1 &&
-                Object.keys(data.activities[0]).length === 1 &&
-                Object.keys(data.activities[0])[0] === 'locations' &&
+                _.keys(data.activities[0]).length === 1 &&
+                _.keys(data.activities[0])[0] === 'locations' &&
                 data.activities[0].locations.length === 0) {
 
                 delete self.serverData.activities;
@@ -529,8 +531,8 @@
               //   which would otherwise fail on backend validation
               if (serverKey === 'itinerary' &&
                 data.itinerary.length === 1 &&
-                Object.keys(data.itinerary[0]).length === 1 &&
-                Object.keys(data.itinerary[0])[0] === 'airlines' &&
+                _.keys(data.itinerary[0]).length === 1 &&
+                _.keys(data.itinerary[0])[0] === 'airlines' &&
                 data.itinerary[0].airlines.length === 0) {
 
                 delete self.serverData.itinerary;
@@ -552,12 +554,12 @@
             });
           }
 
-          var leftoverKeys = Object.keys(data);
+          var leftoverKeys = _.keys(data);
           leftoverKeys.forEach(function(key) {
             var value = data[key];
             if (value) {
               if (typeof(value) === 'object' && !Array.isArray(value)) {
-                var innerKeys = Object.keys(value);
+                var innerKeys = _.keys(value);
                 innerKeys.forEach(function(innerKey) {
                   self.serverData[innerKey] = value[innerKey];
                 });

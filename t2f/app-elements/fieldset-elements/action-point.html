@@ -251,7 +251,7 @@
         },
         actionPoints: {
           type: Object,
-          notify: true
+          notify: true,
         },
         structure: {
           type: Object,
@@ -303,8 +303,10 @@
       _validateActionPoint: function() {
         var aps = this.actionPoints;
         var keys = Object.keys(aps);
-        if (keys.length > 1) {
-         return this.$$('#action_point_form').validate();
+        if (keys.length === 1 && keys[0] === '_validationFunction') {
+          return this.$$('#action_point_form').validate();
+        } else if (keys.length === 2 && '_validationFunction' in keys && 'actions_taken' in keys && aps.actions_taken === '') {
+          return this.$$('#action_point_form').validate();
         }
         return true;
       },

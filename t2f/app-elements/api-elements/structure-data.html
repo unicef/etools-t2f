@@ -416,7 +416,12 @@
           },
           dsa_regions: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.area_name, value: parseInt(obj.id, 10)};
+              return {
+                label: obj.area_name,
+                value: parseInt(obj.id, 10),
+                dsa_amount_usd: obj.dsa_amount_usd,
+                dsa_amount_60plus_usd: obj.dsa_amount_60plus_usd,
+              };
             }).sort(self._sortByLabel);
           },
           countries: function(key) {
