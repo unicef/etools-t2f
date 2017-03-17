@@ -99,6 +99,15 @@
       </div>
 
       <div class="layout vertical group row">
+
+        <div class="layout horizontal">
+          <div class="flex-6 head bold">
+            Expense summary
+          </div>
+        </div>
+
+        <div class="underline flex"></div>
+
         <template is="dom-repeat" items="[[costSummary.expenses]]">
           <div class="layout horizontal sub-row">
             <div class="flex-6 head">
@@ -110,16 +119,6 @@
             <div class="underline"></div>
           </div>
         </template>
-
-        <div class="layout horizontal">
-          <div class="flex-6 head bold">
-            Expenses Total
-          </div>
-          <div class="flex-6 right-align curr">
-            {{exp}} {{currency.short}}
-          </div>
-        </div>
-        <div class="underline flex"></div>
       </div>
 
     <!--   <div class="layout horizontal row">
@@ -142,9 +141,8 @@
       </div>
     </div>
 
-    <div class="layout horizontal " >
-
-      </div>
+<!--     <div class="layout horizontal">
+    </div> -->
   </template>
 
   <script>
