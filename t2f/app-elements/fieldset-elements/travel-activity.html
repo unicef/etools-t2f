@@ -77,8 +77,6 @@
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
           options="[[results]]"
-          required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
-          starred$="[[_progVisOrSpotCheck(activity.travel_type)]]"
           empty-value
           value="{{activity.result}}"
           placeholder="select">
@@ -286,6 +284,7 @@
           return false;
         }
       },
+
       _progVisOrSpotCheck: function(travel_type) {
         return travel_type ?
           ['Programmatic Visit', 'Spot Check'].indexOf(travel_type.label) > -1 :
