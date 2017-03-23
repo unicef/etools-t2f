@@ -111,10 +111,10 @@
         <template is="dom-repeat" items="[[costSummary.expenses]]">
           <div class="layout horizontal sub-row">
             <div class="flex-6 head">
-              -- [[item.vendor_number]]
+              -- [[item.vendor_number]] - ([[item.label]])
             </div>
             <div class="flex-6 right-align curr">
-              {{item.amount}} {{currency.short}}
+              [[item.amount]] [[_getShortCurrFromId(item.currency)]]
             </div>
             <div class="underline"></div>
           </div>
@@ -152,6 +152,7 @@
         costSummary: {
           type: Object
         },
+        structure: Object,
         total: {
           type: Number,
           computed: '_calculateTotal(costSummary.*)',
@@ -175,7 +176,14 @@
           this.tdsa = (this.dsa - this.ded).toFixed(2);
           return ((+this.tdsa) + (+this.exp) - (+this.ee)).toFixed(2);
         }
-      }
+      },
+
+      _getShortCurrFromId: function(currId) {
+        return this.structure.currencies.filter(function(listCurr) {
+          return listCurr.value === currId;
+        })[0].short;
+      },
+
     });
   </script>
 </dom-module>
