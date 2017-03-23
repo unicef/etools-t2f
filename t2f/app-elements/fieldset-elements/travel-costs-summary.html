@@ -99,27 +99,26 @@
       </div>
 
       <div class="layout vertical group row">
+
+        <div class="layout horizontal">
+          <div class="flex-6 head bold">
+            Expense summary
+          </div>
+        </div>
+
+        <div class="underline flex"></div>
+
         <template is="dom-repeat" items="[[costSummary.expenses]]">
           <div class="layout horizontal sub-row">
             <div class="flex-6 head">
-              -- [[item.vendor_number]]
+              -- [[item.vendor_number]] - ([[item.label]])
             </div>
             <div class="flex-6 right-align curr">
-              {{item.amount}} {{currency.short}}
+              [[item.amount]] [[_getShortCurrFromId(item.currency)]]
             </div>
             <div class="underline"></div>
           </div>
         </template>
-
-        <div class="layout horizontal">
-          <div class="flex-6 head bold">
-            Expenses Total
-          </div>
-          <div class="flex-6 right-align curr">
-            {{exp}} {{currency.short}}
-          </div>
-        </div>
-        <div class="underline flex"></div>
       </div>
 
     <!--   <div class="layout horizontal row">
@@ -142,9 +141,8 @@
       </div>
     </div>
 
-    <div class="layout horizontal " >
-
-      </div>
+<!--     <div class="layout horizontal">
+    </div> -->
   </template>
 
   <script>
@@ -154,6 +152,7 @@
         costSummary: {
           type: Object
         },
+        structure: Object,
         total: {
           type: Number,
           computed: '_calculateTotal(costSummary.*)',
@@ -177,7 +176,14 @@
           this.tdsa = (this.dsa - this.ded).toFixed(2);
           return ((+this.tdsa) + (+this.exp) - (+this.ee)).toFixed(2);
         }
-      }
+      },
+
+      _getShortCurrFromId: function(currId) {
+        return this.structure.currencies.filter(function(listCurr) {
+          return listCurr.value === currId;
+        })[0].short;
+      },
+
     });
   </script>
 </dom-module>

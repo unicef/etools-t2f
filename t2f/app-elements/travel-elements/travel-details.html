@@ -304,7 +304,11 @@
           open="[[sectionPermissions.cost_summary.open]]"
           hidden$="[[_hideOnTANotRequired(sectionPermissions.cost_summary.hidden, data.baseDetails.ta_required)]]">
 
-          <travel-cost-summary cost-summary="[[data.cost_summary]]" currency="[[data.baseDetails.currency]]" structure="[[structure]]"></travel-cost-summary>
+          <travel-cost-summary
+            cost-summary="[[data.cost_summary]]"
+            currency="[[data.baseDetails.currency]]"
+            structure="[[structure]]">
+          </travel-cost-summary>
         </etools-repeatable-field-set>
       </div>
     </div>
