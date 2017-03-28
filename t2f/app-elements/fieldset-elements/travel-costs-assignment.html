@@ -295,8 +295,7 @@
         }
       },
 
-      _businessAreaChanged(business_area, user) {
-
+      _businessAreaChanged: function(business_area, user) {
         // Reset dropdowns on non-compatible business-area code, or not toProcess
         var differentCountryCode = this.costAssignment &&
                                    this.costAssignment.hasOwnProperty('wbs') &&
