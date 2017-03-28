@@ -4,6 +4,7 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 
 <link rel="import" href="../travel-elements/travel-status.html">
 
@@ -21,10 +22,14 @@
 
     </style>
 
+    <etools-ajax url="[[costStructureEndpoint]]"
+      loading="{{costStructureLoading}}"
+      on-success="_handleCostStructure"
+      ></etools-ajax>
+
     <form is="iron-form"
       id="cost_assignment_form"
       class="layout vertical flex">
-
 
       <div class="layout horizontal">
 
@@ -53,6 +58,7 @@
       <div class="layout horizontal">
 
         <etools-searchable-multiselection-menu label="WBS"
+          id="wbs"
           class$="flex-4 [[computedPermission.wbs.readOnly]]"
           options="[[wbsOptions]]"
           empty-value
@@ -65,6 +71,7 @@
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Grant"
+          id="grant"
           class$="flex-3 [[computedPermission.grant.readOnly]]"
           options="[[grantOptions]]"
           value="{{costAssignment.grant}}"
@@ -77,6 +84,7 @@
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Fund"
+          id="fund"
           class$="flex-3 [[computedPermission.fund.readOnly]]"
           options="[[fundOptions]]"
           value="{{costAssignment.fund}}"
@@ -114,7 +122,19 @@
       properties: {
         costAssignment: {
           type: Object,
-          notify: true,
+          notify: true
+        },
+        costStructureEndpoint: {
+          type: String,
+        },
+        wbsOptions: {
+          type: Array,
+          value: function() {
+            return [];
+          },
+        },
+        user: {
+          type: Object,
         },
         structure: {
           type: Object,
@@ -149,22 +169,22 @@
         },
         grantOptions: {
           type: Array,
-          computed: '_computeGrantOptions(structure.grants, costAssignment.wbs.*, costAssignment.*)',
+          computed: '_computeGrantOptions(costAssignment.wbs.*, costAssignment.*)',
         },
         fundOptions: {
           type: Array,
-          computed: '_computeFundOptions(structure.funds, costAssignment.grant.*, costAssignment.*)',
-        },
-        wbsOptions: {
-          type: Array,
-          computed: '_computeWbsOptions(structure.wbs, costAssignment.*)',
+          computed: '_computeFundOptions(costAssignment.grant.*, costAssignment.*)',
         },
       },
-      behaviors: [et2fBehaviors.PermissionLayer],
+
+      behaviors: [et2fBehaviors.PermissionLayer, et2fBehaviors.ApiBehavior],
+
       observers: [
         '_observeDefaultBusinessArea(defaultBusinessArea, costAssignment.*)',
         '_costAssignmentObserver(costAssignment.*)',
+        '_businessAreaChanged(costAssignment.business_area, user)',
       ],
+
       _isInList: function(list, value) {
         if (!value || !list) {
           return false;
@@ -173,6 +193,7 @@
           return item.value === value.value;
         });
       },
+
       _observeDefaultBusinessArea: function(defaultBusinessArea, costAssignmentChanged) {
         var businessArea = defaultBusinessArea;
         if (costAssignmentChanged && costAssignmentChanged.base) {
@@ -181,78 +202,128 @@
         }
         this.set('costAssignment.business_area', businessArea);
       },
+
       _costAssignmentObserver: function(costAssignmentChanged) {
         if (costAssignmentChanged.base && !costAssignmentChanged.base._validationFunction) {
             costAssignmentChanged.base._validationFunction = this._validateCostAssignment.bind(this);
         }
         this[costAssignmentChanged.path] = costAssignmentChanged.value;
       },
+
       _computeDisableBusinessArea: function(permission, delegate, businessArea) {
         if (!delegate) {
           this.set('costAssignment.business_area', this.defaultBusinessArea);
         }
         return permission || !delegate;
       },
+
       _computeDisableGrant: function(permission, wbs) {
         return permission || !(wbs && wbs.grants !== []);
       },
+
       _computeDisableFund: function(permission, grant) {
         return permission || !(grant && grant.funds !== []);
       },
+
       _computeDisableShare: function(permission, fund) {
         return permission || !fund;
       },
-      _computeGrantOptions: function(grants, wbs, costAssignmentChanged) {
-        if (wbs && wbs.base) {
-          wbs = wbs.base;
-          var grantOptions = grants.filter(function(grant) {
-            return wbs.grants.some(function(item) {
-              return item === grant.value;
-            });
-          });
-          var grant = costAssignmentChanged.base.grant;
-          if (!this._isInList(grantOptions, grant)) {
+
+      _computeGrantOptions: function(wbsCh, costAssignmentCh) {
+        if (costAssignmentCh.path === 'costAssignment.fund' || costAssignmentCh.path === 'costAssignment.grant') {
+          return this.grantOptions;
+        }
+        if (wbsCh && wbsCh.base) {
+          var wbs = wbsCh.base;
+          var grantOptions = wbs.grants;
+          var grant = costAssignmentCh.base.grant;
+          if (!this._isInList(grantOptions, grant) && !wbs.toProcess) {
             this.set('costAssignment.grant', null);
+            this.set('costAssignment.fund', null);
           }
           return grantOptions;
+        } else if (!wbsCh.base) {
+          // Selected empty
+          this.set('costAssignment.grant', null);
+          this.set('costAssignment.fund', null);
+          return [];
         }
       },
-      _computeFundOptions: function(funds, grant, costAssignmentChanged) {
-         if (grant && grant.base) {
-           grant = grant.base;
-           var fundOptions =  funds.filter(function(fund) {
-              return grant.funds.some(function(item) {
-                return item === fund.value;
-              });
-           });
-           var fund = costAssignmentChanged.base.fund;
-           if (!this._isInList(fundOptions, fund)) {
-              this.set('costAssignment.fund', null);
-           }
-           return fundOptions;
-         }
-      },
-      _computeWbsOptions: function(wbsList, costAssignment) {
-        var wbsOptions = [];
-        if (costAssignment && costAssignment.base && costAssignment.base.business_area) {
-           var businessArea = costAssignment.base.business_area;
-           if (businessArea.wbs) {
-             wbsOptions = wbsList.filter(function(wbs) {
-                return businessArea.wbs.some(function(item) {
-                  return item === wbs.value;
-                });
-             });
 
-             var wbs = costAssignment.base.wbs;
-             if (!this._isInList(wbsOptions, wbs)) {
-                this.set('costAssignment.wbs', null);
-             }
+      _computeFundOptions: function(grantCh, costAssignmentCh) {
+        if (grantCh && grantCh.base) {
+          var grant = grantCh.base;
+          var fundOptions = grant.funds;
+          var fund = costAssignmentCh.base.fund;
+          if (!this._isInList(fundOptions, fund) && !grant.toProcess) {
+            this.set('costAssignment.fund', null);
           }
-          return wbsOptions;
-         }
+          return fundOptions;
+        } else if (!grantCh.base) {
+          // Selected empty
+          this.set('costAssignment.fund', null);
+          return [];
+        }
       },
+
       _validateCostAssignment: function() {
         return this.$.cost_assignment_form.validate();
+      },
+
+      // Handling incoming cost_structure, mapping values, if have them
+      _handleCostStructure: function(e, data) {
+        var self = this;
+        var parsed = this.parseCostStructure(data);
+        this.set('wbsOptions', parsed.wbs);
+
+        if (this.costAssignment.wbs && this.costAssignment.wbs.toProcess === true) {
+          this.set('costAssignment.wbs', parsed.wbs.find(function(newWbs) {
+            return newWbs.value === self.costAssignment.wbs.value;
+          }));
+        }
+
+        if (this.costAssignment.grant && this.costAssignment.grant.toProcess === true) {
+          this.set('costAssignment.grant', parsed.grants.find(function(newGrant) {
+            return newGrant.value === self.costAssignment.grant.value;
+          }));
+        }
+
+        if (this.costAssignment.fund && this.costAssignment.fund.toProcess === true) {
+          this.set('costAssignment.fund', parsed.funds.find(function(newFund) {
+            return newFund.value === self.costAssignment.fund.value;
+          }));
+        }
+      },
+
+      _businessAreaChanged(business_area, user) {
+
+        // Reset dropdowns on non-compatible business-area code, or not toProcess
+        var differentCountryCode = this.costAssignment &&
+                                   this.costAssignment.hasOwnProperty('wbs') &&
+                                   this.costAssignment.wbs.hasOwnProperty('business_area') &&
+                                   (business_area.value !== this.costAssignment.wbs.business_area);
+        var toProcess = this.costAssignment && this.costAssignment.wbs && this.costAssignment.wbs.toProcess !== false;
+
+        if (differentCountryCode || !toProcess) {
+          this.set('costAssignment.wbs', null);
+          this.set('costAssignment.grant', null);
+          this.set('costAssignment.fund', null);
+        } else {
+          Polymer.dom(this.$.wbs).flush();
+          Polymer.dom(this.$.grant).flush();
+          Polymer.dom(this.$.fund).flush();
+        }
+
+        // If its users default area, set dropdown options to it
+        if (business_area.value === user.t2f.business_area) {
+          this.set('wbsOptions', this.structure.wbs);
+
+        // If not, start downloading options set
+        } else {
+          this.set('wbsOptions', []);
+          this.set('costStructureEndpoint', undefined);
+          this.set('costStructureEndpoint', '/api/wbs_grants_funds/?business_area=' + business_area.id);
+        }
       }
     });
   </script>
