@@ -132,8 +132,7 @@
 
             var structureData = lib[key][label];
             if (structureData) {
-              // fieldSet[label] = self._log(structureData, fieldSet[label]);
-              fieldSet[label] = self._processLib(structureData, fieldSet[label]);
+              fieldSet[label] = self._processLib(structureData, fieldSet[label], fieldSet);
             }
           });
         }
