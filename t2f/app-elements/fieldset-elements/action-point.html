@@ -122,7 +122,8 @@
           </etools-searchable-multiselection-menu>
 
           <date-time-picker-input label="Completed Date"
-            max-date="[[dateNow]]"
+            id="completed_date_not_view"
+            max-date="[[today]]"
             class$="flex-3 [[computedPermission.completed_at.readOnly]]"
             disabled="[[endDateDisabled]]"
             hidden$="[[computedPermission.completed_at.hidden]]"
@@ -151,7 +152,7 @@
     </template>
 
     <!-- shows on dedicated page -->
-    <template is="dom-if" if="[[viewMode]]">
+    <template is="dom-if" if="[[viewMode]]" id="view_mode">
 
       <div class="layout horizontal viewSpacing">
         <div class="isLink"  on-tap="_navigateToTravel">
@@ -229,7 +230,8 @@
       <div class="layout horizontal viewSpacing">
 
         <date-time-picker-input label="Completed Date"
-          max-date="[[dateNow]]"
+          id="completed_date_view"
+          max-date="[[today]]"
           inner-class="[[actionPointsPermissions.completed_at.readOnly]]"
           hidden$="[[!actionPointsPermissions.completed_at.view]]"
           disabled$="[[!actionPointsPermissions.completed_at.edit]]"
@@ -276,10 +278,6 @@
         },
         actionPointsPermissions: {
           type: Object,
-        },
-        dateNow: {
-          type: Number,
-          value: Date.now(),
         },
       },
       observers: [
