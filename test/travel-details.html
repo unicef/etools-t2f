@@ -34,9 +34,18 @@
         });
 
         test('the certification note is properly hidden', function() {
-            el.data = {
+            el.set('data', {
                 cert_rejection_note: ''
-            };
+            });
+            expect(el.hideCertRejectionNote).to.equal(true);
+
+            el.set('data', {
+                cert_rejection_note: null
+            });
+
+            expect(el.hideCertRejectionNote).to.equal(true);
+
+            el.set('data', {});
             expect(el.hideCertRejectionNote).to.equal(true);
         });
 
