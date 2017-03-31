@@ -1,0 +1,82 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>test cost summary and delegate functionality</title>
+
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../t2f/app-behaviors/api-behavior.html">
+  <link rel="import" href="../t2f/app-elements/fieldset-elements/travel-costs-assignment.html">
+
+</head>
+<body>
+
+<test-fixture id="el">
+  <template>
+    <travel-cost-assignment
+      permissions-matrix="[[perm]]"
+      cost-assignment="{{emptyCostAss}}"
+      user="[[user]]"
+      structure="[[structure]]"
+      default-business-area="[[defaultBusinessArea]]"
+      invalid-shares="[[invalidShares]]">
+    </travel-cost-assignment>
+  </template>
+</test-fixture>
+
+<script>
+  suite('<travel-cost-assignment>', function() {
+
+    var el, server, defStruct, data, emptyCostAss;
+
+    setup(function() {
+      el = fixture('el');
+      server = sinon.fakeServer.create();
+      data = {
+        perm: {},
+        emptyCostAss: {},
+        user: {},
+        structure: {},
+        defaultBusinessArea: {},
+        invalidShares: false
+      };
+      emptyCostAss = {};
+      // server.respondWith(
+      //   'GET',
+      //   /.*/,
+      //   [
+      //     200,
+      //     {
+      //       'Content-Type': 'application/json',
+      //       'Server': 'WSGIServer/0.1 Python/2.7.12',
+      //       'Vary': 'Accept',
+      //       'Access-Control-Allow-Origin': '*'
+      //     },
+      //     JSON.stringify(defStruct)
+      //   ]
+      // );
+    });
+
+    test('can be instantiated', function() {
+
+      expect(el.is).to.equal('travel-cost-assignment');
+    });
+
+    test('loads default structure when base country, and not delegate', function() {
+
+    });
+
+
+
+
+    test('sideloads cost structure when country changed');
+    test('sideloads cost structure when base country isnt users one');
+    test('empties wbs+grant+fund dropdowns when country changed');
+  });
+</script>
+
+</body>
+</html>
