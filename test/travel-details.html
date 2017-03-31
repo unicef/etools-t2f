@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>test travel-list</title>
+
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../t2f/app-elements/travel-elements/travel-details.html">
+
+</head>
+<body>
+
+<test-fixture id="el">
+  <template>
+    <travel-details></travel-details>
+  </template>
+</test-fixture>
+
+<script>
+    suite('<travel-details>', function() {
+
+        var el, dom;
+
+        setup(function() {
+            el = fixture('el');
+            dom = Polymer.dom(el.root);
+        });
+
+        test('can be instantiated', function() {
+            expect(el.is).to.equal('travel-details');
+        });
+
+        test('the certification note is properly hidden', function() {
+            el.data = {
+                cert_rejection_note: ''
+            };
+            expect(el.hideRejectionNote).to.equal(true);
+
+        });
+        test('the certification note is properly hidden', function() {
+            el.data = {
+                cert_rejection_note: 'some rejection note'
+            };
+            dom.flush();
+            expect(el.hideRejectionNote).to.equal(false);
+
+        });
+    });
+</script>
+
+</body>
+</html>
