@@ -200,7 +200,11 @@
       _computeDisablePartnerships: function(partnerships, permissionDisabled) {
         return partnerships.length === 0 || permissionDisabled;
       },
+
+      // 
       _partnerPartnershipsHandling: function(changed) {
+
+        // Early return for unneeded subpaths
         if ([
           'activity._validationFunction',
           'activity.primary_traveler',
@@ -209,11 +213,15 @@
         ].indexOf(changed.path) > -1) {
           return;
         }
+
         var partner = changed.base.partner;
         var partnership = changed.base.partnership;
         var government_partnership = changed.base.government_partnership;
+        var basePartnerships = partner.partnerships || [];
+
         if (partner) {
-          this.set('partnerships', partner.partnerships.concat(partner.government_partnerships));
+          this.set('partnerships', basePartnerships.concat(partner.government_partnerships));
+
           if (partnership && this.partnerships.find(function(partnerPartnership) {
               return partnerPartnership.value === partnership.value &&
                 partnerPartnership.type === partnership.type;

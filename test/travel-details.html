@@ -37,16 +37,14 @@
             el.data = {
                 cert_rejection_note: ''
             };
-            expect(el.hideRejectionNote).to.equal(true);
-
+            expect(el.hideCertRejectionNote).to.equal(true);
         });
-        test('the certification note is properly hidden', function() {
-            el.data = {
-                cert_rejection_note: 'some rejection note'
-            };
-            dom.flush();
-            expect(el.hideRejectionNote).to.equal(false);
 
+        test('the certification note is properly shown', function() {
+            el.set('data', {
+                cert_rejection_note: 'some rejection note'
+            });
+            expect(el.hideCertRejectionNote).to.equal(false);
         });
     });
 </script>
