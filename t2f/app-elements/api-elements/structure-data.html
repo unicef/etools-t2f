@@ -63,7 +63,13 @@
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
-
+    <etools-ajax url="[[costStructureEndpoint]]"
+      loading="{{costStructureLoading}}"
+      on-success="_handleCostStructure"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
 
   </template>
 
@@ -83,7 +89,7 @@
           type: Object,
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
-          ' officesData, t2fStaticData, usersData, groupsData, driversData, vendorNumbers)'
+          ' officesData, t2fStaticData, usersData, groupsData, driversData, vendorNumbers, wbsGrantsFunds)'
         },
         staticData: {
           type: Object,
@@ -93,6 +99,12 @@
         },
         officesData: {
           type: Object
+        },
+        wbsGrantsFunds: {
+          type: Object
+        },
+        userBusinessArea: {
+          type: Number,
         },
         loading: {
           type: Boolean,
@@ -134,13 +146,24 @@
           type: String,
           value: etoolsAppConfig.endpoints.et2fVendorList.url
         },
+        costStructureEndpoint: {
+          type: String,
+          computed: '_computeTemporaryBusinessArea(userBusinessArea)'
+        },
       },
+      behaviors: [et2fBehaviors.ApiBehavior],
       _sortByLabel: function(a, b) {
         return a.label.localeCompare(b.label);
       },
       _sortByName: function(a, b) {
         return a.name.localeCompare(b.name);
       },
+
+      _computeTemporaryBusinessArea: function(userBa) {
+        //TODO REMOVE THIS
+        return etoolsAppConfig.endpoints.et2fCostStructure.url + '?business_area=' + userBa;
+      },
+
       _computeLoading: function() {
         var result = false;
         for (var i = 0; i < arguments.length; ++i) {
@@ -231,7 +254,20 @@
         }
         this.set('groupsData', data);
       },
-      _generateStructure: function(static, sections, offices, t2fStaticData, users, groups, drivers, vendorNumbers) {
+      _handleCostStructure: function(e, data) {
+        data = this._checkJSON(data);
+        if (!data.parsed) {
+          data = {
+            wbs: data.wbs,
+            grants: data.grants,
+            funds: data.funds,
+          };
+          data = this.parseCostStructure(data);
+        }
+        this.set('wbsGrantsFunds', data);
+      },
+      _generateStructure: function(static, sections, offices, t2fStaticData, users, groups,
+        drivers, vendorNumbers, wbsGrantsFunds) {
           var data = static;
           data.sections = sections.sections;
           data.offices = offices.offices;
@@ -245,6 +281,9 @@
           data.groups = groups.groups;
           data.drivers = drivers.drivers;
           data.vendorNumbers = vendorNumbers.vendorNumbers;
+          data.wbs = wbsGrantsFunds.wbs;
+          data.grants = wbsGrantsFunds.grants;
+          data.funds = wbsGrantsFunds.funds;
           data.attachment_types = [
             {value: 0, label: 'Ticket Doc'},
             {value: 1, label: 'Email corespondance'},
@@ -359,22 +398,6 @@
               obj.value = obj.id;
               obj.wbs = obj.wbs;
               return obj;
-            });
-          },
-          wbs: function(key) {
-            fillDependencyWithId(key, 'business_areas', 'business_area');
-             data[key] = data[key].sort(self._sortByName).map(function(obj) {
-              return {label: obj.name, value: obj.id, grants: obj.grants};
-            });
-          },
-          grants: function(key) {
-            data[key] = data[key].sort(self._sortByName).map(function(obj) {
-              return {label: obj.name, value: obj.id, funds: obj.funds};
-            });
-          },
-          funds: function(key) {
-            data[key] = data[key].sort(self._sortByName).map(function(obj) {
-              return {label: obj.name, value: obj.id};
             });
           },
           expense_types: function(key) {
