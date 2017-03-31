@@ -33,7 +33,7 @@
             expect(el.is).to.equal('travel-details');
         });
 
-        test('the certification note is properly hidden', function() {
+        test('#188, #194: the certification note is properly hidden', function() {
             el.set('data', {
                 cert_rejection_note: ''
             });
@@ -49,7 +49,7 @@
             expect(el.hideCertRejectionNote).to.equal(true);
         });
 
-        test('the certification note is properly shown', function() {
+        test('#188, #194: the certification note is properly shown', function() {
             el.set('data', {
                 cert_rejection_note: 'some rejection note'
             });

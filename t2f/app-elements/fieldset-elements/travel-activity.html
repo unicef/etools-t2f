@@ -203,21 +203,20 @@
 
       // 
       _partnerPartnershipsHandling: function(changed) {
-
         // Early return for unneeded subpaths
         if ([
           'activity._validationFunction',
           'activity.primary_traveler',
           'activity.partnership',
           'activity.government_partnership',
-        ].indexOf(changed.path) > -1) {
+        ].indexOf(changed.path) > -1 || !changed.base) {
           return;
         }
 
         var partner = changed.base.partner;
         var partnership = changed.base.partnership;
         var government_partnership = changed.base.government_partnership;
-        var basePartnerships = partner.partnerships || [];
+        var basePartnerships = partner && partner.partnerships ? partner.partnership : [];
 
         if (partner) {
           this.set('partnerships', basePartnerships.concat(partner.government_partnerships));
