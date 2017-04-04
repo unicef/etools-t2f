@@ -23,7 +23,7 @@
     </style>
 
     <etools-ajax url="[[costStructureEndpoint]]"
-      loading="{{costStructureLoading}}"
+      loading="{{wbsLoading}}"
       on-success="_handleCostStructure"
       ></etools-ajax>
 
@@ -132,6 +132,11 @@
           value: function() {
             return [];
           },
+        },
+        wbsLoading: {
+          type: Boolean,
+          value: false,
+          notify: true
         },
         user: {
           type: Object,
