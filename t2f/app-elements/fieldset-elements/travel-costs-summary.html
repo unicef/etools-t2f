@@ -179,9 +179,14 @@
       },
 
       _getShortCurrFromId: function(currId) {
-        return this.structure.currencies.filter(function(listCurr) {
+        var currencyCode =  this.structure.currencies.filter(function(listCurr) {
           return listCurr.value === currId;
-        })[0].short;
+        });
+        if (currencyCode && currencyCode[0] && currencyCode[0].short) {
+          return currencyCode[0].short;
+        } else {
+          return '';
+        }
       },
 
     });
