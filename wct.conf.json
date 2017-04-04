@@ -1,0 +1,11 @@
+{
+  "plugins": {
+    "local": {
+      "disabled": false,
+      "browsers": [{
+          "browserName": "chrome"
+        }
+      ]
+    }
+  }
+}

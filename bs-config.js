@@ -28,7 +28,7 @@ module.exports = {
             'port': 8080
         }
     },
-    'files': ['t2f/**/*'],
+    'files': ['t2f/**/*', 'test/**/*'],
     'watchOptions': {},
     'server': false,
     'proxy': 'localhost:3000',
