@@ -122,12 +122,8 @@
           </etools-searchable-multiselection-menu>
 
           <date-time-picker-input label="Completed Date"
-<<<<<<< HEAD
-            max-date="[[dateNow]]"
-=======
             id="completed_date_not_view"
             max-date="[[today]]"
->>>>>>> feature/testing-bootstrap
             class$="flex-3 [[computedPermission.completed_at.readOnly]]"
             disabled="[[endDateDisabled]]"
             hidden$="[[computedPermission.completed_at.hidden]]"
@@ -283,13 +279,6 @@
         actionPointsPermissions: {
           type: Object,
         },
-<<<<<<< HEAD
-        dateNow: {
-          type: Number,
-          value: Date.now(),
-        },
-=======
->>>>>>> feature/testing-bootstrap
       },
       observers: [
         '_computeDefaultValues(actionPoints.*, structure.action_point_status, user)',
