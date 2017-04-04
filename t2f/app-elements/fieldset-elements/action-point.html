@@ -55,6 +55,7 @@
       }
     </style>
 
+    <!-- shows on trips report tab -->
     <template is="dom-if" if="[[!viewMode]]">
       <form
         is="iron-form"
@@ -121,6 +122,7 @@
           </etools-searchable-multiselection-menu>
 
           <date-time-picker-input label="Completed Date"
+            max-date="[[dateNow]]"
             class$="flex-3 [[computedPermission.completed_at.readOnly]]"
             disabled="[[endDateDisabled]]"
             hidden$="[[computedPermission.completed_at.hidden]]"
@@ -148,6 +150,7 @@
       </form>
     </template>
 
+    <!-- shows on dedicated page -->
     <template is="dom-if" if="[[viewMode]]">
 
       <div class="layout horizontal viewSpacing">
@@ -226,6 +229,7 @@
       <div class="layout horizontal viewSpacing">
 
         <date-time-picker-input label="Completed Date"
+          max-date="[[dateNow]]"
           inner-class="[[actionPointsPermissions.completed_at.readOnly]]"
           hidden$="[[!actionPointsPermissions.completed_at.view]]"
           disabled$="[[!actionPointsPermissions.completed_at.edit]]"
@@ -272,7 +276,11 @@
         },
         actionPointsPermissions: {
           type: Object,
-        }
+        },
+        dateNow: {
+          type: Number,
+          value: Date.now(),
+        },
       },
       observers: [
         '_computeDefaultValues(actionPoints.*, structure.action_point_status, user)',
