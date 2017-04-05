@@ -1,0 +1,49 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>test travel-list</title>
+
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../t2f/app-behaviors/permission-behavior.html">
+  <link rel="import" href="../t2f/app-elements/fieldset-elements/travel-activity.html">
+
+</head>
+<body>
+
+<test-fixture id="el">
+  <template>
+    <travel-activities></travel-activities>
+  </template>
+</test-fixture>
+
+<script>
+    suite('<travel-activity>', function() {
+
+        var el, dom;
+
+        setup(function() {
+            el = fixture('el');
+            dom = Polymer.dom(el.root);
+        });
+
+        test('can be instantiated', function() {
+            expect(el.is).to.equal('travel-activities');
+        });
+
+        test('#151: prevent concat failing with wrong data', function() {
+            el.set('activity', {});
+            expect(el.partnerships).to.be.a('array');
+            expect(el.partnerships).to.have.lengthOf(0);
+            expect(el.activity.result).to.equal(null);
+        });
+
+
+    });
+</script>
+
+</body>
+</html>
