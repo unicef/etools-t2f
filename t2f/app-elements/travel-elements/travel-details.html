@@ -287,6 +287,7 @@
             <travel-cost-assignment permissions-matrix="[[travelPermissions.cost_assignments]]"
               cost-assignment="{{item}}"
               user="[[user]]"
+              wbs-loading="{{wbsLoading}}"
               structure="[[structure]]"
               default-business-area="[[defaultBusinessArea]]"
               invalid-shares="[[_invalidShares(data.cost_assignments.*)]]">
@@ -334,6 +335,14 @@
           computed:
             '_computeSectionPermissions(travelPermissions,' +
               ' data.baseDetails.international_travel, data.status, userRoles)'
+        },
+        detailsLoading: {
+          type: Boolean,
+          notify: true,
+          computed: '_computeDetailsLoading(wbsLoading)'
+        },
+        wbsLoading: {
+          type: Boolean
         },
         invalids: Array,
         userRoles: {
@@ -392,6 +401,10 @@
           console.error('Data error, the user does not have a default business_area associated');
         }
         return userBusinessArea || {};
+      },
+
+      _computeDetailsLoading: function(wbs) {
+        return wbs;
       },
 
       _computeLocalCurrency: function(defaultBusinessArea, structure) {
