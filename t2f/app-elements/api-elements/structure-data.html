@@ -103,6 +103,9 @@
         wbsGrantsFunds: {
           type: Object
         },
+        userBusinessArea: {
+          type: Number,
+        },
         loading: {
           type: Boolean,
           notify: true,
@@ -145,7 +148,7 @@
         },
         costStructureEndpoint: {
           type: String,
-          value: etoolsAppConfig.endpoints.et2fCostStructure.url,
+          computed: '_computeTemporaryBusinessArea(userBusinessArea)'
         },
       },
       behaviors: [et2fBehaviors.ApiBehavior],
@@ -155,6 +158,12 @@
       _sortByName: function(a, b) {
         return a.name.localeCompare(b.name);
       },
+
+      _computeTemporaryBusinessArea: function(userBa) {
+        //TODO REMOVE THIS
+        return etoolsAppConfig.endpoints.et2fCostStructure.url + '?business_area=' + userBa;
+      },
+
       _computeLoading: function() {
         var result = false;
         for (var i = 0; i < arguments.length; ++i) {

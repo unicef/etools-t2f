@@ -298,8 +298,8 @@
       _businessAreaChanged: function(business_area, user) {
         // Reset dropdowns on non-compatible business-area code, or not toProcess
         var differentCountryCode = this.costAssignment &&
-                                   this.costAssignment.hasOwnProperty('wbs') &&
-                                   this.costAssignment.wbs.hasOwnProperty('business_area') &&
+                                   !!this.costAssignment.wbs &&
+                                   !!this.costAssignment.wbs.business_area &&
                                    (business_area.value !== this.costAssignment.wbs.business_area);
         var toProcess = this.costAssignment && this.costAssignment.wbs && this.costAssignment.wbs.toProcess !== false;
 
