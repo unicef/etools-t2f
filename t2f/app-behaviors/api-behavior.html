@@ -35,9 +35,60 @@
         });
       }
     },
-    _processLib: function(structureData, value) {
+    _convertOrKeepId: function(key, structureKey, value, cost_ass_instance) {
+      if (cost_ass_instance && cost_ass_instance.delegate) {
+        var ret = {
+          label: null,
+          value: value,
+          toProcess: true,
+        };
+        return ret;
+      } else {
+        return this.structure[structureKey].find(function(item) {
+          return item.value === value;
+        });
+      }
+    },
+    parseCostStructure: function(data) {
+
+      data.funds = data.funds.map(function(fund) {
+        return {
+          label: fund.name,
+          value: parseInt(fund.id, 10),
+        };
+      });
+
+      data.grants = data.grants.map(function(grant) {
+        return {
+          label: grant.name,
+          value: parseInt(grant.id, 10),
+          funds: grant.funds.map(function(fundId) {
+            return data.funds.find(function(rawFund) {
+              return rawFund.value === fundId;
+            });
+          }),
+        };
+      });
+
+      data.wbs = data.wbs.map(function(wbs) {
+        return {
+          business_area: wbs.business_area,
+          label: wbs.name,
+          value: parseInt(wbs.id, 10),
+          grants: wbs.grants.map(function(grantId) {
+            return data.grants.find(function(rawGrant) {
+              return rawGrant.value === grantId;
+            });
+          }),
+        };
+      });
+
+      data.parsed = true;
+      return data;
+    },
+    _processLib: function(structureData, value, data) {
       if (typeof structureData  === 'function') {
-        return structureData(value);
+        return structureData(value, data);
       }
       return this.structure[structureData].find(function(item) {
         return item.value === value;
@@ -89,9 +140,9 @@
           deductions: {},
           cost_assignments: {
             business_area: 'business_areas',
-            wbs: 'wbs',
-            grant: 'grants',
-            fund: 'funds'
+            wbs: this._convertOrKeepId.bind(this, 'wbs', 'wbs'),
+            grant: this._convertOrKeepId.bind(this, 'grant', 'grants'),
+            fund: this._convertOrKeepId.bind(this, 'fund', 'funds')
           },
           attachments: {
             type: this._searchByLabel.bind(this, 'attachment_types')
