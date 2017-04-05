@@ -151,52 +151,6 @@
         permissions: {
           type: Object,
           value: {
-            'God': {
-              'Planned': {
-                'primary': 'save',
-                'secondary': ['save_and_submit', 'cancel']
-              },
-              'Submitted': {
-                'primary': 'approve',
-                'secondary': ['reject', 'save']
-              },
-              'Cancelled': {
-                'primary': 'planned',
-                'secondary': ['save', 'save_and_submit']
-              },
-              'Approved': {
-                'primary': 'save',
-                'secondary': ['sendForPayment', 'printTa']
-              },
-              'Rejected': {
-                'primary': 'planned',
-                'secondary': ['save', 'save_and_submit', 'printTa']
-              },
-              'Sent for payment': {
-                'primary': 'save',
-                'secondary': ['submitCertificate', 'sendForPayment', 'printTa', 'wentAsPlanned']
-              },
-              'Certification submitted': {
-                'primary': 'approveCertificate',
-                'secondary': ['rejectCertificate', 'printTa']
-              },
-              'Certification rejected': {
-                'primary': 'submitCertificate',
-                'secondary': ['printTa']
-              },
-              'Certification approved': {
-                'primary': 'save',
-                'secondary': ['certify', 'printTa']
-              },
-              'Certified': {
-                'primary': 'complete',
-                'secondary': ['printTa']
-              },
-              'Completed': {
-                'primary': 'printTa',
-                'secondary': []
-              }
-            },
 
             'Anyone': {
               'Planned': {
@@ -531,52 +485,6 @@
         nonTaPermissions: {
           type: Object,
           value: {
-            'God': {
-              'Planned': {
-                'primary': 'save',
-                'secondary': ['cancel']
-              },
-              'Submitted': {
-                'primary': '',
-                'secondary': ['save']
-              },
-              'Cancelled': {
-                'primary': '',
-                'secondary': ['save']
-              },
-              'Approved': {
-                'primary': 'save',
-                'secondary': []
-              },
-              'Rejected': {
-                'primary': '',
-                'secondary': ['save']
-              },
-              'Sent for payment': {
-                'primary': '',
-                'secondary': ['save']
-              },
-              'Certification submitted': {
-                'primary': '',
-                'secondary': []
-              },
-              'Certification rejected': {
-                'primary': '',
-                'secondary': []
-              },
-              'Certification approved': {
-                'primary': 'save',
-                'secondary': []
-              },
-              'Certified': {
-                'primary': 'complete',
-                'secondary': []
-              },
-              'Completed': {
-                'primary': '',
-                'secondary': []
-              }
-            },
 
             'Anyone': {
               'Planned': {
