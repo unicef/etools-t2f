@@ -86,7 +86,7 @@
       }
     </style>
 
-    <et2f-inbound-data loading="{{detailLoading}}"
+    <et2f-inbound-data loading="{{dataLoading}}"
       route="{{route}}"
       et2f-data="{{data}}"
       travel-id="[[travelId]]"
@@ -100,7 +100,7 @@
       profile="{{travelerProfile}}">
     </et2f-profile-data>
 
-    <et2f-outbound-data loading="{{detailLoading}}"
+    <et2f-outbound-data loading="{{dataLoading}}"
       id="outbound-data" form-errors="{{formErrors}}"
       data="[[data]]"
       travel-id="[[travelId]]"
@@ -170,6 +170,7 @@
           structure="[[structure]]"
           travel-permissions="[[travelPermissions]]"
           data="{{data}}"
+          details-loading="{{detailsLoading}}"
           user-roles="[[userRoles]]"
           user="[[user]]">
         </travel-details>
@@ -219,12 +220,15 @@
         travelDataLoading: {
           type: Boolean,
           notify: true,
-          computed: '_computeLoading(detailLoading, profileLoading)',
+          computed: '_computeLoading(dataLoading, profileLoading, detailsLoading)',
         },
         profileLoading: {
           type: Boolean,
         },
-        detailLoading: {
+        dataLoading: {
+          type: Boolean,
+        },
+        detailsLoading: {
           type: Boolean,
         },
         structure: {
@@ -277,8 +281,8 @@
       observers: [
         '_computeTravelPermission(et2fPermissions, status, user, data)'
       ],
-      _computeLoading: function(details, profile) {
-        return details || profile;
+      _computeLoading: function(data, profile, details) {
+        return data || profile || details;
       },
       _computeDataForTa: function(data, profile) {
         if (!data.baseDetails || !data.baseDetails.traveler || !profile || !profile.profile) {
