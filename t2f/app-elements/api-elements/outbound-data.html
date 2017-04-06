@@ -92,7 +92,7 @@
 
           <paper-button
             class="dialog-confirm-button"
-            on-click="_needApproval"">
+            on-click="_needApproval">
               Submit for approval
           </paper-button>
 
@@ -674,7 +674,6 @@
 
           var statusActions = {
 
-
             save_non_ta: function() {
               var innerSelf = this;
               var isInternational = self.data.baseDetails.international_travel === true;
@@ -684,14 +683,14 @@
                 this.save_and_submit();
               } else if (isFirstSave) {
                 self._needApproval = function() {
-                  self.$['save_non_ta_modal'].close();
+                  self.$.save_non_ta_modal.close();
                   innerSelf.save_and_submit();
                 };
                 self._doesntNeedApproval = function() {
-                  self.$['save_non_ta_modal'].close();
+                  self.$.save_non_ta_modal.close();
                   innerSelf.complete();
                 };
-                self.$['save_non_ta_modal'].open();
+                self.$.save_non_ta_modal.open();
               } else {
                 this.save_and_submit();
               }
