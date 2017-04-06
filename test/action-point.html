@@ -1,0 +1,54 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>test travel-list</title>
+
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../t2f/app-behaviors/permission-behavior.html">
+  <link rel="import" href="../t2f/app-elements/fieldset-elements/action-point.html">
+
+</head>
+<body>
+
+<test-fixture id="el">
+  <template>
+    <action-point></action-point>
+  </template>
+</test-fixture>
+
+<script>
+    suite('<action-point>', function() {
+
+        var el, dom;
+
+        setup(function() {
+            el = fixture('el');
+            dom = Polymer.dom(el.root);
+        });
+
+        test('can be instantiated', function() {
+            expect(el.is).to.equal('action-point');
+        });
+
+        test('#185 action point component has a max-date property set', function() {
+
+            dom.flush();
+            var notViewModeCompletedDate = document.getElementById('completed_date_not_view');
+            expect(notViewModeCompletedDate).to.exist;
+            expect(notViewModeCompletedDate.maxDate).to.be.a('date');
+
+            el.set('viewMode', true);
+            dom.flush();
+            var viewModeCompletedDate = document.getElementById('completed_date_view');
+            expect(viewModeCompletedDate).to.exist;
+            expect(viewModeCompletedDate.maxDate).to.be.a('date');
+        });
+    });
+</script>
+
+</body>
+</html>
