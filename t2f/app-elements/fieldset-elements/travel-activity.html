@@ -113,9 +113,11 @@
 
         <div class="flex-4">
           <etools-searchable-multiselection-menu label="Primary Traveler"
-            id="primary_travler"
+            id="primary_traveler"
             value="{{activity.primary_traveler}}"
             class$="flex [[computedPermission.primary_traveler.readOnly]]"
+            required$="[[!activity.is_primary_traveler]]"
+            starred$="[[!activity.is_primary_traveler]]"
             disabled="[[computedPermission.primary_traveler.disabled]]"
             hidden$="[[hidePrimaryTraveler]]"
             options="[[structure.users]]"
