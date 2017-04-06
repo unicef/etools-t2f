@@ -113,9 +113,11 @@
 
         <div class="flex-4">
           <etools-searchable-multiselection-menu label="Primary Traveler"
-            id="primary_travler"
+            id="primary_traveler"
             value="{{activity.primary_traveler}}"
             class$="flex [[computedPermission.primary_traveler.readOnly]]"
+            required$="[[!activity.is_primary_traveler]]"
+            starred$="[[!activity.is_primary_traveler]]"
             disabled="[[computedPermission.primary_traveler.disabled]]"
             hidden$="[[hidePrimaryTraveler]]"
             options="[[structure.users]]"
@@ -200,20 +202,27 @@
       _computeDisablePartnerships: function(partnerships, permissionDisabled) {
         return partnerships.length === 0 || permissionDisabled;
       },
+
+      // 
       _partnerPartnershipsHandling: function(changed) {
+        // Early return for unneeded subpaths
         if ([
           'activity._validationFunction',
           'activity.primary_traveler',
           'activity.partnership',
           'activity.government_partnership',
-        ].indexOf(changed.path) > -1) {
+        ].indexOf(changed.path) > -1 || !changed.base) {
           return;
         }
+
         var partner = changed.base.partner;
         var partnership = changed.base.partnership;
         var government_partnership = changed.base.government_partnership;
+        var basePartnerships = partner && partner.partnerships ? partner.partnership : [];
+
         if (partner) {
-          this.set('partnerships', partner.partnerships.concat(partner.government_partnerships));
+          this.set('partnerships', basePartnerships.concat(partner.government_partnerships));
+
           if (partnership && this.partnerships.find(function(partnerPartnership) {
               return partnerPartnership.value === partnership.value &&
                 partnerPartnership.type === partnership.type;

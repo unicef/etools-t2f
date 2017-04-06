@@ -379,7 +379,7 @@
         hideCertRejectionNote: {
           type: Boolean,
           value: true,
-          computed: '_computeideCertRejectionNote(data)'
+          computed: '_computeHideCertRejectionNote(data, data.cert_rejection_note)'
         },
         hideCertificationNote: {
           type: Boolean,
@@ -502,8 +502,10 @@
         return data.status !== 'Rejected' || data.rejection_note.length === 0;
       },
 
-      _computeideCertRejectionNote: function(data) {
-        return data.status !== 'Certification rejected' || data.cert_rejection_note.length === 0;
+      _computeHideCertRejectionNote: function(data) {
+        return data.cert_rejection_note === undefined ||
+               data.cert_rejection_note === null ||
+               data.cert_rejection_note.length === 0;
       },
 
       _computeHideCertificationNote: function(data) {
