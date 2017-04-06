@@ -216,7 +216,7 @@
         var partner = changed.base.partner;
         var partnership = changed.base.partnership;
         var government_partnership = changed.base.government_partnership;
-        var basePartnerships = partner && partner.partnerships ? partner.partnership : [];
+        var basePartnerships = partner && partner.partnerships ? partner.partnerships : [];
 
         if (partner) {
           this.set('partnerships', basePartnerships.concat(partner.government_partnerships));
