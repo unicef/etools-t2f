@@ -621,7 +621,7 @@
           fieldSetValidation(toValidate);
 
           // Checking Cost Assignment validity
-          if (this.percentagesSum !== 100) {
+          if (this.percentagesSum !== 100 && this.data.baseDetails.ta_required) {
             invalids.push('Cost assignments share(s) must sum to 100');
           }
         }
