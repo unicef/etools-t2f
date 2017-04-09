@@ -1,0 +1,35 @@
+<!-- <link rel="import" href="../scripts/lodash/lodash.html"> -->
+
+<script>
+
+  var utilsBehavior = {
+
+    _formatListDate: function(originalDateString) {
+
+      if (!originalDateString) {
+        return '';
+      }
+
+      var month = originalDateString.split(' ')[0];
+      var day = originalDateString.split(' ')[1].slice(0, -1);
+      var year = originalDateString.split(' ')[2];
+
+      month = {
+        'January': 'Jan',
+        'February': 'Feb',
+        'March': 'Mar',
+        'April': 'Apr',
+        'May': 'May',
+        'Juny': 'Jun',
+        'July': 'Jul',
+        'August': 'Aug',
+        'September': 'September',
+        'October': 'Oct',
+        'November': 'Nov',
+        'December': 'Dec'
+      }[month];
+
+      return day + ' ' + month + ' ' + year;
+    },
+  };
+</script>
