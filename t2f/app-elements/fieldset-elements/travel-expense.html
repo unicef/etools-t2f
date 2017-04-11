@@ -116,18 +116,23 @@
         '_addValidationFunction(expense.*)',
         '_setDefaultCurrOnTypeChange(expense.type, baseDetails.currency)',
         '_setDefaultCurrOnAmountChange(expense.amount, baseDetails.currency)',
-        '_lockDownCurrency(expense.type, computedPermission.document_currency.disabled)',
+        '_lockDownCurrency(expense.type, computedPermission.document_currency.disabled, documentCurrency, expense)',
       ],
 
-      // Sets local currency, and disables the currency dropdown for expenses with "user-vendor-number",
-      // otherwise follows the permissionmatrix
-      _lockDownCurrency: function(type, disabledFromMatrix) {
+      // Sets TA currency, and disables the currency dropdown for expenses with "user-vendor-number", or "id"
+      //     otherwise follows the permissionmatrix
+      _lockDownCurrency: function(type, disabledFromMatrix, documentCurrency, expense) {
         if (!type || type.vendor_number === this.user.profile.vendor_number || type.vendor_number === 'user') {
-          this.set('expense.document_currency', this.localCurrency);
+          this.set('expense.document_currency', documentCurrency);
           this.$.curr1.setAttribute('disabled', true);
         } else if (type && !disabledFromMatrix) {
           this.$.curr1.removeAttribute('disabled');
         } else {
+          this.$.curr1.setAttribute('disabled', true);
+        }
+
+        // Its already saved to the backend
+        if (!!expense.id) {
           this.$.curr1.setAttribute('disabled', true);
         }
       },
