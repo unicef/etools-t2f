@@ -37,8 +37,7 @@
           placeholder="select"
           required$="[[computedPermission.type.required]]"
           on-value-change="_validateType"
-          auto-validate$="[[autoValidate]]"
-          starred>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
         <paper-input label="Amount"
@@ -50,8 +49,7 @@
           value="{{expense.amount}}"
           error-message="*number required"
           required$="[[computedPermission.amount.required]]"
-          auto-validate$="[[autoValidate]]"
-          starred$="[[computedPermission.amount.required]]">
+          auto-validate$="[[autoValidate]]">
         </paper-input>
 
         <etools-searchable-multiselection-menu label="Currency"
@@ -64,8 +62,7 @@
           placeholder="select"
           required$="[[computedPermission.document_currency.required]]"
           on-value-change="_validateDocCurr"
-          auto-validate$="[[autoValidate]]"
-          starred>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
       </div>
