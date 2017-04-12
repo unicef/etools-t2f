@@ -42,10 +42,11 @@
         </etools-searchable-multiselection-menu>
 
         <paper-input label="Amount"
+          id="amount"
           class$="flex-3 custom-margin [[computedPermission.amount.readOnly]]"
           disabled="[[computedPermission.amount.disabled]]"
           hidden$="[[computedPermission.amount.hidden]]"
-          pattern="^[0-9]+(\.[0-9]{1,2})?$"
+          pattern="[[_returnAmountPatternRegex(expense.type, user)]]"
           placeholder="eg.: 567.12"
           value="{{expense.amount}}"
           error-message="*number required"
@@ -118,6 +119,18 @@
         '_setDefaultCurrOnAmountChange(expense.amount, baseDetails.currency)',
         '_lockDownCurrency(expense.type, computedPermission.document_currency.disabled, documentCurrency, expense)',
       ],
+
+      // Returns the regex for the amounts pattern attribute, allows negative number, if static expense
+      _returnAmountPatternRegex: function(expenseType, user) {
+        var toRet = '^[0-9]+(\.[0-9]{1,2})?$';
+        var gotVendorNumber = expenseType && expenseType.vendor_number;
+        if (gotVendorNumber) {
+          var isStatic = expenseType.vendor_number === user.profile.vendor_number ||
+            expenseType.vendor_number === 'user';
+          toRet = isStatic ? '^-?[0-9]+(\.[0-9]{1,2})?$' : toRet;
+        }
+        return toRet;
+      },
 
       // Sets TA currency, and disables the currency dropdown for expenses with "user-vendor-number", or "id"
       //     otherwise follows the permissionmatrix
