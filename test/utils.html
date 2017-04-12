@@ -1,0 +1,41 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>test travel-list</title>
+
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../t2f/app-behaviors/utils-behavior.html">
+
+</head>
+<body>
+
+<test-fixture id="el">
+  <template>
+  </template>
+</test-fixture>
+
+<script>
+    suite('Utils behavior component functional tests', function() {
+
+        setup(function() {
+        });
+
+        test('the behavior is properly attached to the window object', function() {
+            expect(utilsBehavior).to.be.an('Object');
+        });
+
+        test('#184 _formatListDate exist, and fulfills its purpose', function() {
+            expect(utilsBehavior._formatListDate).to.be.a('function');
+            var originalDate = 'September 12. 2017';
+            var expected = '12 Sept 2017';
+            expect(utilsBehavior._formatListDate(originalDate)).to.equal(expected);
+        });
+    });
+</script>
+
+</body>
+</html>
