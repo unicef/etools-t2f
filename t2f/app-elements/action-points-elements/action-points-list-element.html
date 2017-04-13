@@ -15,6 +15,8 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
+<link rel="import" href="../../app-behaviors/utils-behavior.html">
+
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 <link rel="import" href="../../styles/et2f-list-styles.html">
@@ -51,7 +53,7 @@
           </div>
 
           <div class="headings textprim w23 description">[[data.description]]</div>
-          <div class="headings textprim w9">[[data.due_date]]</div>
+          <div class="headings textprim w9">[[_formatListDate(data.due_date)]]</div>
           <div class="headings textprim w15">[[getUser(data.person_responsible, users)]]</div>
           <div class="headings textprim w15">[[getUser(data.assigned_by, users)]]</div>
           <div class="headings textprim w9">[[_statusMapping(data.status)]]</div>
@@ -79,7 +81,7 @@
         }
       },
 
-      behaviors: [etoolsAppConfig.globals],
+      behaviors: [etoolsAppConfig.globals, utilsBehavior],
 
       _statusMapping: function(status) {
         var statusLib = {

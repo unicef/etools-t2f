@@ -15,6 +15,8 @@
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
 
+<link rel="import" href="../../app-behaviors/utils-behavior.html">
+
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 <link rel="import" href="../../styles/et2f-list-styles.html">
@@ -205,8 +207,8 @@
           <div class="headings textprim w13">[[data.traveler]]</div>
           <div class="headings textprim w13">[[getOffice(data.office, offices)]]</div>
           <div class="headings textprim w13">[[getSection(data.section, sections)]]</div>
-          <div class="headings textprim w11">[[data.start_date]]</div>
-          <div class="headings textprim w11">[[data.end_date]]</div>
+          <div class="headings textprim w11">[[_formatListDate(data.start_date)]]</div>
+          <div class="headings textprim w11">[[_formatListDate(data.end_date)]]</div>
           <div class="headings textprim bold capital w23">
             <div class$="statusdiv [[_statusClass(data)]]">
               <span class="statusdivtext">[[_statusMapping(data.status)]]</span>
@@ -280,7 +282,8 @@
           value: null
         }
       },
-      behaviors: [etoolsAppConfig.globals],
+      behaviors: [etoolsAppConfig.globals, utilsBehavior],
+
       attached: function() {
         this.baseUrl = this.basePath;
       },
@@ -342,8 +345,6 @@
 
         var traveler = this.duplicationTravelerId;
         var travel = this.data.id;
-        console.log('confirmed duplicate, user#', traveler);
-        console.log('confirmed duplicate, travel#', travel);
 
         this.set('hackAroundId', travel);
 
