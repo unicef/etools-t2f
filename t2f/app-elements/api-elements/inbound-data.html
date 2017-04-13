@@ -246,18 +246,16 @@
         };
 
         function parseAndFillStructureWithGhost(value, cat) {
-          var structure = self.structure;
           // the parsing function expects an object filled with arrays, so  we build one
           var toParse = {};
           toParse[cat] = [value];
           var parsed = self._parseStructureData(toParse);
-          console.log(parsed);
-          structure[cat].push(parsed[cat]);
-
+          console.log(cat, parsed[cat].slice());
           // we extract the parsed object from the container array ensuring that is
           // parsed with the same logic as the rest of the structure
           parsed = parsed[cat].pop();
           self.push('structure.' + cat, parsed);
+          console.log(self.structure[cat]);
           return parsed;
         }
 
