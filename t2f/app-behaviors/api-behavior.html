@@ -33,7 +33,7 @@
           var localResult = self.structure[fieldName].find(function(item) {
             return item[subField] === field;
           });
-          return localResult || {value: field, ghost: true, label: 'GHOST VALUE'};
+          return localResult || {value: field, ghost: true, label: 'Missing Label'};
 
         });
       }
@@ -53,7 +53,6 @@
       }
     },
     parseCostStructure: function(data) {
-
       data.funds = data.funds.map(function(fund) {
         return {
           label: fund.name,
@@ -103,15 +102,8 @@
 
     _checkGhost: function(result, value, data) {
       if (!result && value) {
-        return {value: value, ghost: true, label: 'GHOST VALUE'};
+        return {value: value, ghost: true, label: 'Missing Label'};
       }
-      return result;
-    },
-
-    _log: function(structureData, value) {
-      console.log(structureData, value);
-      var result = this._processLib(structureData, value);
-      console.log(result);
       return result;
     },
     _structureLib: function() {

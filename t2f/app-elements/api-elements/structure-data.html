@@ -91,6 +91,11 @@
           computed: '_generateStructure(staticData, sectionsData,' +
           ' officesData, t2fStaticData, usersData, groupsData, driversData, vendorNumbers, wbsGrantsFunds)'
         },
+        rawStructure: {
+          type: Object,
+          notify: true,
+          value: {}
+        },
         staticData: {
           type: Object,
         },
@@ -161,7 +166,8 @@
 
       _computeTemporaryBusinessArea: function(userBa) {
         //TODO REMOVE THIS
-        return etoolsAppConfig.endpoints.et2fCostStructure.url + '?business_area=' + userBa;
+        // return etoolsAppConfig.endpoints.et2fCostStructure.url + '?business_area=' + userBa;
+        return etoolsAppConfig.endpoints.et2fCostStructure.url;
       },
 
       _computeLoading: function() {
@@ -182,6 +188,8 @@
       },
       _handleStaticData: function(e, data) {
         data = this._checkJSON(data);
+        var rawData = Object.assign({}, data);
+        Object.assign(this.rawStructure, rawData);
         if (!data.parsed) {
           data = this._parseStructureData(data);
         }
@@ -189,6 +197,8 @@
       },
       _handleSections: function(e, data) {
         data = this._checkJSON(data);
+        var rawData = data.slice();
+        Object.assign(this.rawStructure, {sections: rawData});
         if (!data.parsed) {
           data = {
             sections: data.sort(this._sortByName)
@@ -199,6 +209,8 @@
       },
       _handleOffices: function(e, data) {
         data = this._checkJSON(data);
+        var rawData = data.slice();
+        Object.assign(this.rawStructure, {offices: rawData});
         if (!data.parsed) {
           data = {
             offices: data.sort(this._sortByName)
@@ -209,6 +221,8 @@
       },
       _handlet2fStaticData: function(e, data) {
         data = this._checkJSON(data);
+        var rawData = Object.assign({}, data);
+        Object.assign(this.rawStructure, {sections: rawData});
         if (!data.parsed) {
           data = this._parseStructureData(data);
         }
@@ -216,6 +230,8 @@
       },
       _handleUsers: function(e, data) {
         data = this._checkJSON(data);
+        var rawData = data.slice();
+        Object.assign(this.rawStructure, {users: rawData});
         if (!data.parsed) {
           data = {
             users: data
@@ -226,6 +242,8 @@
       },
       _handleDrivers: function(e, data) {
         data = this._checkJSON(data);
+        var rawData = data.slice();
+        Object.assign(this.rawStructure, {drivers: rawData});
         if (!data.parsed) {
           data = {
             drivers: data
@@ -236,6 +254,8 @@
       },
       _handleVendorNumbers: function(e, data) {
         data = this._checkJSON(data);
+        var rawData = data.slice();
+        Object.assign(this.rawStructure, {vendorNumbers: rawData});
         if (!data.parsed) {
           data = {
             vendorNumbers: data
@@ -246,6 +266,8 @@
       },
       _handleGroups: function(e, data) {
         data = this._checkJSON(data);
+        var rawData = data.slice();
+        Object.assign(this.rawStructure, {groups: rawData});
         if (!data.parsed) {
           data = {
             groups: data
@@ -256,6 +278,12 @@
       },
       _handleCostStructure: function(e, data) {
         data = this._checkJSON(data);
+        var rawData = Object.assign({}, data);
+        Object.assign(this.rawStructure, {
+          wbs: rawData.wbs,
+          grants: rawData.grants,
+          funds: rawData.funds
+        });
         if (!data.parsed) {
           data = {
             wbs: data.wbs,
@@ -290,6 +318,8 @@
             {value: 3, label: 'Cleareance Doc'},
             {value: 4, label: 'Other'}
           ];
+
+          this.set('rawStructure', Object.assign({}, this.rawStructure));
           return data;
       }
     });

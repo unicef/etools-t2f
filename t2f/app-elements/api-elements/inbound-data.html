@@ -9,7 +9,7 @@
     <etools-ajax url="[[travelUrl]]"
       on-success="_handleData" loading="{{loading}}"></etools-ajax>
 
-    <iron-ajax id="ghostAjax" loading="{{loading}}"></iron-ajax>
+    <iron-ajax id="ghostAjax"></iron-ajax>
 
 
   </template>
@@ -25,6 +25,10 @@
           notify: true,
         },
         structure: {
+          type: Object,
+          notify: true,
+        },
+        rawStructure: {
           type: Object,
           notify: true,
         },
@@ -209,6 +213,12 @@
                 category: 'currencies'
               },
             },
+            activities: {
+              travel_type: {
+                url: '/api/static_data/',
+                category: 'travel_types'
+              }
+            },
             itinerary: {
                airlines: {
                 url: '/api/static_data/',
@@ -218,6 +228,10 @@
                 url: '/api/dsa_regions/',
                 category: 'dsa_regions'
               },
+              mode_of_travel: {
+                url: '/api/static_data/',
+                category: 'travel_modes'
+              }
             },
             expenses: {
               type: {
@@ -230,6 +244,10 @@
               },
             },
             cost_assignments: {
+              business_area: {
+                url: '/api/static_data/',
+                category: 'business_areas'
+              },
               fund: {
                 url: '/api/wbs_grants_funds/',
                 category: 'funds'
@@ -245,47 +263,62 @@
             }
         };
 
-        function parseAndFillStructureWithGhost(value, cat) {
-          // the parsing function expects an object filled with arrays, so  we build one
-          var toParse = {};
-          toParse[cat] = [value];
-          var parsed = self._parseStructureData(toParse);
-          console.log(cat, parsed[cat].slice());
-          // we extract the parsed object from the container array ensuring that is
-          // parsed with the same logic as the rest of the structure
-          parsed = parsed[cat].pop();
-          self.push('structure.' + cat, parsed);
-          console.log(self.structure[cat]);
-          return parsed;
-        }
-
         var processed = 0;
         var toProcess = 0;
         function postCallOperation() {
+            var rawStructure = Object.assign({}, self.rawStructure);
             processed += 1;
             if (processed === toProcess) {
               processed = 0;
               toProcess = 0;
+
+              // fill the current structure data with the ghost values - yet unprocessed -
+              ghosts.forEach(function(ghost) {
+                rawStructure[ghost.category] = rawStructure[ghost.category].slice();
+                rawStructure[ghost.category].push(ghost.response);
+              });
+
+              // special handling fot wbs - grant and founds that need to be parsed all at once
+              var costAssingmentStructure = {
+                wbs: rawStructure.wbs.slice(),
+                grants: rawStructure.grants.slice(),
+                funds: rawStructure.funds.slice()
+              };
+              var parsedStructure = self._parseStructureData(rawStructure);
+              parsedStructure = Object.assign({}, parsedStructure, self.parseCostStructure(costAssingmentStructure));
+
+              // set the new complete structure as a the new available structure
+              self.set('structure', {});
+              self.set('structure', parsedStructure);
+
+              // parse the ghost inboud data based on the new structural data and assign it to the original element
+              ghosts.forEach(function(ghost) {
+                var finaleElement = parsedStructure[ghost.category].find(function(item) {
+                  return item.value === ghost.item.value;
+                });
+                // this is important, beside this object we have no reference to the original element
+                Object.assign(ghost.item, finaleElement);
+              });
+
               self.set('et2fData', {});
               self.set('et2fData', incomingData);
+              self.set('loading', false);
               }
         }
 
         if (ghosts.length > 0) {
+          self.set('loading', true);
           // grab the reference to iron-ajax;
           var ajax = self.$.ghostAjax;
 
           ajax.addEventListener('response', function(e) {
-              // using the url with the extra query string to get what ghost data are we processing
+              // using the url with the extra query string to get what ghost data we are processing
               var url = e.detail.xhr.responseURL;
               var response = e.detail.response;
               var cat = self._getParameterByName('category', url);
               var ghostIndex = self._getParameterByName('ghostIndex', url);
-              var parsed = parseAndFillStructureWithGhost(response, cat);
-              var currentGhost = ghosts[ghostIndex];
-
-              // merge parsed data and ghost dummy object, keeping the reference.
-              Object.assign(currentGhost.item, parsed);
+              ghosts[ghostIndex].response = response;
+              ghosts[ghostIndex].category = cat;
               postCallOperation();
             });
 
@@ -294,7 +327,7 @@
           });
 
           ghosts.forEach(function(ghost, index) {
-            console.log(ghost)
+            // iterate trough ghost values and generate proper ajax requests
             var libValue = ghostUrlLib[ghost.key][ghost.label];
             if (libValue) {
               toProcess += 1;
@@ -306,11 +339,6 @@
               ajax.generateRequest();
             }
           });
-
-          if (toProcess === processed) {
-              this.set('et2fData', {});
-              this.set('et2fData', incomingData);
-          }
 
         } else {
           this.set('et2fData', {});

@@ -91,6 +91,7 @@
       et2f-data="{{data}}"
       travel-id="[[travelId]]"
       structure="[[structure]]"
+      raw-structure="[[rawStructure]]"
       data-to-serialize="[[incomingData]]">
     </et2f-inbound-data>
 
@@ -233,6 +234,9 @@
         },
         structure: {
           type: Object,
+        },
+        rawStructure: {
+          type: Object
         },
         et2fPermissions: {
           type: Object
