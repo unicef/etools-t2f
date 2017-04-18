@@ -419,7 +419,7 @@
             }
           },
           expenses: {
-            name: 'Expenses (' + data.expenses.length + ')',
+            name: 'Expenses (' + (data.expenses || []).length + ')',
             generator: function() {
               var mainStack = data.expenses.map(function(expense, index) {
                 return {
