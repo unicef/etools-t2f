@@ -412,13 +412,14 @@
           this.set('travelPermissions', userPermissions);
         }
 
-        var self = this;
-        if ((!self.travelId || self.travelId === -1) && data.baseDetails) {
-          data.baseDetails.traveler = {
+        // Preset traveler to user only if empty/necessary
+        var firstSave = !!((!this.travelId || this.travelId === -1) && data.baseDetails);
+        var empty = !data.baseDetails.traveler;
+        if (firstSave && empty) {
+          this.set('data.baseDetails.traveler', {
             label: user.full_name,
             value: user.id
-          };
-          self.notifyPath('data.baseDetails.traveler');
+          });
         }
       },
 
