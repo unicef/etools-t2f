@@ -28,11 +28,15 @@
     },
     _multiFieldConversion: function(subField, fieldName, fieldSet) {
       var self = this;
+      var localResult = null;
       if (fieldSet instanceof Array) {
         return fieldSet.map(function(field) {
-          var localResult = self.structure[fieldName].find(function(item) {
-            return item[subField] === field;
-          });
+          var structureData = self.structure[fieldName];
+          if (structureData) {
+            localResult = structureData.find(function(item) {
+              return item[subField] === field;
+            });
+          }
           return localResult || {value: field, ghost: true, label: 'Missing Label'};
 
         });
@@ -88,14 +92,19 @@
       data.parsed = true;
       return data;
     },
-    _processLib: function(structureData, value, data) {
+    _processLib: function(structureLibValue, value, data) {
       var result = null;
-      if (typeof structureData  === 'function') {
-        result = structureData(value, data);
+      if (typeof structureLibValue  === 'function') {
+        result = structureLibValue(value, data);
       } else {
-        result = this.structure[structureData].find(function(item) {
+        var structureData = this.structure[structureLibValue];
+
+        if (structureData) {
+          result = structureData.find(function(item) {
           return item.value === value;
         });
+        }
+
       }
      return this._checkGhost(result, value, data);
     },

@@ -222,7 +222,7 @@
       _handlet2fStaticData: function(e, data) {
         data = this._checkJSON(data);
         var rawData = Object.assign({}, data);
-        Object.assign(this.rawStructure, {sections: rawData});
+        Object.assign(this.rawStructure, rawData);
         if (!data.parsed) {
           data = this._parseStructureData(data);
         }
