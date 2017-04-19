@@ -278,34 +278,37 @@
               ghosts = ghosts.filter(function(ghost) {
                 return ghost.category;
               });
-
-              // fill the current structure data with the ghost values - yet unprocessed -
-              ghosts.forEach(function(ghost) {
-                rawStructure[ghost.category] = rawStructure[ghost.category].slice();
-                rawStructure[ghost.category].push(ghost.response);
-              });
-
-              // special handling fot wbs - grant and founds that need to be parsed all at once
-              var costAssingmentStructure = {
-                wbs: rawStructure.wbs.slice(),
-                grants: rawStructure.grants.slice(),
-                funds: rawStructure.funds.slice()
-              };
-              var parsedStructure = self._parseStructureData(rawStructure);
-              parsedStructure = Object.assign({}, parsedStructure, self.parseCostStructure(costAssingmentStructure));
-
-              // set the new complete structure as a the new available structure
-              self.set('structure', {});
-              self.set('structure', parsedStructure);
-
-              // parse the ghost inboud data based on the new structural data and assign it to the original element
-              ghosts.forEach(function(ghost) {
-                var finaleElement = parsedStructure[ghost.category].find(function(item) {
-                  return item.value === ghost.item.value;
+              // if after filtering there is no more ghosts do not bother to execute the operations
+              if (ghosts.length > 0) {
+                // fill the current structure data with the ghost values - yet unprocessed -
+                ghosts.forEach(function(ghost) {
+                  rawStructure[ghost.category] = rawStructure[ghost.category].slice();
+                  rawStructure[ghost.category].push(ghost.response);
                 });
-                // this is important, beside this object we have no reference to the original element
-                Object.assign(ghost.item, finaleElement);
-              });
+
+                // special handling fot wbs - grant and founds that need to be parsed all at once
+                var costAssingmentStructure = {
+                  wbs: rawStructure.wbs.slice(),
+                  grants: rawStructure.grants.slice(),
+                  funds: rawStructure.funds.slice()
+                };
+                var parsedStructure = self._parseStructureData(rawStructure);
+                parsedStructure = Object.assign({}, parsedStructure, self.parseCostStructure(costAssingmentStructure));
+
+                // set the new complete structure as a the new available structure
+                self.set('structure', {});
+                self.set('structure', parsedStructure);
+
+                // parse the ghost inboud data based on the new structural data and assign it to the original element
+                ghosts.forEach(function(ghost) {
+                  var finalElement = parsedStructure[ghost.category].find(function(item) {
+                    return item.value === ghost.item.value;
+                  });
+                  // this is important, beside this object we have no reference to the original element
+                  Object.assign(ghost.item, finalElement);
+                });
+
+              }
 
               self.set('et2fData', {});
               self.set('et2fData', incomingData);
