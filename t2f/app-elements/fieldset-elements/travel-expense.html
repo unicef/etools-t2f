@@ -148,10 +148,14 @@
       },
 
       _setDefaultCurrOnTypeChange: function(changed, currency) {
+        // The repeatable fieldset sets the new defaults to ''
+        if (changed === '') { return; }
         this.setDefaultCurrency(currency);
       },
 
       _setDefaultCurrOnAmountChange: function(changed, currency) {
+        // The repeatable fieldset sets the new defaults to ''
+        if (changed === '') { return; }
         this.setDefaultCurrency(currency);
       },
 
