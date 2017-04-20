@@ -41,7 +41,56 @@
             expect(el.activity.result).to.equal(null);
         });
 
+        test('#190: reload does keep data from server', function() {
+            el.set('activity', {
+                id: 17,
+                travel_type: {
+                    label: 'Programmatic Visit',
+                    value: 0
+                },
+                is_primary_traveler: false,
+                primary_traveler: {
+                    label: 'Abdul Hamid Seck',
+                    value: 443
+                }
+            });
+            dom.flush();
+            expect(el.$.primary_traveler.value.value).to.equal(443);
+            expect(el.$.prim_trav_checkbox.checked).to.equal(false);
+            expect(el.$.prim_trav_checkbox.hidden).to.equal(false);
+        });
 
+        test('#190: if travel_type changes to "Spot Check" checkbox shows(true), traveler gets default set', function() {
+            el.set('traveler', {
+                label: 'Trips traveler',
+                value: 12
+            });
+            el.set('activity', {});
+            el.set('activity.travel_type', {
+                label: 'Spot Check',
+                value: 0
+            });
+            dom.flush();
+            expect(el.$.prim_trav_checkbox.hidden).to.equal(false);
+            expect(el.activity.is_primary_traveler).to.equal(true);
+            expect(el.$.primary_traveler.value.value).to.equal(12);
+        });
+
+        test('#190: if travel_type changes to "Something else" checkbox hides(true), traveler gets default set', function() {
+            el.set('traveler', {
+                label: 'Trips traveler',
+                value: 12
+            });
+            el.set('activity', {});
+            el.set('activity.travel_type', {
+                label: 'Advocacy',
+                value: 0
+            });
+            dom.flush();
+            expect(el.$.prim_trav_checkbox.hidden).to.equal(true);
+            expect(el.activity.is_primary_traveler).to.equal(true);
+            expect(el.$.primary_traveler.value.value).to.equal(12);
+        });
     });
 </script>
 

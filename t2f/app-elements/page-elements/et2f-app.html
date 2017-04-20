@@ -109,10 +109,12 @@
       <page-not-found name="not-found">
       </page-not-found>
 
-      <page-permission-matrix-edit name="permission-matrix-edit"
-      et2f-permissions="[[et2fPermissions.travel]]"
-      action-point-permissions="[[et2fPermissions.action_point]]">
-      </page-permission-matrix-edit>
+      <template is="dom-if" if="[[isLocalhost]]">
+        <page-permission-matrix-edit name="permission-matrix-edit"
+        et2f-permissions="[[et2fPermissions.travel]]"
+        action-point-permissions="[[et2fPermissions.action_point]]">
+        </page-permission-matrix-edit>
+      </template>
 
 
     </iron-pages>
@@ -178,6 +180,10 @@
         invoiceId: {
           type: Number,
           computed: '_computeElementId(subroute, "invoice-detail")'
+        },
+        isLocalhost: {
+          type: Boolean,
+          value: false
         }
       },
       _computeElementId: function(subRoute, pageName) {

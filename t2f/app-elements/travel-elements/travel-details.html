@@ -104,6 +104,24 @@
 
       <div class="flex">
 
+        <!-- Currency changed dialog -->
+        <paper-dialog id="currency-modal" opened="{{currModalOpen}}" with-backdrop>
+
+            <div class="dialog-head-container layout horizontal">
+              <div class="dialog-heading flex">TA currency changed!</div>
+              <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+            </div>
+
+            <div class="dialog-intro-text">Changing the currency of the TA may have also forced currency change for some expenses.</div>
+            <div class="dialog-intro-text">Please make sure to align all expense values accordingly before taking any further action!</div>
+
+            <paper-button
+              class="dialog-confirm-button"
+              dialog-dismiss>
+                I understand
+            </paper-button>
+        </paper-dialog>
+
         <!-- Cancellation note -->
         <paper-material class="note cancel" elevation="1" hidden$="[[hideCancelNote]]">
           <svg class="flag" width="24px" height="49px" viewBox="0 0 24 49">
@@ -202,6 +220,7 @@
             <travel-activities
               class="travel_activity"
               activity="{{item}}"
+              traveler="[[data.baseDetails.traveler]]"
               permissions-matrix="[[travelPermissions.activities]]"
               structure="[[structure]]"
               activity-validation-array="{{activityValidationArray}}">
@@ -267,7 +286,7 @@
               user="[[user]]"
               local-currency=[[localCurrency]]
               base-details="[[data.baseDetails]]"
-              document-currency="{{data.baseDetails.currency}}"
+              document-currency="[[data.baseDetails.currency]]"
               selected-expenses="[[selectedExpensesType]]"
               structure="[[structure]]">
             </travel-expense>
@@ -390,7 +409,31 @@
           type: Array,
           value: [],
           computed: '_computeSelectedExpensesType(data.expenses.*)'
+        },
+        // to observe the `data.baseDetails.currency` subproperty
+        taCurrency: {
+          type: Object,
+          computed: '_getTravelCurrency(data.baseDetails.currency)',
+          observer: '_openCurrencyModal',
+        },
+        currModalOpen: {
+          type: Boolean,
+          value: false,
+        },
+      },
+
+      _openCurrencyModal: function(currency1, currency2) {
+        var hasExpenses = this.data && this.data.expenses && this.data.expenses.length >= 1;
+        var firstExpensePlaceHolder = hasExpenses && (Object.keys(this.data.expenses[0]).length === 1);
+        var notStartUpChange = currency1 !== undefined && currency2 !== undefined;
+
+        if (notStartUpChange && hasExpenses && !firstExpensePlaceHolder) {
+          this.currModalOpen = true;
         }
+      },
+
+      _getTravelCurrency: function(curr) {
+        return curr;
       },
 
       _computeDefaultBusinessArea: function(user, structure) {

@@ -105,17 +105,20 @@
         </date-time-picker-input>
 
         <paper-checkbox
+          id="prim_trav_checkbox"
           class$="flex-4 custom-margin self-end [[computedPermission.is_primary_traveler.readOnly]]"
           disabled="[[computedPermission.is_primary_traveler.disabled]]"
-          hidden$="[[computedPermission.is_primary_traveler.hidden]]"
+          hidden$="[[hideIsPrimCheckbox]]"
           checked="{{activity.is_primary_traveler}}">I am a Primary Traveler
         </paper-checkbox>
 
         <div class="flex-4">
           <etools-searchable-multiselection-menu label="Primary Traveler"
-            id="primary_travler"
+            id="primary_traveler"
             value="{{activity.primary_traveler}}"
             class$="flex [[computedPermission.primary_traveler.readOnly]]"
+            required$="[[!activity.is_primary_traveler]]"
+            starred$="[[!activity.is_primary_traveler]]"
             disabled="[[computedPermission.primary_traveler.disabled]]"
             hidden$="[[hidePrimaryTraveler]]"
             options="[[structure.users]]"
@@ -141,7 +144,15 @@
         },
         travelType: {
           type: Object,
-          computed: '_computeTravelType(activity)',
+          computed: '_computeTravelType(activity.travel_type)',
+          observer: '_travelTypeObserver',
+        },
+        hideIsPrimCheckbox: {
+          type: Boolean,
+          value: false,
+        },
+        traveler: {
+          type: Object,
         },
         structure: {
           type: Object,
@@ -180,28 +191,55 @@
       observers: [
         '_activityObserver(activity.*)',
         '_partnershipChanged(activity.partnership)',
+        '_ifPrimarySetTraveler(activity.is_primary_traveler)',
       ],
+
       _computeHidePrimaryTraveler: function(permission, primaryTraveler) {
         return permission || primaryTraveler;
       },
+
       _computeTravelType: function(travel_type) {
         return travel_type;
       },
+
+      // Handles primary_traveler logic according to unicef/etools-issues#190
       _travelTypeObserver: function(newValue, oldValue) {
-          if (oldValue === undefined && newValue !== undefined && newValue !== '') {
-            this.set('activity.primary_traveler', true);
-          } else if (oldValue === undefined && newValue === undefined) {
-            this.set('activity.primary_traveler', undefined);
-          }
+
+        var hasId = !!(this.activity.id) || this.activity.id === '';
+        var isFirst = hasId && oldValue === undefined;
+        var isProgOrSpot = newValue.label === 'Programmatic Visit' || newValue.label === 'Spot Check';
+
+        if (!newValue || isFirst) { return; }
+
+        // if not Programmatic Visit or Spot Check: hide “is primary traveler”
+        // but assign current traveler as primary traveler.
+        if (!isProgOrSpot) {
+          this.set('hideIsPrimCheckbox', true);
+          this.set('activity.is_primary_traveler', true);
+
+        // else: Show “is primary traveler” checkbox, with default checked.
+        // if unchecked, show dropdown of travellers in Business Area, and only validate if someone is selected.
+        } else {
+          this.set('hideIsPrimCheckbox', false);
+          this.set('activity.is_primary_traveler', true);
+        }
       },
+
+      _ifPrimarySetTraveler: function(is_primary_traveler) {
+        if (is_primary_traveler === true) {
+          this.set('activity.primary_traveler', this.traveler);
+        }
+      },
+
       _computeAutoValidate: function(activity) {
         return activity !== undefined && Object.keys(activity).length > 0;
       },
+
       _computeDisablePartnerships: function(partnerships, permissionDisabled) {
         return partnerships.length === 0 || permissionDisabled;
       },
 
-      // 
+      // Fills/empties out the dropdowns for the partnerships structure
       _partnerPartnershipsHandling: function(changed) {
         // Early return for unneeded subpaths
         if ([
@@ -241,6 +279,7 @@
           this.set('activity.partnership', null);
         }
       },
+
       // Sets the results for the partnership
       _partnershipChanged: function(partnership) {
         if (partnership !== undefined && partnership !== null) {
@@ -258,22 +297,10 @@
           this.set('activity.result', null);
         }
       },
-      _primaryTravelerHandling: function(changed) {
-        if (changed && changed.base) {
-          var isPrimaryTraveler = changed.base.is_primary_traveler;
-          var travelType = changed.base.travel_type;
-          if (isPrimaryTraveler === undefined && travelType !== undefined) {
-            this.set('activity.is_primary_traveler', true);
-          }
-          if (isPrimaryTraveler === true) {
-            this.set('activity.primary_traveler', undefined);
-          }
-        }
-      },
+
       _activityObserver: function(changed) {
         this._addValidationFunction(changed);
         this._partnerPartnershipsHandling(changed);
-        this._primaryTravelerHandling(changed);
       },
 
       _addValidationFunction: function(changed) {
