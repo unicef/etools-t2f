@@ -612,9 +612,11 @@
         doRequest: function(action) {
           var self = this;
           var endpointConfig = {
-            id: self.data.baseDetails.id,
             status: null
           };
+          if (self.data.baseDetails.id) {
+            endpointConfig.id = self.data.baseDetails.id;
+          }
           var endpointName = 'et2fStateChange';
 
           function prepareData() {
