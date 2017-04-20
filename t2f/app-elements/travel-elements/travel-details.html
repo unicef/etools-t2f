@@ -643,6 +643,7 @@
 
         var isItNonTAComplete = action.name === 'Complete' && !this.data.baseDetails.ta_required;
         var nonDefultValidatableAction = ['Save', 'Print TA', 'Cancel', 'Mark as planned'].indexOf(action.name) < 0;
+        var isNonTaSave = action.endPoint === 'save_non_ta';
 
         // Validation of nonTA complete action
         if (isItNonTAComplete) {
@@ -654,7 +655,7 @@
         }
 
         // Run "default" validation
-        if (nonDefultValidatableAction && !isItNonTAComplete) {
+        if (nonDefultValidatableAction && !isItNonTAComplete && !isNonTaSave) {
           // Validating Trip plan
           if (!this.$.travel_plan._validateTravelPlan()) {
             invalids.push('Trip Plan');
@@ -663,8 +664,14 @@
           fieldSetValidation(toValidate);
 
           // Checking Cost Assignment validity
-          if (this.percentagesSum !== 100) {
+          if (this.percentagesSum !== 100 && this.data.baseDetails.ta_required) {
             invalids.push('Cost assignments share(s) must sum to 100');
+          }
+        }
+
+        if (isNonTaSave) {
+          if (!this.$.travel_plan._validateTravelPlan()) {
+            invalids.push('Trip Plan');
           }
         }
 

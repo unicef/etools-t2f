@@ -278,12 +278,15 @@
         }
 
       },
+
       observers: [
         '_computeTravelPermission(et2fPermissions, status, user, data)'
       ],
+
       _computeLoading: function(data, profile, details) {
         return data || profile || details;
       },
+
       _computeDataForTa: function(data, profile) {
         if (!data.baseDetails || !data.baseDetails.traveler || !profile || !profile.profile) {
           return;
@@ -291,6 +294,7 @@
         data.baseDetails.traveler.profile = profile.profile;
         return JSON.parse(JSON.stringify(data));
       },
+
       _loadDefault: function() {
         this.set('data', {});
         this.set('data', {
@@ -331,6 +335,7 @@
         });
         this.set('invalids', {});
       },
+
       _formErrorObserver: function(newValue, old) {
           if (newValue) {
             this.async(function() {
@@ -338,12 +343,14 @@
             });
           }
       },
+
       _routeObserver: function(route) {
         this.$.travelStatus.resetPosition();
         if (route.path && route.path.indexOf('edit-travel/-1') > -1) {
           this._loadDefault();
         }
       },
+
       _computeStatus: function(data) {
         if (data.status) {
           return data.status.toLowerCase().replace(/ /g, '_');
@@ -419,12 +426,11 @@
         }
       },
 
-      _handleFormAction: function(details) {
-        // console.log(details);
-        if (details.endPoint === 'printTa') {
+      _handleFormAction: function(action) {
+        if (action.endPoint === 'printTa') {
           this.$.taPrint.printTa();
         } else {
-          this.$['outbound-data'].doRequest(details);
+          this.$['outbound-data'].doRequest(action);
         }
       },
 

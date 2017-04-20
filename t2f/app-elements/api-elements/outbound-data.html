@@ -82,6 +82,28 @@
 
     <template>
 
+        <!-- NonTA Save actions dialog -->
+        <paper-dialog id="save_non_ta_modal" opened="{{saveNonTAModalOpened}}" with-backdrop>
+
+          <div class="dialog-head-container layout horizontal">
+            <div class="dialog-heading flex">Do you need supervisor approval?</div>
+            <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+          </div>
+
+          <paper-button
+            class="dialog-confirm-button"
+            on-click="_needApproval">
+              Submit for approval
+          </paper-button>
+
+          <paper-button
+            class="dialog-confirm-button"
+            on-click="_doesntNeedApproval">
+              Only notify supervisor
+          </paper-button>
+
+        </paper-dialog>
+
         <!-- Crearances dialog -->
         <paper-dialog id="clearance-modal" opened="{{clearancesOpened}}" with-backdrop>
 
@@ -587,7 +609,7 @@
           }
         },
 
-        doRequest: function(details) {
+        doRequest: function(action) {
           var self = this;
           var endpointConfig = {
             id: self.data.baseDetails.id,
@@ -652,6 +674,28 @@
           }
 
           var statusActions = {
+
+            save_non_ta: function() {
+              var innerSelf = this;
+              var isInternational = self.data.baseDetails.international_travel === true;
+              var isFirstSave = self.travelId === -1;
+
+              if (isInternational) {
+                this.save_and_submit();
+              } else if (isFirstSave) {
+                self._needApproval = function() {
+                  self.$.save_non_ta_modal.close();
+                  innerSelf.save_and_submit();
+                };
+                self._doesntNeedApproval = function() {
+                  self.$.save_non_ta_modal.close();
+                  innerSelf.complete();
+                };
+                self.$.save_non_ta_modal.open();
+              } else {
+                this.save_and_submit();
+              }
+            },
 
             save: function() {
               if (self.travelId !== -1) {
@@ -737,7 +781,6 @@
                 text: 'Are you sure you want reopen this travel?',
                 buttonText: 'Reopen'
               });
-
             },
 
             send_for_payment: function() {
@@ -754,7 +797,6 @@
                 text: 'Are you sure you want to send this travel to payment?',
                 buttonText: 'Send for payment'
               });
-
             },
 
             went_as_planned: function() {
@@ -771,7 +813,6 @@
                 text: 'Are you sure this travel went as planned?',
                 buttonText: 'Yes'
               });
-
             },
 
             submit_certificate: function() {
@@ -800,7 +841,6 @@
                 text: 'Are you sure you want to mark this travel as done?',
                 buttonText: 'Yes'
               });
-
             },
 
             approve_certificate: function() {
@@ -878,7 +918,7 @@
               });
             }
           };
-          statusActions[details.endPoint]();
+          statusActions[action.endPoint]();
         },
 
         _doAttachmentUpload: function() {
