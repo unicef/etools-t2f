@@ -136,6 +136,7 @@
           this.$.curr1.setAttribute('disabled', true);
         } else if (type && !disabledFromMatrix) {
           this.$.curr1.removeAttribute('disabled');
+          this.set('expense.document_currency', documentCurrency);
         } else {
           this.$.curr1.setAttribute('disabled', true);
         }
