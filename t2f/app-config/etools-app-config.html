@@ -139,7 +139,10 @@ App global configuration
         computeTemplate: function(endpointName, data) {
           var endpoint = etoolsAppConfig.endpoints[endpointName];
           if (endpoint && endpoint.hasOwnProperty('template') && endpoint.template !== '') {
-            endpoint.url = _.template(endpoint.template)(data);
+            var templateWithIdFallback = data.id ?
+              endpoint.template :
+              endpoint.template.replace('/<%=id%>/', '/');
+            endpoint.url = _.template(templateWithIdFallback)(data);
           }
           if (endpoint &&
               endpoint.hasOwnProperty('cachingKeyTemplate') &&
