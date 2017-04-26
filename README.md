@@ -84,26 +84,26 @@ How to use it:
 
 - Once again, be patient while it loads, it needs to inject an awfull amount of element in the dom.
 -  Travel Permissions:
--- A list of travel permission role is displayed
--- Clicking a travel role ( ex: Traveler) open a list of status
---- clicking a staus (ex: planned) open the permission matrix.
---- Each field has  two checkkbox:  V and E which enable: view and edit for that  Role-TravelStatus combination.
---- A button with a bin allow to delete  a field WARNING: for consistency the field is deleted across ALL the Permission Matrix travelStatuses
---- A button with a cross (in the header section eg: Activities) allows to add a field,  WARNING: for consistency the field is added across ALL the Permission Matrix travelStatuses
+- A list of travel permission role is displayed
+- Clicking a travel role ( ex: Traveler) open a list of status
+- clicking a staus (ex: planned) open the permission matrix.
+- Each field has  two checkkbox:  V and E which enable: view and edit for that  Role-TravelStatus combination.
+- A button with a bin allow to delete  a field WARNING: for consistency the field is deleted across ALL the Permission Matrix travelStatuses
+- A button with a cross (in the header section eg: Activities) allows to add a field,  WARNING: for consistency the field is added across ALL the Permission Matrix travelStatuses
 
--- Adding  a field modal:
---- This modal permit to choose  a name for the field  ( mandatory )
----  it's possible to choose a field from which to copy the permission (Ex: field Date has V: true E: true, if I choose it as a copy for my new field: Date_Two the field date TWO will be added across all the permission matrix with values: V: true E: true)
+- Adding  a field modal:
+- This modal permit to choose  a name for the field  ( mandatory all lowercase )
+- it's possible to choose a field from which to copy the permission (Ex: field Date has V: true E: true, if I choose it as a copy for my new field: Date_Two the field Date_two will be added across all the permission matrix with values: V: true E: true)
 
--- A button with a plus on the right of Travel Permission allow to add a new fieldset ( example: Expenses) WARNING: for consistency the fieldSet is added across ALL the Permission Matrix roles
+- A button with a plus on the right of Travel Permission allow to add a new fieldset ( example: Expenses) WARNING: for consistency the fieldSet is added across ALL the Permission Matrix roles
 
 - Same concepts apply to Action Points (with limited features due to less complexity)
 
 - In the header is possible to find and use the  following buttons:
--- Download: download the current state of the p-matrix (including any change done in the page)
--- Test: load back the current changes in the  t2f local db, allowing to use the app with the changed matrix ( this is temporary and get reverted using the reload button on the right corner of the app )
+- Download: download the current state of the p-matrix (including any change done in the page)
+- Test: load back the current changes in the  t2f local db, allowing to use the app with the changed matrix ( this is temporary and get reverted using the reload button on the right corner of the app )
 - An input field to chose a file
--  An inport button: it will load the chosen YAML file back in the scope.
+- An inport button: it will load the chosen YAML file back in the scope.
 
 The YAML file are named with the timestamp of the download for easy  storing of them.
 
