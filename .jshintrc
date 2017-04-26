@@ -19,6 +19,7 @@
     "_": true,
     "Dexie": true,
     "etoolsAppConfig": true,
+    "utilsBehavior": true,
     "etoolsAjaxDefaultDexieDbPrefix": true,
     "DynamicCustomStyleBehavior": true,
     "URLSearchParams": true,

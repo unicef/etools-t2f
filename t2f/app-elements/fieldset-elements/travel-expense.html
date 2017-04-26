@@ -37,21 +37,20 @@
           placeholder="select"
           required$="[[computedPermission.type.required]]"
           on-value-change="_validateType"
-          auto-validate$="[[autoValidate]]"
-          starred>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
         <paper-input label="Amount"
+          id="amount"
           class$="flex-3 custom-margin [[computedPermission.amount.readOnly]]"
           disabled="[[computedPermission.amount.disabled]]"
           hidden$="[[computedPermission.amount.hidden]]"
-          pattern="^[0-9]+(\.[0-9]{1,2})?$"
+          pattern="[[_returnAmountPatternRegex(expense.type, user)]]"
           placeholder="eg.: 567.12"
           value="{{expense.amount}}"
           error-message="*number required"
           required$="[[computedPermission.amount.required]]"
-          auto-validate$="[[autoValidate]]"
-          starred$="[[computedPermission.amount.required]]">
+          auto-validate$="[[autoValidate]]">
         </paper-input>
 
         <etools-searchable-multiselection-menu label="Currency"
@@ -64,8 +63,7 @@
           placeholder="select"
           required$="[[computedPermission.document_currency.required]]"
           on-value-change="_validateDocCurr"
-          auto-validate$="[[autoValidate]]"
-          starred>
+          auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
 
       </div>
@@ -114,19 +112,31 @@
 
       observers: [
         '_addValidationFunction(expense.*)',
-        '_setDefaultCurrOnTypeChange(expense.type, baseDetails.currency)',
-        '_setDefaultCurrOnAmountChange(expense.amount, baseDetails.currency)',
         '_lockDownCurrency(expense.type, computedPermission.document_currency.disabled, documentCurrency, expense)',
       ],
+
+      // Returns the regex for the amounts pattern attribute, allows negative number, if static expense
+      _returnAmountPatternRegex: function(expenseType, user) {
+        var toRet = '^[0-9]+(\.[0-9]{1,2})?$';
+        var gotVendorNumber = expenseType && expenseType.vendor_number;
+        if (gotVendorNumber) {
+          var isStatic = expenseType.vendor_number === user.profile.vendor_number ||
+            expenseType.vendor_number === 'user';
+          toRet = isStatic ? '^-?[0-9]+(\.[0-9]{1,2})?$' : toRet;
+        }
+        return toRet;
+      },
 
       // Sets TA currency, and disables the currency dropdown for expenses with "user-vendor-number", or "id"
       //     otherwise follows the permissionmatrix
       _lockDownCurrency: function(type, disabledFromMatrix, documentCurrency, expense) {
-        if (!type || type.vendor_number === this.user.profile.vendor_number || type.vendor_number === 'user') {
+        var noType = !type && type !== '';
+        if (noType || type.vendor_number === this.user.profile.vendor_number || type.vendor_number === 'user') {
           this.set('expense.document_currency', documentCurrency);
           this.$.curr1.setAttribute('disabled', true);
         } else if (type && !disabledFromMatrix) {
           this.$.curr1.removeAttribute('disabled');
+          this.set('expense.document_currency', documentCurrency);
         } else {
           this.$.curr1.setAttribute('disabled', true);
         }
@@ -134,23 +144,6 @@
         // Its already saved to the backend
         if (!!expense.id) {
           this.$.curr1.setAttribute('disabled', true);
-        }
-      },
-
-      _setDefaultCurrOnTypeChange: function(changed, currency) {
-        this.setDefaultCurrency(currency);
-      },
-
-      _setDefaultCurrOnAmountChange: function(changed, currency) {
-        this.setDefaultCurrency(currency);
-      },
-
-      // Defaults expenses currency
-      setDefaultCurrency: function(currency) {
-        var currNotSet = ['', undefined, null].indexOf(this.expense.document_currency) > -1;
-
-        if (currNotSet) {
-          this.set('expense.document_currency', currency);
         }
       },
 

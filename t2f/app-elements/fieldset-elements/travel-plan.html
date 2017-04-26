@@ -194,7 +194,7 @@
           placeholder="select"
           disabled$="[[computedPermission.start_date.disabled]]"
           starred$="[[!baseDetails.ta_required]]"
-          date="[[baseDetails.start_date]]">
+          date="{{baseDetails.start_date}}">
         </date-time-picker-input>
 
         <date-time-picker-input label="End Date"
@@ -203,7 +203,7 @@
           hidden$="[[computedPermission.end_date.hidden]]"
           required$="[[computedPermission.end_date.required]]"
           placeholder="select"
-          date="[[baseDetails.end_date]]"
+          date="{{baseDetails.end_date}}"
           disabled$="[[computedPermission.end_date.disabled]]"
           starred$="[[!baseDetails.ta_required]]"
           auto-validate$="[[autoValidate]]">
@@ -302,7 +302,7 @@
       observers: [
         '_valuesObserver(baseDetails.*)',
         '_setDefaultUserValues(user, baseDetails.*, structure, localCurrency)',
-        '_computeStartAndEndDates(data.itinerary.*, data.activities.*, baseDetails.ta_required)',
+        // '_computeStartAndEndDates(data.itinerary.*, data.activities.*, baseDetails.ta_required)',
       ],
 
       _computeStartAndEndDates: function(itCh, actCh, taReq) {
@@ -334,8 +334,12 @@
           var start_date = allDates.length ? new Date(Math.min.apply(null, allDates)) : undefined;
           var end_date = allDates.length ? new Date(Math.max.apply(null, allDates)) : undefined;
 
-          this.set('baseDetails.start_date', start_date);
-          this.set('baseDetails.end_date', end_date);
+          if (start_date !== undefined && (+this.baseDetails.start_date || Infinity) > (+start_date || 0)) {
+            this.set('baseDetails.start_date', start_date);
+          }
+          if (end_date !== undefined && (+this.baseDetails.end_date || 0) < (+end_date || Infinity)) {
+            this.set('baseDetails.end_date', end_date);
+          }
         }
       },
 
