@@ -56,16 +56,23 @@
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
-    <etools-ajax url="[[vendorEndPoint]]"
+    <etools-ajax endpoint="[[vendorEndPoint]]"
       loading="{{vendorNumbersLoading}}"
       on-success="_handleVendorNumbers"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
-    <etools-ajax url="[[costStructureEndpoint]]"
+    <etools-ajax endpoint="[[costStructureEndpoint]]"
       loading="{{costStructureLoading}}"
       on-success="_handleCostStructure"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
+      <etools-ajax endpoint="[[dsaEndopiint]]"
+      loading="{{dsaLoading}}"
+      on-success="_handleDsa"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
@@ -89,7 +96,8 @@
           type: Object,
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
-          ' officesData, t2fStaticData, usersData, groupsData, driversData, vendorNumbers, wbsGrantsFunds)'
+          ' officesData, t2fStaticData, usersData, groupsData,' +
+          'driversData, vendorNumbers, wbsGrantsFunds, dsaData)'
         },
         rawStructure: {
           type: Object,
@@ -115,7 +123,8 @@
           type: Boolean,
           notify: true,
           computed: '_computeLoading(staticDataLoading, sectionsLoading,' +
-          ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading, driversLoading, vendorNumbersLoading)'
+          ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading' +
+          ', driversLoading, vendorNumbersLoading, dsaLoading)'
         },
         staticDataEndpoint: {
           type: String,
@@ -149,12 +158,16 @@
         },
         vendorEndPoint: {
           type: String,
-          value: etoolsAppConfig.endpoints.et2fVendorList.url
+          value: etoolsAppConfig.endpoints.et2fVendorList
         },
         costStructureEndpoint: {
           type: String,
-          computed: '_computeTemporaryBusinessArea(userBusinessArea)'
+          value: etoolsAppConfig.endpoints.et2fCostStructure
         },
+        dsaEndopiint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.dsaRegions
+        }
       },
       behaviors: [et2fBehaviors.ApiBehavior],
       _sortByLabel: function(a, b) {
@@ -162,12 +175,6 @@
       },
       _sortByName: function(a, b) {
         return a.name.localeCompare(b.name);
-      },
-
-      _computeTemporaryBusinessArea: function(userBa) {
-        //TODO REMOVE THIS
-        // return etoolsAppConfig.endpoints.et2fCostStructure.url + '?business_area=' + userBa;
-        return etoolsAppConfig.endpoints.et2fCostStructure.url;
       },
 
       _computeLoading: function() {
@@ -276,6 +283,18 @@
         }
         this.set('groupsData', data);
       },
+      _handleDsa: function(e, data) {
+        data = this._checkJSON(data);
+        var rawData = data.slice();
+        Object.assign(this.rawStructure, {dsa_regions: rawData});
+        if (!data.parsed) {
+          data = {
+            dsa_regions: data
+          };
+          data = this._parseStructureData(data);
+        }
+        this.set('dsaData', data);
+      },
       _handleCostStructure: function(e, data) {
         data = this._checkJSON(data);
         var rawData = Object.assign({}, data);
@@ -295,7 +314,7 @@
         this.set('wbsGrantsFunds', data);
       },
       _generateStructure: function(static, sections, offices, t2fStaticData, users, groups,
-        drivers, vendorNumbers, wbsGrantsFunds) {
+        drivers, vendorNumbers, wbsGrantsFunds, dsa) {
           var data = static;
           data.sections = sections.sections;
           data.offices = offices.offices;
@@ -318,6 +337,7 @@
             {value: 3, label: 'Cleareance Doc'},
             {value: 4, label: 'Other'}
           ];
+          data.dsa_regions = dsa.dsa_regions;
 
           this.set('rawStructure', Object.assign({}, this.rawStructure));
           return data;
