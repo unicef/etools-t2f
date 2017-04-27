@@ -266,8 +266,9 @@
         var toProcess = 0;
 
         var stale = window.document.getElementById('ghostAjax');
+
         if (stale) {
-          stale.parentNode().removeChild(stale);
+          stale.parentNode.removeChild(stale);
         }
         var ajax = document.createElement('iron-ajax');
         ajax.setAttribute('id', 'ghostAjax');
