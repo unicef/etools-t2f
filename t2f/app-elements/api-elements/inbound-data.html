@@ -9,8 +9,6 @@
     <etools-ajax url="[[travelUrl]]"
       on-success="_handleData" loading="{{loading}}"></etools-ajax>
 
-    <iron-ajax id="ghostAjax"></iron-ajax>
-
 
   </template>
 
@@ -96,6 +94,7 @@
       _handleData: function(e, incomingData) {
         var self = this;
         var ghosts = [];
+
         // not clear why this function call return an object in
         // the form type - value instead of the object with the value
         var lib = self._structureLib().value;
@@ -265,6 +264,14 @@
 
         var processed = 0;
         var toProcess = 0;
+
+        var stale = window.document.getElementById('ghostAjax');
+        if (stale) {
+          stale.parentNode().removeChild(stale);
+        }
+        var ajax = document.createElement('iron-ajax');
+        ajax.setAttribute('id', 'ghostAjax');
+
         function postCallOperation() {
             var rawStructure = Object.assign({}, self.rawStructure);
             processed += 1;
@@ -274,7 +281,6 @@
 
               // filter away the ghost values without a category,
               // the endpoint somehow failed and we need to not process them
-
               ghosts = ghosts.filter(function(ghost) {
                 return ghost.category;
               });
@@ -316,26 +322,30 @@
               }
         }
 
+        function onGhostResponse(e) {
+          // using the url with the extra query string to get what ghost data we are processing
+          var url = e.detail.xhr.responseURL;
+          var response = e.detail.response;
+          var cat = self._getParameterByName('category', url);
+          var ghostIndex = self._getParameterByName('ghostIndex', url);
+          // the backend returns a list, we only send one value and we only need one element so we pop it
+          ghosts[ghostIndex].response = response.pop();
+          ghosts[ghostIndex].category = cat;
+          postCallOperation();
+        }
+
         if (ghosts.length > 0) {
           self.set('loading', true);
           // grab the reference to iron-ajax;
-          var ajax = self.$.ghostAjax;
 
-          ajax.addEventListener('response', function(e) {
-              // using the url with the extra query string to get what ghost data we are processing
-              var url = e.detail.xhr.responseURL;
-              var response = e.detail.response;
-              var cat = self._getParameterByName('category', url);
-              var ghostIndex = self._getParameterByName('ghostIndex', url);
-              // the backend returns a list, we only send one value and we only need one element so we pop it
-              ghosts[ghostIndex].response = response.pop();
-              ghosts[ghostIndex].category = cat;
-              postCallOperation();
-            });
+          document.body.appendChild(ajax);
 
-          ajax.addEventListener('error', function() {
-              postCallOperation();
-          });
+          // to be sure that there is only one attached event
+          ajax.removeEventListener('response', onGhostResponse);
+          ajax.addEventListener('response', onGhostResponse);
+
+          ajax.removeEventListener('error', postCallOperation);
+          ajax.addEventListener('error', postCallOperation);
 
           ghosts.forEach(function(ghost, index) {
             // iterate trough ghost values and generate proper ajax requests
@@ -346,10 +356,15 @@
               + 'missing/?values=' + ghost.item.value
               + '&category=' + libValue.category
               + '&ghostIndex=' + index;
-
               ajax.generateRequest();
             }
           });
+
+          if (toProcess === 0) {
+             // if there is ghost data and no available missing endpoint is configured we still need to move on
+             this.set('et2fData', {});
+             this.set('et2fData', incomingData);
+          }
 
         } else {
           this.set('et2fData', {});
