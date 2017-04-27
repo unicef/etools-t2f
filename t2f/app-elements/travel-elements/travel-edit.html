@@ -345,7 +345,7 @@
             dsa_amount_60plus_usd: obj.dsa_amount_60plus_usd,
             effective_from_date: obj.effective_from_date
           };
-        }).sort(function (a, b) {
+        }).sort(function(a, b) {
           return a.label.localeCompare(b.label);
         });
         this.set('dsaRegionsToUse', data);
