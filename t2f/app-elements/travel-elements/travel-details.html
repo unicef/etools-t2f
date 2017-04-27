@@ -246,6 +246,7 @@
               itinerary="{{item}}"
               index="[[index]]"
               collection-size="[[data.itinerary.length]]"
+              dsa-regions-to-use="[[dsaRegionsToUse]]"
               structure="[[structure]]">
             </travel-itinerary>
           </template>
@@ -345,6 +346,9 @@
         },
         structure: {
           type: Object,
+        },
+        dsaRegionsToUse: {
+          type: Array,
         },
         travelPermissions: {
           type: Object,
