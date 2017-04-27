@@ -112,7 +112,8 @@
 
       observers: [
         '_addValidationFunction(expense.*)',
-        '_lockDownCurrency(expense.type, computedPermission.document_currency.disabled, documentCurrency, expense, user)',
+        '_lockDownCurrency(expense.type, computedPermission.document_currency.disabled,'
+        + 'documentCurrency, expense, user)',
       ],
 
       // Returns the regex for the amounts pattern attribute, allows negative number, if static expense
