@@ -324,7 +324,7 @@
 
         function onGhostResponse(e) {
           // using the url with the extra query string to get what ghost data we are processing
-          var url = e.detail.xhr.responseURL;
+          var url = e.detail.url;
           var response = e.detail.response;
           var cat = self._getParameterByName('category', url);
           var ghostIndex = self._getParameterByName('ghostIndex', url);
