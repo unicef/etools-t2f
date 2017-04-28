@@ -333,12 +333,14 @@
             });
           },
           dsa_regions: function(key) {
+            // when changing this, please take a look at travel-edits sideload serializing too!
             data[key] = data[key].map(function(obj) {
               return {
                 label: obj.area_name,
                 value: parseInt(obj.id, 10),
                 dsa_amount_usd: obj.dsa_amount_usd,
                 dsa_amount_60plus_usd: obj.dsa_amount_60plus_usd,
+                effective_from_date: obj.effective_from_date
               };
             }).sort(self._sortByLabel);
           },
