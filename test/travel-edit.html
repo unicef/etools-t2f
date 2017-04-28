@@ -1,0 +1,208 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>test travel-list</title>
+
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../t2f/app-elements/travel-elements/travel-edit.html">
+
+</head>
+<body>
+
+<test-fixture id="el">
+  <template>
+    <!-- Used like:
+    <travel-edit
+        travel-id="[[travelId]]"
+        et2f-permissions="[[et2fPermissions]]"
+        travel-data-loading="{{detailLoading}}"
+        structure="[[structure]]"
+        raw-structure="[[rawStructure]]"
+        user="[[user]]"
+        route="{{route}}">
+    </travel-edit> -->
+    <travel-edit></travel-edit>
+  </template>
+</test-fixture>
+
+<script>
+    suite('<travel-edit>', function() {
+
+        var el, dom;
+
+        // Older dataset
+        var oldDsaRaw = [
+            {
+                "area_code": "202",
+                "area_name": "Yangon",
+                "country": 25,
+                "dsa_amount_60plus_local": "136000.0000",
+                "dsa_amount_60plus_usd": "101.0000",
+                "dsa_amount_local": "181000.0000",
+                "dsa_amount_usd": "134.0000",
+                "effective_from_date": "2016-01-01",
+                "id": 797,
+                "label": "Myanmar - Yangon",
+                "long_name": "Myanmar - Yangon",
+                "unique_id": "MMR202",
+                "unique_name": "MMRYangon"
+            }, {
+                "area_code": "314",
+                "area_name": "Yangon (Special Hotels)",
+                "country": 25,
+                "dsa_amount_60plus_local": "247000.0000",
+                "dsa_amount_60plus_usd": "183.0000",
+                "dsa_amount_local": "329000.0000",
+                "dsa_amount_usd": "244.0000",
+                "effective_from_date": "2016-01-01",
+                "id": 798,
+                "label": "Myanmar - Yangon (Special Hotels)",
+                "long_name": "Myanmar - Yangon (Special Hotels)",
+                "unique_id": "MMR314",
+                "unique_name": "MMRYangon (Special Hotels)"
+            }
+        ];
+        var oldDsaParsed = [
+            {
+                "label": "Yangon",
+                "value": 797,
+                "dsa_amount_usd": "134.0000",
+                "dsa_amount_60plus_usd": "101.0000",
+                "effective_from_date": "2016-01-01",
+            }, {
+                "label": "Yangon (Special Hotels)",
+                "value": 798,
+                "dsa_amount_usd": "244.0000",
+                "dsa_amount_60plus_usd": "183.0000",
+                "effective_from_date": "2016-01-01",
+            }
+        ];
+
+        // Fresher dataset
+        var newDsaRaw = [
+            {
+                "area_code": "202",
+                "area_name": "Yangon",
+                "country": 25,
+                "dsa_amount_60plus_local": "136000.0000",
+                "dsa_amount_60plus_usd": "101.0000",
+                "dsa_amount_local": "181000.0000",
+                "dsa_amount_usd": "134.0000",
+                "effective_from_date": "2017-01-01",
+                "id": 797,
+                "label": "Myanmar - Yangon",
+                "long_name": "Myanmar - Yangon",
+                "unique_id": "MMR202",
+                "unique_name": "MMRYangon"
+            }, {
+                "area_code": "314",
+                "area_name": "Yangon (Special Hotels)",
+                "country": 25,
+                "dsa_amount_60plus_local": "247000.0000",
+                "dsa_amount_60plus_usd": "183.0000",
+                "dsa_amount_local": "329000.0000",
+                "dsa_amount_usd": "244.0000",
+                "effective_from_date": "2017-01-01",
+                "id": 798,
+                "label": "Myanmar - Yangon (Special Hotels)",
+                "long_name": "Myanmar - Yangon (Special Hotels)",
+                "unique_id": "MMR314",
+                "unique_name": "MMRYangon (Special Hotels)"
+            }, {
+                "area_code": "312",
+                "area_name": "Chaung Tha Beach",
+                "country": 25,
+                "dsa_amount_60plus_local": "200000.0000",
+                "dsa_amount_60plus_usd": "148.0000",
+                "dsa_amount_local": "266000.0000",
+                "dsa_amount_usd": "197.0000",
+                "effective_from_date": "2017-01-01",
+                "id": 799,
+                "label": "Myanmar - Chaung Tha Beach",
+                "long_name": "Myanmar - Chaung Tha Beach",
+                "unique_id": "MMR312",
+                "unique_name": "MMRChaung Tha Beach"
+            }
+        ];
+        var newDsaParsed = [
+            {
+                "label": "Yangon",
+                "value": 797,
+                "dsa_amount_usd": "134.0000",
+                "dsa_amount_60plus_usd": "101.0000",
+                "effective_from_date": "2017-01-01",
+            }, {
+                "label": "Yangon (Special Hotels)",
+                "value": 798,
+                "dsa_amount_usd": "244.0000",
+                "dsa_amount_60plus_usd": "183.0000",
+                "effective_from_date": "2017-01-01",
+            }, {
+                "label": "Chaung Tha Beach",
+                "value": 799,
+                "dsa_amount_usd": "197.0000",
+                "dsa_amount_60plus_usd": "148.0000",
+                "effective_from_date": "2017-01-01",
+            }
+        ];
+
+        setup(function() {
+            el = fixture('el');
+            dom = Polymer.dom(el.root);
+        });
+
+        test('can be instantiated', function() {
+            expect(el.is).to.equal('travel-edit');
+        });
+
+
+        test('#218, if the trips submission date is not older than any of the structure dsas, pass down those', function() {
+            el.set('structure', {
+                dsa_regions: newDsaParsed
+            });
+            el.set('data', {
+                baseDetails: {
+                    first_submission_date: '2017-11-27T14:55:50.143610Z'
+                }
+            });
+            expect(el.dsaRegionsToUse).to.be.an('array');
+            expect(el.dsaRegionsToUse.length).to.equal(newDsaParsed.length);
+        });
+
+
+        test('#218, if the trips submission date is older than any of the structure dsas expiration dates, start sidefetch by setting triggering', function(done) {
+            var ajax = dom.querySelector('#historical_dsa');
+            // Overwriting, so wont even fire
+            ajax.generateRequest = function() {
+                expect(el.$.historical_dsa.url).to.equal('/api/dsa_regions/?values_at=2016-11-27');
+                done();
+            };
+
+            el.set('structure', {
+                dsa_regions: newDsaParsed
+            });
+            el.set('data', {
+                baseDetails: {
+                    first_submission_date: '2016-11-27T14:55:50.143610Z'
+                }
+            });
+        });
+
+        test('#218, theres a working data serializer for handling the incoming older Dsa regions', function() {
+            var fakeEvent = {
+                detail: {
+                    response: oldDsaRaw
+                }
+            };
+            el._handleOldDSA(fakeEvent);
+            expect(el.dsaRegionsToUse).to.deep.equal(oldDsaParsed);
+        });
+    });
+</script>
+
+</body>
+</html>
