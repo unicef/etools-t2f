@@ -91,6 +91,7 @@
       et2f-data="{{data}}"
       travel-id="[[travelId]]"
       structure="[[structure]]"
+      raw-structure="[[rawStructure]]"
       data-to-serialize="[[incomingData]]">
     </et2f-inbound-data>
 
@@ -233,6 +234,9 @@
         },
         structure: {
           type: Object,
+        },
+        rawStructure: {
+          type: Object
         },
         et2fPermissions: {
           type: Object
@@ -454,19 +458,6 @@
             console.error(errorMessage);
           }
         }
-
-        // Disabled end_date validation and delegated to the backend to avoid
-        //  API overhead on profile endpoint call
-        // var endDate = this.data.baseDetails.end_date;
-        // if (endDate) {
-        //   var now = Date.now();
-        //   endDate = new Date(endDate).getTime();
-        //   var diff = now - endDate;
-        //   var threshold = 1000 * 60 * 60 * 24 * 15; //15 days
-        //   if (diff > threshold) {
-        //     invalids.push('More than 15 days since trip completition');
-        //   }
-        // }
 
         return invalids;
       },

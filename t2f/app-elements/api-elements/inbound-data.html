@@ -22,7 +22,14 @@
           type: Object,
           notify: true,
         },
-        structure: Object,
+        structure: {
+          type: Object,
+          notify: true,
+        },
+        rawStructure: {
+          type: Object,
+          notify: true,
+        },
         travelId: {
           type: String
         },
@@ -36,7 +43,7 @@
         },
         loading: {
           type: Boolean,
-          notify: true,
+          notify: true
         },
         listen: {
           type: Boolean,
@@ -46,7 +53,6 @@
           type: Object,
           notify: true
         }
-
       },
       behaviors: [et2fBehaviors.ApiBehavior],
       _computeUrl: function(travelId) {
@@ -69,8 +75,26 @@
         this.listen = true;
       },
 
+      _getParameterByName: function(name, url) {
+        if (!url) {
+          url = window.location.href;
+        }
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+        var results = regex.exec(url);
+        if (!results) {
+          return null;
+        }
+        if (!results[2]) {
+          return '';
+        }
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+      },
+
       _handleData: function(e, incomingData) {
         var self = this;
+        var ghosts = [];
+
         // not clear why this function call return an object in
         // the form type - value instead of the object with the value
         var lib = self._structureLib().value;
@@ -121,6 +145,23 @@
           delete incomingData[key];
         });
 
+        function processGhostData(value, key, label) {
+          if (!value) {
+            return;
+          }
+          if (value instanceof Array) {
+            value.forEach(function(item) {
+              if (item.ghost) {
+               ghosts.push({item: item, key: key, label: label});
+              }
+            });
+          }
+          if (value.ghost) {
+            ghosts.push({item: value, key: key, label: label});
+          }
+          return value;
+        }
+
         function handleObject(fieldSet, key) {
           // loop on the object inner keys
           if (!fieldSet) {
@@ -132,7 +173,8 @@
 
             var structureData = lib[key][label];
             if (structureData) {
-              fieldSet[label] = self._processLib(structureData, fieldSet[label], fieldSet);
+              var result  = self._processLib(structureData, fieldSet[label], fieldSet);
+              fieldSet[label] = processGhostData(result, key, label);
             }
           });
         }
@@ -162,8 +204,173 @@
         } else {
           incomingData.status = statusLib.planned;
         }
-        this.set('et2fData', {});
-        this.set('et2fData', incomingData);
+
+        var ghostUrlLib = {
+            baseDetails: {
+              currency: {
+                url: '/api/currencies/',
+                category: 'currencies'
+              },
+            },
+            activities: {
+              travel_type: {
+                url: '/api/static_data/',
+                category: 'travel_types'
+              }
+            },
+            itinerary: {
+               airlines: {
+                url: '/api/static_data/',
+                category: 'airlines'
+              },
+              dsa_region: {
+                url: '/api/dsa_regions/',
+                category: 'dsa_regions'
+              },
+              mode_of_travel: {
+                url: '/api/static_data/',
+                category: 'travel_modes'
+              }
+            },
+            expenses: {
+              type: {
+                url: '/api/expense_types/',
+                category: 'expense_types'
+              },
+               document_currency: {
+                url: '/api/currencies/',
+                category: 'currencies'
+              },
+            },
+            cost_assignments: {
+              business_area: {
+                url: '/api/static_data/',
+                category: 'business_areas'
+              },
+              fund: {
+                url: '/api/wbs_grants_funds/',
+                category: 'funds'
+              },
+              wbs: {
+                url: '/api/wbs_grants_funds/',
+                category: 'wbs'
+              },
+              grant: {
+                url: '/api/wbs_grants_funds/',
+                category: 'grants'
+              }
+            }
+        };
+
+        var processed = 0;
+        var toProcess = 0;
+
+        var stale = window.document.getElementById('ghostAjax');
+
+        if (stale) {
+          stale.parentNode.removeChild(stale);
+        }
+        var ajax = document.createElement('iron-ajax');
+        ajax.setAttribute('id', 'ghostAjax');
+
+        function postCallOperation() {
+            var rawStructure = Object.assign({}, self.rawStructure);
+            processed += 1;
+            if (processed === toProcess) {
+              processed = 0;
+              toProcess = 0;
+
+              // filter away the ghost values without a category,
+              // the endpoint somehow failed and we need to not process them
+              ghosts = ghosts.filter(function(ghost) {
+                return ghost.category;
+              });
+              // if after filtering there is no more ghosts do not bother to execute the operations
+              if (ghosts.length > 0) {
+                // fill the current structure data with the ghost values - yet unprocessed -
+                ghosts.forEach(function(ghost) {
+                  rawStructure[ghost.category] = rawStructure[ghost.category].slice();
+                  rawStructure[ghost.category].push(ghost.response);
+                });
+
+                // special handling fot wbs - grant and founds that need to be parsed all at once
+                var costAssingmentStructure = {
+                  wbs: rawStructure.wbs.slice(),
+                  grants: rawStructure.grants.slice(),
+                  funds: rawStructure.funds.slice()
+                };
+                var parsedStructure = self._parseStructureData(rawStructure);
+                parsedStructure = Object.assign({}, parsedStructure, self.parseCostStructure(costAssingmentStructure));
+
+                // set the new complete structure as a the new available structure
+                self.set('structure', {});
+                self.set('structure', parsedStructure);
+
+                // parse the ghost inboud data based on the new structural data and assign it to the original element
+                ghosts.forEach(function(ghost) {
+                  var finalElement = parsedStructure[ghost.category].find(function(item) {
+                    return item.value === ghost.item.value;
+                  });
+                  // this is important, beside this object we have no reference to the original element
+                  Object.assign(ghost.item, finalElement);
+                });
+
+              }
+
+              self.set('et2fData', {});
+              self.set('et2fData', incomingData);
+              self.set('loading', false);
+              }
+        }
+
+        function onGhostResponse(e) {
+          // using the url with the extra query string to get what ghost data we are processing
+          var url = e.detail.url;
+          var response = e.detail.response;
+          var cat = self._getParameterByName('category', url);
+          var ghostIndex = self._getParameterByName('ghostIndex', url);
+          // the backend returns a list, we only send one value and we only need one element so we pop it
+          ghosts[ghostIndex].response = response.pop();
+          ghosts[ghostIndex].category = cat;
+          postCallOperation();
+        }
+
+        if (ghosts.length > 0) {
+          self.set('loading', true);
+          // grab the reference to iron-ajax;
+
+          document.body.appendChild(ajax);
+
+          // to be sure that there is only one attached event
+          ajax.removeEventListener('response', onGhostResponse);
+          ajax.addEventListener('response', onGhostResponse);
+
+          ajax.removeEventListener('error', postCallOperation);
+          ajax.addEventListener('error', postCallOperation);
+
+          ghosts.forEach(function(ghost, index) {
+            // iterate trough ghost values and generate proper ajax requests
+            var libValue = ghostUrlLib[ghost.key][ghost.label];
+            if (libValue) {
+              toProcess += 1;
+              ajax.url = libValue.url
+              + 'missing/?values=' + ghost.item.value
+              + '&category=' + libValue.category
+              + '&ghostIndex=' + index;
+              ajax.generateRequest();
+            }
+          });
+
+          if (toProcess === 0) {
+             // if there is ghost data and no available missing endpoint is configured we still need to move on
+             this.set('et2fData', {});
+             this.set('et2fData', incomingData);
+          }
+
+        } else {
+          this.set('et2fData', {});
+          this.set('et2fData', incomingData);
+        }
       }
     });
   </script>

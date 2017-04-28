@@ -72,13 +72,18 @@ App global configuration
         },
         et2fCostStructure: {
           url: '/api/wbs_grants_funds/',
-          exp: 7 * 24 * 60 * 60 * 1000, // 1 week
+          exp:  12 * 60 * 60 * 1000, // 12 hours
           cachingKey: 'cost_structure'
         },
         et2fPermissionsMatrix: {
           url: '/api/t2f/permission_matrix/',
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
           cachingKey: 'et2f_permissions'
+        },
+        dsaRegions: {
+          url: '/api/dsa_regions/',
+          exp: 12 * 60 * 60 * 1000, // 12 hours
+          cachingKey: 'et2f_dsa_regions'
         },
         et2fTravelDetail: {
           template: '/api/t2f/travels/<%=id%>/',
