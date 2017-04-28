@@ -306,13 +306,13 @@
         if (Object.keys(data).length && data.hasOwnProperty('baseDetails') && Object.keys(structure).length) {
           var submissionDate = data.baseDetails.first_submission_date;
 
-          if (!submissionDate) {
+          if (submissionDate) {
             // Has been submitted before
             var minDSAFromDate = structure.dsa_regions.reduce(function(ret, act, i) {
               return new Date(act.effective_from_date) < new Date(ret) ? act.effective_from_date : ret;
             }, new Date());
 
-            if (new Date(submissionDate) < minDSAFromDate) {
+            if (new Date(submissionDate) < new Date(minDSAFromDate)) {
             // if (new Date(submissionDate) < minDSAFromDate || true) {
               // There is at least one DSA, that should have older data, refetch all areas with that day
               this.set('historyDsaLoading', true);
