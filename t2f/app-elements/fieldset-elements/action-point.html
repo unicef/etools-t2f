@@ -311,14 +311,17 @@
         var keys = Object.keys(aps);
 
         if (keys.length === 1 && keys[0] === '_validationFunction') {
+
           return true;
 
-        } else if (keys.length === 2 &&
-          '_validationFunction' in keys &&
-          'actions_taken' in keys && aps.actions_taken === '') {
+        } else if (keys.length === 2
+          && keys.indexOf('_validationFunction') > -1
+          && keys.indexOf('actions_taken') > -1
+          && aps.actions_taken === '') {
 
           return true;
         }
+
         return this.$$('#action_point_form').validate();
       },
       _addValidationFunction: function(actionPointsChanged) {
