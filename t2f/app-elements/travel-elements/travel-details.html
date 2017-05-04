@@ -246,6 +246,7 @@
               itinerary="{{item}}"
               index="[[index]]"
               collection-size="[[data.itinerary.length]]"
+              dsa-regions-to-use="[[dsaRegionsToUse]]"
               structure="[[structure]]">
             </travel-itinerary>
           </template>
@@ -345,6 +346,9 @@
         },
         structure: {
           type: Object,
+        },
+        dsaRegionsToUse: {
+          type: Array,
         },
         travelPermissions: {
           type: Object,
@@ -542,7 +546,7 @@
       },
 
       _computeHideRejectionNote: function(data) {
-        return data.status !== 'Rejected' || data.rejection_note.length === 0;
+        return data.status !== 'Rejected' || !data.rejection_note || data.rejection_note.length === 0;
       },
 
       _computeHideCertRejectionNote: function(data) {

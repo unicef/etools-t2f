@@ -10,7 +10,9 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html">
 
+<link rel="import" href="../../app-config/etools-app-config.html">
 <link rel="import" href="travel-details.html">
 <link rel="import" href="./travel-attachments.html">
 <link rel="import" href="./travel-report.html">
@@ -85,6 +87,9 @@
         display:block;
       }
     </style>
+
+    <iron-ajax id="historical_dsa"
+      on-response="_handleOldDSA"></iron-ajax>
 
     <et2f-inbound-data loading="{{dataLoading}}"
       route="{{route}}"
@@ -169,6 +174,7 @@
           id="travelDetails"
           scroll-to-fieldset="[[errorSelected]]"
           structure="[[structure]]"
+          dsa-regions-to-use="[[dsaRegionsToUse]]"
           travel-permissions="[[travelPermissions]]"
           data="{{data}}"
           details-loading="{{detailsLoading}}"
@@ -221,7 +227,7 @@
         travelDataLoading: {
           type: Boolean,
           notify: true,
-          computed: '_computeLoading(dataLoading, profileLoading, detailsLoading)',
+          computed: '_computeLoading(dataLoading, profileLoading, detailsLoading, historyDsaLoading)',
         },
         profileLoading: {
           type: Boolean,
@@ -232,11 +238,18 @@
         detailsLoading: {
           type: Boolean,
         },
+        historyDsaLoading: {
+          type: Boolean,
+          value: false,
+        },
         structure: {
           type: Object,
         },
         rawStructure: {
           type: Object
+        },
+        dsaRegionsToUse: {
+          type: Array
         },
         et2fPermissions: {
           type: Object
@@ -284,11 +297,63 @@
       },
 
       observers: [
-        '_computeTravelPermission(et2fPermissions, status, user, data)'
+        '_computeTravelPermission(et2fPermissions, status, user, data)',
+        '_alignDsaRegionsToSubmissionDate(data, structure)'
       ],
 
-      _computeLoading: function(data, profile, details) {
-        return data || profile || details;
+      // If trip has been submitted before, checks for old DSA regions/rates, else uses newest from structure
+      _alignDsaRegionsToSubmissionDate: function(data, structure) {
+        if (Object.keys(data).length && data.hasOwnProperty('baseDetails') && Object.keys(structure).length) {
+          var submissionDate = data.baseDetails.first_submission_date;
+
+          if (submissionDate) {
+            // Has been submitted before
+            var minDSAFromDate = structure.dsa_regions.reduce(function(ret, act, i) {
+              return new Date(act.effective_from_date) < new Date(ret) ? act.effective_from_date : ret;
+            }, new Date());
+
+            if (new Date(submissionDate) < new Date(minDSAFromDate)) {
+            // if (new Date(submissionDate) < minDSAFromDate || true) {
+              // There is at least one DSA, that should have older data, refetch all areas with that day
+              this.set('historyDsaLoading', true);
+              var daysUrl = etoolsAppConfig.globals.getEndpoint('historyDsaValues').url
+                + submissionDate.split('T')[0];
+              this.$.historical_dsa.set('url', daysUrl);
+              this.$.historical_dsa.generateRequest();
+            } else {
+              // but the newest dates arent conflicting
+              this.set('dsaRegionsToUse', structure.dsa_regions);
+            }
+
+          } else {
+            // Hasn't been submitted before, resetting to structure (newest rates)
+            this.set('dsaRegionsToUse', structure.dsa_regions);
+          }
+        }
+      },
+
+      // Response handler for the historical DSA values
+      _handleOldDSA: function(e) {
+        var data = e.detail.response;
+        // Serialization
+        // when changing this, please take a look at api-behaviors main serializing too!
+        data = data.map(function(obj) {
+          return {
+            label: obj.area_name,
+            value: parseInt(obj.id, 10),
+            dsa_amount_usd: obj.dsa_amount_usd,
+            dsa_amount_60plus_usd: obj.dsa_amount_60plus_usd,
+            effective_from_date: obj.effective_from_date
+          };
+        }).sort(function(a, b) {
+          return a.label.localeCompare(b.label);
+        });
+        this.set('dsaRegionsToUse', data);
+        this.set('historyDsaLoading', false);
+      },
+
+      _computeLoading: function(data, profile, details, dsa) {
+        return data || profile || details || dsa;
       },
 
       _computeDataForTa: function(data, profile) {
