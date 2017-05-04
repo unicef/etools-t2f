@@ -546,7 +546,7 @@
       },
 
       _computeHideRejectionNote: function(data) {
-        return data.status !== 'Rejected' || data.rejection_note.length === 0;
+        return data.status !== 'Rejected' || !data.rejection_note || data.rejection_note.length === 0;
       },
 
       _computeHideCertRejectionNote: function(data) {
