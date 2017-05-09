@@ -41,6 +41,14 @@
 
     setup(function() {
       el = fixture('el');
+      // dirty trick to rule out DEXIE and let the mock server handle the requests
+      Object.keys(el.properties).forEach(function(key) {
+        if (el.properties[key].value && el.properties[key].value.exp) {
+          var noCache = el.properties[key].value;
+          noCache.exp = false;
+          el.set(key, noCache);
+        }
+      });
       dom = Polymer.dom(el.root);
     });
 

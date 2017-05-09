@@ -3,7 +3,7 @@
     "local": {
       "disabled": false,
       "browsers": [{
-          "browserName": "firefox"
+          "browserName": "chrome"
         }
       ]
     }
