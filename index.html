@@ -45,6 +45,10 @@
         uv.onload = function() {
           setTimeout(function() {
             window.UserVoice.push(['addTrigger'], {});
+            UserVoice.push(['set', {
+              target: 'self',
+              screenshot_enabled: false
+            }]);
           }, 500);
         };
         var s = document.getElementsByTagName('script')[0];
