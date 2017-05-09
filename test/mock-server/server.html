@@ -1,0 +1,63 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Mocked Server</title>
+
+  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../bower_components/sinonjs/sinon.js"></script>
+
+
+  <script src="./api/cost_assignment.js"></script>
+  <script src="./api/drivers.js"></script>
+  <script src="./api/dsa_regions.js"></script>
+  <script src="./api/groups.js"></script>
+  <script src="./api/offices.js"></script>
+  <script src="./api/partners.js"></script>
+  <script src="./api/sections.js"></script>
+  <script src="./api/static_data.js"></script>
+  <script src="./api/t2f_static_data.js"></script>
+  <script src="./api/users.js"></script>
+  <script src="./api/vendor_numbers.js"></script>
+
+</head>
+<body>
+
+
+<script>
+/* global define, sinon */
+
+var headers = {
+  'Content-Type': 'application/json',
+  'Server': 'WSGIServer/0.1 Python/2.7.12',
+  'Vary': 'Accept',
+  'Access-Control-Allow-Origin': '*'
+};
+
+window.server = sinon.fakeServer.create();
+window.server.autoRespond = true;
+
+var responses = {
+  '/users?verbosity=minimal': window.mockApi.users,
+  '/static_data/': window.mockApi.static_data,
+  '/sections/': window.mockApi.sections,
+  '/offices/': window.mockApi.offices,
+  '/t2f/static_data/': window.mockApi.t2f_static_data,
+  '/users?verbosity=minimal&drivers=true': window.mockApi.drivers,
+  '/groups/': window.mockApi.groups,
+  '/t2f/vendor_numbers/': window.mockApi.vendor_numbers,
+  '/wbs_grants_funds/': window.mockApi.cost_assignment,
+  '/dsa_regions/': window.mockApi.dsa_regions,
+  '/v2/partners/?verbosity=minimal': window.mockApi.partners,
+};
+
+window.server.respondWith(/\/api(\/\S*)/, function(xhr, part) {
+  var response = JSON.stringify(responses[part]);
+  xhr.respond(200, headers, response);
+});
+
+</script>
+
+</body>
+</html>

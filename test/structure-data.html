@@ -10,6 +10,7 @@
 
   <link rel="import" href="../t2f/app-behaviors/api-behavior.html">
   <link rel="import" href="../t2f/app-elements/api-elements/structure-data.html">
+  <link rel="import" href="./mock-server/server.html">
 
 
 </head>
@@ -33,7 +34,7 @@
     var dom;
 
     var expectedKeys = ['currencies', 'airlines', 'dsa_regions', 'countries',
-    'business_areas', 'expense_types', 'travel_types', 'travel_modes', 'parsed',
+    'business_areas', 'expense_types', 'travel_types', 'travel_modes',
     'sections', 'offices', 'locations', 'results', 'partners', 'partnerships',
     'government_partnerships', 'action_point_statuses', 'users', 'groups',
     'drivers', 'vendorNumbers', 'wbs', 'grants', 'funds', 'attachment_types'];
@@ -49,10 +50,11 @@
 
     test('produces a valid structure object', function(done) {
       el.addEventListener('structure-changed', function() {
-        expect(Object.keys(el.structure)).to.have.lengthOf(expectedKeys.length);
         expectedKeys.forEach(function(key) {
-          expect(el.structure).to.have.property(key);
+          expect(el.structure).to.have.any.key(key);
+          expect(el.structure[key]).to.not.equal(undefined);
         });
+        expect(Object.keys(el.structure)).to.have.lengthOf(expectedKeys.length);
         done();
       });
     });
@@ -61,6 +63,7 @@
         el.addEventListener('structure-changed', function() {
           var ps = el.structure.partnerships;
           ps.forEach(function(p) {
+            expect(p.label).to.not.equal(undefined);
             expect(p.label).to.have.length.above(0);
           });
           done();
