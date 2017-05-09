@@ -20,9 +20,12 @@
 </test-fixture>
 
 <script>
+/* global define, setup, fixture, suite, test, expect  */
+
     suite('<travel-details>', function() {
 
-        var el, dom;
+        var el;
+        var dom;
 
         setup(function() {
             el = fixture('el');
@@ -54,6 +57,21 @@
                 cert_rejection_note: 'some rejection note'
             });
             expect(el.hideCertRejectionNote).to.equal(false);
+        });
+        test('#296: the rejection note is not shown when the rejection note is empty', function() {
+            var data = {
+                rejection_note: null,
+                status: 'Rejected'
+            };
+            el.set('data', data);
+            expect(el.hideRejectionNote).to.equal(true);
+
+            el.set('data', {});
+            expect(el.hideRejectionNote).to.equal(true);
+
+            data.rejection_note = '';
+            el.set('data', data);
+            expect(el.hideRejectionNote).to.equal(true);
         });
     });
 </script>

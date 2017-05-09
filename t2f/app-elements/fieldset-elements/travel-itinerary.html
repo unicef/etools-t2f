@@ -80,7 +80,7 @@
           class$="flex-3 [[computedPermission.dsa_region.readOnly]]"
           disabled="[[computedPermission.dsa_region.disabled]]"
           hidden$="[[computedPermission.dsa_region.hidden]]"
-          options="[[structure.dsa_regions]]"
+          options="[[dsaRegionsToUse]]"
           value="{{itinerary.dsa_region}}"
           auto-validate$="[[autoValidate]]"
           required$="[[dsaAreaRequired]]"
@@ -182,6 +182,9 @@
         isLastEntry: {
           type: Boolean,
           computed: '_computeIsLastEntry(collectionSize, index)'
+        },
+        dsaRegionsToUse: {
+          type: Array,
         },
         dsaAreaPlaceholder: {
           type: String,
