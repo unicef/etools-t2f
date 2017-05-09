@@ -192,13 +192,6 @@
         }
       },
       behaviors: [et2fBehaviors.ApiBehavior],
-      _sortByLabel: function(a, b) {
-        return a.label.localeCompare(b.label);
-      },
-      _sortByName: function(a, b) {
-        return a.name.localeCompare(b.name);
-      },
-
       _computeLoading: function() {
         var result = false;
         for (var i = 0; i < arguments.length; ++i) {
