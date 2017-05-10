@@ -208,55 +208,59 @@
         var ghostUrlLib = {
             baseDetails: {
               currency: {
-                url: '/api/currencies/',
+                url: '/api/currencies/missing/',
                 category: 'currencies'
               },
             },
             activities: {
               travel_type: {
-                url: '/api/static_data/',
+                url: '/api/static_data/missing/',
                 category: 'travel_types'
+              },
+              partner: {
+                url: '/api/v2/partners/',
+                category: 'partners'
               }
             },
             itinerary: {
                airlines: {
-                url: '/api/static_data/',
+                url: '/api/static_data/missing/',
                 category: 'airlines'
               },
               dsa_region: {
-                url: '/api/dsa_regions/',
+                url: '/api/dsa_regions/missing/',
                 category: 'dsa_regions'
               },
               mode_of_travel: {
-                url: '/api/static_data/',
+                url: '/api/static_data/missing/',
                 category: 'travel_modes'
               }
             },
             expenses: {
               type: {
-                url: '/api/expense_types/',
+                url: '/api/expense_types/missing/',
                 category: 'expense_types'
               },
                document_currency: {
-                url: '/api/currencies/',
+                url: '/api/currencies/missing/',
                 category: 'currencies'
               },
             },
             cost_assignments: {
               business_area: {
-                url: '/api/static_data/',
+                url: '/api/static_data/missing/',
                 category: 'business_areas'
               },
               fund: {
-                url: '/api/wbs_grants_funds/',
+                url: '/api/wbs_grants_funds/missing/',
                 category: 'funds'
               },
               wbs: {
-                url: '/api/wbs_grants_funds/',
+                url: '/api/wbs_grants_funds/missing/',
                 category: 'wbs'
               },
               grant: {
-                url: '/api/wbs_grants_funds/',
+                url: '/api/wbs_grants_funds/missing/',
                 category: 'grants'
               }
             }
@@ -354,7 +358,7 @@
             if (libValue) {
               toProcess += 1;
               ajax.url = libValue.url
-              + 'missing/?values=' + ghost.item.value
+              + '?values=' + ghost.item.value
               + '&category=' + libValue.category
               + '&ghostIndex=' + index;
               ajax.generateRequest();
