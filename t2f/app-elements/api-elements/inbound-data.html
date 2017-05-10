@@ -211,6 +211,10 @@
                 url: '/api/currencies/missing/',
                 category: 'currencies'
               },
+              traveler: {
+                url: '/api/users/',
+                category: 'users'
+              }
             },
             activities: {
               travel_type: {
@@ -334,8 +338,10 @@
           var cat = self._getParameterByName('category', url);
           var ghostIndex = self._getParameterByName('ghostIndex', url);
           // the backend returns a list, we only send one value and we only need one element so we pop it
-          ghosts[ghostIndex].response = response.pop();
-          ghosts[ghostIndex].category = cat;
+          if (response && response.length > 0) {
+            ghosts[ghostIndex].response = response.pop();
+            ghosts[ghostIndex].category = cat;
+          }
           postCallOperation();
         }
 
