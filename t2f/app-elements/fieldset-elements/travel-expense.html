@@ -112,7 +112,8 @@
 
       observers: [
         '_addValidationFunction(expense.*)',
-        '_lockDownCurrency(expense.type, computedPermission.document_currency.disabled, documentCurrency, expense)',
+        '_lockDownCurrency(expense.type, computedPermission.document_currency.disabled,'
+        + 'documentCurrency, expense, user)',
       ],
 
       // Returns the regex for the amounts pattern attribute, allows negative number, if static expense
@@ -129,9 +130,9 @@
 
       // Sets TA currency, and disables the currency dropdown for expenses with "user-vendor-number", or "id"
       //     otherwise follows the permissionmatrix
-      _lockDownCurrency: function(type, disabledFromMatrix, documentCurrency, expense) {
+      _lockDownCurrency: function(type, disabledFromMatrix, documentCurrency, expense, user) {
         var noType = !type && type !== '';
-        if (noType || type.vendor_number === this.user.profile.vendor_number || type.vendor_number === 'user') {
+        if (noType || type.vendor_number === user.profile.vendor_number || type.vendor_number === 'user') {
           this.set('expense.document_currency', documentCurrency);
           this.$.curr1.setAttribute('disabled', true);
         } else if (type && !disabledFromMatrix) {

@@ -33,7 +33,8 @@
 
     <et2f-structure-data loading="{{structureLoading}}"
     user-business-area="[[user.t2f.business_area]]"
-    structure="{{structure}}">
+    structure="{{structure}}"
+    raw-structure="{{rawStructure}}">
     </et2f-structure-data>
 
     <et2f-permissions-data loading="{{permissionsLoading}}"
@@ -69,6 +70,7 @@
         detail-loading="{{subLoading}}"
         travel-id="[[travelId]]"
         et2f-permissions="[[et2fPermissions.travel]]"
+        raw-structure="[[rawStructure]]"
         structure="[[structure]]">
         </page-edit-travel>
 
@@ -135,6 +137,9 @@
           value: false
         },
         structure: {
+          type: Object
+        },
+        rawStructure: {
           type: Object
         },
         et2fPermissions: Object,

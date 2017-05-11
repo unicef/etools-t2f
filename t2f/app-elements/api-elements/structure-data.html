@@ -1,40 +1,45 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
-
+<link rel="import" href="../../scripts/lodash/lodash.html">
 
 <dom-module id="et2f-structure-data">
   <template>
     <etools-ajax endpoint="[[staticDataEndpoint]]"
-      on-success="_handleStaticData"
+      on-success="_handleResponse"
+      data-name="staticData"
       loading="{{staticDataLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
     <etools-ajax endpoint="[[sectionsEndpoint]]"
-      on-success="_handleSections"
+      on-success="_handleResponse"
+      data-name="sectionsData"
       loading="{{sectionsLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
     <etools-ajax endpoint="[[officesEndpoint]]"
-      on-success="_handleOffices"
+      on-success="_handleResponse"
+      data-name="officesData"
       loading="{{officesLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
     <etools-ajax endpoint="[[t2fStaticDataEndpoint]]"
-      on-success="_handlet2fStaticData"
+      on-success="_handleResponse"
+      data-name="t2fStaticData"
       loading="{{t2fStaticDataLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
     <etools-ajax endpoint="[[usersEndpoint]]"
-      on-success="_handleUsers"
+      on-success="_handleResponse"
+      data-name="usersData"
       loading="{{usersLoading}}"
       params="[[usersEndpointParams]]"
       on-unauthorized="_redirectToLogin"
@@ -42,7 +47,8 @@
       caching-storage="dexie"
       ></etools-ajax>
     <etools-ajax endpoint="[[usersEndpoint]]"
-      on-success="_handleDrivers"
+      on-success="_handleResponse"
+      data-name="driversData"
       loading="{{driversLoading}}"
       params="[[driversEndpointParams]]"
       on-unauthorized="_redirectToLogin"
@@ -50,22 +56,41 @@
       caching-storage="dexie"
       ></etools-ajax>
     <etools-ajax endpoint="[[groupsEndpoint]]"
-      on-success="_handleGroups"
+      on-success="_handleResponse"
+      data-name="groupsData"
       loading="{{groupsLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
-    <etools-ajax url="[[vendorEndPoint]]"
+    <etools-ajax endpoint="[[vendorEndPoint]]"
       loading="{{vendorNumbersLoading}}"
-      on-success="_handleVendorNumbers"
+      on-success="_handleResponse"
+      data-name="vendorsData"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
-    <etools-ajax url="[[costStructureEndpoint]]"
+    <etools-ajax endpoint="[[costStructureEndpoint]]"
       loading="{{costStructureLoading}}"
-      on-success="_handleCostStructure"
+      on-success="_handleResponse"
+      data-name="wbsGrantsFundsData"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
+    <etools-ajax endpoint="[[dsaEndopiint]]"
+      loading="{{dsaLoading}}"
+      on-success="_handleResponse"
+      data-name="dsaData"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
+    <etools-ajax endpoint="[[partnersEndpoint]]"
+      loading="{{partnersLoading}}"
+      on-success="_handleResponse"
+      data-name="partnersData"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
@@ -89,7 +114,13 @@
           type: Object,
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
-          ' officesData, t2fStaticData, usersData, groupsData, driversData, vendorNumbers, wbsGrantsFunds)'
+          ' officesData, t2fStaticData, usersData, groupsData,' +
+          'driversData, vendorsData, wbsGrantsFundsData, dsaData, partnersData)'
+        },
+        rawStructure: {
+          type: Object,
+          notify: true,
+          value: {}
         },
         staticData: {
           type: Object,
@@ -110,7 +141,8 @@
           type: Boolean,
           notify: true,
           computed: '_computeLoading(staticDataLoading, sectionsLoading,' +
-          ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading, driversLoading, vendorNumbersLoading)'
+          ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading' +
+          ', driversLoading, vendorNumbersLoading, dsaLoading, partnersLoading)'
         },
         staticDataEndpoint: {
           type: String,
@@ -144,25 +176,22 @@
         },
         vendorEndPoint: {
           type: String,
-          value: etoolsAppConfig.endpoints.et2fVendorList.url
+          value: etoolsAppConfig.endpoints.et2fVendorList
         },
         costStructureEndpoint: {
           type: String,
-          computed: '_computeTemporaryBusinessArea(userBusinessArea)'
+          value: etoolsAppConfig.endpoints.et2fCostStructure
         },
+        dsaEndopiint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.dsaRegions
+        },
+        partnersEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.partners
+        }
       },
       behaviors: [et2fBehaviors.ApiBehavior],
-      _sortByLabel: function(a, b) {
-        return a.label.localeCompare(b.label);
-      },
-      _sortByName: function(a, b) {
-        return a.name.localeCompare(b.name);
-      },
-
-      _computeTemporaryBusinessArea: function(userBa) {
-        //TODO REMOVE THIS
-        return etoolsAppConfig.endpoints.et2fCostStructure.url + '?business_area=' + userBa;
-      },
 
       _computeLoading: function() {
         var result = false;
@@ -180,107 +209,25 @@
       _redirectToLogin: function() {
         window.location.href = '/login/';
       },
-      _handleStaticData: function(e, data) {
+      _handleResponse: function(e, data) {
+        var name = e.target.dataset.name;
         data = this._checkJSON(data);
-        if (!data.parsed) {
-          data = this._parseData(data);
-        }
-        this.set('staticData', data);
-      },
-      _handleSections: function(e, data) {
-        data = this._checkJSON(data);
-        if (!data.parsed) {
-          data = {
-            sections: data.sort(this._sortByName)
-          };
-          data = this._parseData(data);
-        }
-        this.set('sectionsData', data);
-      },
-      _handleOffices: function(e, data) {
-        data = this._checkJSON(data);
-        if (!data.parsed) {
-          data = {
-            offices: data.sort(this._sortByName)
-          };
-          data = this._parseData(data);
-        }
-        this.set('officesData', data);
-      },
-      _handlet2fStaticData: function(e, data) {
-        data = this._checkJSON(data);
-        if (!data.parsed) {
-          data = this._parseData(data);
-        }
-        this.set('t2fStaticData', data);
-      },
-      _handleUsers: function(e, data) {
-        data = this._checkJSON(data);
-        if (!data.parsed) {
-          data = {
-            users: data
-          };
-          data = this._parseData(data);
-        }
-        this.set('usersData', data);
-      },
-      _handleDrivers: function(e, data) {
-        data = this._checkJSON(data);
-        if (!data.parsed) {
-          data = {
-            drivers: data
-          };
-          data = this._parseData(data);
-        }
-        this.set('driversData', data);
-      },
-      _handleVendorNumbers: function(e, data) {
-        data = this._checkJSON(data);
-        if (!data.parsed) {
-          data = {
-            vendorNumbers: data
-          };
-          data = this._parseData(data);
-        }
-        this.set('vendorNumbers', data);
-      },
-      _handleGroups: function(e, data) {
-        data = this._checkJSON(data);
-        if (!data.parsed) {
-          data = {
-            groups: data
-          };
-          data = this._parseData(data);
-        }
-        this.set('groupsData', data);
-      },
-      _handleCostStructure: function(e, data) {
-        data = this._checkJSON(data);
-        if (!data.parsed) {
-          data = {
-            wbs: data.wbs,
-            grants: data.grants,
-            funds: data.funds,
-          };
-          data = this.parseCostStructure(data);
-        }
-        this.set('wbsGrantsFunds', data);
+        this.set(name, data);
       },
       _generateStructure: function(static, sections, offices, t2fStaticData, users, groups,
-        drivers, vendorNumbers, wbsGrantsFunds) {
+        drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners) {
           var data = static;
-          data.sections = sections.sections;
-          data.offices = offices.offices;
+          data.sections = sections;
+          data.offices = offices;
           data.locations = t2fStaticData.locations;
           data.results = t2fStaticData.results;
-          data.partners = t2fStaticData.partners;
           data.partnerships = t2fStaticData.partnerships;
           data.government_partnerships = t2fStaticData.government_partnerships;
           data.action_point_statuses = t2fStaticData.action_point_statuses;
-          data.users = users.users;
-          data.groups = groups.groups;
-          data.drivers = drivers.drivers;
-          data.vendorNumbers = vendorNumbers.vendorNumbers;
+          data.users = users;
+          data.groups = groups;
+          data.drivers = drivers;
+          data.vendorNumbers = vendorNumbers;
           data.wbs = wbsGrantsFunds.wbs;
           data.grants = wbsGrantsFunds.grants;
           data.funds = wbsGrantsFunds.funds;
@@ -290,195 +237,17 @@
             {value: 3, label: 'Cleareance Doc'},
             {value: 4, label: 'Other'}
           ];
-          Object.freeze(data);
-          return data;
-      },
-      _parseData: function(data) {
-        var self = this;
-        function capitalize(value) {
-          if (value === null || value === undefined) {
-            return '';
-          }
-          return value.replace(/\b\w/g, function(l) { return l.toUpperCase(); });
-        }
-        function fillDependencyWithId(child, parent, parentKey) {
-          data[child].forEach(function(childItem) {
-            data[parent].forEach(function(parentItem) {
-              if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
-                parentItem[child] = [];
-              }
-              var parentId = parentItem.id || parentItem.value;
-              var childId = childItem.id || childItem.value;
-              if (parentId === childItem[parentKey]) {
-                parentItem[child].push(parseInt(childId, 10));
-              }
-            });
-          });
-        }
-        function fillDependencyWithChild(child, parent, parentKey) {
-          data[child].forEach(function(childItem) {
-            data[parent].forEach(function(parentItem) {
-              if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
-                parentItem[child] = [];
-              }
-              var parentId = parentItem.id || parentItem.value;
-              var childId = childItem.id || childItem.value;
-              if (parentId === childItem[parentKey]) {
-                var toPush = {
-                  value: parseInt(childId, 10),
-                  label: childItem.label || childItem.name,
-                };
-                if (child === 'partnerships' || child === 'government_partnerships') {
-                  toPush.type = child;
-                }
-                parentItem[child].push(toPush);
-              }
-            });
-          });
-        }
-        function fillPartnershipsWithResults() {
-          function fillPship(pship) {
-            pship.results = pship.results.map(function(innerResId) {
-              var rawOne = data.results.find(function(rawRes) {
-                return rawRes.id === innerResId;
-              });
-              return {
-                value: parseInt(rawOne.id, 10),
-                label: rawOne.label || rawOne.name
-              };
-            });
-            return pship;
-          }
-          data.partnerships = data.partnerships.map(fillPship);
-          data.government_partnerships = data.government_partnerships.map(fillPship);
-        }
+          data.dsa_regions = dsa_regions;
+          data.partners = partners;
 
-        var parsingFunctions = {
-          partners: function(key) {
-             data[key] = data[key].map(function(obj) {
-              return {
-                label: obj.name,
-                value: obj.id,
-                partnerships: obj.partnerships,
-                government_partnerships: obj.government_partnerships,
-              };
-            });
-          },
-          partnerships: function(key) {
-            fillDependencyWithChild(key, 'partners', 'partner');
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, type: key, results: obj.results};
-            });
-          },
-          government_partnerships: function(key) {
-            fillDependencyWithChild(key, 'partners', 'partner');
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, type: key, results: obj.results};
-            });
-          },
-          results: function(key) {
-            fillPartnershipsWithResults();
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: parseInt(obj.id, 10)};
-            });
-          },
-          currencies: function(key) {
-            data[key] = data[key].sort(self._sortByName).map(function(obj) {
-              return {
-                label: obj.name,
-                value: obj.id,
-                short: obj.iso_4217,
-                exchange_to_dollar: obj.exchange_to_dollar
-              };
-            });
-          },
-          business_areas: function(key) {
-            data[key] = data[key].sort(self._sortByName).map(function(obj) {
-              obj.label = obj.code + ' - ' + obj.name;
-              obj.value = obj.id;
-              obj.wbs = obj.wbs;
-              return obj;
-            });
-          },
-          expense_types: function(key) {
-            data[key] = data[key].map(function(obj) {
-              return {
-                label: (obj.unique && obj.vendor_number) ?
-                  obj.vendor_number + ' - ' + obj.name :
-                  obj.name,
-                value: obj.id,
-                unique: obj.unique,
-                vendor_number: obj.vendor_number
-              };
-            });
-          },
-          travel_modes: function(key) {
-            data[key] = data[key].map(function(obj, index) {
-              return {label: obj, value: index};
-            });
-          },
-          travel_types: function(key) {
-            data[key] = data[key].map(function(obj, index) {
-              return {label: capitalize(obj), value: index};
-            });
-          },
-          action_point_statuses: function(key) {
-            data[key] = data[key].map(function(obj, index) {
-              return {label: capitalize(obj), value: index};
-            });
-          },
-          users: function(key) {
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
-            });
-          },
-          drivers: function(key) {
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
-            });
-          },
-          dsa_regions: function(key) {
-            data[key] = data[key].map(function(obj) {
-              return {
-                label: obj.area_name,
-                value: parseInt(obj.id, 10),
-                dsa_amount_usd: obj.dsa_amount_usd,
-                dsa_amount_60plus_usd: obj.dsa_amount_60plus_usd,
-              };
-            }).sort(self._sortByLabel);
-          },
-          countries: function(key) {
-            data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: parseInt(obj.id, 10),
-                currency: obj.currency, business_area: obj.business_area};
-            });
-          },
-          vendorNumbers: function(key) {
-            data[key] = data[key].map(function(obj, index) {
-              return {label: capitalize(obj), value: index};
-            });
-          },
-        };
+          this.set('rawStructure', _.cloneDeep(data));
 
-        var dataKeys = Object.keys(data).sort();
-        dataKeys.forEach(function(key) {
-          var parsingFunction = parsingFunctions[key];
-          if (parsingFunction) {
-            parsingFunction(key);
-          } else {
-            var item = data[key];
-            if (item instanceof Array) {
-              data[key] = item.map(function(obj) {
-                return {label: obj.name, value: parseInt(obj.id, 10)};
-              });
-            } else {
-              data[key] = {label: item.name, value: parseInt(item.id, 10)};
-            }
-          }
-        });
-        data.parsed = true;
-        return data;
-      },
+          var parsedCostStructure = this.parseCostStructure(wbsGrantsFunds);
+          var structure = this._parseStructureData(_.cloneDeep(data));
+          Object.assign(structure, parsedCostStructure);
+
+          return structure;
+      }
     });
   </script>
 </dom-module>

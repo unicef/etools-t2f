@@ -19,19 +19,26 @@
     },
     _searchByLabel: function(structureData, value) {
       if (value) {
-        return this.structure[structureData].find(function(item) {
+        var localResult = this.structure[structureData].find(function(item) {
           return item && item.label && (item.label.toLowerCase() === value.toLowerCase());
         });
+        return localResult || {value: null, ghost: true, label: value};
       }
       return;
     },
     _multiFieldConversion: function(subField, fieldName, fieldSet) {
       var self = this;
+      var localResult = null;
       if (fieldSet instanceof Array) {
         return fieldSet.map(function(field) {
-          return self.structure[fieldName].find(function(item) {
-            return item[subField] === field;
-          });
+          var structureData = self.structure[fieldName];
+          if (structureData) {
+            localResult = structureData.find(function(item) {
+              return item[subField] === field;
+            });
+          }
+          return localResult || {value: field, ghost: true, label: 'Missing Label'};
+
         });
       }
     },
@@ -50,13 +57,12 @@
       }
     },
     parseCostStructure: function(data) {
-
       data.funds = data.funds.map(function(fund) {
         return {
           label: fund.name,
           value: parseInt(fund.id, 10),
         };
-      });
+      }).sort(this._sortByLabel);
 
       data.grants = data.grants.map(function(grant) {
         return {
@@ -68,7 +74,7 @@
             });
           }),
         };
-      });
+      }).sort(this._sortByLabel);
 
       data.wbs = data.wbs.map(function(wbs) {
         return {
@@ -81,23 +87,30 @@
             });
           }),
         };
-      });
-
-      data.parsed = true;
+      }).sort(this._sortByLabel);
       return data;
     },
-    _processLib: function(structureData, value, data) {
-      if (typeof structureData  === 'function') {
-        return structureData(value, data);
+    _processLib: function(structureLibValue, value, data) {
+      var result = null;
+      if (typeof structureLibValue  === 'function') {
+        result = structureLibValue(value, data);
+      } else {
+        var structureData = this.structure[structureLibValue];
+
+        if (structureData) {
+          result = structureData.find(function(item) {
+          return item.value === value;
+        });
+        }
+
       }
-      return this.structure[structureData].find(function(item) {
-        return item.value === value;
-      });
+     return this._checkGhost(result, value, data);
     },
-    _log: function(structureData, value) {
-      console.log(structureData, value);
-      var result = this._processLib(structureData, value);
-      console.log(result);
+
+    _checkGhost: function(result, value, data) {
+      if (!result && value) {
+        return {value: value, ghost: true, label: 'Missing Label'};
+      }
       return result;
     },
     _structureLib: function() {
@@ -172,7 +185,187 @@
           }
         }
       };
-    }
+    },
+    _sortByLabel: function(a, b) {
+      return a.label.localeCompare(b.label);
+    },
+    _parseStructureData: function(data) {
+        var self = this;
+        function capitalize(value) {
+          if (value === null || value === undefined) {
+            return '';
+          }
+          return value.replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+        }
+        function fillDependencyWithChild(child, parent, parentKey) {
+          data[child].forEach(function(childItem) {
+            data[parent].forEach(function(parentItem) {
+              if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
+                parentItem[child] = [];
+              }
+              if (parentItem.id === childItem[parentKey]) {
+                var toPush = {
+                  value: parseInt(childItem.id, 10),
+                  label: childItem.name,
+                };
+                if (child === 'partnerships' || child === 'government_partnerships') {
+                  toPush.type = child;
+                }
+                parentItem[child].push(toPush);
+              }
+            });
+          });
+        }
+        function fillPartnershipsWithResults() {
+          function fillPship(pship) {
+            pship.results = pship.results.map(function(innerResId) {
+              var rawOne = data.results.find(function(rawRes) {
+                return rawRes.id === innerResId;
+              });
+              return {
+                value: parseInt(rawOne.id, 10),
+                label: rawOne.label || rawOne.name
+              };
+            });
+            return pship;
+          }
+          data.partnerships = data.partnerships.map(fillPship);
+          data.government_partnerships = data.government_partnerships.map(fillPship);
+        }
+
+        var parsingFunctions = {
+          partners: function(key) {
+             data[key] = data[key].map(function(obj) {
+              obj = Object.assign({}, obj);
+              obj.label = obj.name;
+              obj.value = obj.id;
+              return obj;
+            }).sort(self._sortByLabel);
+          },
+          partnerships: function(key) {
+            data[key] = data[key].map(function(obj) {
+              obj = Object.assign({}, obj);
+              obj.label = obj.name;
+              obj.value = obj.id;
+              obj.type = key;
+              return obj;
+            }).sort(self._sortByLabel);
+            fillDependencyWithChild(key, 'partners', 'partner');
+          },
+          government_partnerships: function(key) {
+            data[key] = data[key].map(function(obj) {
+              obj = Object.assign({}, obj);
+              obj.label = obj.name;
+              obj.value = obj.id;
+              obj.type = key;
+              return obj;
+            }).sort(self._sortByLabel);
+            fillDependencyWithChild(key, 'partners', 'partner');
+          },
+          results: function(key) {
+            fillPartnershipsWithResults();
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: parseInt(obj.id, 10)};
+            }).sort(self._sortByLabel);
+          },
+          currencies: function(key) {
+            data[key] = data[key].map(function(obj) {
+              return {
+                label: obj.name,
+                value: obj.id,
+                short: obj.iso_4217,
+                exchange_to_dollar: obj.exchange_to_dollar
+              };
+            }).sort(self._sortByLabel);
+          },
+          business_areas: function(key) {
+            data[key] = data[key].map(function(obj) {
+              obj.label = obj.code + ' - ' + obj.name;
+              obj.value = obj.id;
+              obj.wbs = obj.wbs;
+              return obj;
+            }).sort(self._sortByLabel);
+          },
+          expense_types: function(key) {
+            data[key] = data[key].map(function(obj) {
+              return {
+                label: (obj.unique && obj.vendor_number) ?
+                  obj.vendor_number + ' - ' + obj.name :
+                  obj.name,
+                value: obj.id,
+                unique: obj.unique,
+                vendor_number: obj.vendor_number
+              };
+            }).sort(self._sortByLabel);
+          },
+          travel_modes: function(key) {
+            data[key] = data[key].map(function(obj, index) {
+              return {label: obj, value: index};
+            }).sort(self._sortByLabel);
+          },
+          travel_types: function(key) {
+            data[key] = data[key].map(function(obj, index) {
+              return {label: capitalize(obj), value: index};
+            }).sort(self._sortByLabel);
+          },
+          action_point_statuses: function(key) {
+            data[key] = data[key].map(function(obj, index) {
+              return {label: capitalize(obj), value: index};
+            }).sort(self._sortByLabel);
+          },
+          users: function(key) {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
+            }).sort(self._sortByLabel);
+          },
+          drivers: function(key) {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
+            }).sort(self._sortByLabel);
+          },
+          dsa_regions: function(key) {
+            // when changing this, please take a look at travel-edits sideload serializing too!
+            data[key] = data[key].map(function(obj) {
+              return {
+                label: obj.area_name,
+                value: parseInt(obj.id, 10),
+                dsa_amount_usd: obj.dsa_amount_usd,
+                dsa_amount_60plus_usd: obj.dsa_amount_60plus_usd,
+                effective_from_date: obj.effective_from_date
+              };
+            }).sort(self._sortByLabel);
+          },
+          countries: function(key) {
+            data[key] = data[key].map(function(obj) {
+              return {label: obj.name, value: parseInt(obj.id, 10),
+                currency: obj.currency, business_area: obj.business_area};
+            }).sort(self._sortByLabel);
+          },
+          vendorNumbers: function(key) {
+            data[key] = data[key].map(function(obj, index) {
+              return {label: capitalize(obj), value: index};
+            }).sort(self._sortByLabel);
+          },
+        };
+
+        var dataKeys = Object.keys(data).sort();
+        dataKeys.forEach(function(key) {
+          var parsingFunction = parsingFunctions[key];
+          if (parsingFunction) {
+            parsingFunction(key);
+          } else {
+            var item = data[key];
+            if (item instanceof Array) {
+              data[key] = item.map(function(obj) {
+                return {label: obj.name, value: parseInt(obj.id, 10)};
+              });
+            } else {
+              data[key] = {label: item.name, value: parseInt(item.id, 10)};
+            }
+          }
+        });
+        return data;
+      },
   };
   window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
   window.et2fBehaviors.ApiBehavior = ApiBehavior;
