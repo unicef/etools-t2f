@@ -45,7 +45,7 @@
         uv.onload = function() {
           setTimeout(function() {
             window.UserVoice.push(['addTrigger'], {});
-            UserVoice.push(['set', {
+            window.UserVoice.push(['set', {
               target: 'self',
               screenshot_enabled: false
             }]);
