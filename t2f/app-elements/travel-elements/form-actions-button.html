@@ -82,10 +82,6 @@
         actList: {
           type: Object,
           value: {
-            'save_non_ta': {
-              'name': 'Save',
-              'endPoint': 'save_non_ta'
-            },
             'save': {
               'name': 'Save',
               'endPoint': 'save'
@@ -514,46 +510,54 @@
             },
             'Traveler': {
               'Planned': {
-                'primary': 'save_non_ta',
-                'secondary': [],
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel'],
               },
               'Submitted': {
-                'primary': 'cancel',
+                'primary': 'save',
                 'secondary': [],
               },
+              'Approved': {
+                'primary': 'complete',
+                'secondary': ['save', 'cancel'],
+              },
               'Rejected': {
-                'primary': 'save_non_ta',
-                'secondary': ['cancel'],
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel'],
               },
               'Completed': {
                 'primary': '',
                 'secondary': [],
               },
               'Cancelled': {
-                'primary': 'save_non_ta',
-                'secondary': [],
+                'primary': 'save',
+                'secondary': ['planned', 'save_and_submit'],
               },
             },
             'Travel Administrator': {
               'Planned': {
-                'primary': 'save_non_ta',
-                'secondary': [],
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel'],
               },
               'Submitted': {
-                'primary': 'cancel',
+                'primary': 'save',
                 'secondary': [],
               },
+              'Approved': {
+                'primary': 'complete',
+                'secondary': ['save', 'cancel'],
+              },
               'Rejected': {
-                'primary': 'save_non_ta',
-                'secondary': ['cancel'],
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel'],
               },
               'Completed': {
                 'primary': '',
                 'secondary': [],
               },
               'Cancelled': {
-                'primary': 'save_non_ta',
-                'secondary': [],
+                'primary': 'save',
+                'secondary': ['planned', 'save_and_submit'],
               },
             },
             'Supervisor': {
@@ -562,8 +566,12 @@
                 'secondary': [],
               },
               'Submitted': {
-                'primary': 'complete',
-                'secondary': ['reject', 'cancel'],
+                'primary': 'approve',
+                'secondary': ['reject'],
+              },
+              'Approved': {
+                'primary': '',
+                'secondary': [],
               },
               'Rejected': {
                 'primary': '',
@@ -580,19 +588,23 @@
             },
             'Travel Focal Point': {
               'Planned': {
-                'primary': '',
+                'primary': 'save',
                 'secondary': [],
               },
               'Submitted': {
-                'primary': '',
+                'primary': 'save',
+                'secondary': [],
+              },
+              'Approved': {
+                'primary': 'save',
                 'secondary': [],
               },
               'Rejected': {
-                'primary': '',
+                'primary': 'save',
                 'secondary': [],
               },
               'Completed': {
-                'primary': '',
+                'primary': 'save',
                 'secondary': [],
               },
               'Cancelled': {
@@ -602,23 +614,27 @@
             },
             'Finance Focal Point': {
               'Planned': {
-                'primary': '',
+                'primary': 'save',
                 'secondary': [],
               },
               'Submitted': {
                 'primary': 'save',
                 'secondary': ['cancel'],
               },
-              'Rejected': {
+              'Approved': {
                 'primary': 'save',
                 'secondary': ['cancel'],
               },
+              'Rejected': {
+                'primary': 'save',
+                'secondary': [],
+              },
               'Completed': {
-                'primary': '',
+                'primary': 'save',
                 'secondary': [],
               },
               'Cancelled': {
-                'primary': 'save',
+                'primary': '',
                 'secondary': [],
               },
             },
@@ -628,6 +644,10 @@
                 'secondary': [],
               },
               'Submitted': {
+                'primary': '',
+                'secondary': [],
+              },
+              'Approved': {
                 'primary': '',
                 'secondary': [],
               },
