@@ -211,16 +211,45 @@
                 url: '/api/currencies/missing/',
                 category: 'currencies'
               },
+              traveler: {
+                url: '/api/users/',
+                category: 'users'
+              },
+              supervisor: {
+                url: '/api/users/',
+                category: 'users'
+              },
+              office: {
+                url: '/api/offices/',
+                category: 'offices'
+              },
+              section: {
+                url: '/api/sections/',
+                category: 'sections'
+              },
             },
             activities: {
               travel_type: {
                 url: '/api/static_data/missing/',
                 category: 'travel_types'
               },
+              locations: {
+                url: '/api/locations/',
+                category: 'locations'
+              },
               partner: {
                 url: '/api/v2/partners/',
                 category: 'partners'
-              }
+              },
+              partnership: {
+                url: '/api/v2/interventions/',
+                category: 'partnerships'
+              },
+              // government_partnership: {
+              //   url: '/api/v2/government_interventions/',
+              //   category: 'governament_partnerships'
+              // }
+
             },
             itinerary: {
                airlines: {
@@ -334,8 +363,10 @@
           var cat = self._getParameterByName('category', url);
           var ghostIndex = self._getParameterByName('ghostIndex', url);
           // the backend returns a list, we only send one value and we only need one element so we pop it
-          ghosts[ghostIndex].response = response.pop();
-          ghosts[ghostIndex].category = cat;
+          if (response && response.length > 0) {
+            ghosts[ghostIndex].response = response.pop();
+            ghosts[ghostIndex].category = cat;
+          }
           postCallOperation();
         }
 

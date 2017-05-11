@@ -245,7 +245,8 @@
           partnerships: function(key) {
             data[key] = data[key].map(function(obj) {
               obj = Object.assign({}, obj);
-              obj.label = obj.name;
+              // when it comes fromt he ghost endpoints name is not present but title yes
+              obj.label = obj.name || obj.title;
               obj.value = obj.id;
               obj.type = key;
               return obj;
@@ -255,6 +256,7 @@
           government_partnerships: function(key) {
             data[key] = data[key].map(function(obj) {
               obj = Object.assign({}, obj);
+              // when ghost data here is implemented add || obj.number to the label
               obj.label = obj.name;
               obj.value = obj.id;
               obj.type = key;

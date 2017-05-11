@@ -95,6 +95,14 @@
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
+    <etools-ajax endpoint="[[locationsEndpoint]]"
+      loading="{{locationsLoading}}"
+      on-success="_handleResponse"
+      data-name="locationsData"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
 
   </template>
 
@@ -115,7 +123,8 @@
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
           ' officesData, t2fStaticData, usersData, groupsData,' +
-          'driversData, vendorsData, wbsGrantsFundsData, dsaData, partnersData)'
+          'driversData, vendorsData, wbsGrantsFundsData, dsaData,' +
+          'partnersData, locationsData)'
         },
         rawStructure: {
           type: Object,
@@ -142,7 +151,8 @@
           notify: true,
           computed: '_computeLoading(staticDataLoading, sectionsLoading,' +
           ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading' +
-          ', driversLoading, vendorNumbersLoading, dsaLoading, partnersLoading)'
+          ', driversLoading, vendorNumbersLoading, dsaLoading,' +
+          'partnersLoading, locationsLoading)'
         },
         staticDataEndpoint: {
           type: String,
@@ -189,6 +199,10 @@
         partnersEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.partners
+        },
+        locationsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.locations
         }
       },
       behaviors: [et2fBehaviors.ApiBehavior],
@@ -215,11 +229,11 @@
         this.set(name, data);
       },
       _generateStructure: function(static, sections, offices, t2fStaticData, users, groups,
-        drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners) {
+        drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations) {
           var data = static;
           data.sections = sections;
           data.offices = offices;
-          data.locations = t2fStaticData.locations;
+          data.locations = locations;
           data.results = t2fStaticData.results;
           data.partnerships = t2fStaticData.partnerships;
           data.government_partnerships = t2fStaticData.government_partnerships;
