@@ -207,7 +207,7 @@
 
         var hasId = !!(this.activity.id) || this.activity.id === '';
         var isFirst = hasId && oldValue === undefined;
-        var isProgOrSpot = newValue.label === 'Programmatic Visit' || newValue.label === 'Spot Check';
+        var isProgOrSpot = newValue && (newValue.label === 'Programmatic Visit' || newValue.label === 'Spot Check');
 
         if (!newValue || isFirst) { return; }
 
