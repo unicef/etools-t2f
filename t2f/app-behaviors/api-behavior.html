@@ -189,6 +189,9 @@
     _sortByLabel: function(a, b) {
       return a.label.localeCompare(b.label);
     },
+    _filterByLabel: function(i) {
+      return i && i.label && i.label.length > 0;
+    },
     _parseStructureData: function(data) {
         var self = this;
         function capitalize(value) {
@@ -240,7 +243,7 @@
               obj.label = obj.name;
               obj.value = obj.id;
               return obj;
-            }).sort(self._sortByLabel);
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           partnerships: function(key) {
             data[key] = data[key].map(function(obj) {
@@ -250,7 +253,7 @@
               obj.value = obj.id;
               obj.type = key;
               return obj;
-            }).sort(self._sortByLabel);
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
             fillDependencyWithChild(key, 'partners', 'partner');
           },
           government_partnerships: function(key) {
@@ -261,7 +264,7 @@
               obj.value = obj.id;
               obj.type = key;
               return obj;
-            }).sort(self._sortByLabel);
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
             fillDependencyWithChild(key, 'partners', 'partner');
           },
           results: function(key) {
