@@ -1,16 +1,36 @@
 <!-- <link rel="import" href="../scripts/lodash/lodash.html"> -->
-<link rel="import" href="../../../bower_components/moment-element/moment-import.html">
+
 <script>
 
   var utilsBehavior = {
 
     // 'September 12. 2017' => '12 Sept 2017'
     _formatListDate: function(originalDateString) {
+
       if (!originalDateString) {
         return '';
       }
-      var mom = window.moment(originalDateString, 'MMM DD, YYYY');
-      return mom.format('DD MMMM YYYY');
+
+      var month = originalDateString.split(' ')[0];
+      var day = originalDateString.split(' ')[1].slice(0, -1);
+      var year = originalDateString.split(' ')[2];
+
+      month = {
+        'January': 'Jan',
+        'February': 'Feb',
+        'March': 'Mar',
+        'April': 'Apr',
+        'May': 'May',
+        'Juny': 'Jun',
+        'July': 'Jul',
+        'August': 'Aug',
+        'September': 'Sept',
+        'October': 'Oct',
+        'November': 'Nov',
+        'December': 'Dec'
+      }[month];
+
+      return day + ' ' + month + ' ' + year;
     },
   };
 </script>
