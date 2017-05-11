@@ -240,7 +240,7 @@
               obj.label = obj.name;
               obj.value = obj.id;
               return obj;
-            }).sort(self._sortByLabel);
+            }).filter(function(p) { return p.label; }).sort(self._sortByLabel);
           },
           partnerships: function(key) {
             data[key] = data[key].map(function(obj) {
