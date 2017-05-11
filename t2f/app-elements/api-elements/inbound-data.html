@@ -354,14 +354,19 @@
 
           ghosts.forEach(function(ghost, index) {
             // iterate trough ghost values and generate proper ajax requests
-            var libValue = ghostUrlLib[ghost.key][ghost.label];
-            if (libValue) {
+            try {
+              var libValue = ghostUrlLib[ghost.key][ghost.label];
               toProcess += 1;
               ajax.url = libValue.url
               + '?values=' + ghost.item.value
               + '&category=' + libValue.category
               + '&ghostIndex=' + index;
               ajax.generateRequest();
+            }
+            catch (e) {
+              // if somehow we failed to do the above  emit a warning but do not stop the flow
+              console.warn('trying to get a value not present in the ghost lib: ', ghost);
+              toProcess += 1;
             }
           });
 
