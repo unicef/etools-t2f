@@ -14,11 +14,25 @@
  */
 
 var proxy = require('http-proxy-middleware');
-var backendProxy = proxy(['/api','/users/api/'], {
+var backendProxy = proxy(['/api','/users/api/','/admin/', '/login/', '/static/'], {
   target: 'http://139.59.134.232:9090/',
-  // target: 'http://192.168.0.27:8000/',
   changeOrigin: true,             // for vhosted sites, changes host header to match to target's host
-  logLevel: 'debug'
+  logLevel: 'debug',
+  pathRewrite: {
+        '^/admin/': '/admin/',
+        '^/login/': '/admin/login/',
+        '^/static/': '/static/'
+  },
+});
+
+var adminProxy = proxy(['/admin/', '/login/', ], {
+  target: 'http://139.59.134.232:9090/',
+  changeOrigin: true,             // for vhosted sites, changes host header to match to target's host
+  logLevel: 'debug',
+  pathRewrite: {
+        '^/admin/': '/admin/',
+        '^/login/': '/admin/login/'
+  },
 });
 
 module.exports = {
@@ -33,7 +47,7 @@ module.exports = {
     'server': false,
     'proxy': 'localhost:3000',
     'port': 3001,
-    'middleware': [backendProxy],
+    'middleware': [backendProxy, adminProxy],
     'serveStatic': [],
     'ghostMode': false,
     'logLevel': 'info',
