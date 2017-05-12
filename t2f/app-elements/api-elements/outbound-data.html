@@ -753,11 +753,11 @@
                   self.$['is-final-modal'].close();
                   endpointConfig.status = 'mark_as_completed';
                   doPost();
-                }
+                };
                 self._isNotFinal = function() {
                   self.$['is-final-modal'].close();
                   innerSelf.save();
-                }
+                };
                 self.isFinalOpened = true;
               };
 
@@ -765,11 +765,11 @@
                 self._needsApproval = function() {
                   self.$['req-approval-modal'].close();
                   startClearances();
-                }
+                };
                 self._noApproval = function() {
                   self.$['req-approval-modal'].close();
                   startIsFinal();
-                }
+                };
                 self.reqApprovalOpened = true;
               };
 
