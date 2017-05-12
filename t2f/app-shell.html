@@ -299,6 +299,7 @@
         if (loading) {
           this.loadingEl = this.createLoading('Loading data');
           this.loadingEl.active = true;
+          this.loadingEl.setAttribute('absolute', true);
         } else if (!loading && this.loadingEl) {
           this.removeLoading(this.loadingEl);
         }

@@ -254,10 +254,12 @@
         var partner = changed.base.partner;
         var partnership = changed.base.partnership;
         var government_partnership = changed.base.government_partnership;
-        var basePartnerships = partner && partner.partnerships ? partner.partnerships : [];
-
+        var basePartnerships = partner && partner.partnerships ?
+          partner.partnerships : [];
+        var baseGovernamentPartnerships = partner && partner.government_partnerships ?
+          partner.government_partnerships : [];
         if (partner) {
-          this.set('partnerships', basePartnerships.concat(partner.government_partnerships));
+          this.set('partnerships', basePartnerships.concat(baseGovernamentPartnerships));
 
           if (partnership && this.partnerships.find(function(partnerPartnership) {
               return partnerPartnership.value === partnership.value &&
