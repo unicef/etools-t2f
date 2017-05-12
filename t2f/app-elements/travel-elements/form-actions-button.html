@@ -687,26 +687,32 @@
 
         if (performFor.indexOf(currentPath) > -1 || currentPath === 'data') {
           userRoles.reverse();
-          var mainActions = userRoles.reduce(function(result, role) {
-              var primary = lib[role][status].primary;
-              if (result.indexOf(primary) === -1 && primary !== '') {
-                return result.concat(primary);
-              }
-              return result;
-          }, []);
-          var allActions = userRoles.reduce(function(result, role) {
-            var secondary = lib[role][status].secondary.filter(function(action) {
-              return result.indexOf(action) === -1 && action !== '';
-            });
-            return result.concat(secondary);
-          }, mainActions);
-
-          var availableActions = {
+          var availableActions = {};
+          try {
+            var mainActions = userRoles.reduce(function(result, role) {
+                var primary = lib[role][status].primary;
+                if (result.indexOf(primary) === -1 && primary !== '') {
+                  return result.concat(primary);
+                }
+                return result;
+            }, []);
+            var allActions = userRoles.reduce(function(result, role) {
+              var secondary = lib[role][status].secondary.filter(function(action) {
+                return result.indexOf(action) === -1 && action !== '';
+              });
+              return result.concat(secondary);
+            }, mainActions);
+           availableActions = {
             primary: actList[allActions.shift()],
             secondary: allActions.map(function(action) {
               return actList[action];
             })
           };
+
+          }
+          catch (e) {
+            console.warn('Action assignment failed, error catched to avoid breaking UI', e);
+          }
 
           this.set('actions', availableActions);
         }
