@@ -115,11 +115,16 @@
               <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
             </div>
 
-            <div class="dialog-intro-text">If you finalize this trip, you wont be able to add or edit any more<br>details, reports, action-points or attachments for it.</div>
+            <div class="dialog-intro-text">
+            <p>If you finalize this trip, you wont be able to add or edit any more<br>details, reports, action-points or attachments for it.</p>
+            <p hidden="[[disableFinalizeButton]]">To finalize the trip the report must be filled</p>
+            </div>
 
             <div class="layout horizontal center">
               <paper-button
                 class="dialog-confirm-button"
+                id="finalize-btn"
+                disabled="[[disableFinalizeButton]]"
                 on-click="_isFinal">
                   Finalize
               </paper-button>
@@ -423,9 +428,18 @@
             type: Boolean,
             value: false
           },
+          disableFinalizeButton: {
+            type: Boolean,
+            computed: '_computeDisableFinalizeBtn(data.report.*)'
+          }
         },
         generalModalAction: function() {
           console.log('Default fn. ran!');
+        },
+
+        _computeDisableFinalizeBtn: function(report) {
+          report = report.value;
+          return !report || report.length === 0;
         },
 
         _computeLoading: function(post, attachment) {
