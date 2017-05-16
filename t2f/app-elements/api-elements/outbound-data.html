@@ -463,9 +463,6 @@
             action_points: []
           };
 
-          // pointless to send back to the backend something just calculated, also create bug with expense
-          delete data.cost_summary;
-
           var returnByLabel = {
             action_points: {
               'status': true
@@ -628,10 +625,14 @@
             });
           }
 
+          var nullableKeys = {
+            report: true
+          };
+
           var leftoverKeys = _.keys(data);
           leftoverKeys.forEach(function(key) {
             var value = data[key];
-            if (value) {
+            if (value || nullableKeys[key]) {
               if (typeof(value) === 'object' && !Array.isArray(value)) {
                 var innerKeys = _.keys(value);
                 innerKeys.forEach(function(innerKey) {
