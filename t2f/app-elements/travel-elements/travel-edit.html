@@ -415,6 +415,7 @@
 
       _routeObserver: function(route) {
         this.$.travelStatus.resetPosition();
+        this.set('selected', 0);
         if (route.path && route.path.indexOf('edit-travel/-1') > -1) {
           this._loadDefault();
         }
