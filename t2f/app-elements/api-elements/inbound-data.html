@@ -248,8 +248,11 @@
               // government_partnership: {
               //   url: '/api/v2/government_interventions/',
               //   category: 'governament_partnerships'
-              // }
-
+              // },
+              primary_traveler: {
+                url: '/api/users/',
+                category: 'users'
+              }
             },
             itinerary: {
                airlines: {
@@ -291,6 +294,16 @@
               grant: {
                 url: '/api/wbs_grants_funds/missing/',
                 category: 'grants'
+              }
+            },
+            action_points: {
+              person_responsible: {
+                url: '/api/users/',
+                category: 'users'
+              },
+              assigned_by: {
+                url: '/api/users/',
+                category: 'users'
               }
             }
         };
@@ -353,7 +366,7 @@
               self.set('et2fData', {});
               self.set('et2fData', incomingData);
               self.set('loading', false);
-              }
+            }
         }
 
         function onGhostResponse(e) {
@@ -387,12 +400,13 @@
             // iterate trough ghost values and generate proper ajax requests
             try {
               var libValue = ghostUrlLib[ghost.key][ghost.label];
-              toProcess += 1;
               ajax.url = libValue.url
               + '?values=' + ghost.item.value
               + '&category=' + libValue.category
               + '&ghostIndex=' + index;
               ajax.generateRequest();
+              // if nothing failed we increment the counter
+              toProcess += 1;
             }
             catch (e) {
               // if somehow we failed to do the above  emit a warning but do not stop the flow

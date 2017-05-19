@@ -82,26 +82,59 @@
 
     <template>
 
-        <!-- NonTA Save actions dialog -->
-        <paper-dialog id="save_non_ta_modal" opened="{{saveNonTAModalOpened}}" with-backdrop>
+        <!-- Approval required on non-ta DIALOG -->
+        <paper-dialog id="req-approval-modal" opened="{{reqApprovalOpened}}" with-backdrop>
 
-          <div class="dialog-head-container layout horizontal">
-            <div class="dialog-heading flex">Do you need supervisor approval?</div>
-            <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
-          </div>
+            <div class="dialog-head-container layout horizontal">
+              <div class="dialog-heading flex">Do you require supervisor approval for this trip?</div>
+              <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+            </div>
 
-          <paper-button
-            class="dialog-confirm-button"
-            on-click="_needApproval">
-              Submit for approval
-          </paper-button>
+            <div class="dialog-intro-text">Either way, your supervisor will be notified about this trip.</div>
 
-          <paper-button
-            class="dialog-confirm-button"
-            on-click="_doesntNeedApproval">
-              Only notify supervisor
-          </paper-button>
+            <div class="layout horizontal center">
+              <paper-button
+                class="dialog-confirm-button"
+                on-click="_needsApproval">
+                  Submit for approval
+              </paper-button>
+              <div class="flex"></div>
+              <paper-button
+                class="dialog-confirm-button"
+                on-click="_noApproval">
+                  Continue without approval
+              </paper-button>
+            </div>
+        </paper-dialog>
 
+        <!-- Is it final? for non-ta completion DIALOG -->
+        <paper-dialog id="is-final-modal" opened="{{isFinalOpened}}" with-backdrop>
+
+            <div class="dialog-head-container layout horizontal">
+              <div class="dialog-heading flex">Is this trip report final?</div>
+              <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
+            </div>
+
+            <div class="dialog-intro-text">
+            <p>If you finalize this trip, you wont be able to add or edit any more<br>details, reports, action-points or attachments for it.</p>
+            <p hidden="[[!disableFinalizeButton]]">To finalize the trip the report must be filled</p>
+            </div>
+
+            <div class="layout horizontal center">
+              <paper-button
+                class="dialog-confirm-button"
+                id="finalize-btn"
+                disabled="[[disableFinalizeButton]]"
+                on-click="_isFinal">
+                  Finalize
+              </paper-button>
+              <div class="flex"></div>
+              <paper-button
+                class="dialog-confirm-button"
+                on-click="_isNotFinal">
+                  only save
+              </paper-button>
+            </div>
         </paper-dialog>
 
         <!-- Crearances dialog -->
@@ -386,10 +419,27 @@
           inboundData: {
             type: Object,
             notify: true
+          },
+          reqApprovalOpened: {
+            type: Boolean,
+            value: false
+          },
+          isFinalOpened: {
+            type: Boolean,
+            value: false
+          },
+          disableFinalizeButton: {
+            type: Boolean,
+            computed: '_computeDisableFinalizeBtn(data.report.*)'
           }
         },
         generalModalAction: function() {
           console.log('Default fn. ran!');
+        },
+
+        _computeDisableFinalizeBtn: function(report) {
+          report = report.value;
+          return !report || report.length === 0;
         },
 
         _computeLoading: function(post, attachment) {
@@ -412,9 +462,6 @@
             clearances: {},
             action_points: []
           };
-
-          // pointless to send back to the backend something just calculated, also create bug with expense
-          delete data.cost_summary;
 
           var returnByLabel = {
             action_points: {
@@ -578,10 +625,14 @@
             });
           }
 
+          var nullableKeys = {
+            report: true
+          };
+
           var leftoverKeys = _.keys(data);
           leftoverKeys.forEach(function(key) {
             var value = data[key];
-            if (value) {
+            if (value || nullableKeys[key]) {
               if (typeof(value) === 'object' && !Array.isArray(value)) {
                 var innerKeys = _.keys(value);
                 innerKeys.forEach(function(innerKey) {
@@ -678,28 +729,6 @@
 
           var statusActions = {
 
-            save_non_ta: function() {
-              var innerSelf = this;
-              var isInternational = self.data.baseDetails.international_travel === true;
-              var isFirstSave = self.travelId === -1;
-
-              if (isInternational) {
-                this.save_and_submit();
-              } else if (isFirstSave) {
-                self._needApproval = function() {
-                  self.$.save_non_ta_modal.close();
-                  innerSelf.save_and_submit();
-                };
-                self._doesntNeedApproval = function() {
-                  self.$.save_non_ta_modal.close();
-                  innerSelf.complete();
-                };
-                self.$.save_non_ta_modal.open();
-              } else {
-                this.save_and_submit();
-              }
-            },
-
             save: function() {
               if (self.travelId !== -1) {
                 doSaveUpdate();
@@ -709,23 +738,61 @@
             },
 
             save_and_submit: function() {
-              self.set('data.clearances', {
-                medical_clearance: 'not_requested',
-                security_clearance: 'not_requested',
-                security_course: 'not_requested'
-              });
 
-              self._clearancesOnConfirm = function() {
-                self.$['clearance-modal'].close();
-                if (endpointConfig.id) {
-                  endpointConfig.status = 'submit_for_approval';
-                  doPost();
-                } else {
-                  endpointConfig.status = 'save_and_submit';
-                  doSaveAndSubmit();
-                }
+              var innerSelf = this;
+              var isInternational = self.data.baseDetails.international_travel === true;
+              var isTa = self.data.baseDetails.ta_required === true;
+
+              var startClearances = function() {
+                self.set('data.clearances', {
+                  medical_clearance: 'not_requested',
+                  security_clearance: 'not_requested',
+                  security_course: 'not_requested'
+                });
+
+                self._clearancesOnConfirm = function() {
+                  self.$['clearance-modal'].close();
+                  if (endpointConfig.id) {
+                    endpointConfig.status = 'submit_for_approval';
+                    doPost();
+                  } else {
+                    endpointConfig.status = 'save_and_submit';
+                    doSaveAndSubmit();
+                  }
+                };
+                self.clearancesOpened = true;
               };
-              self.clearancesOpened = true;
+
+              var startIsFinal = function() {
+                self._isFinal = function() {
+                  self.$['is-final-modal'].close();
+                  endpointConfig.status = 'mark_as_completed';
+                  doPost();
+                };
+                self._isNotFinal = function() {
+                  self.$['is-final-modal'].close();
+                  innerSelf.save();
+                };
+                self.isFinalOpened = true;
+              };
+
+              var startAskForApproval = function() {
+                self._needsApproval = function() {
+                  self.$['req-approval-modal'].close();
+                  startClearances();
+                };
+                self._noApproval = function() {
+                  self.$['req-approval-modal'].close();
+                  startIsFinal();
+                };
+                self.reqApprovalOpened = true;
+              };
+
+              if (isTa || isInternational) {
+                startClearances();
+              } else {
+                startAskForApproval();
+              }
             },
 
             cancel: function() {
