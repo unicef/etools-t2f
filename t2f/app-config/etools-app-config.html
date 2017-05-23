@@ -41,9 +41,12 @@ App global configuration
           template: '/api/users/<%=id%>/',
         },
         groups: {
-          url: '/api/groups',
+          url: '/api/groups/',
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
           cachingKey: 'groups-list'
+        },
+        historyDsaValues: {
+          url: '/api/dsa_regions/?values_at='
         },
         staticData: {
           url: '/api/static_data/',
@@ -84,6 +87,16 @@ App global configuration
           url: '/api/dsa_regions/',
           exp: 12 * 60 * 60 * 1000, // 12 hours
           cachingKey: 'et2f_dsa_regions'
+        },
+        partners: {
+          url: '/api/v2/partners/?verbosity=minimal',
+          exp: 12 * 60 * 60 * 1000, // 12 hours
+          cachingKey: 'et2f_partners'
+        },
+        locations: {
+          url: '/api/locations-light/',
+          exp: 12 * 60 * 60 * 1000, // 12 hours
+          cachingKey: 'et2f_locations'
         },
         et2fTravelDetail: {
           template: '/api/t2f/travels/<%=id%>/',

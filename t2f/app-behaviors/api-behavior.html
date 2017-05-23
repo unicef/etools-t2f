@@ -57,12 +57,13 @@
       }
     },
     parseCostStructure: function(data) {
+      var self = this;
       data.funds = data.funds.map(function(fund) {
         return {
           label: fund.name,
           value: parseInt(fund.id, 10),
         };
-      });
+      }).filter(self._filterByLabel).sort(self._sortByLabel);
 
       data.grants = data.grants.map(function(grant) {
         return {
@@ -74,7 +75,7 @@
             });
           }),
         };
-      });
+      }).filter(self._filterByLabel).sort(self._sortByLabel);
 
       data.wbs = data.wbs.map(function(wbs) {
         return {
@@ -87,9 +88,7 @@
             });
           }),
         };
-      });
-
-      data.parsed = true;
+      }).filter(self._filterByLabel).sort(self._sortByLabel);
       return data;
     },
     _processLib: function(structureLibValue, value, data) {
@@ -188,6 +187,12 @@
         }
       };
     },
+    _sortByLabel: function(a, b) {
+      return a.label.localeCompare(b.label);
+    },
+    _filterByLabel: function(i) {
+      return i && i.label && typeof i.label === 'string' && i.label.trim().length > 0;
+    },
     _parseStructureData: function(data) {
         var self = this;
         function capitalize(value) {
@@ -196,32 +201,16 @@
           }
           return value.replace(/\b\w/g, function(l) { return l.toUpperCase(); });
         }
-        function fillDependencyWithId(child, parent, parentKey) {
-          data[child].forEach(function(childItem) {
-            data[parent].forEach(function(parentItem) {
-              if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
-                parentItem[child] = [];
-              }
-              var parentId = parentItem.id || parentItem.value;
-              var childId = childItem.id || childItem.value;
-              if (parentId === childItem[parentKey]) {
-                parentItem[child].push(parseInt(childId, 10));
-              }
-            });
-          });
-        }
         function fillDependencyWithChild(child, parent, parentKey) {
           data[child].forEach(function(childItem) {
             data[parent].forEach(function(parentItem) {
               if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
                 parentItem[child] = [];
               }
-              var parentId = parentItem.id || parentItem.value;
-              var childId = childItem.id || childItem.value;
-              if (parentId === childItem[parentKey]) {
+              if (parentItem.id === childItem[parentKey]) {
                 var toPush = {
-                  value: parseInt(childId, 10),
-                  label: childItem.label || childItem.name,
+                  value: parseInt(childItem.id, 10),
+                  label: childItem.name,
                 };
                 if (child === 'partnerships' || child === 'government_partnerships') {
                   toPush.type = child;
@@ -251,49 +240,57 @@
         var parsingFunctions = {
           partners: function(key) {
              data[key] = data[key].map(function(obj) {
-              return {
-                label: obj.name,
-                value: obj.id,
-                partnerships: obj.partnerships,
-                government_partnerships: obj.government_partnerships,
-              };
-            });
+              obj = Object.assign({}, obj);
+              obj.label = obj.name;
+              obj.value = obj.id;
+              return obj;
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           partnerships: function(key) {
-            fillDependencyWithChild(key, 'partners', 'partner');
             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, type: key, results: obj.results};
-            });
+              obj = Object.assign({}, obj);
+              // when it comes fromt he ghost endpoints name is not present but title yes
+              obj.label = obj.name || obj.title;
+              obj.value = obj.id;
+              obj.type = key;
+              return obj;
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
+            fillDependencyWithChild(key, 'partners', 'partner');
           },
           government_partnerships: function(key) {
-            fillDependencyWithChild(key, 'partners', 'partner');
             data[key] = data[key].map(function(obj) {
-              return {label: obj.name, value: obj.id, type: key, results: obj.results};
-            });
+              obj = Object.assign({}, obj);
+              // when ghost data here is implemented add || obj.number to the label
+              obj.label = obj.name;
+              obj.value = obj.id;
+              obj.type = key;
+              return obj;
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
+            fillDependencyWithChild(key, 'partners', 'partner');
           },
           results: function(key) {
             fillPartnershipsWithResults();
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: parseInt(obj.id, 10)};
-            });
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           currencies: function(key) {
-            data[key] = data[key].sort(self._sortByName).map(function(obj) {
+            data[key] = data[key].map(function(obj) {
               return {
                 label: obj.name,
                 value: obj.id,
                 short: obj.iso_4217,
                 exchange_to_dollar: obj.exchange_to_dollar
               };
-            });
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           business_areas: function(key) {
-            data[key] = data[key].sort(self._sortByName).map(function(obj) {
+            data[key] = data[key].map(function(obj) {
               obj.label = obj.code + ' - ' + obj.name;
               obj.value = obj.id;
               obj.wbs = obj.wbs;
               return obj;
-            });
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           expense_types: function(key) {
             data[key] = data[key].map(function(obj) {
@@ -305,53 +302,55 @@
                 unique: obj.unique,
                 vendor_number: obj.vendor_number
               };
-            });
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           travel_modes: function(key) {
             data[key] = data[key].map(function(obj, index) {
               return {label: obj, value: index};
-            });
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           travel_types: function(key) {
             data[key] = data[key].map(function(obj, index) {
               return {label: capitalize(obj), value: index};
-            });
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           action_point_statuses: function(key) {
             data[key] = data[key].map(function(obj, index) {
               return {label: capitalize(obj), value: index};
-            });
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           users: function(key) {
             data[key] = data[key].map(function(obj) {
               return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
-            });
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           drivers: function(key) {
             data[key] = data[key].map(function(obj) {
               return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
-            });
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           dsa_regions: function(key) {
+            // when changing this, please take a look at travel-edits sideload serializing too!
             data[key] = data[key].map(function(obj) {
               return {
                 label: obj.area_name,
                 value: parseInt(obj.id, 10),
                 dsa_amount_usd: obj.dsa_amount_usd,
                 dsa_amount_60plus_usd: obj.dsa_amount_60plus_usd,
+                effective_from_date: obj.effective_from_date
               };
-            }).sort(self._sortByLabel);
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           countries: function(key) {
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: parseInt(obj.id, 10),
                 currency: obj.currency, business_area: obj.business_area};
-            });
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           vendorNumbers: function(key) {
             data[key] = data[key].map(function(obj, index) {
               return {label: capitalize(obj), value: index};
-            });
+            }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
         };
 
@@ -365,13 +364,12 @@
             if (item instanceof Array) {
               data[key] = item.map(function(obj) {
                 return {label: obj.name, value: parseInt(obj.id, 10)};
-              });
+              }).filter(self._filterByLabel).sort(self._sortByLabel);
             } else {
               data[key] = {label: item.name, value: parseInt(item.id, 10)};
             }
           }
         });
-        data.parsed = true;
         return data;
       },
   };

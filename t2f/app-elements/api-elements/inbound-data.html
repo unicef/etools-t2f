@@ -208,56 +208,102 @@
         var ghostUrlLib = {
             baseDetails: {
               currency: {
-                url: '/api/currencies/',
+                url: '/api/currencies/missing/',
                 category: 'currencies'
+              },
+              traveler: {
+                url: '/api/users/',
+                category: 'users'
+              },
+              supervisor: {
+                url: '/api/users/',
+                category: 'users'
+              },
+              office: {
+                url: '/api/offices/',
+                category: 'offices'
+              },
+              section: {
+                url: '/api/sections/',
+                category: 'sections'
               },
             },
             activities: {
               travel_type: {
-                url: '/api/static_data/',
+                url: '/api/static_data/missing/',
                 category: 'travel_types'
+              },
+              locations: {
+                url: '/api/locations/',
+                category: 'locations'
+              },
+              partner: {
+                url: '/api/v2/partners/',
+                category: 'partners'
+              },
+              partnership: {
+                url: '/api/v2/interventions/',
+                category: 'partnerships'
+              },
+              // government_partnership: {
+              //   url: '/api/v2/government_interventions/',
+              //   category: 'governament_partnerships'
+              // },
+              primary_traveler: {
+                url: '/api/users/',
+                category: 'users'
               }
             },
             itinerary: {
                airlines: {
-                url: '/api/static_data/',
+                url: '/api/static_data/missing/',
                 category: 'airlines'
               },
               dsa_region: {
-                url: '/api/dsa_regions/',
+                url: '/api/dsa_regions/missing/',
                 category: 'dsa_regions'
               },
               mode_of_travel: {
-                url: '/api/static_data/',
+                url: '/api/static_data/missing/',
                 category: 'travel_modes'
               }
             },
             expenses: {
               type: {
-                url: '/api/expense_types/',
+                url: '/api/expense_types/missing/',
                 category: 'expense_types'
               },
                document_currency: {
-                url: '/api/currencies/',
+                url: '/api/currencies/missing/',
                 category: 'currencies'
               },
             },
             cost_assignments: {
               business_area: {
-                url: '/api/static_data/',
+                url: '/api/static_data/missing/',
                 category: 'business_areas'
               },
               fund: {
-                url: '/api/wbs_grants_funds/',
+                url: '/api/wbs_grants_funds/missing/',
                 category: 'funds'
               },
               wbs: {
-                url: '/api/wbs_grants_funds/',
+                url: '/api/wbs_grants_funds/missing/',
                 category: 'wbs'
               },
               grant: {
-                url: '/api/wbs_grants_funds/',
+                url: '/api/wbs_grants_funds/missing/',
                 category: 'grants'
+              }
+            },
+            action_points: {
+              person_responsible: {
+                url: '/api/users/',
+                category: 'users'
+              },
+              assigned_by: {
+                url: '/api/users/',
+                category: 'users'
               }
             }
         };
@@ -320,7 +366,7 @@
               self.set('et2fData', {});
               self.set('et2fData', incomingData);
               self.set('loading', false);
-              }
+            }
         }
 
         function onGhostResponse(e) {
@@ -330,8 +376,10 @@
           var cat = self._getParameterByName('category', url);
           var ghostIndex = self._getParameterByName('ghostIndex', url);
           // the backend returns a list, we only send one value and we only need one element so we pop it
-          ghosts[ghostIndex].response = response.pop();
-          ghosts[ghostIndex].category = cat;
+          if (response && response.length > 0) {
+            ghosts[ghostIndex].response = response.pop();
+            ghosts[ghostIndex].category = cat;
+          }
           postCallOperation();
         }
 
@@ -350,14 +398,19 @@
 
           ghosts.forEach(function(ghost, index) {
             // iterate trough ghost values and generate proper ajax requests
-            var libValue = ghostUrlLib[ghost.key][ghost.label];
-            if (libValue) {
-              toProcess += 1;
+            try {
+              var libValue = ghostUrlLib[ghost.key][ghost.label];
               ajax.url = libValue.url
-              + 'missing/?values=' + ghost.item.value
+              + '?values=' + ghost.item.value
               + '&category=' + libValue.category
               + '&ghostIndex=' + index;
               ajax.generateRequest();
+              // if nothing failed we increment the counter
+              toProcess += 1;
+            }
+            catch (e) {
+              // if somehow we failed to do the above  emit a warning but do not stop the flow
+              console.warn('trying to get a value not present in the ghost lib: ', ghost);
             }
           });
 
