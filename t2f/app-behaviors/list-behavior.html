@@ -37,14 +37,14 @@
         type: Object,
         computed: '_computeAjaxParams(route)',
       },
-     listLoading: {
+      listLoading: {
         type: Boolean,
         notify: true
-     },
-    showingResults: {
-      type: String,
-      computed: '_computeResultsToShow(pages, datalength, pages.page)'
-    },
+      },
+      showingResults: {
+        type: String,
+        computed: '_computeResultsToShow(pages, datalength, pages.page)'
+      }
     },
     _routeObserver: function(newRoute, oldRoute) {
       if (oldRoute && oldRoute.path && oldRoute.path.indexOf(this.is) === -1
