@@ -156,52 +156,16 @@
       behaviors: [ListBehavior],
 
       properties: {
-        data: {
-          type: Array,
-          value: []
-        },
-        structure: {
-          type: Object
-        },
-        datalength: {
-          type: Number,
-          value: 0
-        },
-        listLoading: {
-          type: Boolean,
-          notify: true
-        },
-        showingResults: {
-          type: String,
-          computed: '_computeResultsToShow(pages, datalength, pages.page)'
-        },
         headings: {
           type: Array,
           value: function() {
             return this.getHeadings();
           }
         },
-        pages: {
-          type: Object,
-          computed: '_computePagesObj(route.__queryParams)',
-        },
-        orderObj: {
-          type: Object,
-          computed: '_computeOrderObj(route.__queryParams)',
-        },
-        searchString: {
-          type: String,
-          value: '',
-          observer: '_searchStringChanged'
-        },
         showHidden: {
           type: Boolean,
           value: false,
           observer: '_showHiddenChanged'
-        },
-        ajaxParams: {
-          type: Object,
-          computed: '_computeAjaxParams(route)',
         },
         listEndPoint: {
           type: String,
