@@ -300,24 +300,18 @@
           },
           users: function(key) {
             data[key] = data[key].map(function(obj) {
-              // TODO RESTORE THIS TO OLD BEFORE FINALIZING PR
-              // // TODO RESTORE THIS TO OLD BEFORE FINALIZING PR
-              // // TODO RESTORE THIS TO OLD BEFORE FINALIZING PR
-              // // TODO RESTORE THIS TO OLD BEFORE FINALIZING PR
-              // // TODO RESTORE THIS TO OLD BEFORE FINALIZING PR
-              // return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
-              // // TODO RESTORE THIS TO OLD BEFORE FINALIZING PR
-              // // TODO RESTORE THIS TO OLD BEFORE FINALIZING PR
-              // // TODO RESTORE THIS TO OLD BEFORE FINALIZING PR
-              // // TODO RESTORE THIS TO OLD BEFORE FINALIZING PR
-              // TODO RESTORE THIS TO OLD BEFORE FINALIZING PR
-              // TODO RESTORE THIS TO OLD BEFORE FINALIZING PR
-              return {label: obj.full_name, value: parseInt(obj.user_id, 10)};
+              return {
+                label: obj.full_name ? obj.full_name : obj.first_name + ' ' + obj.last_name,
+                value: obj.user_id ? parseInt(obj.user_id, 10) : parseInt(obj.id, 10)
+              };
             }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           drivers: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
+               return {
+                label: obj.full_name ? obj.full_name : obj.first_name + ' ' + obj.last_name,
+                value: obj.user_id ? parseInt(obj.user_id, 10) : parseInt(obj.id, 10)
+              };
             }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           dsa_regions: function(key) {
