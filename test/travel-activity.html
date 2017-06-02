@@ -21,6 +21,7 @@
 </test-fixture>
 
 <script>
+/* global define, setup, fixture, suite, test, expect  */
     suite('<travel-activity>', function() {
 
         var el, dom;
@@ -32,13 +33,6 @@
 
         test('can be instantiated', function() {
             expect(el.is).to.equal('travel-activities');
-        });
-
-        test('#151: prevent concat failing with wrong data', function() {
-            el.set('activity', {});
-            expect(el.partnerships).to.be.a('array');
-            expect(el.partnerships).to.have.lengthOf(0);
-            expect(el.activity.result).to.equal(null);
         });
 
         test('#190: reload does keep data from server', function() {
