@@ -168,7 +168,7 @@
                       widths: innerTableVars.withCheckboxWidths,
                       body: [
                         [
-                          {text: 'International Travel'},
+                          {text: 'International Trip'},
                           {
                             text: data.baseDetails.international_travel ? 'YES' : 'NO',
                             style: 'checkbox'
@@ -194,7 +194,7 @@
                                 innerColumnGen('Traveler', data.baseDetails.traveler ?
                                   data.baseDetails.traveler.label : ''),
                                 innerColumnGen('Start Date', '' + behav._printDate(data.baseDetails.start_date)),
-                                innerColumnGen('Est. Travel cost',
+                                innerColumnGen('Est. Trip cost',
                                   '' + data.baseDetails.estimated_travel_cost),
                               ]
                             }
@@ -205,7 +205,7 @@
                             table: {
                               widths: innerTableVars.innerWidths,
                               body: [
-                                innerColumnGen('Travel Status', '' + data.baseDetails.status),
+                                innerColumnGen('Trip Status', '' + data.baseDetails.status),
                                 innerColumnGen('Supervisor', data.baseDetails.supervisor ?
                                   data.baseDetails.supervisor.label : ''),
                                 innerColumnGen('End date', '' + behav._printDate(data.baseDetails.end_date)),
@@ -223,7 +223,7 @@
                     table: {
                       widths: [100, 661],
                       body: [
-                        [{text: 'Purpose of travel: '}, {text: '' + data.baseDetails.purpose}]
+                        [{text: 'Purpose of Trip: '}, {text: '' + data.baseDetails.purpose}]
                       ]
                     },
                   }
@@ -373,7 +373,7 @@
                         widths: innerTableVars.withCheckboxWidths,
                         body: [
                           [
-                            {text: 'Overnight travel ? '},
+                            {text: 'Overnight trip ? '},
                             {text: itinerary.overnight_travel ? 'YES' : 'NO', style: 'checkbox'}
                           ]
                         ]
@@ -489,7 +489,7 @@
                         widths: innerTableVars.withCheckboxWidths,
                         body: [
                           [
-                            {text: 'Overnight travel ? '},
+                            {text: 'Overnight trip ? '},
                             {text: expense.overnight_travel ? 'YES' : 'NO', style: 'checkbox'}
                           ]
                         ]
@@ -566,7 +566,7 @@
                         widths: innerTableVars.withCheckboxWidths,
                         body: [
                           [
-                            {text: 'Overnight travel ? '},
+                            {text: 'Overnight trip ? '},
                             {text: cost.overnight_travel ? 'YES' : 'NO', style: 'checkbox'}
                           ]
                         ]
