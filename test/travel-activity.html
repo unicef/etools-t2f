@@ -155,7 +155,7 @@
             dom.flush();
             expect(el.results.length).to.equal(5);
         });
-        test('#391 if a gov partner is selected in place of a non gov partner the partnerships selection menu is disabled', function() {
+        test('#391 if a gov partner is selected in place of a non gov partner the partnerships are emptied', function() {
             var partnership = {
                 id: 1,
                 name: 'something',
@@ -185,6 +185,7 @@
             dom.flush();
             expect(el.partnerships.length).to.equal(0);
             expect(el.results.length).to.equal(3);
+
         });
         test('#391 if a non gov partner is selected in place of a gov partner the results are cleared', function() {
             var partnership = {
