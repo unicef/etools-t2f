@@ -196,10 +196,10 @@
         <paper-dialog id="rejection-modal" opened="{{rejectionOpened}}" with-backdrop>
 
             <div class="dialog-head-container layout horizontal">
-              <div class="dialog-heading flex">Reject travel</div>
+              <div class="dialog-heading flex">Reject Trip</div>
               <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
             </div>
-            <div class="dialog-intro-text">Please specify reasons for rejecting this travel:</div>
+            <div class="dialog-intro-text">Please specify the reason for rejecting this trip?</div>
 
             <div class="scrollable">
               <paper-textarea label="Rejection note" value="{{data.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
@@ -237,10 +237,10 @@
         <paper-dialog id="cancel-modal" opened="{{cancellationOpened}}" with-backdrop>
 
             <div class="dialog-head-container layout horizontal">
-              <div class="dialog-heading flex">Cancel travel</div>
+              <div class="dialog-heading flex">Cancel Trip</div>
               <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
             </div>
-            <div class="dialog-intro-text">Please specify reasons for cancelling this travel:</div>
+            <div class="dialog-intro-text">Please specify the reason for canceling this trip:</div>
 
             <div class="scrollable">
               <paper-textarea label="Cancellation note" value="{{data.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
@@ -823,7 +823,7 @@
               self.set('generalModal', {
                 opened: true,
                 heading: 'Approval',
-                text: 'Are you sure you want approve this travel?',
+                text: 'Are you sure you want approve this trip?',
                 buttonText: 'Approve'
               });
             },
