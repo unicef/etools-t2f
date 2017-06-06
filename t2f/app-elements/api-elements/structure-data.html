@@ -103,6 +103,14 @@
       on-forbidden="_redirectToLogin"
       caching-storage="dexie"
       ></etools-ajax>
+      <etools-ajax endpoint="[[resultsEndpoint]]"
+      loading="{{resultsLoading}}"
+      on-success="_handleResponse"
+      data-name="resultsData"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+      caching-storage="dexie"
+      ></etools-ajax>
 
   </template>
 
@@ -124,7 +132,7 @@
           computed: '_generateStructure(staticData, sectionsData,' +
           ' officesData, t2fStaticData, usersData, groupsData,' +
           'driversData, vendorsData, wbsGrantsFundsData, dsaData,' +
-          'partnersData, locationsData)'
+          'partnersData, locationsData, resultsData)'
         },
         rawStructure: {
           type: Object,
@@ -152,7 +160,7 @@
           computed: '_computeLoading(staticDataLoading, sectionsLoading,' +
           ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading' +
           ', driversLoading, vendorNumbersLoading, dsaLoading,' +
-          'partnersLoading, locationsLoading)'
+          'partnersLoading, locationsLoading, resultsLoading)'
         },
         staticDataEndpoint: {
           type: String,
@@ -203,6 +211,10 @@
         locationsEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.locations
+        },
+        resultsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.results
         }
       },
       behaviors: [et2fBehaviors.ApiBehavior],
@@ -229,7 +241,7 @@
         this.set(name, data);
       },
       _generateStructure: function(static, sections, offices, t2fStaticData, users, groups,
-        drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations) {
+        drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results) {
           var data = static;
           data.sections = sections;
           data.offices = offices;
@@ -247,6 +259,7 @@
           data.funds = wbsGrantsFunds.funds;
           data.dsa_regions = dsa_regions;
           data.partners = partners;
+          data.results = results;
 
           this.set('rawStructure', _.cloneDeep(data));
 

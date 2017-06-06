@@ -133,7 +133,6 @@
             travel_type: this._searchByLabel.bind(this, 'travel_types'),
             partner: 'partners',
             partnership: 'partnerships',
-            government_partnership: 'government_partnerships',
             result: 'results',
             date: this._convertDate,
             primary_traveler: 'users'
@@ -208,14 +207,7 @@
                 parentItem[child] = [];
               }
               if (parentItem.id === childItem[parentKey]) {
-                var toPush = {
-                  value: parseInt(childItem.id, 10),
-                  label: childItem.name,
-                };
-                if (child === 'partnerships' || child === 'government_partnerships') {
-                  toPush.type = child;
-                }
-                parentItem[child].push(toPush);
+                parentItem[child].push(childItem);
               }
             });
           });
@@ -234,7 +226,6 @@
             return pship;
           }
           data.partnerships = data.partnerships.map(fillPship);
-          data.government_partnerships = data.government_partnerships.map(fillPship);
         }
 
         var parsingFunctions = {
@@ -252,18 +243,6 @@
               // when it comes fromt he ghost endpoints name is not present but title yes
               obj.label = obj.name || obj.title;
               obj.value = obj.id;
-              obj.type = key;
-              return obj;
-            }).filter(self._filterByLabel).sort(self._sortByLabel);
-            fillDependencyWithChild(key, 'partners', 'partner');
-          },
-          government_partnerships: function(key) {
-            data[key] = data[key].map(function(obj) {
-              obj = Object.assign({}, obj);
-              // when ghost data here is implemented add || obj.number to the label
-              obj.label = obj.name;
-              obj.value = obj.id;
-              obj.type = key;
               return obj;
             }).filter(self._filterByLabel).sort(self._sortByLabel);
             fillDependencyWithChild(key, 'partners', 'partner');
@@ -321,12 +300,18 @@
           },
           users: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
+              return {
+                label: obj.full_name ? obj.full_name : obj.first_name + ' ' + obj.last_name,
+                value: obj.user_id ? parseInt(obj.user_id, 10) : parseInt(obj.id, 10)
+              };
             }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           drivers: function(key) {
             data[key] = data[key].map(function(obj) {
-              return {label: obj.first_name + ' ' + obj.last_name, value: parseInt(obj.id, 10)};
+               return {
+                label: obj.full_name ? obj.full_name : obj.first_name + ' ' + obj.last_name,
+                value: obj.user_id ? parseInt(obj.user_id, 10) : parseInt(obj.id, 10)
+              };
             }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
           dsa_regions: function(key) {
