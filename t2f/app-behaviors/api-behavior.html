@@ -218,12 +218,19 @@
               var rawOne = data.results.find(function(rawRes) {
                 return rawRes.id === innerResId;
               });
+              if (!rawOne) {
+                console.error('WARNING: One of the results associated with the partnership does not exist as a result',
+                  pship);
+                return { toDelete: true };
+              }
               return {
                 value: parseInt(rawOne.id, 10),
                 label: rawOne.label || rawOne.name
               };
             });
-            return pship;
+            return pship.results.filter(function(r) {
+              return !r.toDelete;
+            });
           }
           data.partnerships = data.partnerships.map(fillPship);
         }
