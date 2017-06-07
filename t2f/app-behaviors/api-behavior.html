@@ -358,7 +358,9 @@
                 return {label: obj.name, value: parseInt(obj.id, 10)};
               }).filter(self._filterByLabel).sort(self._sortByLabel);
             } else {
-              data[key] = {label: item.name, value: parseInt(item.id, 10)};
+              if (item) {
+                data[key] = {label: item.name, value: parseInt(item.id, 10)};
+              }
             }
           }
         });
