@@ -21,24 +21,32 @@
 </test-fixture>
 
 <script>
+/* global define, setup, fixture, suite, test, expect  */
     suite('<travel-activity>', function() {
 
-        var el, dom;
+        var el;
+        var dom;
 
+        var pMatrix = {
+            partnership: {
+                disabled: false
+            },
+            result: {
+                disabled: false
+            },
+            partner: {
+                disabled: false
+            }
+        };
         setup(function() {
             el = fixture('el');
+            el.set('computedPermission', pMatrix);
             dom = Polymer.dom(el.root);
+
         });
 
         test('can be instantiated', function() {
             expect(el.is).to.equal('travel-activities');
-        });
-
-        test('#151: prevent concat failing with wrong data', function() {
-            el.set('activity', {});
-            expect(el.partnerships).to.be.a('array');
-            expect(el.partnerships).to.have.lengthOf(0);
-            expect(el.activity.result).to.equal(null);
         });
 
         test('#190: reload does keep data from server', function() {
@@ -90,6 +98,163 @@
             expect(el.$.prim_trav_checkbox.hidden).to.equal(true);
             expect(el.activity.is_primary_traveler).to.equal(true);
             expect(el.$.primary_traveler.value.value).to.equal(12);
+        });
+
+        test('#391 if a govt partner is choosen result is populated with all the results in the system', function() {
+            var activity = {
+                partner: {
+                    partner_type: 'Government'
+                }
+            };
+
+            var structure = {
+                results: [1, 2, 3]
+            };
+            el.set('structure', structure);
+            el.set('activity', activity);
+            dom.flush();
+            expect(el.results.length).to.equal(3);
+        });
+
+        test('#391 if a non govt partner is choosen partnerships is populated with the partner partnerships if any', function() {
+            var activity = {
+                partner: {
+                    partner_type: 'Not Governament blah blah',
+                    partnerships: [1, 2]
+                }
+            };
+
+            var structure = {
+                results: [1, 2, 3]
+            };
+            el.set('structure', structure);
+            el.set('activity', activity);
+            dom.flush();
+            expect(el.partnerships.length).to.equal(2);
+        });
+        test('#391 if a non govt partner is choosen and a partnership is selected results is populated accordingly', function() {
+            var partnership = {
+                id: 1,
+                name: 'something',
+                results: [1, 2, 3, 4, 5]
+            };
+
+            var activity = {
+                partner: {
+                    partner_type: 'Not Government blah blah',
+                    partnerships: [partnership]
+                },
+                partnership: partnership
+            };
+
+            var structure = {
+                results: [1, 2, 3]
+            };
+            el.set('structure', structure);
+            el.set('activity', activity);
+            dom.flush();
+            expect(el.results.length).to.equal(5);
+        });
+        test('#391 if a gov partner is selected in place of a non gov partner the partnerships are emptied', function() {
+            var partnership = {
+                id: 1,
+                name: 'something',
+                results: [1, 2, 3, 4, 5]
+            };
+
+            var activity = {
+                partner: {
+                    partner_type: 'Not Government blah blah',
+                    partnerships: [partnership]
+                },
+                partnership: partnership
+            };
+
+            var structure = {
+                results: [1, 2, 3]
+            };
+            el.set('structure', structure);
+            el.set('activity', activity);
+            dom.flush();
+            expect(el.results.length).to.equal(5);
+
+            activity.partner.partner_type = 'Government';
+            el.set('activity', {});
+            dom.flush();
+            el.set('activity', activity);
+            dom.flush();
+            expect(el.partnerships.length).to.equal(0);
+            expect(el.results.length).to.equal(3);
+
+        });
+        test('#391 if a non gov partner is selected in place of a gov partner the results are cleared', function() {
+            var partnership = {
+                id: 1,
+                name: 'something',
+                results: [1, 2, 3, 4, 5]
+            };
+
+            var activity = {
+                partner: {
+                    partner_type: 'Government',
+                },
+                partnership: partnership
+            };
+
+            var structure = {
+                results: [1, 2, 3]
+            };
+            el.set('structure', structure);
+            el.set('activity', activity);
+            dom.flush();
+            expect(el.results.length).to.equal(3);
+
+            activity.partner.partner_type = 'Not Government';
+            activity.partner.partnerships = [partnership];
+
+            el.set('activity', {});
+            dom.flush();
+
+            el.set('activity', activity);
+            dom.flush();
+            expect(el.partnerships.length).to.equal(1);
+            expect(el.results.length).to.equal(0);
+        });
+        test('#391 if trip type is prog visit or spot check and results are available result is required', function() {
+            var activity = {
+                travel_type:  {
+                    label: 'Programmatic Visit',
+                },
+                partner: {
+                    partner_type: 'Government',
+                },
+            };
+             var structure = {
+                results: [1, 2, 3]
+            };
+            el.set('structure', structure);
+            el.set('activity', activity);
+            dom.flush();
+            expect(el.$.results.required).to.equal(true);
+
+        });
+        test('#391 if trip type is prog visit or spot check and result are disabled result is not required', function() {
+            var activity = {
+                travel_type:  {
+                    label: 'Programmatic Visit',
+                },
+                partner: {
+                    partner_type: 'Government',
+                },
+            };
+             var structure = {
+                results: []
+            };
+            el.set('structure', structure);
+            el.set('activity', activity);
+            dom.flush();
+            expect(el.$.results.required).to.equal(false);
+
         });
     });
 </script>

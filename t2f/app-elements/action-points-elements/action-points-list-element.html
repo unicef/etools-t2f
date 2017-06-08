@@ -94,10 +94,10 @@
       },
 
       getUser: function(id, users) {
-
-        return users.filter(function(user) {
+        var user = users.filter(function(user) {
           return user.value === id;
-        })[0].label;
+        })[0];
+        return user ? user.label : '';
       },
 
       attached: function() {
