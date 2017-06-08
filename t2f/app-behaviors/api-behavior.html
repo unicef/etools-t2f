@@ -214,6 +214,11 @@
         }
         function fillPartnershipsWithResults() {
           function fillPship(pship) {
+            if (!pship.results) {
+              pship.results = [];
+              console.error('WARNING: one of the partnership is malformed'
+                + '- probably coming from the ghost data endpoint -  results will be blank');
+            }
             pship.results = pship.results.map(function(innerResId) {
               var rawOne = data.results.find(function(rawRes) {
                 return rawRes.id === innerResId;
@@ -228,9 +233,10 @@
                 label: rawOne.label || rawOne.name
               };
             });
-            return pship.results.filter(function(r) {
+            pship.results.filter(function(r) {
               return !r.toDelete;
             });
+            return pship;
           }
           data.partnerships = data.partnerships.map(fillPship);
         }
