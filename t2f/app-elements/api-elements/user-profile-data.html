@@ -34,9 +34,10 @@
           observer: '_loadingObserver'
         }
       },
-      ready: function () {
+      ready: function() {
+
         this.ajaxEl = this.$.ajaxEl;
-        this.set('endpoint',this.getEndpoint(this.endpointName));
+        this.set('endpoint', this.getEndpoint(this.endpointName));
       },
       saveProfile: function (profile) {
         var url = this.endpoint.url;

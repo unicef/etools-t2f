@@ -88,9 +88,9 @@
       <div class="content-align">
         <countries-dropdown id="countries" countries="[[countries]]" current="[[user.profile.country]]"></countries-dropdown>
         <etools-profile-dropdown
-            sections="[[allSections]]"
-            offices="[[allOffices]]"
-            users="[[allUsers]]"
+            sections="[[structure.sections]]"
+            offices="[[structure.offices]]"
+            users="[[structure.users]]"
             profile="{{profile}}"
             on-save-profile="_saveProfile"
             on-sign-out="_signOut"></etools-profile-dropdown>
@@ -100,18 +100,23 @@
   </template>
 
   <script>
-    (function() {
       Polymer({
         is: 'page-header',
         behaviors: [
             etoolsAppConfig
         ],
         properties: {
+          profile: {
+            type: Object
+          },
           countries: {
             type: Array
           },
           user: {
             type: Object,
+          },
+          structure: {
+            type: Object
           },
           userProfileDialog: Object
         },
@@ -160,23 +165,22 @@
             this.updateStyles();
           }
         },
-        _saveProfile: function (e) {
+        _saveProfile: function(e) {
           this.set('profile', e.detail.profile);
           this.$.userProfileData.saveProfile(this.profile);
         },
-        _signOut: function () {
+        _signOut: function() {
           this._clearDexieDbs();
           this._clearLocalStorage();
           window.location.href = window.location.origin + '/saml2/logout';
         },
-        _clearDexieDbs: function () {
+        _clearDexieDbs: function() {
           etoolsAppConfig.appDexieDb.delete();
         },
-        _clearLocalStorage: function () {
+        _clearLocalStorage: function() {
           localStorage.clear();
         },
       });
-    })();
   </script>
 
 </dom-module>
