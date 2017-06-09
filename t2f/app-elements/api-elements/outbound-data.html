@@ -141,7 +141,7 @@
         <paper-dialog id="clearance-modal" opened="{{clearancesOpened}}" with-backdrop>
 
             <div class="dialog-head-container layout horizontal">
-              <div class="dialog-heading flex">Travel authorization</div>
+              <div class="dialog-heading flex">Trip authorization</div>
               <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
             </div>
 
@@ -196,10 +196,10 @@
         <paper-dialog id="rejection-modal" opened="{{rejectionOpened}}" with-backdrop>
 
             <div class="dialog-head-container layout horizontal">
-              <div class="dialog-heading flex">Reject travel</div>
+              <div class="dialog-heading flex">Reject Trip</div>
               <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
             </div>
-            <div class="dialog-intro-text">Please specify reasons for rejecting this travel:</div>
+            <div class="dialog-intro-text">Please specify the reason for rejecting this trip?</div>
 
             <div class="scrollable">
               <paper-textarea label="Rejection note" value="{{data.rejection_note}}" char-counter maxlength="2500"></paper-textarea>
@@ -237,10 +237,10 @@
         <paper-dialog id="cancel-modal" opened="{{cancellationOpened}}" with-backdrop>
 
             <div class="dialog-head-container layout horizontal">
-              <div class="dialog-heading flex">Cancel travel</div>
+              <div class="dialog-heading flex">Cancel Trip</div>
               <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
             </div>
-            <div class="dialog-intro-text">Please specify reasons for cancelling this travel:</div>
+            <div class="dialog-intro-text">Please specify the reason for canceling this trip:</div>
 
             <div class="scrollable">
               <paper-textarea label="Cancellation note" value="{{data.cancellation_note}}" char-counter maxlength="2500"></paper-textarea>
@@ -249,7 +249,7 @@
             <paper-button
               class="dialog-confirm-button"
               on-click="_cancelOnConfirm">
-                Cancel travel
+                Cancel Trip
             </paper-button>
         </paper-dialog>
 
@@ -273,13 +273,13 @@
         <paper-dialog id="certification-modal" opened="{{certificationOpened}}" with-backdrop>
 
             <div class="dialog-head-container layout horizontal">
-              <div class="dialog-heading flex">Certify travel</div>
+              <div class="dialog-heading flex">Certify Trip</div>
               <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
             </div>
-            <div class="dialog-intro-text">Please specify the differences between the travel plan and the actual travel:</div>
+            <div class="dialog-intro-text">Please specify the differences between the trip plan and the actual trip:</div>
 
             <paper-checkbox checked="{{certificationChecked}}">
-              I acknowledge that UNICEF will review the changes to the originally authorised travel and calculate any monetary adjustment to the original travel payment.
+              I acknowledge that UNICEF will review the changes to the originally authorised trip and calculate any monetary adjustment to the original trip payment.
             </paper-checkbox>
 
             <div class="scrollable">
@@ -330,7 +330,7 @@
               class="dialog-confirm-button"
               on-click="_certifyOnConfirm"
               disabled="[[!certificationChecked]]">
-                Certify travel
+                Certify Trip
             </paper-button>
         </paper-dialog>
 
@@ -463,6 +463,8 @@
             action_points: []
           };
 
+          // pointless to send back to the backend something just calculated, also create bug with expense
+          delete data.cost_summary;
           var returnByLabel = {
             action_points: {
               'status': true
@@ -510,7 +512,6 @@
             if (typeof item === 'object') {
               result = item.value;
             }
-            // console.debug(fieldSet + ' ---> ' + key);
             if (returnByLabel[fieldSet] && returnByLabel[fieldSet][key]) {
               return item.label.toLowerCase();
             }
@@ -822,7 +823,7 @@
               self.set('generalModal', {
                 opened: true,
                 heading: 'Approval',
-                text: 'Are you sure you want approve this travel?',
+                text: 'Are you sure you want approve this trip?',
                 buttonText: 'Approve'
               });
             },
@@ -848,7 +849,7 @@
               self.set('generalModal', {
                 opened: true,
                 heading: 'Reopen',
-                text: 'Are you sure you want reopen this travel?',
+                text: 'Are you sure you want reopen this trip?',
                 buttonText: 'Reopen'
               });
             },
@@ -864,7 +865,7 @@
               self.set('generalModal', {
                 opened: true,
                 heading: 'Send for payment',
-                text: 'Are you sure you want to send this travel to payment?',
+                text: 'Are you sure you want to send this trip to payment?',
                 buttonText: 'Send for payment'
               });
             },
@@ -880,7 +881,7 @@
               self.set('generalModal', {
                 opened: true,
                 heading: 'Went as planned',
-                text: 'Are you sure this travel went as planned?',
+                text: 'Are you sure this trip went as planned?',
                 buttonText: 'Yes'
               });
             },
@@ -907,8 +908,8 @@
 
               self.set('generalModal', {
                 opened: true,
-                heading: 'Travel done',
-                text: 'Are you sure you want to mark this travel as done?',
+                heading: 'Trip done',
+                text: 'Are you sure you want to mark this trip as done?',
                 buttonText: 'Yes'
               });
             },
@@ -924,7 +925,7 @@
               self.set('generalModal', {
                 opened: true,
                 heading: 'Approve certificate',
-                text: 'Are you sure you want to certify this travel?',
+                text: 'Are you sure you want to certify this trip?',
                 buttonText: 'Yes'
               });
             },
@@ -950,9 +951,9 @@
 
               self.set('generalModal', {
                 opened: true,
-                heading: 'Certify',
-                text: 'Are you sure you want to certify this travel?',
-                buttonText: 'Certify'
+                heading: 'Finalize',
+                text: 'Are you sure you want to certify this trip?',
+                buttonText: 'Finalize'
               });
             },
 
@@ -967,7 +968,7 @@
               self.set('generalModal', {
                 opened: true,
                 heading: 'Complete',
-                text: 'Are you sure you want to mark this travel as completed?',
+                text: 'Are you sure you want to mark this trip as completed?',
                 buttonText: 'Complete'
               });
             },
@@ -983,7 +984,7 @@
               self.set('generalModal', {
                 opened: true,
                 heading: 'Back to planned',
-                text: 'Are you sure you want to make this travel editable again?',
+                text: 'Are you sure you want to make this trip editable again?',
                 buttonText: 'Yes'
               });
             }

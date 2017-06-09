@@ -93,7 +93,7 @@
           Traveler's DSA
         </div>
         <div class="flex-6 right-align curr">
-          {{tdsa}} {{currency.short}}
+          {{dsa}} {{currency.short}}
         </div>
         <div class="underline"></div>
       </div>
@@ -110,10 +110,10 @@
 
         <template is="dom-repeat" items="[[costSummary.expenses]]">
           <div class="layout horizontal sub-row">
-            <div class="flex-6 head">
+            <div class="flex-8 head">
               -- [[item.vendor_number]] - ([[item.label]])
             </div>
-            <div class="flex-6 right-align curr">
+            <div class="flex-4 right-align curr">
               [[item.amount]] [[_getShortCurrFromId(item.currency)]]
             </div>
             <div class="underline"></div>
@@ -173,8 +173,8 @@
           this.exp = Number.isNaN(exp) ? 0 : exp.toFixed(2);
           var ded = parseFloat(costSummary.value.deductions_total);
           this.ded = Number.isNaN(ded) ? 0 : ded.toFixed(2);
-          this.tdsa = (this.dsa - this.ded).toFixed(2);
-          return ((+this.tdsa) + (+this.exp) - (+this.ee)).toFixed(2);
+          var tdsa = parseFloat(costSummary.value.paid_to_traveler);
+          return Number.isNaN(tdsa) ? 0 : tdsa.toFixed(2);
         }
       },
 

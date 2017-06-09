@@ -51,7 +51,7 @@
           <div class="headings textprim w13">[[data.ta_number]]</div>
           <div class="headings textprim w13 capital">[[data.status]]</div>
           <div class="headings textprim w13">[[getCurrency(data.currency, currencies)]]</div>
-          <div class="headings textprim w13">[[data.amount]]</div>
+          <div class="headings textprim w13">[[formattedAmount]]</div>
           <div class="headings textprim w13">[[data.vision_fi_id]]</div>
 
         </div>
@@ -94,6 +94,10 @@
         baseUrl: {
           type: String,
           value: null
+        },
+        formattedAmount: {
+          type: String,
+          computed: '_computeFormattedAmount(data.amount)'
         }
       },
 
@@ -112,6 +116,9 @@
         return statusLib[status];
       },
 
+      _computeFormattedAmount: function(amount) {
+        return amount.replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+      },
       _toggleExpanded: function() {
         this.set('expanded', !this.expanded);
       },

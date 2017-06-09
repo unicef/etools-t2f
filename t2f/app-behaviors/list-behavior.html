@@ -8,6 +8,42 @@
       route: {
         type: Object,
         observer: '_routeObserver',
+      },
+      data: {
+        type: Array,
+        value: []
+      },
+      structure: {
+        type: Object
+      },
+      datalength: {
+        type: Number,
+        value: 0
+      },
+      searchString: {
+        type: String,
+        value: null,
+        observer: '_searchStringChanged'
+      },
+      pages: {
+          type: Object,
+          computed: '_computePagesObj(route.__queryParams)',
+      },
+      orderObj: {
+        type: Object,
+        computed: '_computeOrderObj(route.__queryParams)',
+      },
+      ajaxParams: {
+        type: Object,
+        computed: '_computeAjaxParams(route)',
+      },
+      listLoading: {
+        type: Boolean,
+        notify: true
+      },
+      showingResults: {
+        type: String,
+        computed: '_computeResultsToShow(pages, datalength, pages.page)'
       }
     },
     _routeObserver: function(newRoute, oldRoute) {
@@ -103,7 +139,6 @@
       if (e.keyCode === 13) {     // Enter was hit
 
         var input = this.$['search-input'];
-
         this.set('searchString', input.value);
         input.focus();
       }
@@ -111,10 +146,10 @@
 
     // Sets the query for search, auto-triggers API call
     _searchStringChanged: function(searchStr, old) {
-
       if (typeof old === 'undefined') {
         return;
       }
+
       var backup = JSON.parse(JSON.stringify(this.route.__queryParams));
       backup.search = searchStr;
       this.set('route.__queryParams', backup);
