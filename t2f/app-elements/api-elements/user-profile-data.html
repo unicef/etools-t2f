@@ -39,7 +39,7 @@
         this.ajaxEl = this.$.ajaxEl;
         this.set('endpoint', this.getEndpoint(this.endpointName));
       },
-      saveProfile: function (profile) {
+      saveProfile: function(profile) {
         var url = this.endpoint.url;
         if (_.isEmpty(profile)) {
           return;
