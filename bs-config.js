@@ -14,7 +14,7 @@
  */
 
 var proxy = require('http-proxy-middleware');
-var backendProxy = proxy(['/api','/users/api/','/admin/', '/login/', '/static/'], {
+var backendProxy = proxy(['/api','/users/api/', '/users/myprofile/','/admin/', '/login/', '/static/'], {
   target: 'http://139.59.134.232:9090/',
   changeOrigin: true,             // for vhosted sites, changes host header to match to target's host
   logLevel: 'debug',
