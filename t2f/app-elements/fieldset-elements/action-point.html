@@ -65,6 +65,9 @@
         <div class="layout horizontal">
 
           <paper-input label="Description"
+            maxlength="254"
+            char-counter="true"
+            id="description_report"
             class$="flex-3 custom-margin [[computedPermission.description.readOnly]]"
             disabled="[[computedPermission.description.disabled]]"
             hidden$="[[computedPermission.description.hidden]]"
@@ -167,6 +170,9 @@
 
       <div class="layout horizontal viewSpacing">
         <paper-input label="Description"
+            maxlength="254"
+            id="description_ded"
+            char-counter="true"
             class$="flex-8 custom-margin [[actionPointsPermissions.description.readOnly]]"
             hidden$="[[!actionPointsPermissions.description.view]]"
             disabled$="[[!actionPointsPermissions.description.edit]]"
