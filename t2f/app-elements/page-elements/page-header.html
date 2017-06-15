@@ -5,7 +5,9 @@
 <link rel="import" href="../../../bower_components/etools-page-refresh/etools-page-refresh.html">
 <link rel="import" href="../../../bower_components/etools-app-selector/etools-app-selector.html">
 <link rel="import" href="../countries-dropdown/countries-dropdown.html">
-
+<link rel="import" href="../../../bower_components/etools-profile-dropdown/etools-profile-dropdown.html">
+<link rel="import" href="../api-elements/user-profile-data.html">
+<link rel="import" href="../../app-config/etools-app-config.html">
 <link rel="import" href="../../styles/shared-styles.html">
 
 <dom-module id="page-header">
@@ -76,6 +78,8 @@
         }
       }
     </style>
+
+    <user-profile-data id="userProfileData" user-profile="{{profile}}"></user-profile-data>
     <app-toolbar sticky class="content-align">
       <paper-icon-button id="menuButton" class="light" icon="menu" on-tap="openDrawer"></paper-icon-button>
       <div class="titlebar content-align">
@@ -84,22 +88,38 @@
       </div>
       <div class="content-align">
         <countries-dropdown id="countries" countries="[[countries]]" current="[[user.profile.country]]"></countries-dropdown>
+        <etools-profile-dropdown
+            sections="[[structure.sections]]"
+            offices="[[structure.offices]]"
+            users="[[structure.users]]"
+            profile="{{profile}}"
+            on-save-profile="_saveProfile"
+            on-sign-out="_signOut"></etools-profile-dropdown>
         <etools-page-refresh id="refresh"></etools-page-refresh>
       </div>
     </app-toolbar>
   </template>
 
   <script>
-    (function() {
       Polymer({
         is: 'page-header',
+        behaviors: [
+            etoolsAppConfig
+        ],
         properties: {
+          profile: {
+            type: Object
+          },
           countries: {
             type: Array
           },
           user: {
             type: Object,
-          }
+          },
+          structure: {
+            type: Object
+          },
+          userProfileDialog: Object
         },
         observers: [
           '_updateCountriesList(user.profile.countries_available)'
@@ -146,8 +166,22 @@
             this.updateStyles();
           }
         },
+        _saveProfile: function(e) {
+          this.set('profile', e.detail.profile);
+          this.$.userProfileData.saveProfile(this.profile);
+        },
+        _signOut: function() {
+          this._clearDexieDbs();
+          this._clearLocalStorage();
+          window.location.href = window.location.origin + '/saml2/logout';
+        },
+        _clearDexieDbs: function() {
+          etoolsAppConfig.appDexieDb.delete();
+        },
+        _clearLocalStorage: function() {
+          localStorage.clear();
+        },
       });
-    })();
   </script>
 
 </dom-module>

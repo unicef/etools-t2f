@@ -21,9 +21,12 @@
 </test-fixture>
 
 <script>
-    suite('<action-point>', function() {
+/* global suite, setup, test, expect, fixture, exist */
+/* jshint expr: true */
 
-        var el, dom;
+    suite('<action-point>', function() {
+        var el;
+        var dom;
 
         setup(function() {
             el = fixture('el');
@@ -46,6 +49,21 @@
             var viewModeCompletedDate = document.getElementById('completed_date_view');
             expect(viewModeCompletedDate).to.exist;
             expect(viewModeCompletedDate.maxDate).to.be.a('date');
+        });
+
+        test('#430 action point description has a limit of 254 char, !view-mode', function() {
+          el.set('viewMode', false);
+          dom.flush();
+          var desc = document.getElementById('description_report');
+          var counter = desc.getElementsByTagName('paper-input-char-counter')[0];
+          expect(counter._charCounterStr).to.equal('0/254');
+        });
+        test('#430 action point description has a limit of 254 char, view-mode', function() {
+          el.set('viewMode', true);
+          dom.flush();
+          var desc = document.getElementById('description_ded');
+          var counter = desc.getElementsByTagName('paper-input-char-counter')[0];
+          expect(counter._charCounterStr).to.equal('0/254');
         });
     });
 </script>
