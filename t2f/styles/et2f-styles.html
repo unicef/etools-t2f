@@ -117,14 +117,20 @@
         --paper-radio-button-checked-color: var(--et2f-primary);
       }
 
-      * /deep/ *[starred] /deep/ label::after {
-        content: " *";
-        font-weight: bold;
-        color: var(--et2f-error);
+      :root {
+        --required-star-style: {
+           background: url(../images/required.svg) no-repeat 99% 20%/8px;
+           width: auto !important;
+           max-width: 100%;
+           right: initial;
+           padding-right: 15px;
+          };
       }
 
-      * /deep/ *[starred] /deep/ .search-input /deep/ label::after {
-        content: "";
+     *[starred] {
+        --paper-input-container-label: {
+         @apply(--required-star-style);
+        };
       }
 
     </style>
