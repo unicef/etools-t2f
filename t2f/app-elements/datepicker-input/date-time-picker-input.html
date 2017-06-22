@@ -115,7 +115,10 @@
           reflectToAttribute: true,
         },
         required: Boolean,
-        starred: Boolean,
+        starred: {
+          type: Boolean,
+          observer: '_starredChanged'
+        },
         placeholder: String,
         innerClass: String,
         autoValidate: {
@@ -194,6 +197,12 @@
         }
       },
       observers: ['_dateObserver(date.*)'],
+
+      _starredChanged: function(newValue, oldValue) {
+        if (oldValue !== undefined && newValue !== undefined && oldValue !== newValue) {
+          this.updateStyles();
+        }
+      },
       _dateObserver: function(changed) {
         var date = changed.base;
         if (!date) {
