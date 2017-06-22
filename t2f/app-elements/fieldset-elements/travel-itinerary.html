@@ -81,6 +81,7 @@
           disabled="[[computedPermission.dsa_region.disabled]]"
           hidden$="[[computedPermission.dsa_region.hidden]]"
           options="[[dsaRegionsToUse]]"
+          dynamic-align
           value="{{itinerary.dsa_region}}"
           auto-validate$="[[autoValidate]]"
           required$="[[dsaAreaRequired]]"
@@ -127,6 +128,7 @@
           hidden$="[[computedPermission.mode_of_travel.hidden]]"
           options="[[structure.travel_modes]]"
           capitalize-input-shown
+          dynamic-align
           value="{{itinerary.mode_of_travel}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.mode_of_travel.required]]"
@@ -153,6 +155,7 @@
           hidden$="[[computedPermission.airlines.hidden]]"
           options="[[structure.airlines]]"
           multi
+          dynamic-align
           value="{{itinerary.airlines}}"
           placeholder="select">
         </etools-searchable-multiselection-menu>

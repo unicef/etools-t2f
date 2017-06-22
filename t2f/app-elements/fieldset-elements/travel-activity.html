@@ -35,6 +35,7 @@
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
           empty-value
+          dynamic-align
           options="[[structure.travel_types]]"
           value="{{activity.travel_type}}"
           required$="[[computedPermission.travel_type.required]]"
@@ -48,6 +49,7 @@
           disabled="[[computedPermission.partner.disabled]]"
           hidden$="[[computedPermission.partner.hidden]]"
           empty-value
+          dynamic-align
           options="[[structure.partners]]"
           value="{{activity.partner}}"
           starred$="[[progVisitOrSpotCheck]]"
@@ -61,6 +63,7 @@
           disabled="[[disablePartnerships]]"
           hidden$="[[computedPermission.partnership.hidden]]"
           empty-value
+          dynamic-align
           options="[[partnerships]]"
           value="{{activity.partnership}}"
           required$="[[partnershipRequired)]]"
@@ -80,6 +83,7 @@
           required$="[[resultsRequired]]"
           starred$="[[resultsRequired]]"
           empty-value
+          dynamic-align
           id="results"
           value="{{activity.result}}"
           placeholder="select">
@@ -91,6 +95,7 @@
           hidden$="[[computedPermission.locations.hidden]]"
           options="[[structure.locations]]"
           multi
+          dynamic-align
           value="{{activity.locations}}"
           placeholder="select">
         </etools-searchable-multiselection-menu>
@@ -126,6 +131,7 @@
             hidden$="[[hidePrimaryTraveler]]"
             options="[[structure.users]]"
             empty-value
+            dynamic-align
             placeholder="select"
             auto-validate$="[[autoValidate]]">
           </etools-searchable-multiselection-menu>

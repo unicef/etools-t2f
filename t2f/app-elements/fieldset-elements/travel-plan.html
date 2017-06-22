@@ -136,6 +136,7 @@
           hidden$="[[computedPermission.traveler.hidden]]"
           options="[[structure.users]]"
           empty-value
+          dynamic-align
           required$="[[computedPermission.traveler.required]]"
           placeholder="select"
           auto-validate$="[[autoValidate]]"
@@ -149,6 +150,7 @@
           disabled="[[computedPermission.supervisor.disabled]]"
           hidden$="[[computedPermission.supervisor.hidden]]"
           empty-value
+          dynamic-align
           options="[[usersButMe]]"
           required$="[[computedPermission.supervisor.required]]"
           placeholder="select"
@@ -163,6 +165,7 @@
           disabled="[[computedPermission.office.disabled]]"
           hidden$="[[computedPermission.office.hidden]]"
           empty-value
+          dynamic-align
           options="[[structure.offices]]"
           required$="[[computedPermission.office.required]]"
           placeholder="select"
@@ -177,6 +180,7 @@
           disabled="[[computedPermission.section.disabled]]"
           hidden$="[[computedPermission.section.hidden]]"
           empty-value
+          dynamic-align
           options="[[structure.sections]]"
           required$="[[computedPermission.section.required]]"
           placeholder="select"
@@ -216,6 +220,7 @@
           disabled="[[computedPermission.currency.disabled]]"
           hidden$="[[_hideOnTANotRequired(computedPermission.currency.hidden, baseDetails.ta_required)]]"
           empty-value
+          dynamic-align
           options="[[currencyOptions]]"
           value="{{baseDetails.currency}}"
           placeholder="select">
