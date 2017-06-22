@@ -32,6 +32,7 @@
           disabled="[[computedPermission.type.disabled]]"
           hidden$="[[computedPermission.type.hidden]]"
           empty-value
+          dynamic-align
           options="[[expenseTypes]]"
           value="{{expense.type}}"
           placeholder="select"
@@ -58,6 +59,7 @@
           class$="flex-3 [[computedPermission.document_currency.readOnly]]"
           hidden$="[[computedPermission.document_currency.hidden]]"
           empty-value
+          dynamic-align
           options="[[structure.currencies]]"
           value="{{expense.document_currency}}"
           placeholder="select"
