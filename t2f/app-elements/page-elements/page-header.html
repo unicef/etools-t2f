@@ -99,10 +99,11 @@
           },
           user: {
             type: Object,
+            observer: '_warn'
           }
         },
         observers: [
-          '_updateCountriesList(user.profile.countries_available)'
+          '_updateCountriesList(user.countries_available)'
         ],
         listeners: {
         'main_refresh': '_refresh_page'

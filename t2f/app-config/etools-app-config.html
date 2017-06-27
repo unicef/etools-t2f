@@ -17,7 +17,7 @@ App global configuration
       // app endpoints
       endpoints: {
         userInfo: {
-          url: '/users/api/profile/',
+          url: '/api/v2/users/profile/',
           exp: 30 * 60 * 1000, // 30min
           cachingKey: 'userData'
         },
@@ -25,7 +25,7 @@ App global configuration
           url: '/api/t2f/settings/'
         },
         changeCountry: {
-          url: '/users/api/changecountry/'
+          url: '/api/v2/users/changecountry/'
         },
         testTemplateEndpointUse: {
           template: '/api/country/<%=id%>',
@@ -33,12 +33,12 @@ App global configuration
           cachingKey: 'countries'
         },
         users: {
-          url: '/api/users',
+          url: '/api/v2/users/',
           exp: 1000 * 60 * 60, //1 hour
           cachingKey: 'user-list'
         },
         profile: {
-          template: '/api/users/<%=id%>/',
+          template: '/api/v2/users/<%=id%>/',
         },
         groups: {
           url: '/api/groups/',
