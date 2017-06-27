@@ -58,7 +58,9 @@
     <paper-dialog id="confirmation-modal" with-backdrop>
 
       <div class="dialog-heading">Caution</div>
-      <div class="dialog-intro-text">Financial detail of International travels are handled through Vision</div>
+      <div class="dialog-intro-text">
+      You are not able to raise a TA for international trips in eTools. Please make sure to have your TA raised in VISION prior to your trip.
+      </div>
 
       <paper-button
         class="dialog-confirm-button"
@@ -134,6 +136,7 @@
           hidden$="[[computedPermission.traveler.hidden]]"
           options="[[structure.users]]"
           empty-value
+          dynamic-align
           required$="[[computedPermission.traveler.required]]"
           placeholder="select"
           auto-validate$="[[autoValidate]]"
@@ -147,6 +150,7 @@
           disabled="[[computedPermission.supervisor.disabled]]"
           hidden$="[[computedPermission.supervisor.hidden]]"
           empty-value
+          dynamic-align
           options="[[usersButMe]]"
           required$="[[computedPermission.supervisor.required]]"
           placeholder="select"
@@ -161,6 +165,7 @@
           disabled="[[computedPermission.office.disabled]]"
           hidden$="[[computedPermission.office.hidden]]"
           empty-value
+          dynamic-align
           options="[[structure.offices]]"
           required$="[[computedPermission.office.required]]"
           placeholder="select"
@@ -175,6 +180,7 @@
           disabled="[[computedPermission.section.disabled]]"
           hidden$="[[computedPermission.section.hidden]]"
           empty-value
+          dynamic-align
           options="[[structure.sections]]"
           required$="[[computedPermission.section.required]]"
           placeholder="select"
@@ -214,6 +220,7 @@
           disabled="[[computedPermission.currency.disabled]]"
           hidden$="[[_hideOnTANotRequired(computedPermission.currency.hidden, baseDetails.ta_required)]]"
           empty-value
+          dynamic-align
           options="[[currencyOptions]]"
           value="{{baseDetails.currency}}"
           placeholder="select">

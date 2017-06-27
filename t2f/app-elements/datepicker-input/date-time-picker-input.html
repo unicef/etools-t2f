@@ -36,6 +36,13 @@
         margin-right:12px;
         margin-left: 12px;
       }
+
+      paper-input[starred] {
+         --paper-input-container-label: {
+          @apply(--required-star-style);
+          color: var(--gray-light);
+        };
+      }
       paper-time-picker {
         --default-primary-color: var(--et2f-primary);
       }
@@ -71,6 +78,7 @@
       disabled$="[[disabled]]"
       error-message="[[errorMessage]]"
       required$="[[required]]"
+      starred$="[[starred]]"
       placeholder="[[placeholder]]"
       invalid$="[[invalid]]">
 
@@ -107,6 +115,10 @@
           reflectToAttribute: true,
         },
         required: Boolean,
+        starred: {
+          type: Boolean,
+          observer: '_starredChanged'
+        },
         placeholder: String,
         innerClass: String,
         autoValidate: {
@@ -185,6 +197,12 @@
         }
       },
       observers: ['_dateObserver(date.*)'],
+
+      _starredChanged: function(newValue, oldValue) {
+        if (oldValue !== undefined && newValue !== undefined && oldValue !== newValue) {
+          this.updateStyles();
+        }
+      },
       _dateObserver: function(changed) {
         var date = changed.base;
         if (!date) {

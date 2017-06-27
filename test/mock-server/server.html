@@ -19,6 +19,7 @@
   <script src="./api/t2f_static_data.js"></script>
   <script src="./api/users.js"></script>
   <script src="./api/vendor_numbers.js"></script>
+  <script src="./api/permission_matrix.js"></script>
 
 </head>
 <body>
@@ -48,6 +49,7 @@ var responses = {
   '/wbs_grants_funds/': window.mockApi.cost_assignment,
   '/dsa_regions/': window.mockApi.dsa_regions,
   '/v2/partners/?verbosity=minimal': window.mockApi.partners,
+  '/t2f/permission_matrix': window.mockApi.permission_matrix,
 };
 
 window.server.respondWith(/\/api(\/\S*)/, function(xhr, part) {

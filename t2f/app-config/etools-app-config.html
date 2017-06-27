@@ -21,6 +21,9 @@ App global configuration
           exp: 30 * 60 * 1000, // 30min
           cachingKey: 'userData'
         },
+        userProfile: {
+          template: '/users/myprofile/',
+        },
         settings: {
           url: '/api/t2f/settings/'
         },
@@ -89,7 +92,7 @@ App global configuration
           cachingKey: 'et2f_dsa_regions'
         },
         partners: {
-          url: '/api/v2/partners/?verbosity=minimal',
+          url: '/api/v2/partners/',
           exp: 12 * 60 * 60 * 1000, // 12 hours
           cachingKey: 'et2f_partners'
         },
@@ -97,6 +100,11 @@ App global configuration
           url: '/api/locations-light/',
           exp: 12 * 60 * 60 * 1000, // 12 hours
           cachingKey: 'et2f_locations'
+        },
+        results: {
+          url: '/api/v2/reports/results/ ',
+          exp: 12 * 60 * 60 * 1000, // 12 hours
+          cachingKey: 'et2f_resultds'
         },
         et2fTravelDetail: {
           template: '/api/t2f/travels/<%=id%>/',
