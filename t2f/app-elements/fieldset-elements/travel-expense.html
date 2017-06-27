@@ -123,7 +123,7 @@
         var toRet = '^[0-9]+(\.[0-9]{1,2})?$';
         var gotVendorNumber = expenseType && expenseType.vendor_number;
         if (gotVendorNumber) {
-          var isStatic = expenseType.vendor_number === user.profile.vendor_number ||
+          var isStatic = expenseType.vendor_number === user.vendor_number ||
             expenseType.vendor_number === 'user';
           toRet = isStatic ? '^-?[0-9]+(\.[0-9]{1,2})?$' : toRet;
         }
@@ -134,7 +134,7 @@
       //     otherwise follows the permissionmatrix
       _lockDownCurrency: function(type, disabledFromMatrix, documentCurrency, expense, user) {
         var noType = !type && type !== '';
-        if (noType || type.vendor_number === user.profile.vendor_number || type.vendor_number === 'user') {
+        if (noType || type.vendor_number === user.vendor_number || type.vendor_number === 'user') {
           this.set('expense.document_currency', documentCurrency);
           this.$.curr1.setAttribute('disabled', true);
         } else if (type && !disabledFromMatrix) {

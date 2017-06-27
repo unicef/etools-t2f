@@ -288,7 +288,9 @@
           type: Object,
           observer: '_formErrorObserver'
         },
-        travelerProfile: Object,
+        travelerProfile: {
+          type: Object
+        },
         dataForTa: {
           type: Object,
           computed: '_computeDataForTa(data, travelerProfile)'
@@ -356,11 +358,11 @@
         return data || profile || details || dsa;
       },
 
-      _computeDataForTa: function(data, profile) {
-        if (!data.baseDetails || !data.baseDetails.traveler || !profile || !profile.profile) {
+      _computeDataForTa: function(data, user) {
+        if (!data.baseDetails || !data.baseDetails.traveler || !user) {
           return;
         }
-        data.baseDetails.traveler.profile = profile.profile;
+        data.baseDetails.traveler.profile = user;
         return JSON.parse(JSON.stringify(data));
       },
 
@@ -428,12 +430,13 @@
       },
 
       _computeTravelPermission: function(permissions, status, user, data) {
+
         var travelRole;
         if (data.baseDetails.id) {
-          if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
+          if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.value) {
             travelRole = 'Traveler';
           }
-          if (data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
+          if (data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.value) {
             travelRole = 'Supervisor';
           }
 
@@ -490,8 +493,8 @@
         var empty = !data.baseDetails.traveler;
         if (firstSave && empty) {
           this.set('data.baseDetails.traveler', {
-            label: user.full_name,
-            value: user.id
+            label: user.label,
+            value: user.value
           });
         }
       },
