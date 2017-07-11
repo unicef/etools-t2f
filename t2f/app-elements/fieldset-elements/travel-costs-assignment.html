@@ -37,6 +37,7 @@
           class$="flex-4 [[computedPermission.business_area.readOnly]]"
           options="[[structure.business_areas]]"
           empty-value
+          dynamic-align
           value="{{costAssignment.business_area}}"
           disabled="[[disableBusinessArea]]"
           hidden$="[[computedPermission.business_area.hidden]]"
@@ -62,6 +63,7 @@
           class$="flex-4 [[computedPermission.wbs.readOnly]]"
           options="[[wbsOptions]]"
           empty-value
+          dynamic-align
           value="{{costAssignment.wbs}}"
           disabled="[[computedPermission.wbs.disabled]]"
           hidden$="[[computedPermission.wbs.hidden]]"
@@ -78,6 +80,7 @@
           disabled="[[disableGrant]]"
           hidden$="[[computedPermission.grant.hidden]]"
           empty-value
+          dynamic-align
           required$="[[computedPermission.grant.required]]"
           placeholder="select"
           starred>
@@ -90,6 +93,7 @@
           value="{{costAssignment.fund}}"
           disabled="[[disableFund]]"
           empty-value
+          dynamic-align
           hidden$="[[computedPermission.fund.hidden]]"
           required$="[[computedPermission.fund.required]]"
           placeholder="select"

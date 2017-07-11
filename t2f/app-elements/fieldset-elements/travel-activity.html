@@ -35,6 +35,7 @@
           disabled="[[computedPermission.travel_type.disabled]]"
           hidden$="[[computedPermission.travel_type.hidden]]"
           empty-value
+          dynamic-align
           options="[[structure.travel_types]]"
           value="{{activity.travel_type}}"
           required$="[[computedPermission.travel_type.required]]"
@@ -48,10 +49,11 @@
           disabled="[[computedPermission.partner.disabled]]"
           hidden$="[[computedPermission.partner.hidden]]"
           empty-value
+          dynamic-align
           options="[[structure.partners]]"
           value="{{activity.partner}}"
-          starred$="[[_progVisOrSpotCheck(activity.travel_type)]]"
-          required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
+          starred$="[[progVisitOrSpotCheck]]"
+          required$="[[progVisitOrSpotCheck]]"
           placeholder="select"
           auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
@@ -61,10 +63,11 @@
           disabled="[[disablePartnerships]]"
           hidden$="[[computedPermission.partnership.hidden]]"
           empty-value
+          dynamic-align
           options="[[partnerships]]"
           value="{{activity.partnership}}"
-          required$="[[_progVisOrSpotCheck(activity.travel_type)]]"
-          starred$="[[_progVisOrSpotCheck(activity.travel_type)]]"
+          required$="[[partnershipRequired)]]"
+          starred$="[[partnershipRequired]]"
           placeholder="select"
           auto-validate$="[[autoValidate]]">
         </etools-searchable-multiselection-menu>
@@ -73,11 +76,15 @@
       <div class="layout horizontal">
 
         <etools-searchable-multiselection-menu label="Results"
-          class$="flex-4 [[computedPermission.travel_type.readOnly]]"
-          disabled="[[computedPermission.travel_type.disabled]]"
-          hidden$="[[computedPermission.travel_type.hidden]]"
+          class$="flex-4 [[computedPermission.results.readOnly]]"
+          disabled="[[disableResults]]"
+          hidden$="[[computedPermission.results.hidden]]"
           options="[[results]]"
+          required$="[[resultsRequired]]"
+          starred$="[[resultsRequired]]"
           empty-value
+          dynamic-align
+          id="results"
           value="{{activity.result}}"
           placeholder="select">
         </etools-searchable-multiselection-menu>
@@ -88,6 +95,7 @@
           hidden$="[[computedPermission.locations.hidden]]"
           options="[[structure.locations]]"
           multi
+          dynamic-align
           value="{{activity.locations}}"
           placeholder="select">
         </etools-searchable-multiselection-menu>
@@ -123,6 +131,7 @@
             hidden$="[[hidePrimaryTraveler]]"
             options="[[structure.users]]"
             empty-value
+            dynamic-align
             placeholder="select"
             auto-validate$="[[autoValidate]]">
           </etools-searchable-multiselection-menu>
@@ -160,15 +169,19 @@
         },
         partnerships: {
           type: Array,
-          value: []
         },
         results: {
           type: Array,
-          value: [],
         },
         disablePartnerships: {
           type: Boolean,
+          value: true,
           computed: '_computeDisablePartnerships(partnerships, computedPermission.partnership.disabled)'
+        },
+        disableResults: {
+          type: Boolean,
+          value: true,
+          computed: '_computeDisableResults(results, computedPermission.result.disabled)'
         },
         autoValidate: {
           type: Boolean,
@@ -183,6 +196,20 @@
           value: true,
           computed: '_computeHidePrimaryTraveler(computedPermission.primary_traveler.hidden,' +
           ' activity.is_primary_traveler)',
+        },
+        progVisitOrSpotCheck: {
+          type: Boolean,
+          value: false,
+        },
+        resultsRequired: {
+          type: Boolean,
+          value: false,
+          computed: '_requiredIfNotDisabledAndProgVisitOrSpotCheck(disableResults, progVisitOrSpotCheck)'
+        },
+        partnershipRequired: {
+          type: Boolean,
+          value: false,
+          computed: '_requiredIfNotDisabledAndProgVisitOrSpotCheck(disablePartnerships, progVisitOrSpotCheck)'
         }
       },
 
@@ -190,7 +217,7 @@
 
       observers: [
         '_activityObserver(activity.*)',
-        '_partnershipChanged(activity.partnership)',
+        // '_partnershipChanged(activity.partnership, activity.partner)',
         '_ifPrimarySetTraveler(activity.is_primary_traveler)',
       ],
 
@@ -208,7 +235,7 @@
         var hasId = !!(this.activity.id) || this.activity.id === '';
         var isFirst = hasId && oldValue === undefined;
         var isProgOrSpot = newValue && (newValue.label === 'Programmatic Visit' || newValue.label === 'Spot Check');
-
+        this.set('progVisitOrSpotCheck', isProgOrSpot);
         if (!newValue || isFirst) { return; }
 
         // if not Programmatic Visit or Spot Check: hide “is primary traveler”
@@ -239,65 +266,55 @@
         return partnerships.length === 0 || permissionDisabled;
       },
 
+      _computeDisableResults: function(results, permissionDisabled) {
+        return results.length === 0 || permissionDisabled;
+      },
+
       // Fills/empties out the dropdowns for the partnerships structure
       _partnerPartnershipsHandling: function(changed) {
         // Early return for unneeded subpaths
         if ([
           'activity._validationFunction',
           'activity.primary_traveler',
-          'activity.partnership',
-          'activity.government_partnership',
+          'activity.result',
         ].indexOf(changed.path) > -1 || !changed.base) {
           return;
         }
 
         var partner = changed.base.partner;
         var partnership = changed.base.partnership;
-        var government_partnership = changed.base.government_partnership;
-        var basePartnerships = partner && partner.partnerships ?
-          partner.partnerships : [];
-        var baseGovernamentPartnerships = partner && partner.government_partnerships ?
-          partner.government_partnerships : [];
-        if (partner) {
-          this.set('partnerships', basePartnerships.concat(baseGovernamentPartnerships));
+        var result = changed.base.result;
+        var results = [];
+        var partnerships = [];
 
-          if (partnership && this.partnerships.find(function(partnerPartnership) {
-              return partnerPartnership.value === partnership.value &&
-                partnerPartnership.type === partnership.type;
-          })) {
-            this.set('activity.partnership', partnership);
-          } else if (government_partnership && this.partnerships.find(function(partnerPartnership) {
-              return partnerPartnership.value === government_partnership.value &&
-                partnerPartnership.type === government_partnership.type;
-          })) {
-            // setting initial gvmnt partnership & cleaning up data
-            this.set('activity.partnership', government_partnership);
-            this.set('activity.government_partnership', null);
+        if (partner && partner.partner_type === 'Government') {
+          results = this.structure.results.slice();
+          partnerships = [];
+          partnership = null;
+        } else {
+
+          if (partner && partner.partnerships) {
+            partnerships = partner.partnerships;
           } else {
-            this.set('activity.partnership', null);
+            partnership = null;
           }
-        } else {
-          this.set('partnerships', []);
-          this.set('activity.partnership', null);
-        }
-      },
 
-      // Sets the results for the partnership
-      _partnershipChanged: function(partnership) {
-        if (partnership !== undefined && partnership !== null) {
-          if (partnership.type === 'partnerships') {
-            this.set('results', this.structure.partnerships.find(function(pship) {
-              return pship.value === partnership.value;
-            }).results);
-          } else if (partnership.type === 'government_partnerships') {
-            this.set('results', this.structure.government_partnerships.find(function(pship) {
-              return pship.value === partnership.value;
-            }).results);
+          if (partnership && !partnerships.find(function(pP) { return pP.value === partnership.value;})) {
+            partnership = null;
           }
-        } else {
-          this.set('results', []);
-          this.set('activity.result', null);
+
+          if (partnership) {
+            results = partnership.results;
+          }
         }
+
+        if (result && !results.find(function(r) { return r.value === result.value;})) {
+          result = null;
+        }
+        this.set('partnerships', partnerships);
+        this.set('activity.partnership', partnership);
+        this.set('results', results);
+        this.set('activity.result', result);
       },
 
       _activityObserver: function(changed) {
@@ -320,11 +337,8 @@
           return false;
         }
       },
-
-      _progVisOrSpotCheck: function(travel_type) {
-        return travel_type ?
-          ['Programmatic Visit', 'Spot Check'].indexOf(travel_type.label) > -1 :
-          false;
+      _requiredIfNotDisabledAndProgVisitOrSpotCheck: function(disabled, progVisitOrSpotCheck) {
+        return !disabled && progVisitOrSpotCheck;
       },
 
       _validateActivities: function() {

@@ -1,0 +1,91 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../app-config/etools-app-config.html">
+<link rel="import" href="../../../bower_components/etools-loading/etools-loading-behavior.html">
+<dom-module id="user-profile-data">
+
+  <template>
+
+    <etools-ajax id="ajaxEl"
+                 endpoint="[[endpoint]]"
+                 on-success="_handleResponse"
+                 on-fail="handleErrorResponse"></etools-ajax>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'user-profile-data',
+      behaviors: [
+        etoolsAppConfig.globals,
+        etoolsBehaviors.LoadingBehavior
+      ],
+      properties: {
+        endpointName: {
+          type: String,
+          value: 'userProfile'
+        },
+        userProfile: {
+          type: Object,
+          notify: true
+        },
+        loading: {
+          type: Boolean,
+          value: false,
+          observer: '_loadingObserver'
+        }
+      },
+      ready: function() {
+
+        this.ajaxEl = this.$.ajaxEl;
+        this.set('endpoint', this.getEndpoint(this.endpointName));
+      },
+      saveProfile: function(profile) {
+        var url = this.endpoint.url;
+        if (_.isEmpty(profile)) {
+          return;
+        }
+        if (!_.isEmpty(profile)) {
+          this.set('loading', true);
+          this._prepareAndFireRequest('PATCH', profile, url);
+        } else {
+          this.fire('toast', {
+            text: 'There is nothing to save. No change detected on your profile.',
+            showCloseBtn: true
+          });
+        }
+      },
+      _prepareAndFireRequest: function(method, data, url) {
+        this._resetAjax();
+        if (!method) {
+          method = 'GET';
+        }
+        this.ajaxEl.set('method', method);
+        if (typeof data === 'object' && Object.keys(data).length > 0
+            && ['PATCH', 'POST'].indexOf(method) > -1) {
+          this.ajaxEl.set('body', data);
+          this.ajaxEl.set('url', url);
+        }
+      },
+      _resetAjax: function() {
+        this.ajaxEl.set('params', null);
+        this.ajaxEl.set('body', null);
+        this.ajaxEl.set('url', null);
+      },
+      _handleResponse: function(response) {
+        this.set('userProfile', response.detail);
+        this.set('loading', false);
+      },
+      _loadingObserver: function(loading) {
+        if (loading) {
+          this.loadingEl = this.createLoading('Loading data');
+          this.loadingEl.active = true;
+          this.loadingEl.setAttribute('absolute', true);
+        } else if (!loading && this.loadingEl) {
+          this.removeLoading(this.loadingEl);
+        }
+      },
+    });
+
+  </script>
+
+</dom-module>

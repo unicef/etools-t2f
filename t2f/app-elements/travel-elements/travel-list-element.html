@@ -141,15 +141,14 @@
       <paper-dialog
         id="duplicate-modal"
         opened="{{duplicateModalOpened}}"
-        with-backdrop
         class="layout vertical">
 
         <div class="dialog-head-container layout horizontal">
-          <div class="dialog-heading flex">Duplicate travel</div>
+          <div class="dialog-heading flex">Duplicate Trip</div>
           <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
         </div>
 
-        <div class="dialog-intro-text">Please select the person to share this trips activities with</div>
+        <div class="dialog-intro-text">Please select the traveler for whom the trip is being duplicated for.</div>
         <etools-searchable-multiselection-menu label="Select traveler" class="filter-dropdown"
         options="[[users]]"
         on-value-change="duplicationSetTraveler">
@@ -164,7 +163,6 @@
       <paper-dialog
         id="driver-modal"
         opened="{{driverModalOpened}}"
-        with-backdrop
         class="layout vertical">
 
         <div class="dialog-head-container layout horizontal">
@@ -172,7 +170,7 @@
           <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
         </div>
 
-        <div class="dialog-intro-text">Please select the driver to share this travel plans itinerary with</div>
+        <div class="dialog-intro-text"> Please select the driver for whom to create a trip for</div>
 
         <etools-searchable-multiselection-menu label="Select traveler" class="filter-dropdown"
         options="[[drivers]]"

@@ -26,17 +26,18 @@
 
       <app-header fixed shadow>
 
-        <page-header title="" user="[[user]]" ></page-header>
+        <page-header title="" user="[[user]]" structure="[[structure]]" ></page-header>
 
       </app-header>
 
-       <travel-list user="[[user]]"
+       <travel-list
+          user="[[user]]"
           structure="[[structure]]"
           route="{{route}}"
           user="[[user]]"
           list-loading="{{listLoading}}"
-          refresh-data="{{refreshData}}"
-        ></travel-list>
+          refresh-data="{{refreshData}}">
+        </travel-list>
     </app-header-layout>
 
   </template>
@@ -49,7 +50,9 @@
           type: Boolean,
           notify: true,
         },
-        structure: Object,
+        structure: {
+          type: Object
+        },
         user: Object,
         route: Object,
         listLoading: {
