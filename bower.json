@@ -66,6 +66,6 @@
     "web-component-tester": "^4.0.0"
   }, 
   "resolutions": {
-    "paper-dialog": "PolymerElements/paper-dialog#^1.1.0"    
+    "paper-dialog": "^1.1.0"    
   }
 }
