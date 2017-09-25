@@ -189,12 +189,12 @@
 
               <div class="vertline flex"></div>
 
-              <div class$="statuscont [[_computeStatusClass('Sent for payment', status, 1)]]">
+              <div class$="statuscont [[_computeStatusClass('Processed', status, 1)]]">
                 <div class="circlenr">
-                  <span class$="[[_computeStatusClass('Sent for payment', status, 1)]]">4</span>
-                  <iron-icon class$="[[_computeStatusClass('Sent for payment', status, 1)]]" icon="icons:done"></iron-icon>
+                  <span class$="[[_computeStatusClass('Processed', status, 1)]]">4</span>
+                  <iron-icon class$="[[_computeStatusClass('Processed', status, 1)]]" icon="icons:done"></iron-icon>
                 </div>
-                <span class="status">Sent for Payment</span>
+                <span class="status">Processed</span>
               </div>
             </div>
 
@@ -341,7 +341,7 @@
       },
       observers: ['_parseData(data.*)'],
 
-      firstStatuses: ['Planned', 'Submitted', 'Approved', 'Rejected', 'Sent for payment'],
+      firstStatuses: ['Planned', 'Submitted', 'Approved', 'Rejected', 'Processed'],
 
       secondStatuses: [
         'Certification needed',
