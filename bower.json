@@ -59,7 +59,7 @@
     "paper-time-picker": "^1.1.4",
     "es5-shim": "https://github.com/es-shims/es5-shim.git",
     "webcomponentsjs": "^0.7.24",
-    "etools-app-selector": "^1.0.3",
+    "etools-app-selector": "^1.0.7",
     "etools-profile-dropdown": "^1.0.3"
   },
   "devDependencies": {
