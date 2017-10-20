@@ -40,7 +40,7 @@
     "etools-datepicker": "^1.0.0",
     "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.1",
     "paper-badge": "PolymerElements/paper-badge#^1.1.4",
-    "paper-card": "PolymerElements/paper-card#^1.1.4",
+    "paper-card": "PolymerElements/paper-card#^1.1.6",
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
     "etools-repeatable-field-set": "^1.0.9",
@@ -59,10 +59,13 @@
     "paper-time-picker": "^1.1.4",
     "es5-shim": "https://github.com/es-shims/es5-shim.git",
     "webcomponentsjs": "^0.7.24",
-    "etools-app-selector": "^1.0.3",
+    "etools-app-selector": "^1.0.7",
     "etools-profile-dropdown": "^1.0.3"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
+  },
+  "resolutions": {
+    "paper-dialog": "^2.0.0"
   }
 }
