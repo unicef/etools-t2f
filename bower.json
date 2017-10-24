@@ -40,7 +40,7 @@
     "etools-datepicker": "^1.0.0",
     "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.1",
     "paper-badge": "PolymerElements/paper-badge#^1.1.4",
-    "paper-card": "PolymerElements/paper-card#^1.1.4",
+    "paper-card": "PolymerElements/paper-card#^1.1.6",
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
     "etools-repeatable-field-set": "^1.0.9",
@@ -64,8 +64,8 @@
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
-  }, 
+  },
   "resolutions": {
-    "paper-dialog": "^1.1.0"    
+    "paper-dialog": "^2.0.0"
   }
 }
