@@ -536,7 +536,7 @@
           var itineraryOpen = self.route.path.indexOf('edit-travel/-1') > -1 ? hide : show;
           computed[key] = {
             hidden: !permissions[key].view || forceHiddenStatus,
-            open: key ==='itinerary'? itineraryOpen : show,
+            open: key === 'itinerary' ? itineraryOpen : show,
             edit: permissions[key].edit
           };
         });
