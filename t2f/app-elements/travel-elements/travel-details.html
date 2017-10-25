@@ -424,6 +424,9 @@
           type: Boolean,
           value: false,
         },
+        route : {
+          type: Object
+        }
       },
 
       _openCurrencyModal: function(currency1, currency2) {
@@ -476,6 +479,7 @@
       },
 
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
+        var self= this;
         var computed = {};
 
         var collapsedStatus = {
@@ -521,16 +525,17 @@
         });
         var hiddenFieldSet = collapseRule ?
           collapsedStatus[collapseRule][status] ? collapsedStatus[collapseRule][status] : [] : [];
-
         Object.keys(permissions).forEach(function(key) {
           var forceHiddenStatus = false;
           if (isInternational) {
             forceHiddenStatus = hiddenForInternational.indexOf(key) > -1;
           }
-
+          var show = hiddenFieldSet.indexOf(key) === -1;
+          var hide = hiddenFieldSet.indexOf(key) !== -1;
+          var itineraryOpen = self.route.path.indexOf('edit-travel/-1') > -1 ? hide: show;
           computed[key] = {
             hidden: !permissions[key].view || forceHiddenStatus,
-            open: hiddenFieldSet.indexOf(key) === -1,
+            open: key==='itinerary'? itineraryOpen : show,
             edit: permissions[key].edit
           };
         });
