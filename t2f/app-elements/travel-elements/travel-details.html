@@ -235,6 +235,7 @@
           allow-copy="[[sectionPermissions.itinerary.edit]]"
           elevation="1"
           show-counter
+          show-optional
           open="[[sectionPermissions.itinerary.open]]"
           hidden$="[[sectionPermissions.itinerary.hidden]]">
 
@@ -424,7 +425,7 @@
           type: Boolean,
           value: false,
         },
-        route : {
+        route: {
           type: Object
         }
       },
@@ -479,7 +480,7 @@
       },
 
       _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
-        var self= this;
+        var self = this;
         var computed = {};
 
         var collapsedStatus = {
@@ -532,10 +533,10 @@
           }
           var show = hiddenFieldSet.indexOf(key) === -1;
           var hide = hiddenFieldSet.indexOf(key) !== -1;
-          var itineraryOpen = self.route.path.indexOf('edit-travel/-1') > -1 ? hide: show;
+          var itineraryOpen = self.route.path.indexOf('edit-travel/-1') > -1 ? hide : show;
           computed[key] = {
             hidden: !permissions[key].view || forceHiddenStatus,
-            open: key==='itinerary'? itineraryOpen : show,
+            open: key === 'itinerary' ? itineraryOpen : show,
             edit: permissions[key].edit
           };
         });

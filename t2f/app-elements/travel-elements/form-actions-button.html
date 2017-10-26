@@ -18,6 +18,7 @@
 <link rel="import" href="../../styles/et2f-styles.html">
 
 <dom-module id="form-actions-button">
+  <template>
 
   <style include="shared-styles et2f-styles iron-flex iron-flex-alignment" is="custom-style">
     :host {
@@ -50,7 +51,6 @@
     }
   </style>
 
-  <template>
 
     <template is="dom-if" if="[[show]]">
       <paper-button raised class$="layout horizontal [[_buttonGreyClass(actions)]]">

@@ -14,6 +14,7 @@
 <link rel="import" href="../../styles/et2f-styles.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
 <dom-module id="et2f-outbound-data">
+    <template>
 
     <style include="shared-styles et2f-styles iron-flex" is="custom-style">
 
@@ -80,7 +81,6 @@
         }
     </style>
 
-    <template>
 
         <!-- Approval required on non-ta DIALOG -->
         <paper-dialog id="req-approval-modal" opened="{{reqApprovalOpened}}" with-backdrop>
