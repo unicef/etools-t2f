@@ -1,3 +1,4 @@
+
 machine:
    services:
      - docker
@@ -7,19 +8,17 @@ dependencies:
     - "~/dockercache"
 
   override:
-    - if [[ -e ~/dockercache/t2f.tar ]]; then docker load -i ~/dockercache/t2f.tar; fi
-    - if [[ -e ~/dockercache/t2ftest.tar ]]; then docker load -i ~/dockercache/t2ftest.tar; fi
+
     - docker build --rm=false -t unicef/etools-t2f:$CIRCLE_BRANCH .
-    - docker build --rm=false -t unicef/etools-t2f-test:$CIRCLE_BRANCH --file docker-test .
-    - mkdir -p ~/dockercache; docker save unicef/etools-t2f-test > ~/dockercache/t2ftest.tar; docker save unicef/etools-t2f > ~/dockercache/t2f.tar
 
 test:
    override:
-     - docker run -it unicef/etools-t2f-test:$CIRCLE_BRANCH
+     - "true"
 
 deployment:
    hub:
-     branch: [develop, staging, master]
+     branch: [develop, staging, master, pmp-redesign]
+
      commands:
        - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-       - docker push unicef/etools-t2f:$CIRCLE_BRANCH
+       - docker push unicef/etools-t2f
