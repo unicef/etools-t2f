@@ -88,7 +88,7 @@
     <paper-dialog id="timePickerDialog" modal on-iron-overlay-closed="_setNewDate">
       <div class="flex layout horizontal no-margin">
         <paper-date-picker date="{{internalDate}}" min-date="[[calculatedMinDate]]" max-date="[[calculatedMaxDate]]" force-narrow ></paper-date-picker>
-        <paper-time-picker force-narrow time="[[time]]" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
+        <paper-time-picker hidden force-narrow time="[[time]]" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
       </div>
       <div class="flex layout horizontal no-margin error" hidden$="[[!showMinDateWarning]]">
         Please select a date-time greater or equal than: [[prettyMinDate]]
