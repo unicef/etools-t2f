@@ -100,11 +100,11 @@
       class="layout vertical flex">
 
       <div class="layout horizontal">
-        <div class="flex-3">
+        <div class="flex-3" hidden>
           <!--hidden$="[[computedPermission.ta_required.hidden]]"-->
           <paper-checkbox class$="custom-margin [[computedPermission.ta_required.readOnly]]"
             checked="{{baseDetails.ta_required}}"
-            hidden
+
             olddisabled="[[taRequiredDisabled]]"
             >TA Required
           </paper-checkbox>
