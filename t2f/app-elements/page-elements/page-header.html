@@ -146,6 +146,9 @@
           return 'flag-icon ' + 'flag-icon-' + flagIdMap[id];
         },
         _updateCountriesList: function(countries) {
+          if (!countries) {
+            return;
+          }
           var arrayObj = countries.map(function(arrayItem) {
             return {
               id: arrayItem.id,
@@ -153,6 +156,9 @@
               imgClass: this._getFlagIconClass(arrayItem.business_area_code)
             };
           }.bind(this));
+          arrayObj = _.sortBy(arrayObj, function(c) {
+            return c.name;
+          });
           this.set('countries', arrayObj);
         },
         ready: function() {
