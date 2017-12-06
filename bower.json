@@ -51,7 +51,7 @@
     "paper-toolbar": "PolymerElements/paper-toolbar#^1.1.7",
     "paper-fab": "PolymerElements/paper-fab#^1.2.1",
     "etools-dialog": "^1.0.0",
-    "etools-loading": "^1.0.6",
+    "etools-loading": "^2.0.0",
     "etools-page-refresh": "^1.0.0",
     "etools-content-panel": "^1.0.1",
     "iron-form": "PolymerElements/iron-form#^1.1.4",
@@ -60,12 +60,15 @@
     "es5-shim": "https://github.com/es-shims/es5-shim.git",
     "webcomponentsjs": "^0.7.24",
     "etools-app-selector": "^1.0.7",
-    "etools-profile-dropdown": "^1.0.3"
+    "etools-profile-dropdown": "09904ed1",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
   },
   "resolutions": {
-    "paper-dialog": "^2.0.0"
+    "paper-dialog": "^2.0.0",
+    "etools-loading": "^2.0.0",
+    "lodash": "^4.17.4"
   }
 }
