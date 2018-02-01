@@ -147,7 +147,6 @@
         return !show;
       },
       _handleCSVData: function(e, data) {
-        console.log(data)
         var a = document.createElement('a');
         a.href =  window.URL.createObjectURL(data);
         a.download = 'csv_export_' + Date.now() + '.csv';
