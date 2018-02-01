@@ -77,11 +77,12 @@
           }
         };
         if (data.length > 0) {
-          var tableHeader = Object.keys(data[0]).slice(0, 7).map(function(item) {
+          var tableHeader = Object.keys(data[0]).slice(0, 5).concat(Object.keys(data[0]).slice(6, 7)).concat(Object.keys(data[0]).slice(14, 15)).map(function(item) {
             return item.replace(/_/g, ' ');
           });
+
           dataToPrint.table.body = data.map(function(item) {
-            return _.values(item).slice(0, 7).map(function(value) {
+            return _.values(item).slice(0, 5).concat(_.values(item).slice(6,7)).concat(_.values(item).slice(14, 15)).map(function(value) {
               if (!value) {
                 return ' ';
               }
@@ -90,6 +91,7 @@
           });
           dataToPrint.table.body = [tableHeader].concat(dataToPrint.table.body);
         }
+
         return dataToPrint;
       },
       _parseDataForDetail: function() {
