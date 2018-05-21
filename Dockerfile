@@ -5,7 +5,7 @@ RUN apk add --update bash
 
 RUN apk add git
 RUN npm i -g npm@5.6.0
-RUN npm install -g --unsafe-perm bower polymer-cli
+RUN npm install -g --unsafe-perm bower polymer-cli gulp-cli
 
 WORKDIR /tmp
 ADD bower.json /tmp/
