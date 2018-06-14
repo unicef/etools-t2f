@@ -103,6 +103,7 @@
       _parseDataForDetail: function() {
 
         var data = this.storedData;
+        data.cost_assignments = data.cost_assignments ? data.cost_assignments : [];
         var dataToPrint = [];
         var behav = window.et2fBehaviors.PDFBehavior;
         var innerTableVars = {
