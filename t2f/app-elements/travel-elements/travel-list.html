@@ -462,13 +462,13 @@
         var value = e.detail.selectedValues.value;
 
         if (key === 'f_status') {
-          value = this._computeFilters(this.structure)[4].selection.filter(function(item) {
+          value = this._computeFilters(this.structure)[5].selection.filter(function(item) {
             return item.value === value;
           })[0].apiValue;
         }
 
         if (key === 'f_travel_type') {
-          value = this._computeFilters(this.structure)[5].selection.filter(function(item) {
+          value = this._computeFilters(this.structure)[6].selection.filter(function(item) {
             return item.value === value;
           })[0].label;
         }
