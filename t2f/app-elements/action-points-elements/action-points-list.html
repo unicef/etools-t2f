@@ -294,8 +294,8 @@
 
       // Mapping data to the view
       handleListResponse: function(event, data) {
-        this.set('datalength', data.total_count);
-        data.data.forEach(function(action) {
+        this.set('datalength', data.count);
+        data.results.forEach(function(action) {
           if (action.due_date) {
             action.due_date = moment(new Date(action.due_date)).format('LL');
           }
