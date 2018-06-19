@@ -1,0 +1,668 @@
+<!--import [polymer, iron-flex-layout, moment-element/moment-import, paper-checkbox, paper-tooltip]-->
+<!--import [shared-styles, tab-inputs-styles, module-styles, insert-html, localization-behavior]-->
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+<link rel="import" href="../../styles/et2f-list-styles.html">
+<dom-module id="action-point-collapse-item">
+  <template>
+    <style include="iron-flex shared-styles et2f-styles et2f-list-styles">
+      *[hidden] {
+        display: none !important;
+      }
+  
+      :host {
+        display: block;
+        border-bottom: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
+      }
+  
+      :host .question-title {
+        font-weight: 500;
+        font-size: 14px !important;
+        letter-spacing: 0.5px;
+      }
+  
+      :host .partner-data {
+        display: table-cell;
+        vertical-align: middle;
+        width: 100%;
+        box-sizing: border-box;
+        white-space: nowrap;
+        font-size: 0;
+        overflow: inherit;
+      }
+  
+      :host .partner-data .col-data {
+        display: inline-block;
+        overflow: hidden;
+        font-size: 13px;
+        text-overflow: ellipsis;
+        padding-right: 10px;
+        padding-left: 1px;
+        box-sizing: border-box;
+        vertical-align: var(--multiline-align, middle);
+      }
+  
+      :host .partner-data .col-data:not(.truncate) {
+        padding-right: 0;
+        overflow: visible;
+      }
+  
+      :host .partner-data .col-data .truncate {
+        white-space: nowrap;
+      }
+  
+      :host .partner-data .col-data .additional {
+        color: var(--dark-secondary-text-color);
+        font-size: 11px;
+      }
+  
+      :host .partner-data .col-data.caps {
+        text-transform: capitalize;
+      }
+  
+      :host .partner-data .col-data.right {
+        text-align: right;
+      }
+  
+      :host .partner-data .col-data.center {
+        text-align: center;
+      }
+  
+      :host .partner-data .col-data.overflow-visible {
+        overflow: visible;
+      }
+  
+      :host .partner-data a.col-data {
+        color: var(--module-primary);
+        font-weight: 500;
+        cursor: pointer;
+      }
+  
+      :host .partner-data a.col-data[href="#"] {
+        cursor: default;
+        font-weight: 400;
+        color: initial;
+        pointer-events: none;
+      }
+  
+      :host .partner-data .hover-icons-block {
+        position: absolute;
+        top: 0;
+        right: 14px;
+        bottom: 0;
+        line-height: 48px;
+        opacity: 0;
+        background-color: var(--hover-block-bg-color, #eeeeee);
+        z-index: 1;
+      }
+  
+      :host .partner-data:hover .hover-icons-block {
+        opacity: 1;
+      }
+  
+      :host .partners-data-details {
+        position: relative;
+        display: block;
+        width: 100%;
+      }
+  
+      :host .partners-data-details .row-details-content {
+        float: left;
+        box-sizing: border-box;
+        padding-right: 0;
+        padding-bottom: 20px;
+        vertical-align: top;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+      }
+  
+      :host .partners-data-details .row-details-content .rdc-title {
+        display: inline-block;
+        width: 100%;
+        color: rgba(0, 0, 0, 0.54);
+        font-weight: 500;
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+  
+      :host .partners-data-details .row-details-content .data {
+        font-size: 13px;
+      }
+  
+      .custom-icon {
+        --iron-icon-height: 16px;
+        --iron-icon-width: 16px;
+      }
+  
+      :host([hover]) paper-material, paper-material:hover {
+        background-color: #EEEEEE;
+      }
+  
+      paper-material {
+        display: table;
+        table-layout: fixed;
+        width: 100%;
+        height: 48px;
+        min-height: 48px;
+        font-size: 13px;
+        color: var(--gray-dark, rgba(0, 0, 0, 0.87));
+        background-color: var(--primary-background-color, #FFFFFF);
+        padding: 0 14px 0 72px !important;
+        box-sizing: border-box;
+      }
+  
+      :host([no-additional]) paper-material {
+        padding: 0 14px 0 24px !important;
+      }
+  
+      :host([multiline]) .partner-data .col-data {
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+  
+      :host([multiline]) .partner-data .col-data .truncate {
+        white-space: normal;
+      }
+  
+      :host([no-hover]) paper-material:hover {
+        background-color: initial;
+      }
+  
+      paper-material ::slotted(*) {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+  
+      #iconWrapper {
+        position: absolute;
+        top: 50%;
+        margin-top: -24px;
+        padding: 0 24px;
+        margin-left: -72px;
+        line-height: 48px;
+        cursor: pointer;
+      }
+  
+      iron-icon {
+        color: var(--dark-icon-color, rgba(0, 0, 0, 0.54));
+      }
+  
+      #collapse-wrapper {
+        padding: 14px 24px 4px 24px;
+        background-color: #EEEEEE;
+        /* TODO: replace with app-theme var */
+        border-top: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
+      }
+    </style>
+  
+    <paper-material id="wrapper"
+                    elevation="0">
+      <template is="dom-if"
+                if="[[showCollapse]]">
+        <div id="iconWrapper">
+          <iron-icon id="more"
+                     icon="expand-more"
+                     hidden$="[[detailsOpened]]"
+                     on-tap="_toggleRowDetails">
+          </iron-icon>
+  
+          <iron-icon id="less"
+                     icon="expand-less"
+                     hidden$="[[!detailsOpened]]"
+                     on-tap="_toggleRowDetails">
+          </iron-icon>
+        </div>
+      </template>
+  
+      <div class="partner-data"
+           style$="padding-right: [[paddingRight]];">
+        <template is="dom-repeat"
+                  items="[[headings]]">
+          <template is="dom-if"
+                    if="[[_isOneOfType(item, 'link')]]">
+            <a class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate"
+               href$="[[_getLink(item.link, data)]]"
+               target="[[item.target]]">
+              <span class="truncate">
+                <template is="dom-if"
+                          if="[[_getValue(item, data)]]">
+                  [[_getValue(item, data)]]
+                  <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
+                </template>
+  
+                <template is="dom-if"
+                          if="[[!_getValue(item, data)]]">
+                  <span class="">–</span>
+                </template>
+              </span>
+            </a>
+          </template>
+  
+          <template is="dom-if"
+                    if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]"
+                    restamp>
+            <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
+              <span class="truncate">
+                <template is="dom-if"
+                          if="[[_getValue(item, data)]]">
+                  [[_getValue(item, data)]]
+                  <paper-tooltip offset="0"
+                                 hidden$="[[item.hideTooltip]]">[[_getValue(item, data)]]</paper-tooltip>
+                </template>
+  
+                <template is="dom-if"
+                          if="[[!_getValue(item, data)]]">
+                  <span class="">–</span>
+                </template>
+  
+                <template is="dom-if"
+                          if="[[item.additional]]">
+                  <span class="additional">([[_getAdditionalValue(item, data)]])</span>
+                </template>
+              </span>
+            </span>
+          </template>
+  
+          <template is="dom-if"
+                    if="[[_isOneOfType(item, 'html')]]">
+            <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
+              <span class="truncate">
+                <insert-html html="[[_getValue(item, data)]]"></insert-html>
+              </span>
+            </span>
+          </template>
+  
+          <template is="dom-if"
+                    if="[[_isOneOfType(item, 'checkbox')]]">
+            <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
+              <template is="dom-if"
+                        if="{{_emtyObj(data)}}">
+                <slot name="checkbox">
+                  <paper-checkbox checked="{{_getValue(item, data, 'bool')}}"
+                                  label="">
+                  </paper-checkbox>
+                </slot>
+              </template>
+  
+              <template is="dom-if"
+                        if="{{!_emtyObj(data)}}">
+                <span class="">–</span>
+              </template>
+            </span>
+          </template>
+  
+          <template is="dom-if"
+                    if="[[_isOneOfType(item, 'icon')]]">
+            <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
+              <template is="dom-if"
+                        if="[[_getValue(item, data, 'bool')]]">
+                <iron-icon class="custom-icon"
+                           icon="{{item.icon}}"></iron-icon>
+              </template>
+  
+              <template is="dom-if"
+                        if="[[!_getValue(item, data, 'bool')]]">
+                <span class="">–</span>
+              </template>
+            </span>
+          </template>
+  
+          <template is="dom-if"
+                    if="[[_isOneOfType(item, 'custom')]]">
+            <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
+              <template is="dom-if"
+                        if="{{_hasProperty(data, item.property, item.doNotHide)}}"
+                        restamp>
+                <slot name="custom">
+  
+                </slot>
+              </template>
+  
+              <template is="dom-if"
+                        if="{{!_hasProperty(data, item.property, item.doNotHide)}}">
+                <span class="">—</span>
+              </template>
+            </span>
+          </template>
+  
+          <span class="hover-icons-block">
+            <slot name="hover"></slot>
+          </span>
+        </template>
+      </div>
+    </paper-material>
+  
+    <template is="dom-if"
+              if="[[showCollapse]]">
+      <iron-collapse id="details"
+                     opened="{{detailsOpened}}"
+                     no-animation="[[noAnimation]]">
+        <div id="collapse-wrapper">
+          <slot name="detailSlot">
+            <div class="partners-data-details group">
+              <template is="dom-repeat"
+                        items="[[details]]">
+                <div class$="row-details-content w[[item.size]]">
+                  <span class="rdc-title">[[item.label]]</span>
+  
+                  <template is="dom-if"
+                            if="[[!_isOneOfType(item, 'html')]]">
+                    <template is="dom-if"
+                              if="[[_getValue(item, data)]]">
+                      [[_getValue(item, data)]]
+                    </template>
+  
+                    <template is="dom-if"
+                              if="[[!_getValue(item, data)]]">
+                      <span class="">–</span>
+                    </template>
+                  </template>
+  
+                  <template is="dom-if"
+                            if="[[_isOneOfType(item, 'html')]]">
+                    <insert-html html="[[_getValue(item, data)]]"></insert-html>
+                  </template>
+                </div>
+  
+              </template>
+            </div>
+          </slot>
+        </div>
+      </iron-collapse>
+    </template>
+  </template>
+<script>
+  'use strict';
+
+  Polymer({
+    is: 'action-point-collapse-item',
+
+    properties: {
+    
+      details: {
+        type: Array,
+        value: function () {
+          return [{}];
+        }
+      },
+      hasCollapse: {
+        type: Boolean,
+        value: false
+      },
+      showCollapse: {
+        type: Boolean,
+        computed: '_computeShowCollapse(details, hasCollapse)'
+      },
+      notifyContentResize: {
+        type: Boolean,
+        value: false
+      },
+      data: {
+        type: Object,
+        notify: true
+      },
+      itemIndex: {
+        type: Number
+      },
+      multiline: {
+        type: Boolean,
+        value: false
+      },
+      noHover: {
+        type: Boolean,
+        value: false
+      },
+      hover: {
+        type: Boolean,
+        reflectToAttribute: true
+      },
+      noAdditional: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      }
+    },
+
+   
+
+    observers: [
+      '_setRightPadding(headings.*)'
+    ],
+
+    _setRightPadding: function () {
+      if (!this.headings) { return; }
+      let rightPadding = 0;
+      let padding;
+
+      this.headings.forEach((heading) => {
+        if (typeof heading.size === 'string') {
+          padding = parseInt(heading.size, 10) || 0;
+          rightPadding += padding;
+        }
+      });
+
+      this.paddingRight = `${rightPadding}px`;
+    },
+
+    _computeShowCollapse: function (details, hasCollapse) {
+      return details.length > 0 && hasCollapse;
+    },
+
+    _toggleRowDetails: function () {
+      Polymer.dom(this.root).querySelector('#details').toggle();
+      if (this.notifyContentResize) {
+        this.fire('content-resize');
+      }
+    },
+
+    _isOneOfType: function (item) {
+      if (!item) { return false; }
+
+      let types = Array.prototype.slice.call(arguments, 1) || [];
+
+      return !!types.find(type => {
+        return !!item[type];
+      });
+    },
+
+    _getValue: function (item, data, bool) {
+      let value;
+
+      if (!item.path) {
+        value = this.get('data.' + item.name);
+      } else {
+        value = this.get('data.' + item.path);
+      }
+
+      if (item.name === 'type' || item.name === 'status') {
+        value = this._refactorValue(item.name, value);
+      } else if (item.name === 'date') {
+        value = this._refactorTime(value);
+      } else if (item.name === 'currency') {
+        value = this._refactorCurrency(value);
+      } else if (item.name === 'percents') {
+        value = this._refactorPercents(value);
+      } else if (item.name === 'array') {
+        value = this._arrayWithDelimiter(value, item.property, item.delimiter);
+      } else if (item.name === 'ordered_list') {
+        value = this._arrayAsColumn(value, item.property);
+      } else if (item.name === 'files') {
+        value = this._refactorFilesLinks(value, item.property);
+      } else if (item.name === 'styled_array') {
+        value = this._arrayAsColumnWithHighlight(value, item.property, item.options);
+      }
+
+      if (bool) {
+        value = !!value;
+      } else if (!value && value !== 0) {
+        return false;
+      }
+
+      return value;
+    },
+
+    _refactorValue: function (type, value) {
+      let values = this.itemValues[type];
+      if (values) { return values[value]; }
+    },
+
+    _refactorTime: function (value, format = 'DD MMM YYYY') {
+      if (!value) { return; }
+
+      let date = new Date(value);
+      if (date.toString() !== 'Invalid Date') {
+        return moment.utc(date).format(format);
+      }
+    },
+
+    _refactorCurrency: function (value) {
+      if ((!value || isNaN(+value)) && value !== 0) { return; }
+      return (+value).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+    },
+
+    _refactorPercents: function (value) {
+      let regexp = /[\d]+.[\d]{2}/;
+      return regexp.test(value) ? `${value}%` : null;
+    },
+
+    _getPropertyStringValues: function (array, property) {
+      let isValidArgs = Array.isArray(array) && property && (typeof property === 'string');
+      if (!isValidArgs) { return []; }
+
+      let value;
+      let propertyValues = array.map((item) => {
+        value = item && item[property];
+        return (typeof value === 'string') ? value : undefined;
+      });
+      propertyValues = propertyValues.filter(item => item);
+
+      return propertyValues;
+    },
+
+    _arrayWithDelimiter: function (array, property, delimiter = '; ') {
+      let propertyValues = this._getPropertyStringValues(array, property);
+      return propertyValues.length ? propertyValues.join(delimiter) : null;
+    },
+
+    _arrayAsColumn: function (array, property) {
+      let styleAttribute = 'style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"';
+      let propertyValues = this._getPropertyStringValues(array, property);
+      let html = propertyValues.map((value) => {
+        return `<div ${styleAttribute}>${value}</div>`;
+      });
+
+      return html.length ? html.join('\n') : '--';
+    },
+
+    _arrayAsColumnWithHighlight: function (array, property, options = { delimiter: undefined, style: '' }) {
+      let styleAttribute = 'style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"';
+      let propertyValues = this._getPropertyStringValues(array, property);
+
+      let splittedValue;
+      let splittedValues = propertyValues.map((item) => {
+        splittedValue = item.split(options.delimiter);
+        if (splittedValue.length > 1) {
+          splittedValue[1] = options.delimiter + splittedValue[1];
+        } else {
+          splittedValue.push('');
+        }
+        return splittedValue;
+      });
+
+      let html = splittedValues.map((splittedValue) => {
+        return `<div ${styleAttribute}>
+                        <span style="${options.style}">${splittedValue[0]}</span>
+                        <span>${splittedValue[1]}</span>
+                    </div>`;
+      });
+      return html.length ? html.join('\n') : '--';
+    },
+
+    _refactorFilesLinks: function (files, property) {
+      let isValidArgs = (files instanceof Array) && property && (typeof property === 'string');
+      if (!isValidArgs) { return '--'; }
+
+      let filesInfo = [];
+      let filesHtml = [];
+      let value;
+      let name;
+
+      files.forEach((object) => {
+        value = object[property];
+        if (value && (typeof value === 'string')) {
+          name = value.split('/').pop();
+          filesInfo.push({
+            url: value,
+            name: name,
+          });
+        }
+      });
+
+      filesInfo.forEach((file) => {
+        filesHtml.push(`
+            <div class="file-link">
+                <iron-icon icon="icons:attachment"
+                           width="25"
+                           height="25"
+                           style="color: rgba(0, 0, 0, 0.5);">
+                </iron-icon>
+                <a class="truncate"
+                   target="_blank"
+                   download="${file.name}"
+                   href="${file.url}"
+                   style="color: #40c4ff; text-decoration: none; vertical-align: bottom;">
+                    ${file.name}
+                </a>
+            </div>
+            `);
+      });
+
+      return filesHtml.length ? filesHtml.join('\n') : '--';
+    },
+
+    _getAdditionalValue: function (item) {
+      if (!item.additional) { return; }
+
+      let additional = item.additional;
+      let value = this._getValue(additional);
+      let type = additional.type;
+
+      if (type === 'date') {
+        value = this._refactorTime(value);
+      }
+
+      return value || '–';
+    },
+
+    _getStatus: function (synced) {
+      if (synced) { return 'Synced from VISION'; }
+    },
+
+    _getLink: function (pattern) {
+      if (typeof pattern !== 'string') { return '#'; }
+
+      let link = pattern
+        .replace('*ap_link*', this.data.url)
+        .replace('*data_id*', this.data.id);
+
+      return link.indexOf('undefined') === -1 ? link : '#';
+    },
+
+    _emtyObj: function (data) {
+      return data && !data.empty;
+    },
+
+    _hasProperty: function (data, property, doNotHide) {
+      return data && (doNotHide || property && this.get('data.' + property));
+    }
+  });
+
+</script>
+</dom-module>
