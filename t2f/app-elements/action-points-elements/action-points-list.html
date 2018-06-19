@@ -186,7 +186,6 @@
           value: function() {
             return {
               'Action Point #': 'action_point_number',
-              'Trip Reference #': 'trip_reference_number',
               'Description': 'description',
               'Due Date': 'due_date',
               'Responsible Person': 'person_responsible',
@@ -204,10 +203,7 @@
             'size': 13,
             'label': 'Action Point #'
           },
-          {
-            'size': 13,
-            'label': 'Trip Reference #'
-          },
+         
           {
             'size': 23,
             'label': 'Description'
@@ -300,7 +296,7 @@
             action.due_date = moment(new Date(action.due_date)).format('LL');
           }
         });
-        this.set('data', data.data);
+        this.set('data', data.results);
       },
 
       attached: function(forced) {

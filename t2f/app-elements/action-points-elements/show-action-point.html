@@ -137,10 +137,10 @@
         }
         var roles = ['Others'];
         roles = roles.concat(user.t2f.roles);
-        if (actionPoint.assigned_by.value === user.id) {
+        if (actionPoint.assigned_by.value.id === user.id) {
           roles.push('Assigner');
         }
-        if (actionPoint.person_responsible.value === user.id) {
+        if (actionPoint.assigned_to.id === user.id) {
           roles.push('PersonResponsible');
         }
 
