@@ -2,12 +2,14 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<!-- <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html"> -->
+<link rel="import" href="../../../bower_components/etools-content-panel/etools-content-panel.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
 
 <link rel="import" href="../../scripts/lodash/lodash.html">
 <link rel="import" href="../fieldset-elements/action-point.html">
-
+<link rel="import" href="../action-points-elements/action-points-header.html">
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 
@@ -17,6 +19,9 @@
     :host {
       display: block;
       width: 100%;
+      --ecp-content: {
+      padding: 0
+    }
     }
 
     .container {
@@ -60,6 +65,8 @@
       margin-left: 48px;
       margin-bottom: 48px;
     }
+
+    
   </style>
 
   <template>
@@ -89,7 +96,24 @@
     </div>
 
     <div class="container layout horizontal">
-       <etools-repeatable-field-set title="Action Points"
+        <etools-content-panel
+        list
+        class="flex"
+        panel-title="Action Points">
+    <div slot="panel-btns">
+        <div hidden$="[[!permissions.action_points.edit]]">
+            <paper-icon-button
+                    class="panel-button"
+                    on-tap="_openPopup"
+                    icon="add-box">
+            </paper-icon-button>
+            <paper-tooltip offset="0">Add</paper-tooltip>
+        </div>
+    </div>
+    <action-points-header no-ordered
+                         data="[[actionPointColumns]]"></action-points-header>
+    </etools-content-panel>
+       <!-- <etools-repeatable-field-set title="Action Points"
           id="action-points"
           model="{{data.action_points}}"
           hide-plus="[[!permissions.action_points.edit]]"
@@ -111,7 +135,7 @@
             </action-point>
 
           </template>
-        </etools-repeatable-field-set>
+        </etools-repeatable-field-set> -->
     </div>
 
   </template>
@@ -134,7 +158,32 @@
         permissions: {
           type: Object,
         },
-        user: Object
+        user: Object,
+        actionPointColumns: {
+            type: Array,
+            value: () => [{
+                    'size': 10,
+                    'label': 'Task Id',
+                    'labelPath': 'tpm_activities.id',
+                    'path': 'unique_id'
+                }, {
+                    'size': 40,
+                    'label': 'Implementing Partner',
+                    'labelPath': 'tpm_activities.partner',
+                    'path': 'partner.name'
+                }, {
+                    'size': 40,
+                    'label': 'PD/SSFA ToR',
+                    'labelPath': 'tpm_activities.intervention',
+                    'path': 'intervention.title'
+                }, {
+                    'size': 10,
+                    'name': 'date',
+                    'label': 'Date',
+                    'labelPath': 'tpm_activities.date',
+                    'path': 'date'
+                }]
+        },
       },
 
       _setReportToData: function() {
