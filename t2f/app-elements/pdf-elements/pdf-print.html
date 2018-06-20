@@ -31,7 +31,7 @@
           value: 'list'
         }
       },
-      behaviors: [et2fBehaviors.PDFBehavior],
+      behaviors: et2fBehaviors.PDFBehavior,
       _computeStyles: function() {
         return {
           mainHeader: {
@@ -92,7 +92,7 @@
               if (!value) {
                 return ' ';
               }
-              return '' + value;
+              return ' ' + value;
             });
           });
           dataToPrint.table.body = [tableHeader].concat(dataToPrint.table.body);
@@ -150,20 +150,20 @@
         function innerColumnGen(label, value) {
           return (label && value) ? [
             {text: label + ': ', margin: [5,0]},
-            {text: '' + value, style: 'rightAlign', margin: [5,0]}
+            {text: ' ' + value, style: 'rightAlign', margin: [5,0]}
           ] : [
-            {text: '', margin: [5,0]},
-            {text: '', margin: [5,0]}
+            {text: ' ', margin: [5,0]},
+            {text: ' ', margin: [5,0]}
           ];
         }
         function concatManyToMany(value) {
           if (value instanceof Array) {
             return value.reduce(function(prev, cur, index) {
-              var tail = index === value.length - 1 ? '' : ',';
+              var tail = index === value.length - 1 ? ' ' : ',';
               return prev + cur.label + tail;
-            }, '');
+            }, ' ');
           }
-          return '';
+          return ' ';
         }
         var titleLib = {
           baseDetails: {
@@ -198,12 +198,12 @@
                               widths: innerTableVars.innerWidths,
                               body: [
                                 innerColumnGen('Reference Number',
-                                  '' + data.baseDetails.reference_number),
+                                  ' ' + data.baseDetails.reference_number),
                                 innerColumnGen('Traveler', data.baseDetails.traveler ?
-                                  data.baseDetails.traveler.label : ''),
-                                innerColumnGen('Start Date', '' + behav._printDate(data.baseDetails.start_date)),
+                                  data.baseDetails.traveler.label : ' '),
+                                innerColumnGen('Start Date', ' ' + behav._printDate(data.baseDetails.start_date)),
                                 innerColumnGen('Est. Trip cost',
-                                  '' + data.baseDetails.estimated_travel_cost),
+                                  ' ' + data.baseDetails.estimated_travel_cost),
                               ]
                             }
                           },
@@ -213,10 +213,10 @@
                             table: {
                               widths: innerTableVars.innerWidths,
                               body: [
-                                innerColumnGen('Trip Status', '' + data.baseDetails.status),
+                                innerColumnGen('Trip Status', ' ' + data.baseDetails.status),
                                 innerColumnGen('Supervisor', data.baseDetails.supervisor ?
-                                  data.baseDetails.supervisor.label : ''),
-                                innerColumnGen('End date', '' + behav._printDate(data.baseDetails.end_date)),
+                                  data.baseDetails.supervisor.label : ' '),
+                                innerColumnGen('End date', ' ' + behav._printDate(data.baseDetails.end_date)),
                                 innerColumnGen('', ''),
                               ]
                             }
@@ -231,7 +231,7 @@
                     table: {
                       widths: [100, 661],
                       body: [
-                        [{text: 'Purpose of Trip: '}, {text: '' + data.baseDetails.purpose}]
+                        [{text: 'Purpose of Trip: '}, {text: ' ' + data.baseDetails.purpose}]
                       ]
                     },
                   }
@@ -251,16 +251,16 @@
                         widths: [16, 380, 321, 50],
                         body: [
                           [
-                            {text: '' + (index + 1), style: 'checkbox'},
+                            {text: ' ' + (index + 1), style: 'checkbox'},
                             {
                               columns: [
                                 {text: 'Trip type: '},
-                                {text: '' + activity.travel_type.label, style: 'rightAlign'}
+                                {text: ' ' + activity.travel_type.label, style: 'rightAlign'}
                               ]
                             },
                             {text: 'Primary Traveler?'},
                             {
-                              text: activity.primary_traveler ? 'YES' : 'NO' + '',
+                              text: activity.primary_traveler ? 'YES' : 'NO' + ' ',
                               style: 'checkbox'
                             }
                           ],
@@ -283,7 +283,7 @@
                                     activity.partner.label : ''),
                                   innerColumnGen('When', '' + behav._printDate(activity.date)),
                                   innerColumnGen('Result to be monitored', activity.result ?
-                                    activity.result.label : ''),
+                                    activity.result.label : ' '),
                                 ]
                               }
                             },
@@ -323,17 +323,17 @@
                         widths: [16, 380, 380,],
                         body: [
                           [
-                            {text: '' + (index + 1), style: 'checkbox'},
+                            {text: ' ' + (index + 1), style: 'checkbox'},
                             {
                               columns: [
                                 {text: 'From: '},
-                                {text: '' + itinerary.origin, style: 'rightAlign'}
+                                {text: ' ' + itinerary.origin, style: 'rightAlign'}
                               ]
                             },
                             {
                               columns: [
                                 {text: 'To: '},
-                                {text: '' + itinerary.destination, style: 'rightAlign'}
+                                {text: ' ' + itinerary.destination, style: 'rightAlign'}
                               ]
                             },
                           ],
@@ -352,9 +352,9 @@
                               table: {
                                 widths: innerTableVars.innerWidths,
                                 body: [
-                                  innerColumnGen('Departing', '' + itinerary.departure_date),
+                                  innerColumnGen('Departing', ' ' + itinerary.departure_date),
                                   innerColumnGen('DSA Region ', itinerary.dsa_region ?
-                                    itinerary.dsa_region.label : '')
+                                    itinerary.dsa_region.label : ' ')
                                 ]
                               }
                             },
@@ -364,9 +364,9 @@
                               table: {
                                 widths: innerTableVars.innerWidths,
                                 body: [
-                                  innerColumnGen('Arriving', '' + itinerary.arrival_date),
+                                  innerColumnGen('Arriving', ' ' + itinerary.arrival_date),
                                   innerColumnGen('Mode of travel', itinerary.mode_of_travel ?
-                                    itinerary.mode_of_travel.label : '')
+                                    itinerary.mode_of_travel.label : ' ')
                                 ]
                               }
                             }
@@ -405,7 +405,7 @@
                   if (key === 'date') {
                     return deduction.day_of_the_week + ' ' + deduction.date;
                   } else {
-                    return deduction[key] ? 'YES' : '';
+                    return deduction[key] ? 'YES' : ' ';
                   }
                 });
               });
@@ -439,19 +439,19 @@
                         widths: [16, 380, 380],
                         body: [
                           [
-                            {text: '' + (index + 1), style: 'checkbox'},
+                            {text: ' ' + (index + 1), style: 'checkbox'},
                             {
                               columns: [
                                 {text: 'Expense type: '},
                                 {
-                                  text: '' + expense.type ? expense.type.label : '',
+                                  text: ' ' + expense.type ? expense.type.label : ' ',
                                   style: 'rightAlign'}
                               ]
                             },
                             {
                               columns: [
                                 {text: 'Amount: '},
-                                {text: '' + expense.amount, style: 'rightAlign'}
+                                {text: ' ' + expense.amount, style: 'rightAlign'}
                               ]
                             },
                           ],
@@ -471,7 +471,7 @@
                                 widths: innerTableVars.innerWidths,
                                 body: [
                                   innerColumnGen('Document Currency', expense.document_currency ?
-                                    expense.document_currency.label : ''),
+                                    expense.document_currency.label : ' '),
                                 ]
                               }
                             },
@@ -482,7 +482,7 @@
                                 widths: innerTableVars.innerWidths,
                                 body: [
                                   innerColumnGen('Account currency', expense.account_currency ?
-                                    expense.account_currency.label : ''),
+                                    expense.account_currency.label : ' '),
                                 ]
                               }
                             }
@@ -511,83 +511,6 @@
               };
             }
           },
-          cost_assignments: {
-            name: 'Cost Assignment (' + data.cost_assignments.length + ')',
-            generator: function() {
-              var mainStack = data.cost_assignments.map(function(cost, index) {
-                return {
-                  margin: [0, 10],
-                  stack: [
-                    {
-                      margin: [-25, 0],
-                      table: {
-                        widths: [16, 710, 50,],
-                        body: [
-                          [
-                            {text: '' + (index + 1), style: 'checkbox'},
-                            {
-                              columns: [
-                                {text: 'WBS: '},
-                                {text: cost.wbs ? cost.wbs.label : '', style: 'rightAlign'}
-                              ]
-                            },
-                            {text: '' + cost.share + '%', style: 'checkbox'}
-
-                          ],
-                        ]
-                      },
-                    },
-                    {
-                      layout: innerTableVars.noTopLayout,
-                      table: {
-                        widths: innerTableVars.widths,
-                        body: [
-                          [
-                            {
-                              margin: innerTableVars.margin,
-                              layout: innerTableVars.onlyHorizontalDivider,
-                              table: {
-                                widths: innerTableVars.innerWidths,
-                                body: [
-                                  innerColumnGen('Grant', cost.grant ? cost.grant.label : ''),
-                                ]
-                              }
-                            },
-                            {
-                              margin: innerTableVars.margin,
-                              layout: innerTableVars.onlyHorizontalDivider,
-                              table: {
-                                widths: innerTableVars.innerWidths,
-                                body: [
-                                  innerColumnGen('Fund', cost.fund ? cost.fund.label : ''),
-                                ]
-                              }
-                            }
-                          ]
-
-                        ]
-                      }
-                    },
-                    {
-                      layout: innerTableVars.noTopLayout,
-                      table: {
-                        widths: innerTableVars.withCheckboxWidths,
-                        body: [
-                          [
-                            {text: 'Overnight trip ? '},
-                            {text: cost.overnight_travel ? 'YES' : 'NO', style: 'checkbox'}
-                          ]
-                        ]
-                      }
-                    },
-                  ]
-                };
-              });
-              return {
-                stack: mainStack
-              };
-            }
-          },
           cost_summary: {
             name: 'Cost summary',
             generator: function() {
@@ -601,19 +524,19 @@
                         [{
                           columns: [
                             {text: 'DSA Total'},
-                            {text: '' + data.cost_summary.dsa_total, style: 'rightAlign'}
+                            {text: ' ' + data.cost_summary.dsa_total, style: 'rightAlign'}
                           ]
                         }],
                         [{
                           columns: [
                             {text: 'Expenses Total'},
-                            {text: '' + data.cost_summary.expenses_total, style: 'rightAlign'}
+                            {text: ' ' + data.cost_summary.expenses_total, style: 'rightAlign'}
                           ]
                         }],
                         [{
                           columns: [
                             {text: 'Deductions Total'},
-                            {text: '' + data.cost_summary.deductions_total, style: 'rightAlign'}
+                            {text: ' ' + data.cost_summary.deductions_total, style: 'rightAlign'}
                           ]
                         }]
                       ]
@@ -626,7 +549,7 @@
                       body: [
                         [{text: 'Total cost'},
                         {
-                          text: '' + ((parseFloat(data.cost_summary.dsa_total) +
+                          text: ' ' + ((parseFloat(data.cost_summary.dsa_total) +
                             parseFloat(data.cost_summary.expenses_total)) -
                             parseFloat(data.cost_summary.deductions_total)),
                           style: 'checkboxRight'
@@ -650,7 +573,7 @@
                       body: [
                         [{
                           columns: [
-                            {text: '' + data.report,}
+                            {text: ' ' + data.report}
                           ]
                         }]
                       ]
