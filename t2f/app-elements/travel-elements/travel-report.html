@@ -191,7 +191,7 @@
         user: Object,
         actionPointColumns: {
             type: Array,
-            value: () => [{
+            value: function(){return  [{
                     'size': 10,
                     'label': 'Task Id',
                     'labelPath': 'tpm_activities.id',
@@ -212,7 +212,7 @@
                     'label': 'Date',
                     'labelPath': 'tpm_activities.date',
                     'path': 'date'
-                }]
+                }]}
         },
       },
 
