@@ -178,12 +178,12 @@
           this._setBgColor();
           this._isStaging();
         },
-        _isStaging() {
+        _isStaging: function() {
           if (etoolsAppConfig.globals.isStagingServer()) {
             this.set('isStaging', true);
           }
         },
-        _setBgColor() {
+        _setBgColor: function() {
           // If not production environment, changing header color to red
           if (!etoolsAppConfig.globals.isProductionServer()) {
             this.updateStyles({'--header-bg-color': 'var(--nonprod-header-color)'});
