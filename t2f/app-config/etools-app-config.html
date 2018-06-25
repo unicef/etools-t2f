@@ -181,12 +181,12 @@ App global configuration
         },
 
         isProductionServer: function() {
-          let location = window.location.href;
+          var location = window.location.href;
           return location.indexOf(this.productionDomain) > -1;
         },
 
         isStagingServer: function() {
-          let location = window.location.href;
+          var location = window.location.href;
           return location.indexOf(this.stagingDomain) > -1;
         }
       },
