@@ -389,7 +389,6 @@
         var userId = user.id;
         var travelerId = traveler.value;
         if (!vendorNumber && userId === travelerId && !international) {
-          this.$['info-modal'].open();
           this.set('baseDetails.ta_required', false);
           return false;
         }
