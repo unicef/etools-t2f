@@ -17,7 +17,7 @@
 
       app-toolbar {
         padding: 0 16px 0 0;
-        background-color: var(--nonprod-header-color, #233944);
+        background-color: var(--header-bg-color, #233944);
       }
 
       div[main-title] {
@@ -53,15 +53,23 @@
       etools-page-refresh {
         margin-left: 25px;
       }
+      
       .titlebar {
         flex: 1 ;
         font-size: 28px;
         font-weight: 300;
         color: var(--light-primary-text-color);
       }
+
       .titlebar img{
         width: 34px;
         margin: 0 8px 0 24px;
+      }
+
+      .envWarning {
+        color: var(--nonprod-text-warn-color);
+        font-weight: 700;
+        font-size: 18px;
       }
 
       .content-align {
@@ -85,6 +93,9 @@
       <div class="titlebar content-align">
         <etools-app-selector id="selector"></etools-app-selector>
         <img id="second-logo" src="../../images/etools-logo-color-white.svg">
+        <template is="dom-if" if="[[isStaging]]">
+          <div class="envWarning"> - STAGING TESTING ENVIRONMENT</div>
+        </template>
       </div>
       <div class="content-align">
         <countries-dropdown id="countries" countries="[[countries]]" current="[[user.profile.country]]"></countries-dropdown>
@@ -119,7 +130,11 @@
           structure: {
             type: Object
           },
-          userProfileDialog: Object
+          userProfileDialog: Object,
+          isStaging: {
+            type: Boolean,
+            value: false
+          }
         },
         observers: [
           '_updateCountriesList(user.profile.countries_available)'
@@ -162,14 +177,18 @@
           this.set('countries', arrayObj);
         },
         ready: function() {
-
-          var location = window.location.href;
-          var production = 'etools.unicef.org';
-
+          this._setBgColor();
+          this._isStaging();
+        },
+        _isStaging: function() {
+          if (etoolsAppConfig.globals.isStagingServer()) {
+            this.set('isStaging', true);
+          }
+        },
+        _setBgColor: function() {
           // If not production environment, changing header color to red
-          if (location.indexOf(production) === -1) {
-            this.customStyle['--nonprod-header-color'] = '#A73838';
-            this.updateStyles();
+          if (!etoolsAppConfig.globals.isProductionServer()) {
+            this.updateStyles({'--header-bg-color': 'var(--nonprod-header-color)'});
           }
         },
         _saveProfile: function(e) {
