@@ -240,9 +240,9 @@
         data = this._checkJSON(data);
         this.set(name, data);
       },
-      _generateStructure: function(static, sections, offices, t2fStaticData, users, groups,
+      _generateStructure: function(staticData, sections, offices, t2fStaticData, users, groups,
         drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results) {
-          var data = static;
+          var data = staticData;
           data.sections = sections;
           data.offices = offices;
           data.locations = locations;

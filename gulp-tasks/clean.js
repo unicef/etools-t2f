@@ -29,3 +29,47 @@ module.exports = {
   build: clean,
   fullBuild: fullClean
 };
+
+
+// 'use strict';
+
+// const del = require('del');
+
+// // Returns a Promise to delete a directory
+// function clean() {
+//   return del(
+//     [
+//       global.config.build.rootDirectory + '/**',
+//       '!' + global.config.build.rootDirectory
+//     ],
+//     {
+//       force: true
+//     }
+//   );
+// }
+
+// function fullClean() {
+//   return del(
+//     [
+//       global.config.build.rootDirectory + '/**',
+//       '!' + global.config.build.rootDirectory,
+//       global.config.build.templateDirectory
+//     ],
+//     {
+//       force: true
+//     }
+//   );
+// }
+
+// function cleanBowerInSrc() {
+//     return del(
+//         ['./src/bower_components'],
+//         {force: true}
+//     );
+// }
+
+// module.exports = {
+//     build: clean,
+//     fullBuild: fullClean,
+//     bowerInSrc: cleanBowerInSrc
+// };

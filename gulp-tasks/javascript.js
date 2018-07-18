@@ -9,6 +9,9 @@ const jshintStylish = require('jshint-stylish');
 const jscs = require('gulp-jscs');
 const jscsStylish = require('gulp-jscs-stylish');
 const lazypipe = require('lazypipe'); // Lazy pipe creates a reusable pipe stream
+const babel = require('gulp-babel');
+const gulpIf = require('gulp-if');
+
 
 // Minify Javascript
 function minify() {
@@ -17,6 +20,10 @@ function minify() {
     // options
   });
 }
+
+const babelify = lazypipe()
+.pipe(()=> (gulpIf('*.html', crisper({scriptInHead:false}))))
+.pipe(()=> gulpIf('*.js', babel()));
 
 // Lint Javascript
 var lint = lazypipe()
@@ -29,5 +36,6 @@ var lint = lazypipe()
 
 module.exports = {
   minify: minify,
-  lint: lint
+  lint: lint,
+  babelify
 };

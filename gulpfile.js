@@ -12,16 +12,21 @@
 
 const path = require('path');
 const gulp = require('gulp');
+const nodemon = require('gulp-nodemon');
+const clean = require('./gulp-tasks/clean.js');
+
 const gulpif = require('gulp-if');
 const gutil = require('gulp-util');
 const argv = require('yargs').argv;
 
-// Got problems? Try logging 'em
-// use -l to activate plylogs
-if (argv.l) {
-  const logging = require('plylog');
-  logging.setVerbose();
-}
+
+
+// // Got problems? Try logging 'em
+// // use -l to activate plylogs
+// if (argv.l) {
+//   const logging = require('plylog');
+//   logging.setVerbose();
+// }
 
 
 // !!! IMPORTANT !!! //
@@ -53,28 +58,23 @@ global.config = {
 };
 
 // Change global config if building into eTools
-const etoolsBuild = require('./gulp-tasks/etoolsBuild.js');
-if (argv._[0] === 'fullBuild') {
-  etoolsBuild.config();
-}
+// const etoolsBuild = require('./gulp-tasks/etoolsBuild.js');
+// if (argv._[0] === 'fullBuild') {
+//   etoolsBuild.config();
+// }
 
 // Add your own custom gulp tasks to the gulp-tasks directory
 // A few sample tasks are provided for you
 // A task should return either a WriteableStream or a Promise
-const clean = require('./gulp-tasks/clean.js');
-const images = require('./gulp-tasks/images.js');         //Any processing on images
-const javascript = require('./gulp-tasks/javascript.js'); //Any processing on javascript
-const html = require('./gulp-tasks/html.js');             //Any processing on html
-const css = require('./gulp-tasks/css.js');               //Any processing on css
-const project = require('./gulp-tasks/project.js');
+
 
 
 // Log task end messages
-var log = function (message) {
-  return function () {
-    gutil.log(message);
-  }
-};
+// var log = function (message) {
+//   return function () {
+//     gutil.log(message);
+//   }
+// };
 
 // The source task will split all of your source files into one
 // big ReadableStream. Source files are those in src/** as well as anything
@@ -83,6 +83,16 @@ var log = function (message) {
 // will be split out into temporary files. You can use gulpif to filter files
 // out of the stream and run them through specific tasks. An example is provided
 // which filters all images and runs them through imagemin
+
+
+
+const images = require('./gulp-tasks/images.js');         //Any processing on images
+const javascript = require('./gulp-tasks/javascript.js'); //Any processing on javascript
+const html = require('./gulp-tasks/html.js');             //Any processing on html
+const css = require('./gulp-tasks/css.js');               //Any processing on css
+const project = require('./gulp-tasks/project.js');
+
+
 
 function source() {
   return project.splitSource()
@@ -94,6 +104,7 @@ function source() {
     // .pipe(gulpif('**/*.{css,html}', css.lint()))              .on('end', log('Linted CSS'))
     .pipe(gulpif('**/*.{html,css}', css.minify())).on('end', log('Minified CSS'))
 
+    .pipe(gulpif(['**/*.{js,html}', '!**/*.min.js'], javascript.babelify())).on('end', log('Transpiled ES2017'))
     .pipe(gulpif(['**/*.js', '!**/*.min.js'], javascript.lint())).on('end', log('Linted Javascript'))
 
     .pipe(gulpif(['**/*.js', '!**/*.min.js'], javascript.minify())).on('end', log('Minified Javascript'))
