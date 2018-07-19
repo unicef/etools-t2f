@@ -1,10 +1,8 @@
 {
   "preset": "google",
+  "disallowMultipleVarDecl": null,
   "disallowSpacesInAnonymousFunctionExpression": null,
-  "disallowTrailingWhitespace": null,
-  "maximumLineLength": 120,
-  "validateIndentation": null,
-  "requireOperatorBeforeLineBreak": null,
-  "requireCamelCaseOrUpperCaseIdentifiers": null,
-  "excludeFiles": ["node_modules/**"]
+  "maximumLineLength": null,
+  "validateIndentation": 4,
+  "requireCamelCaseOrUpperCaseIdentifiers": {"ignoreProperties": true}
 }

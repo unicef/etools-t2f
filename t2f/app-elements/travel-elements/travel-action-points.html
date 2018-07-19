@@ -4,7 +4,7 @@
 <link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
 <link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../../bower_components/etools-content-panel/etools-content-panel.html">
-
+<link rel="import" href="../common/dialog-element.html">
 
 <link rel="import" href="../../scripts/lodash/lodash.html">
 <link rel="import" href="../fieldset-elements/action-point.html">
@@ -39,7 +39,8 @@
         <div slot="panel-btns">
           <div hidden$="[[!permissions.action_points.edit]]">
             <paper-icon-button class="panel-button"
-                               on-tap="_openPopup"
+                               name="Add"
+                               on-tap="_openDialog"
                                icon="add-box">
             </paper-icon-button>
             <paper-tooltip offset="0">Add</paper-tooltip>
@@ -70,6 +71,15 @@
   
           </div>
         </template>
+
+        <dialog-element opened="{{dialogOpened}}"
+                        dialog-title="[[dialogTitle]]"
+                        confirm-btn-text="[[confirmBtnText]]"
+                        request-in-process="{{requestInProcess}}">
+          <action-point-form form-data="{{actionPointFormData}}">
+            
+          </action-point-form>
+        </dialog-element>
   
       </etools-content-panel>
   
@@ -80,6 +90,10 @@
     Polymer({
       is: 'travel-action-points',
 
+      listeners: {
+        'dialog-confirmed': '_doRequest'
+      },
+
       properties: {
         permissions: {
           type: Object
@@ -87,6 +101,26 @@
         data: {
           type: Object,
           notify: true
+        },
+        dialogOpened: {
+          type: Boolean,
+          value: false
+        },
+        dialogTitle: {
+          type: String,
+          value: ''
+        },
+        confirmBtnText: {
+          type: String,
+          value: 'Save'
+        },
+        requestInProcess: {
+          type: Boolean,
+          value: false
+        },
+        actionPointsFormData: {
+          type: Object,
+          value: {}
         },
         actionPointColumns: {
           type: Array,
@@ -115,7 +149,20 @@
             }]
           }
         },
-      }
+      },
+
+      _openDialog({target}) {
+        const type = target.getAttribute('name');
+        this.set('dialogType', type);
+        this._setDialogTitle(type);
+        this.set('dialogOpened', true);
+      },
+
+      _setDialogTitle(type) {
+        const dialogTitle = `${type} Action Point`;
+        this.set('dialogTitle', dialogTitle);
+      },
+
     });
 
   </script>

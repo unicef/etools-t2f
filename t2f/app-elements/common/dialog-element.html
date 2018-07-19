@@ -27,7 +27,7 @@
         display: block;
         padding: 10px 8px 10px 24px;
         overflow: hidden;
-        border-top: 1px solid var(--gray-lighter);
+        border-top: 1px solid var(--dark-divider-color);
       }
     
       #buttons paper-button {
@@ -47,14 +47,14 @@
       .btn-confirm {
         min-width: 90px;
         color: #ffffff;
-        background-color: var(--module-primary);
+        background-color: var(--primary-color);
         font-weight: 500;
         z-index: 5;
         margin-right: 9px;
       }
     
       .btn-confirm[delete-btn] {
-        background-color: var(--module-error);
+        background-color: var(--error-color);
       }
     
       .dialog-title {
@@ -63,7 +63,7 @@
         margin-top: 0 !important;
         margin-bottom: 10px !important;
         color: white;
-        background-color: var(--module-primary);
+        background-color: var(--primary-color);
       }
     
       .close-btn {
@@ -94,7 +94,7 @@
     
       paper-button.btn-cancel[disabled] {
         background-color: transparent;
-        color: var(--gray-mid);
+        color: var( --dark-secondary-text-color);
       }
     
       paper-button[disabled]:not(.btn-cancel) {
@@ -241,10 +241,6 @@
       _openedChanged: function (opened) {
         if (!opened && this.requestInProcess) {
           this.opened = true;
-        }
-
-        if (this.$.scrollbarContainer) {
-          Ps.update(this.$.scrollbarContainer);
         }
       },
 
