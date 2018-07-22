@@ -1,10 +1,10 @@
-<!--import [polymer, iron-flex-layout, moment-element/moment-import, paper-checkbox, paper-tooltip]-->
-<!--import [shared-styles, tab-inputs-styles, module-styles, insert-html, localization-behavior]-->
+<!-- Element stolen from TPM, some methods not used but kept for future-->
 
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
+<link rel="import" href="../../app-config/etools-app-config.html">
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 <link rel="import" href="../../styles/et2f-list-styles.html">
@@ -78,7 +78,7 @@
       }
   
       :host .partner-data a.col-data {
-        color: var(--module-primary);
+        color: var(--primary-color);
         font-weight: 500;
         cursor: pointer;
       }
@@ -134,10 +134,25 @@
       :host .partners-data-details .row-details-content .data {
         font-size: 13px;
       }
+
+      .partner-data .truncate.primary {
+        font-weight: bold;
+      }
+
+      .partner-data .truncate p {
+        font-weight: normal;
+        overflow: hidden;
+        margin: 0;
+      }
   
       .custom-icon {
         --iron-icon-height: 16px;
         --iron-icon-width: 16px;
+        color: var(--primary-color);
+      }
+
+      .extra-pad {
+        padding-right: 24px !important;
       }
   
       :host([hover]) paper-material, paper-material:hover {
@@ -152,7 +167,7 @@
         min-height: 48px;
         font-size: 13px;
         color: var(--gray-dark, rgba(0, 0, 0, 0.87));
-        background-color: var(--primary-background-color, #FFFFFF);
+        background-color: var(#FFFFFF);
         padding: 0 14px 0 72px !important;
         box-sizing: border-box;
       }
@@ -228,13 +243,15 @@
           <template is="dom-if"
                     if="[[_isOneOfType(item, 'link')]]">
             <a class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate"
-               href$="[[_getLink(item.link, data)]]"
+               href="[[_getLink(item.link)]]"
                target="[[item.target]]">
               <span class="truncate">
                 <template is="dom-if"
                           if="[[_getValue(item, data)]]">
                   [[_getValue(item, data)]]
                   <paper-tooltip offset="0">[[_getValue(item, data)]]</paper-tooltip>
+                  <iron-icon class="custom-icon"
+                           icon="icons:open-in-new"></iron-icon>
                 </template>
   
                 <template is="dom-if"
@@ -248,11 +265,14 @@
           <template is="dom-if"
                     if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]"
                     restamp>
-            <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
-              <span class="truncate">
+            <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate extra-pad">
+              <span class$="truncate [[_getPrimaryClass(item)]]">
                 <template is="dom-if"
                           if="[[_getValue(item, data)]]">
                   [[_getValue(item, data)]]
+                  <template  is="dom-if" if="[[_getSecondary(item)]]">
+                    <p>[[_getSecondary(item)]]</p>
+                  </template>
                   <paper-tooltip offset="0"
                                  hidden$="[[item.hideTooltip]]">[[_getValue(item, data)]]</paper-tooltip>
                 </template>
@@ -336,7 +356,7 @@
             <slot name="hover"></slot>
           </span>
         </template>
-      </div>
+      </div> 
     </paper-material>
   
     <template is="dom-if"
@@ -430,11 +450,10 @@
       }
     },
 
-   
-
     observers: [
       '_setRightPadding(headings.*)'
     ],
+
 
     _setRightPadding: function () {
       if (!this.headings) { return; }
@@ -474,11 +493,15 @@
 
     _getValue: function (item, data, bool) {
       let value;
-
+      
       if (!item.path) {
         value = this.get('data.' + item.name);
       } else {
-        value = this.get('data.' + item.path);
+        if (Array.isArray(item.path)) {
+          value = item.path.map(str => this.get('data.' + str)).join(' ');
+        } else {
+          value = this.get('data.' + item.path);
+        }
       }
 
       if (item.name === 'type' || item.name === 'status') {
@@ -506,6 +529,10 @@
       }
 
       return value;
+    },
+
+    _getSecondary: function (item) {
+      return this.get('data.'+ item.secondary) || null
     },
 
     _refactorValue: function (type, value) {
@@ -641,13 +668,16 @@
       return value || '–';
     },
 
+    _getPrimaryClass: function (item) {
+      return item.secondary ? 'primary' : ''
+    },
+
     _getStatus: function (synced) {
       if (synced) { return 'Synced from VISION'; }
     },
 
     _getLink: function (pattern) {
       if (typeof pattern !== 'string') { return '#'; }
-
       let link = pattern
         .replace('*ap_link*', this.data.url)
         .replace('*data_id*', this.data.id);

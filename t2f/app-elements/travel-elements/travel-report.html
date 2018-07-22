@@ -10,9 +10,7 @@
 <link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
 
 <link rel="import" href="../../scripts/lodash/lodash.html">
-<link rel="import" href="../fieldset-elements/action-point.html">
-<link rel="import" href="../action-points-elements/action-points-header.html">
-<link rel="import" href="../action-points-elements/action-point-collapse-item.html">
+
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 
@@ -102,48 +100,7 @@
       </paper-material>
     </div>
 
-    <div class="container layout horizontal">
-      <etools-content-panel list
-                            class="flex"
-                            panel-title="Action Points">
-        <div slot="panel-btns">
-          <div hidden$="[[!permissions.action_points.edit]]">
-            <paper-icon-button class="panel-button"
-                               on-tap="_openPopup"
-                               icon="add-box">
-            </paper-icon-button>
-            <paper-tooltip offset="0">Add</paper-tooltip>
-          </div>
-        </div>
-        <action-points-header no-ordered
-                              data="[[actionPointColumns]]"></action-points-header>
-    
-       
-      <template is="dom-repeat"
-                items="[[data.action_points]]"
-                strip-whitespace>
-        <div class="layout horizontal item-container">
-          <action-point-collapse-item class="list-element"
-                                      data="[[item]]"
-                                      headings="[[actionPointColumns]]"
-                                      has-collapse
-                                      no-animation>
-            <div slot="detailSlot">
-            </div>
-            <div slot="hover">
-                <iron-icon on-click="dispatchEditRequest"
-                           class="edit-icon"
-                           hidden$="[[!permissions.action_points.edit]]"
-                           icon="editor:mode-edit"></iron-icon>
-              </div>
-          </action-point-collapse-item>
-          
-        </div>
-      </template>
-       
-      </etools-content-panel>
-    </div>
-
+  
   </template>
 
   <script>

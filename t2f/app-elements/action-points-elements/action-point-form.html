@@ -1,0 +1,86 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-single-selection-menu.html">
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="action-point-form">
+  
+  <template>
+    <style include="shared-styles iron-flex et2f-styles">
+    </style>
+    <div class="layout vertical">
+      <etools-single-selection-menu label="Related Task"
+                                    required
+                                    selected="{{formData.travel_activity}}"
+                                    options="[[activitiesOptions]]"
+                                    option-value="value"
+                                    starred
+                                    placeholder="Select">
+      </etools-single-selection-menu>
+    </div>
+  
+  
+  </template>
+
+<script>
+  Polymer({
+    is: 'action-point-form',
+    properties: {
+      active: {
+        type: Boolean
+      },
+      offices: {
+        type: Array
+      },
+      sections: {
+        type: Array
+      },
+      users: {
+        type: Array
+      },
+      relatedActivities: {
+        type: Array,
+      },
+      activitiesOptions: {
+        type: Array,
+        computed: '_createOptions(relatedActivities)'
+      },
+      emptyForm: {
+        type: Object,
+        value: {
+          travel_activity: '',
+        }
+      },
+      formData: {
+        type: Object,
+      }
+    },
+    observers: [
+      '_formChanged(formData.*)',
+      '_handleActive(active)'
+    ],
+
+    _handleActive: function(active) {
+      console.log(active)
+        this.set('formData', this.emptyForm);
+    },
+
+    _createOptions: function (activities) {
+      if (!activities || !activities[0].id) {
+        return [];
+      }
+      return activities.map(act => ({
+        label: `${act.id} / ${act.result? act.result.label: ''}`,
+        value: act.id
+      }));
+    },
+
+    _formChanged: function (formData) {
+      console.log(formData)
+    }
+
+  })
+</script>
+
+</dom-module>

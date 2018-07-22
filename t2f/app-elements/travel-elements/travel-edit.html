@@ -230,6 +230,9 @@
         </travel-attachments>
   
         <travel-action-points data="{{data}}"
+                              offices="[[structure.offices]]"
+                              sections="[[structure.sections]]"
+                              action-points="{{actionPoints}}"
                               permissions="[[travelPermissions]]"
                               user="[[user]]"></travel-action-points>
   
@@ -321,14 +324,33 @@
         dataForTa: {
           type: Object,
           computed: '_computeDataForTa(data, travelerProfile)'
+        },
+        actionPoints: {
+          type: Array
         }
 
       },
 
       observers: [
         '_computeTravelPermission(et2fPermissions, status, user, data)',
-        '_alignDsaRegionsToSubmissionDate(data, structure)'
+        '_alignDsaRegionsToSubmissionDate(data, structure)',
+        '_transformActionPoints(data)'
       ],
+
+      // attached: function () {
+      //   debugger
+      //   this.fire('global-loading', {
+      //     active: true, message: 'Loading travel details...', loadingSource: 'travel-details'
+      //   })
+      // },
+
+      // _handleLoading: function (data) {
+      //   if (data.activities){
+      //     this.fire('global-loading', {
+      //       loadingSource: 'travel-details'
+      //     })
+      //   }
+      // },
 
       // If trip has been submitted before, checks for old DSA regions/rates, else uses newest from structure
       _alignDsaRegionsToSubmissionDate: function(data, structure) {
@@ -593,6 +615,27 @@
         } else {
           this._handleFormAction(action);
         }
+      },
+
+      _transformActionPoints({activities}) {
+        if (!activities || !this.structure) {
+          return
+        }
+        const {sections,offices}= this.structure;
+        const addNewFields = (activityId, actionPoints) => actionPoints.map(ap => { 
+          ap.related_activity = activityId;
+          let sectionName = sections.find(s=> s.value === ap.section);
+          sectionName = sectionName ? sectionName.label : 'none';
+          let officeName = offices.find(s=> s.value === ap.office);
+          officeName = officeName ? officeName.label : 'none'
+          ap.assigned_to.section_office = `(${sectionName} / ${officeName})`;
+          return ap;
+        });
+        const nested = activities.map(
+          ({ action_points, id }) => addNewFields(id, action_points)
+        );
+        const flattened = _.flatten(nested);
+        this.set('actionPoints', flattened);        
       }
 
     });
