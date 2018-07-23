@@ -37,7 +37,7 @@
     "iron-component-page": "PolymerElements/iron-component-page#^1.1.7",
     "paper-date-picker": "polymer-paper-date-picker#^1.2.0",
     "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
-    "etools-datepicker": "^1.0.0",
+    "etools-datepicker": "^1.0.5",
     "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.1",
     "paper-badge": "PolymerElements/paper-badge#^1.1.4",
     "paper-card": "PolymerElements/paper-card#^1.1.6",
@@ -60,7 +60,7 @@
     "es5-shim": "https://github.com/es-shims/es5-shim.git",
     "webcomponentsjs": "^0.7.24",
     "etools-app-selector": "1.0.11",
-    "etools-profile-dropdown": "09904ed1",
+    "etools-profile-dropdown": "15cc714",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
