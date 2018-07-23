@@ -8,6 +8,21 @@
   
   <template>
     <style include="shared-styles iron-flex et2f-styles">
+      :host {
+        --esmm-external-wrapper: {
+          margin: 0 12px;
+          width: calc(100% - 24px);
+        }
+      }
+
+      paper-textarea {
+        @apply --esmm-external-wrapper;
+      }
+      
+      div.horizontal {
+        padding: 8px 0;
+      }
+
     </style>
     <div class="layout vertical">
       <etools-single-selection-menu label="Related Task"
@@ -18,6 +33,81 @@
                                     starred
                                     placeholder="Select">
       </etools-single-selection-menu>
+
+      
+      <template is="dom-if" if="[[activitySelected]]">
+          <etools-single-selection-menu label="Related CP Output"
+                                        selected="{{formData.cp_output}}"
+                                        options="[[results]]"
+                                        option-value="value"
+                                        placeholder="Select">
+          </etools-single-selection-menu>
+
+          <div class="layout horizontal">
+              <etools-single-selection-menu label="Related Partner"
+                                            selected="{{formData.partner}}"
+                                            options="[[partners]]"
+                                            option-value="value"
+                                            placeholder="Select">
+              </etools-single-selection-menu>
+              <etools-single-selection-menu label="Related PD/SSFA"
+                                            selected="{{formData.intervention}}"
+                                            options="[[interventions]]"
+                                            option-value="value"
+                                            placeholder="Select">
+              </etools-single-selection-menu>
+          </div>
+
+      </template>
+      
+      
+      <paper-textarea label="Description"
+                      placeholder="Enter description"
+                      char-counter
+                      maxlength="2000"
+                      required
+                      starred
+                      value="{{formData.description}}">
+      </paper-textarea>
+
+      <div class="layout horizontal">
+        <etools-single-selection-menu label="Assignee"
+                                      required
+                                      selected="{{formData.assigned_to}}"
+                                      options="[[users]]"
+                                      starred
+                                      placeholder="Select">
+        </etools-single-selection-menu>
+        <etools-single-selection-menu label="Section of Assignee"
+                                      required
+                                      selected="{{formData.section}}"
+                                      options="[[sections]]"
+                                      starred
+                                      placeholder="Select">
+        </etools-single-selection-menu>
+      </div>
+
+      <div class="layout horizontal">
+        <etools-single-selection-menu label="Office of Assignee"
+                                      required
+                                      selected="{{formData.office}}"
+                                      options="[[offices]]"
+                                      starred
+                                      placeholder="Select">
+        </etools-single-selection-menu>
+
+        <date-time-picker-input label="Due Date"
+                                id="start_date"
+                                placeholder="select"
+                                format="YYYY-MM-DD"
+                                pretty-date="{{formData.due_date}}">
+        </date-time-picker-input>
+      </div>
+
+
+
+
+
     </div>
   
   
@@ -42,6 +132,10 @@
       relatedActivities: {
         type: Array,
       },
+      activitySelected: {
+        type: Boolean,
+        value: false
+      },
       activitiesOptions: {
         type: Array,
         computed: '_createOptions(relatedActivities)'
@@ -54,16 +148,25 @@
       },
       formData: {
         type: Object,
+        notify: true
+      },
+      actionPointsFormData: {
+        type: Object,
+        notify: true
       }
     },
     observers: [
       '_formChanged(formData.*)',
-      '_handleActive(active)'
+      '_handleActive(active)',
+      '_handleActivitySelected(formData.travel_activity)'
     ],
 
+    _select: function(e) {
+      // this.set('formData', {...this.formData});
+    },
+
     _handleActive: function(active) {
-      console.log(active)
-        this.set('formData', this.emptyForm);
+        this.set('formData', {...this.emptyForm});
     },
 
     _createOptions: function (activities) {
@@ -76,8 +179,20 @@
       }));
     },
 
-    _formChanged: function (formData) {
-      console.log(formData)
+    _handleActivitySelected: function(activity) {
+      this.set('activitySelected', Boolean(activity));
+      if (!activity) {
+        return;
+      }
+      const relatedActivity = this.relatedActivities.find(act=> activity===act.id);
+
+      this.set('formData.cp_output', _.get(relatedActivity,'result.value', null));
+      this.set('formData.partner', _.get(relatedActivity,'partner.id', null));
+      this.set('formData.intervention', _.get(relatedActivity,'partnership.id', null));
+    },
+
+    _formChanged: function ({base}) {
+      this.set('actionPointsFormData', {...base});
     }
 
   })

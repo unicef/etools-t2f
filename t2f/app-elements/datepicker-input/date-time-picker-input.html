@@ -151,6 +151,7 @@
         },
         prettyDate: {
           type: String,
+          notify: true,
         },
         opened: {
           type: Boolean,
@@ -225,7 +226,7 @@
           this.set('time', time);
       },
       _computeFormat: function(timePicker) {
-        this.set('format', 'LL');
+        this.set('format', this.format);
       },
       _dateChanged: function(changed, format) {
         var date = changed.base;

@@ -8,6 +8,9 @@
 
 <link rel="import" href="../common/dialog-element.html">
 
+<link rel="import" href="../../app-config/etools-app-config.html">
+
+
 <link rel="import" href="../../scripts/lodash/lodash.html">
 <link rel="import" href="../fieldset-elements/action-point.html">
 <link rel="import" href="../action-points-elements/action-points-header.html">
@@ -81,7 +84,14 @@
                         request-in-process="{{requestInProcess}}">
           <action-point-form related-activities="[[data.activities]]"
                              active="[[dialogOpened]]"
-                             form-data="{{actionPointFormData}}">
+                             users="[[users]]"
+                             offices="[[offices]]"
+                             sections="[[sections]]"
+                             partners="[[partners]]"
+                             interventions="[[interventions]]"
+                             results="[[results]]"
+                             locations="[[locations]]"
+                             action-points-form-data="{{actionPointsFormData}}">
           </action-point-form>
         </dialog-element>
   
@@ -95,7 +105,7 @@
       is: 'travel-action-points',
 
       listeners: {
-        'dialog-confirmed': '_doRequest'
+        'dialog-confirmed': '_performRequest'
       },
 
       behaviors: [
@@ -131,7 +141,8 @@
         },
         actionPointsFormData: {
           type: Object,
-          value: {}
+          value: {},
+          observer: '_check'
         },
         actionPointColumns: {
           type: Array,
@@ -177,18 +188,44 @@
           }
         },
       },
+      _check: function(data){
+        console.log('form data check', data)
+      },
 
-      _openDialog({target}) {
+      _openDialog: function({target}) {
         const type = target.getAttribute('name');
         this.set('dialogType', type);
         this._setDialogTitle(type);
         this.set('dialogOpened', true);
       },
 
-      _setDialogTitle(type) {
+      _setDialogTitle: function(type) {
         const dialogTitle = `${type} Action Point`;
         this.set('dialogTitle', dialogTitle);
       },
+
+      _performRequest: function(e) { 
+        const config = {
+          endpoint: etoolsAppConfig.globals.getEndpoint('et2fActionPointList'),
+          method: 'POST',
+          body: this.actionPointsFormData
+        };
+        this.sendRequest(config).then(
+          resp => this._handleSuccessResponse(resp)
+        ).catch(
+          error => this._handleError(error)
+        );
+
+      },
+
+      _handleSuccessResponse: function(resp) {
+        console.log(resp);
+      },
+
+      _handleError: function(error){
+        console.log(error);
+
+      }
 
     });
 

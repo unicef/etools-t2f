@@ -232,6 +232,11 @@
         <travel-action-points data="{{data}}"
                               offices="[[structure.offices]]"
                               sections="[[structure.sections]]"
+                              results="[[structure.results]]"
+                              partners="[[structure.partners]]"
+                              interventions="[[structure.partnerships]]"
+                              users="[[structure.users]]"
+                              locations="[[structure.locations]]"
                               action-points="{{actionPoints}}"
                               permissions="[[travelPermissions]]"
                               user="[[user]]"></travel-action-points>
@@ -302,7 +307,7 @@
         },
         selected: {
           type: Number,
-          value: 0
+          value: 3
         },
         travelId: {
           type: String
@@ -334,23 +339,23 @@
       observers: [
         '_computeTravelPermission(et2fPermissions, status, user, data)',
         '_alignDsaRegionsToSubmissionDate(data, structure)',
-        '_transformActionPoints(data)'
+        '_transformActionPoints(data)',
+        '_handleLoading(data)'
       ],
 
-      // attached: function () {
-      //   debugger
-      //   this.fire('global-loading', {
-      //     active: true, message: 'Loading travel details...', loadingSource: 'travel-details'
-      //   })
-      // },
+      attached: function () {
+        this.fire('global-loading', {
+          active: true, message: 'Loading travel details...', loadingSource: 'travel-details'
+        })
+      },
 
-      // _handleLoading: function (data) {
-      //   if (data.activities){
-      //     this.fire('global-loading', {
-      //       loadingSource: 'travel-details'
-      //     })
-      //   }
-      // },
+      _handleLoading: function (data) {
+        if (data.activities){
+          this.fire('global-loading', {
+            loadingSource: 'travel-details'
+          })
+        }
+      },
 
       // If trip has been submitted before, checks for old DSA regions/rates, else uses newest from structure
       _alignDsaRegionsToSubmissionDate: function(data, structure) {
@@ -466,7 +471,7 @@
 
       _routeObserver: function(route) {
         this.$.travelStatus.resetPosition();
-        this.set('selected', 0);
+        this.set('selected', 3);
         if (route.path && route.path.indexOf('edit-travel/-1') > -1) {
           this._loadDefault();
         }
@@ -635,7 +640,7 @@
           ({ action_points, id }) => addNewFields(id, action_points)
         );
         const flattened = _.flatten(nested);
-        this.set('actionPoints', flattened);        
+        this.set('actionPoints', flattened);       
       }
 
     });
