@@ -254,6 +254,10 @@
         if (!this.$.actionPtsForm.validateForm()) {
           return;
         } 
+        this.fire('global-loading', {
+          message: 'Saving ...',
+          active: true
+        });
         const endpoint = this.dialogType === 'Edit' ? etoolsAppConfig.globals.computeTemplate('et2fActionPointDetail', {
             id: this.actionPointsFormData.id
           }) : 
@@ -275,6 +279,7 @@
       },
 
       _handleSuccessResponse: function(resp) {
+        this.fire('global-loading');
         this.fire('toast', {
           text: 'Action Point saved successfully',
           showCloseBtn: true,

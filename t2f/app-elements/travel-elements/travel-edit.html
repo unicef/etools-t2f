@@ -307,7 +307,7 @@
         },
         selected: {
           type: Number,
-          value: 3
+          value: 0
         },
         travelId: {
           type: String
@@ -475,7 +475,7 @@
 
       _routeObserver: function(route) {
         this.$.travelStatus.resetPosition();
-        this.set('selected', 3);
+        this.set('selected', 0);
         if (route.path && route.path.indexOf('edit-travel/-1') > -1) {
           this._loadDefault();
         }
