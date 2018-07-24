@@ -243,7 +243,6 @@
         },
         baseUrl: {
           type: String,
-          value: baseUrl
         },
         notifications: {
           type: Array,
@@ -263,7 +262,7 @@
       },
 
       attached: function() {
-        this.baseUrl = this.basePath;
+        this.set('baseUrl',this.basePath);
         this.fire('global-loading', {
           message: 'Loading data...',
           active: true
@@ -322,9 +321,9 @@
           closeBtn.addEventListener('tap', ()=> {
             this._toast.hide();
             if (detail.reload) {
-              window.location.reload()
+              window.location.reload();
             }
-          })
+          });
           if(detail.showCloseBtn) {
             detail.duration = 0;
             closeBtn.removeAttribute('hidden');
