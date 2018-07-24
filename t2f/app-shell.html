@@ -227,6 +227,7 @@
         loading: {
           type: Boolean,
           value: false,
+          observer: '_handleLoading'
         },
         user: {
           type: Object,
@@ -263,6 +264,10 @@
 
       attached: function() {
         this.baseUrl = this.basePath;
+        this.fire('global-loading', {
+          message: 'Loading data...',
+          active: true
+        });
       },
       _computeIsFfp: function(user) {
         return user && user.t2f && user.t2f.roles && user.t2f.roles.indexOf('Finance Focal Point') > -1;
@@ -295,13 +300,9 @@
         this.$.drawer.toggle();
       },
 
-      _loadingObserver: function(loading) {
-        if (loading) {
-          this.loadingEl = this.createLoading('Loading data');
-          this.loadingEl.active = true;
-          this.loadingEl.setAttribute('absolute', true);
-        } else if (!loading && this.loadingEl) {
-          this.removeLoading(this.loadingEl);
+      _handleLoading: function(loading) {
+        if (!loading) {
+          this.fire('global-loading');
         }
       },
 
