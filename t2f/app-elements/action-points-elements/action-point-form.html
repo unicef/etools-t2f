@@ -243,8 +243,8 @@
       this.$.description.validate();
     },
 
-    validateForm: function() {
-      const {requiredFields} = this;
+    validateForm: function () {
+      const { requiredFields } = this;
       let valid = true;
       requiredFields.forEach(selector => {
         let field = this.$[selector];
@@ -252,17 +252,17 @@
           valid = false;
         }
       });
-     if (this.dialogType === 'Duplicate') {
-       const hasChanged = this._differsFromOriginal();
-       if (!hasChanged) {
-        this.fire('toast', {
-           text: 'At least one field needs to be changed.',
-           showCloseBtn: true,
-         });
-       }
-       valid = valid && hasChanged;
-     }
-     return this.$.form.validate() && valid;
+      if (this.dialogType === 'Duplicate') {
+        const hasChanged = this._differsFromOriginal();
+        if (!hasChanged) {
+          this.fire('toast', {
+            text: 'At least one field needs to be changed.',
+            showCloseBtn: true,
+          });
+        }
+        valid = valid && hasChanged;
+      }
+      return this.$.form.validate() && valid;
     },
 
     _clearInvalids: function () {
