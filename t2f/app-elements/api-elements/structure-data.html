@@ -120,13 +120,7 @@
       is: 'et2f-structure-data',
 
       properties: {
-        staticDataLoading: Boolean,
-        sectionsLoading: Boolean,
-        officesLoading: Boolean,
-        t2fStaticDataLoading: Boolean,
-        driversLoading: Boolean,
-        vendorNumbersLoading: Boolean,
-        structure: {
+          structure: {
           type: Object,
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
@@ -157,10 +151,11 @@
         loading: {
           type: Boolean,
           notify: true,
-          computed: '_computeLoading(staticDataLoading, sectionsLoading,' +
-          ' officesLoading, t2fStaticDataLoading, usersLoading, groupsLoading' +
-          ', driversLoading, vendorNumbersLoading, dsaLoading,' +
-          'partnersLoading, locationsLoading, resultsLoading, costStructureLoading)'
+          value: true,
+          computed: '_computeLoading(staticData, sectionsData,' +
+          ' officesData, t2fStaticData, usersData, groupsData,' +
+          'driversData, vendorsData, wbsGrantsFundsData, dsaData,' +
+          'partnersData, locationsData, resultsData)'
         },
         staticDataEndpoint: {
           type: String,
@@ -218,13 +213,19 @@
         }
       },
       behaviors: [et2fBehaviors.ApiBehavior],
+      observers: [
+      '_computeLoading(staticData, sectionsData,' +
+          ' officesData, t2fStaticData, usersData, groupsData,' +
+          'driversData, vendorsData, wbsGrantsFundsData, dsaData,' +
+          'partnersData, locationsData, resultsData)'
+      ],
 
-      _computeLoading: function() {
+      _computeLoading: function(...args) {
         var result = false;
-        for (var i = 0; i < arguments.length; ++i) {
-           result = result || arguments[i];
+        for (var i = 0; i < args.length; ++i) {
+           result = result || Boolean(args[i]);
         }
-        return result;
+        return !result;
       },
       _checkJSON: function(data) {
         if (typeof data === 'string') {
@@ -240,9 +241,9 @@
         data = this._checkJSON(data);
         this.set(name, data);
       },
-      _generateStructure: function(static, sections, offices, t2fStaticData, users, groups,
+      _generateStructure: function(staticData, sections, offices, t2fStaticData, users, groups,
         drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results) {
-          var data = static;
+          var data = staticData;
           data.sections = sections;
           data.offices = offices;
           data.locations = locations;

@@ -6,8 +6,8 @@
 <dom-module id="et2f-inbound-data">
   <template>
 
-    <etools-ajax url="[[travelUrl]]"
-      on-success="_handleData" loading="{{loading}}"></etools-ajax>
+    <etools-ajax url='[[travelUrl]]'
+      on-success='_handleData' loading='{{loading}}'></etools-ajax>
 
 
   </template>
@@ -55,6 +55,7 @@
         }
       },
       behaviors: [et2fBehaviors.ApiBehavior],
+     
       _computeUrl: function(travelId) {
         if (this.listen && travelId && travelId !== -1) {
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {

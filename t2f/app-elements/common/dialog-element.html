@@ -1,0 +1,253 @@
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+
+
+<dom-module id="dialog-element">
+  <template>
+    <style include="shared-styles et2f-styles iron-flex">
+      paper-dialog {
+        background-color: #ffffff;
+        border-radius: 4px;
+        max-height: 90vh;
+        width: 96%;
+        max-width: 700px !important;
+        --paper-font-body1: {
+          font-family: "Roboto", "Noto", sans-serif;
+          -webkit-font-smoothing: antialiased;
+          font-size: 14px;
+          font-weight: 400;
+        }
+        ;
+      }
+    
+      #buttons {
+        display: block;
+        padding: 10px 8px 10px 24px;
+        overflow: hidden;
+        border-top: 1px solid var(--dark-divider-color);
+      }
+    
+      #buttons paper-button {
+        height: 37px;
+      }
+    
+      .btn-cancel {
+        color: var(--gray-mid);
+        font-weight: 500;
+        z-index: 5;
+      }
+    
+      .btn-cancel:not([dialog-dismiss]) {
+        color: var(--gray-mid);
+      }
+
+      .right {
+        float: right;
+      }
+    
+      .btn-confirm {
+        min-width: 90px;
+        color: #ffffff;
+        background-color: var(--primary-color);
+        font-weight: 500;
+        z-index: 5;
+        margin-right: 9px;
+      }
+    
+      .btn-confirm[delete-btn] {
+        background-color: var(--error-color);
+      }
+    
+      .dialog-title {
+        padding: 16px 24px 10px !important;
+        min-height: 26px;
+        margin-top: 0 !important;
+        margin-bottom: 10px !important;
+        color: white;
+        background-color: var(--primary-color);
+      }
+    
+      .close-btn {
+        position: absolute;
+        right: -5px;
+        top: 4px;
+        margin-top: 14px !important;
+        color: white;
+        opacity: 0.7;
+        cursor: pointer;
+        transition: 0.15s;
+        z-index: 5;
+      }
+    
+      .close-btn:hover {
+        opacity: 1;
+      }
+    
+      .loading {
+        margin-top: 8px;
+        vertical-align: top;
+        margin-left: 15px;
+      }
+    
+      .loading:not([active]) {
+        display: none !important;
+      }
+    
+      paper-button.btn-cancel[disabled] {
+        background-color: transparent;
+        color: var( --dark-secondary-text-color);
+      }
+    
+      paper-button[disabled]:not(.btn-cancel) {
+        opacity: 0.7;
+      }
+    
+      #scrollbarContainer {
+        position: relative;
+        max-height: calc(90vh - 147px);
+        margin: 12px 16px;
+        padding: 0;
+      }
+    
+      :host([hide-confirm-btn]) #buttons {
+        border-top: none;
+      }
+    
+      :host([hide-confirm-btn]) .btn-confirm {
+        display: none;
+      }
+    
+      :host([hide-confirm-btn]) .dialog-title {
+        margin-bottom: 0 !important;
+      }
+    
+      :host([approve-popup]) .dialog-title {
+        margin-bottom: 0 !important;
+      }
+    </style>
+    <paper-dialog id="dialog"
+                  opened="{{opened}}"
+                  modal
+                  with-backdrop
+                  ok-btn-text="sync from vision">
+      <h2 class="dialog-title">[[dialogTitle]]</h2>
+      <iron-icon icon="icons:close"
+                 class="close-btn"
+                 dialog-dismiss$="{{_setDialogDismiss(requestInProcess, confirmDialogOpened)}}"></iron-icon>
+  
+      <div id="scrollbarContainer">
+        <template is="dom-if"
+                  if="{{!deleteDialog}}"
+                  restamp>
+          <slot></slot>
+        </template>
+      </div>
+  
+      <div class="buttons group"
+           id="buttons">
+        <etools-loading active="{{requestInProcess}}"
+                        no-overlay
+                        loading-text=""
+                        class="loading">
+        </etools-loading>
+  
+        <!--Confirm button-->
+        <template is="dom-if"
+                  if="[[!hideConfirmBtn]]">
+          <paper-button autofocus
+                        class="btn-confirm right"
+                        delete-btn$="[[deleteDialog]]"
+                        on-tap="confirmDialog"
+                        raised
+                        autofocus$="[[autofocus]]"
+                        disabled="{{requestInProcess}}">[[confirmBtnText]]
+          </paper-button>
+        </template>
+  
+        <!--Cancel button-->
+        <paper-button dialog-dismiss$="{{_setDialogDismiss(requestInProcess, confirmDialogOpened)}}"
+                      class="btn-cancel right"
+                      disabled="{{requestInProcess}}"
+                      on-tap="cancelDialog">[[cancelBtnText]]
+        </paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+  <script>
+    Polymer({
+      is: 'dialog-element',
+      properties: {
+        dialogTitle: {
+          type: String,
+          value: 'Custom title'
+        },
+        cancelBtnText: {
+          type: String,
+          value: 'Cancel'
+        },
+        confirmBtnText: {
+          type: String,
+          value: 'Ok'
+        },
+        opened: {
+          type: Boolean,
+          notify: true,
+          observer: '_openedChanged'
+        },
+        requestInProcess: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        confirmDialogOpened: {
+          type: Boolean,
+          value: false
+        },
+        dialogName: String,
+        deleteDialog: {
+          type: Boolean,
+          value: false,
+          reflectToAttribute: true
+        },
+        autofocus: {
+          type: Boolean,
+          value: false
+        },
+        hideConfirmBtn: {
+          type: Boolean,
+          value: false
+        }
+      },
+
+      behaviors: [
+        Polymer.NeonAnimationRunnerBehavior,
+      ],
+
+      _setDialogDismiss: function (requestInProcess, confirmDialogOpened) {
+        return !requestInProcess && !confirmDialogOpened;
+      },
+
+      confirmDialog: function () {
+        if (this.deleteDialog) {
+          this.fire('delete-confirmed', { dialogName: this.dialogName });
+        } else {
+          this.fire('dialog-confirmed', { dialogName: this.dialogName });
+        }
+      },
+
+      cancelDialog: function () {
+        this.fire('dialog-cancelled', { dialogName: this.dialogName });
+      },
+
+      _openedChanged: function (opened) {
+        if (!opened && this.requestInProcess) {
+          this.opened = true;
+        }
+      }
+
+    })
+  </script>
+</dom-module>

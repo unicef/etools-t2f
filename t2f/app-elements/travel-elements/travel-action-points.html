@@ -1,0 +1,294 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../../bower_components/etools-content-panel/etools-content-panel.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax-request-behavior.html">
+
+<link rel="import" href="../common/dialog-element.html">
+
+<link rel="import" href="../../app-config/etools-app-config.html">
+
+
+<link rel="import" href="../../scripts/lodash/lodash.html">
+<link rel="import" href="../fieldset-elements/action-point.html">
+<link rel="import" href="../action-points-elements/action-points-header.html">
+<link rel="import" href="../action-points-elements/action-point-collapse-item.html">
+<link rel="import" href="../action-points-elements/action-point-form.html">
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+
+<dom-module id="travel-action-points">
+
+  <template>
+    <style include="shared-styles et2f-styles iron-flex">
+      :host {
+        display: block;
+        width: 100%;
+        --ecp-content: {
+          padding: 0
+        }
+      }
+    
+      .container {
+        padding: 24px;
+        margin-right: 24px;
+      }
+
+    </style>
+  
+    <div class="container layout horizontal">
+      <etools-content-panel list
+                            class="flex"
+                            panel-title="Action Points">
+        <div slot="panel-btns">
+          <div hidden$="[[!permissions.action_points.edit]]">
+            <paper-icon-button class="panel-button"
+                               name="Add"
+                               on-tap="_openActionPoint"
+                               icon="add-box">
+            </paper-icon-button>
+            <paper-tooltip offset="0">Add</paper-tooltip>
+          </div>
+        </div>
+        <action-points-header no-ordered
+                              data="[[actionPointColumns]]"></action-points-header>
+  
+  
+        <template is="dom-repeat"
+                  items="[[actionPoints]]"
+                  strip-whitespace>
+          <div class="layout horizontal item-container">
+            <action-point-collapse-item class="list-element"
+                                        data="[[item]]"
+                                        headings="[[actionPointColumns]]"
+                                        no-animation>
+              <div slot="detailSlot">
+              </div>
+              <div slot="hover"
+                   class="layout horizontal center-center">
+                <div>
+                  <iron-icon on-click="_openActionPoint"
+                             class="edit-icon"
+                             name="Duplicate"
+                             data="[[item]]"
+                             hidden$="[[!permissions.action_points.edit]]"
+                             icon="image:filter-none"></iron-icon>
+                  <paper-tooltip offset="1" position="top">Duplicate</paper-tooltip>
+                </div>
+              
+                <div>
+                  <iron-icon on-click="_openActionPoint"
+                             class="edit-icon"
+                             name="Edit"
+                             hidden$="[[!permissions.action_points.edit]]"
+                             icon="editor:mode-edit"></iron-icon>
+                  <paper-tooltip offset="1" position="top">Edit</paper-tooltip>
+                </div>
+              
+              </div>
+            </action-point-collapse-item>
+  
+          </div>
+        </template>
+
+        <dialog-element opened="{{dialogOpened}}"
+                        dialog-title="[[dialogTitle]]"
+                        confirm-btn-text="[[confirmBtnText]]">
+          <action-point-form id="actionPtsForm"
+                             dialog-type="[[dialogType]]"
+                             related-activities="[[data.activities]]"
+                             active="[[dialogOpened]]"
+                             users="[[users]]"
+                             offices="[[offices]]"
+                             sections="[[sections]]"
+                             partners="[[partners]]"
+                             interventions="[[interventions]]"
+                             results="[[results]]"
+                             locations="[[locations]]"
+                             selectedActionPoint="[[selectedActionPoint]]"
+                             action-points-form-data="{{actionPointsFormData}}">
+          </action-point-form>
+        </dialog-element>
+      </etools-content-panel>
+  
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'travel-action-points',
+
+      listeners: {
+        'dialog-confirmed': '_performRequest'
+      },
+
+      behaviors: [
+        EtoolsAjaxRequestBehavior
+      ],
+
+      properties: {
+         permissions: {
+          type: Object
+        },
+        data: {
+          type: Object,
+          notify: true
+        },
+        actionPoints: {
+          type: Array
+        },
+        dialogOpened: {
+          type: Boolean,
+          value: false
+        },
+        dialogTitle: {
+          type: String,
+          value: ''
+        },
+        dialogType: {
+          type: Boolean,
+          value: 'Add',
+        },
+        confirmBtnText: {
+          type: String,
+          value: 'Save'
+        },
+        requestInProcess: {
+          type: Boolean,
+          value: false
+        },
+        actionPointsFormData: {
+          type: Object,
+          value: {},
+        },
+        actionPointColumns: {
+          type: Array,
+          value: function () {
+            return [{
+              'size': 15,
+              'label': 'Reference No.',
+              'path': 'reference_number',
+              'link': 'action-point/*data_id*',
+              'target': '_blank'
+            }, {
+              'size': 7,
+              'label': 'Related Activity',
+              'path': 'related_activity'
+            }, {
+              'size': 20,
+              'label': 'Description',
+              'path': 'description'
+            }, {
+              'size': 25,
+              'label': 'Assignee (Section/Office)',
+              'path': ['assigned_to.first_name', 'assigned_to.last_name'],
+              'secondary': 'assigned_to.section_office'
+            },
+            {
+              'size': 9,
+              'label': 'Status',
+              'path': 'status'
+            },
+            {
+              'size': 11,
+              'name': 'date',
+              'label': 'Date',
+              'path': 'due_date'
+            },
+            {
+              'size': 7,
+              'name': 'priority',
+              'label': 'Priority',
+              'path': 'high_priority'
+            }
+          ]
+          }
+        },
+      },
+
+      _openDialog: function({target}) {
+        this.set('dialogOpened', true);
+      },
+
+   
+      _configureDialog: function (type) {
+        this.set('dialogType', type);
+        const dialogTitle = `${type} Action Point`;
+        this.set('dialogTitle', dialogTitle);
+      },
+
+      _openActionPoint: function(e) {
+        const {model, target} = e;
+        const type = target.getAttribute('name');
+        this._configureDialog(type);
+        if (type !== 'Add') {
+          this.set('actionPointsFormData', this._getFormattedActionPoint(model.item))
+        }
+        this._openDialog(e);
+      },
+
+      _getFormattedActionPoint: function(acp) {
+        const relatedActivity= this.data.activities.find(act=> acp.related_activity===act.id);
+        return {
+          assigned_to: acp.assigned_to.id,
+          cp_output: _.get(relatedActivity,'result.value', null),
+          description: acp.description,
+          due_date: acp.due_date,
+          intervention: _.get(relatedActivity,'partnership.id', null),
+          partner: _.get(relatedActivity,'partner.id', null),
+          office: acp.office,
+          section: acp.section,
+          travel_activity: acp.related_activity,
+          id: this.dialogType === 'Edit'? acp.id : undefined
+        }
+      },
+
+     
+
+      _performRequest: function(e) {
+        if (!this.$.actionPtsForm.validateForm()) {
+          return;
+        } 
+        const endpoint = this.dialogType === 'Edit' ? etoolsAppConfig.globals.computeTemplate('et2fActionPointDetail', {
+            id: this.actionPointsFormData.id
+          }) : 
+          etoolsAppConfig.globals.getEndpoint('et2fActionPointList');
+        const method = this.dialogType === 'Edit' ? 'PATCH': 'POST'
+
+        const config = {
+          endpoint,
+          method,
+          body: this.actionPointsFormData
+        };
+
+        this.sendRequest(config).then(
+          resp => this._handleSuccessResponse(resp)
+        ).catch(
+          error => this._handleError(error)
+        );
+
+      },
+
+      _handleSuccessResponse: function(resp) {
+        this.fire('toast', {
+          text: 'Action Point saved successfully',
+          showCloseBtn: true,
+          reload: true
+        });
+        this.set('dialogOpened', false);
+      },
+
+      _handleError: function(error){
+        console.log(error);
+
+      }
+
+    });
+
+  </script>
+</dom-module>

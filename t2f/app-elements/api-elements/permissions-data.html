@@ -7,7 +7,6 @@
   <template>
      <etools-ajax endpoint="[[permissionsEndpoint]]"
         on-success="_handlePermissions"
-        loading="{{loading}}"
         caching-storage="dexie">
       </etools-ajax>
 
@@ -21,6 +20,7 @@
       properties: {
         loading: {
           type: Boolean,
+          value: true,
           notify: true
         },
         et2fPermissions: {
@@ -44,6 +44,7 @@
           data = this._parsePermissions(data);
         }
         this.set('et2fPermissions', data);
+        this.set('loading', false);
       },
        _parsePermissions: function(permissionMatrix) {
         permissionMatrix.parsed = true;
