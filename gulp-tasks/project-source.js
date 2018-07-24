@@ -4,15 +4,21 @@ const babel = require("gulp-babel");
 const compileHtmlTags = require('gulp-compile-html-tags');
 const gulpif = require('gulp-if');
 const uglify = require('gulp-uglify');
-const ignore = require('gulp-ignore');
 const htmlmin = require('gulp-htmlmin');
+const gutil = require('gulp-util');
 const cssSlam = require('css-slam').gulp;
 const project = require('./project.js');
 const combine = require('stream-combiner2').obj;
 const linter = require('./js-linter');
 
 
-const toIgnore = '../t2f/scripts/**/*.js'
+var log = function (message) {
+    return function () {
+      gutil.log(message);
+    }
+  }
+
+
 function minifyJs() {
     return uglify({
         preserveComments: false
@@ -34,12 +40,11 @@ function minifyHtml() {
 module.exports = function() {
     return project.splitSource()
         .pipe(linter)
-        .pipe(ignore.exclude(toIgnore))
         .pipe(gulpif('**/*.js', babel()))
+        .pipe(gulpif('**/*.{html,css}', minifyCss())).on('end', log('Minified CSS'))
         .pipe(gulpif(function(file) {
             return file.extname === '.html' && file.stem !== 'index';
         }, combine(
-            compileHtmlTags('style', function (tag, data) { return data.pipe(minifyCss()) }),
             compileHtmlTags('script', function (tag, data) { return data.pipe(babel()).pipe(minifyJs()); }),
             minifyHtml()
         )))
