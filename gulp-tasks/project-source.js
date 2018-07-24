@@ -4,12 +4,15 @@ const babel = require("gulp-babel");
 const compileHtmlTags = require('gulp-compile-html-tags');
 const gulpif = require('gulp-if');
 const uglify = require('gulp-uglify');
+const ignore = require('gulp-ignore');
 const htmlmin = require('gulp-htmlmin');
 const cssSlam = require('css-slam').gulp;
 const project = require('./project.js');
 const combine = require('stream-combiner2').obj;
 const linter = require('./js-linter');
 
+
+const toIgnore = '../t2f/scripts/**/*.js'
 function minifyJs() {
     return uglify({
         preserveComments: false
@@ -31,6 +34,7 @@ function minifyHtml() {
 module.exports = function() {
     return project.splitSource()
         .pipe(linter)
+        .pipe(ignore.exclude(toIgnore))
         .pipe(gulpif('**/*.js', babel()))
         .pipe(gulpif(function(file) {
             return file.extname === '.html' && file.stem !== 'index';

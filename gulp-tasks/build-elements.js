@@ -20,9 +20,7 @@ function buildElements(done) {
         combine(
           compileHtmlTags("script", function(tag, data) {
             return data.pipe(
-              babel({
-                presets: ["es2015", "es2017"]
-              }).on("error", function(error) {
+              babel().on("error", function(error) {
                 console.log("\x1b[31m%s\x1b[0m", error.message);
                 done();
               })
