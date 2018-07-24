@@ -12,17 +12,10 @@
 
 const path = require('path');
 const gulp = require('gulp');
-const gulpif = require('gulp-if');
-const gutil = require('gulp-util');
-const argv = require('yargs').argv;
+const clean = require('./gulp-tasks/clean.js');
 
-// Got problems? Try logging 'em
-// use -l to activate plylogs
-if (argv.l) {
-  const logging = require('plylog');
-  logging.setVerbose();
-}
-
+const buildElements = require('./gulp-tasks/build-elements');
+const copyBower = require('./gulp-tasks/copy-bower');
 
 // !!! IMPORTANT !!! //
 // Keep the global.config above any of the gulp-tasks that depend on it
@@ -52,87 +45,11 @@ global.config = {
   sourceCodeDirectory: './t2f'
 };
 
-// Change global config if building into eTools
-const etoolsBuild = require('./gulp-tasks/etoolsBuild.js');
-if (argv._[0] === 'fullBuild') {
-  etoolsBuild.config();
-}
-
-// Add your own custom gulp tasks to the gulp-tasks directory
-// A few sample tasks are provided for you
-// A task should return either a WriteableStream or a Promise
-const clean = require('./gulp-tasks/clean.js');
-const images = require('./gulp-tasks/images.js');         //Any processing on images
-const javascript = require('./gulp-tasks/javascript.js'); //Any processing on javascript
-const html = require('./gulp-tasks/html.js');             //Any processing on html
-const css = require('./gulp-tasks/css.js');               //Any processing on css
 const project = require('./gulp-tasks/project.js');
+const source = require('./gulp-tasks/project-source');
+const dependencies = require('./gulp-tasks/project-dependencies');
 
 
-// Log task end messages
-var log = function (message) {
-  return function () {
-    gutil.log(message);
-  }
-};
+//Lint, transpile, minify scripts
+gulp.task('default', gulp.series(clean.build, copyBower, buildElements, project.merge(source, dependencies), clean.bowerInSrc));
 
-// The source task will split all of your source files into one
-// big ReadableStream. Source files are those in src/** as well as anything
-// added to the sourceGlobs property of polymer.json.
-// Because most HTML Imports contain inline CSS and JS, those inline resources
-// will be split out into temporary files. You can use gulpif to filter files
-// out of the stream and run them through specific tasks. An example is provided
-// which filters all images and runs them through imagemin
-
-function source() {
-  return project.splitSource()
-  // Add your own build tasks here!
-    .pipe(gulpif('**/*.html', html.lint())).on('end', log('Linted HTML'))
-    .pipe(gulpif('**/*.html', html.minify())).on('end', log('Minified HTML'))
-
-    // lint CSS not working correctly. Not seeing temporary css files
-    // .pipe(gulpif('**/*.{css,html}', css.lint()))              .on('end', log('Linted CSS'))
-    .pipe(gulpif('**/*.{html,css}', css.minify())).on('end', log('Minified CSS'))
-
-    .pipe(gulpif(['**/*.js', '!**/*.min.js'], javascript.lint())).on('end', log('Linted Javascript'))
-
-    .pipe(gulpif(['**/*.js', '!**/*.min.js'], javascript.minify())).on('end', log('Minified Javascript'))
-
-    .pipe(gulpif('**/*.{gif,jpg,svg}', images.minify())).on('end', log('Minified Images'))
-
-    .pipe(project.rejoin()); // Call rejoin when you're finished
-}
-
-// The dependencies task will split all of your bower_components files into one
-// big ReadableStream
-// You probably don't need to do anything to your dependencies but it's here in
-// case you need it :)
-function dependencies() {
-  return project.splitDependencies()
-    .pipe(project.rejoin());
-}
-
-// Clean the build directory, split all source and dependency files into streams
-// and process them, and output bundled and unbundled versions of the project
-// with their own service workers
-
-// By default: just lint and minify
-// No building into eTools
-// hint: good for testing build efficiency
-gulp.task('default', gulp.series([
-  clean.build,
-  project.merge(source, dependencies),
-  project.serviceWorker
-]));
-
-
-// DO NOT RUN
-// Fully builds project
-// Minifying, linting, and building into eTools
-// TODO: This task is on hold
-gulp.task('fullBuild', gulp.series([
-  clean.fullBuild,
-  project.merge(source, dependencies),
-  project.serviceWorker,
-  etoolsBuild.buildTemplate
-]));

@@ -46,7 +46,7 @@
   </style>
 
   <template>
-    <div class="heading-row-header clearfix layout horizontal">
+    <div class$="heading-row-header clearfix layout horizontal [[wrapClass]]">
       <div class$="[[firstLeftMarginClass]]"></div>
       <template is="dom-repeat" items="[[metaData]]">
         <div on-click="_clickOnLabel" class$="local-headings [[_headingClassGenerator(item, route.__queryParams.sort_by)]]">
@@ -91,6 +91,7 @@
           notify: true
         },
         firstLeftMarginClass: String,
+        wrapClass: String,
         labelLib: Object,
         route: Object,
       },

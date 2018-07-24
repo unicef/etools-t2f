@@ -8,24 +8,46 @@
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
+
 'use strict';
 
 const del = require('del');
 
 // Returns a Promise to delete a directory
 function clean() {
-  return del(global.config.build.rootDirectory, {
-    force: true
-  });
+  return del(
+    [
+      global.config.build.rootDirectory + '/**',
+      '!' + global.config.build.rootDirectory
+    ],
+    {
+      force: true
+    }
+  );
 }
 
 function fullClean() {
-  return del([global.config.build.rootDirectory, global.config.build.templateDirectory], {
-    force: true
-  });
+  return del(
+    [
+      global.config.build.rootDirectory + '/**',
+      '!' + global.config.build.rootDirectory,
+      global.config.build.templateDirectory
+    ],
+    {
+      force: true
+    }
+  );
+}
+
+function cleanBowerInSrc() {
+    return del(
+        ['./t2f/bower_components'],
+        {force: true}
+    );
 }
 
 module.exports = {
-  build: clean,
-  fullBuild: fullClean
+    build: clean,
+    fullBuild: fullClean,
+    bowerInSrc: cleanBowerInSrc
 };

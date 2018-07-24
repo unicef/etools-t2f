@@ -37,7 +37,6 @@
 
       <etools-ajax url="[[listEndPoint]]"
         params="{{ajaxParams}}"
-        loading="{{listLoading}}"
         on-success="handleListResponse">
       </etools-ajax>
 
@@ -186,6 +185,11 @@
         exportList: {
           type: Array,
           computed: '_computeExportList(user)',
+        },
+        listLoading: {
+          type: Boolean,
+          value: true,
+          notify: true
         },
         // Contains label to sort id mapping
         labelLib: {
@@ -493,6 +497,7 @@
           }
         });
         this.set('data', data.data);
+        this.set('listLoading', false);
       },
 
       // Toggles showing hiddens

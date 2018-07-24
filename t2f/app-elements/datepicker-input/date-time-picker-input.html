@@ -80,7 +80,7 @@
       required$="[[required]]"
       starred$="[[starred]]"
       placeholder="[[placeholder]]"
-      invalid$="[[invalid]]">
+      invalid="{{invalid}}">
 
       <iron-icon prefix icon="date-range" ></iron-icon>
     </paper-input>
@@ -124,18 +124,14 @@
         autoValidate: {
           type: Boolean,
         },
-        timePicker: {
-          type: Boolean,
-          value: false,
-          observer: '_computeFormat'
-        },
         format: {
           type: String,
           value: 'LL'
         },
         invalid: {
           type: Boolean,
-          value: false
+          value: false,
+          notify: true
         },
         label: {
           type: String
@@ -151,6 +147,7 @@
         },
         prettyDate: {
           type: String,
+          notify: true,
         },
         opened: {
           type: Boolean,
@@ -225,7 +222,7 @@
           this.set('time', time);
       },
       _computeFormat: function(timePicker) {
-        this.set('format', 'LL');
+        this.set('format', this.format);
       },
       _dateChanged: function(changed, format) {
         var date = changed.base;

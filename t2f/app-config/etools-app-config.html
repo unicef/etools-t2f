@@ -2,7 +2,7 @@
 App global configuration
 -->
 <link rel="import" href="../../bower_components/etools-dexiejs/etools-dexiejs.html">
-<link rel="import" href="../scripts/lodash/lodash.html">
+<link rel="import" href="../../scripts/lodash/lodash.html">
 
 <script>
     'use strict';
@@ -124,10 +124,10 @@ App global configuration
         },
         // ET2F Action points endpoints
         et2fActionPointList: {
-          url: '/api/t2f/action_points/'
+          url: '/api/action-points/action-points/?related_module=travel'
         },
         et2fActionPointDetail: {
-          template: '/api/t2f/action_points/<%=id%>/'
+          template: '/api/action-points/action-points/<%=id%>/'
         },
         et2fActionPointCSVListExport: {
           url: '/api/t2f/action_points/export/'

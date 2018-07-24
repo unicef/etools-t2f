@@ -1,0 +1,225 @@
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+<link rel="import" href="../../styles/et2f-list-styles.html">
+
+
+<dom-module id="action-points-header">
+  <template>
+    <style include="iron-flex shared-styles et2f-styles et2f-list-styles">
+      :host {
+        position: relative;
+        display: block;
+        padding: 0 15px 0 54px;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.26);
+      }
+
+      :host .heading-row-header {
+        display: block;
+        height: 56px;
+        width: 100%;
+        box-sizing: border-box;
+        white-space: nowrap;
+        font-size: 0;
+      }
+
+      :host .heading-row-header .header-button {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 56px;
+        line-height: 56px;
+      }
+
+      :host .heading-row-header .empty-icon-wrapper {
+        width: 72px;
+      }
+
+      :host .heading-row-header .local-headings {
+        display: inline-block;
+        box-sizing: border-box;
+        padding-right: 10px;
+        font-weight: 500;
+        color: var(--gray-mid);
+        overflow: hidden;
+        height: 56px;
+        line-height: 56px;
+        white-space: normal;
+        vertical-align: middle;
+      }
+
+      :host .heading-row-header .local-headings:hover {
+        cursor: pointer;
+      }
+
+      :host .heading-row-header .local-headings:hover .heading {
+        color: var(--gray-dark);
+      }
+
+      :host .heading-row-header .local-headings:hover iron-icon.up-icon {
+        display: inline-flex;
+      }
+
+      :host .heading-row-header .local-headings[ordered=asc] iron-icon.up-icon {
+        display: inline-flex;
+        color: var(--gray-dark);
+      }
+
+      :host .heading-row-header .local-headings[ordered=desc] .heading {
+        color: var(--gray-dark);
+      }
+
+      :host .heading-row-header .local-headings[ordered=desc] iron-icon.down-icon {
+        display: inline-flex;
+        color: var(--gray-dark);
+      }
+
+      :host .heading-row-header .local-headings[ordered=desc] iron-icon.up-icon {
+        display: none;
+      }
+
+      :host .heading-row-header .local-headings.no-order {
+        cursor: auto;
+      }
+
+      :host .heading-row-header .local-headings.no-order:hover .heading {
+        color: inherit;
+      }
+
+      :host .heading-row-header .local-headings.no-order iron-icon.up-icon,
+      :host .heading-row-header .local-headings.no-order iron-icon.down-icon {
+        display: none;
+      }
+
+      :host .heading-row-header .local-headings.right {
+        text-align: right;
+      }
+
+      :host .heading-row-header .local-headings.center {
+        text-align: center;
+      }
+
+      :host .heading-row-header .local-headings .heading {
+        display: inline-block;
+        vertical-align: middle;
+        line-height: normal;
+        font-size: 12px;
+      }
+
+      :host .heading-row-header .local-headings iron-icon {
+        display: none;
+        width: 16px;
+        height: 16px;
+      }
+
+      :host([no-ordered]) iron-icon {
+        display: none !important;
+      }
+
+      :host([no-ordered]) .local-headings:hover {
+        cursor: auto;
+      }
+
+      :host([no-ordered]) .local-headings:hover .heading {
+        color: inherit;
+      }
+
+      :host([no-additional]) {
+        padding: 0 14px 0 24px;
+      }
+    </style>
+
+        <div class="heading-row-header clearfix layout horizontal" style$="padding-right: [[paddingRight]];">
+        <template is="dom-repeat"
+                  items="[[data]]">
+          <div class$="local-headings w[[item.size]] [[item.align]] [[item.class]]"
+               ordered$="{{item.ordered}}"
+               on-tap="_changeOrder">
+            <span class="textsec heading">[[item.label]]</span>
+        
+            <iron-icon class="down-icon"
+                       icon="icons:arrow-downward">
+            </iron-icon>
+        
+            <iron-icon class="up-icon"
+                       icon="icons:arrow-upward">
+            </iron-icon>
+          </div>
+        </template>
+
+        </div>
+    </template>
+
+    <script>
+
+      Polymer({
+        is: 'action-points-header',
+
+
+        properties: {
+          basePermissionPath: {
+            type: String,
+            value: ''
+          },
+          orderBy: {
+            type: String,
+            notify: true
+          },
+          noOrdered: Boolean,
+          noAdditional: {
+            type: Boolean,
+            value: false
+          }
+        },
+
+        observers: [
+          '_setRightPadding(data.*)'
+        ],
+
+        _setRightPadding: function () {
+          if (!this.data) { return; }
+          let rightPadding = 0;
+          let padding;
+
+          this.data.forEach((heading) => {
+            if (typeof heading.size === 'string') {
+              padding = parseInt(heading.size, 10) || 0;
+              rightPadding += padding;
+            }
+          });
+
+          this.paddingRight = `${rightPadding}px`;
+        },
+
+        _changeOrder: function (event) {
+          if (this.noOrdered) { return; }
+          let item = event && event.model && event.model.item;
+
+          if (!item || item.noOrder) { return; }
+          let newOrderName = item.name;
+          let currentOrderName = this.orderBy || '';
+          let direction = '-';
+
+          if (currentOrderName.startsWith('-')) {
+            direction = '';
+            currentOrderName = currentOrderName.slice(1);
+          }
+
+          if (newOrderName !== currentOrderName) {
+            direction = '';
+          }
+
+          this.orderBy = `${direction}${newOrderName}`;
+        }
+      });
+    </script>
+
+
+</dom-module>

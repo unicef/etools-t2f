@@ -2,11 +2,14 @@
 <link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../../bower_components/paper-icon-button/paper-icon-button.html">
+<!-- <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html"> -->
+<link rel="import" href="../../../bower_components/etools-content-panel/etools-content-panel.html">
+<link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
 
-<link rel="import" href="../../scripts/lodash/lodash.html">
-<link rel="import" href="../fieldset-elements/action-point.html">
+<link rel="import" href="../../../scripts/lodash/lodash.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
@@ -17,6 +20,9 @@
     :host {
       display: block;
       width: 100%;
+      --ecp-content: {
+      padding: 0
+    }
     }
 
     .container {
@@ -60,6 +66,12 @@
       margin-left: 48px;
       margin-bottom: 48px;
     }
+
+    .edit-icon {
+        display: block;
+      }
+
+    
   </style>
 
   <template>
@@ -88,32 +100,7 @@
       </paper-material>
     </div>
 
-    <div class="container layout horizontal">
-       <etools-repeatable-field-set title="Action Points"
-          id="action-points"
-          model="{{data.action_points}}"
-          hide-plus="[[!permissions.action_points.edit]]"
-          show-counter
-          elevation="1"
-          hidden$="[[!permissions.action_points.view]]">
-
-          <template
-            is="dom-repeat"
-            items="{{data.action_points}}"
-            strip-whitespace>
-
-            <action-point
-              action-points="{{item}}"
-              structure="{{structure}}"
-              permissions-matrix="[[permissions.action_points]]"
-              user="[[user]]">
-
-            </action-point>
-
-          </template>
-        </etools-repeatable-field-set>
-    </div>
-
+  
   </template>
 
   <script>
@@ -134,7 +121,32 @@
         permissions: {
           type: Object,
         },
-        user: Object
+        user: Object,
+        actionPointColumns: {
+            type: Array,
+            value: function(){return  [{
+                    'size': 10,
+                    'label': 'Task Id',
+                    'labelPath': 'tpm_activities.id',
+                    'path': 'unique_id'
+                }, {
+                    'size': 40,
+                    'label': 'Implementing Partner',
+                    'labelPath': 'tpm_activities.partner',
+                    'path': 'partner.name'
+                }, {
+                    'size': 40,
+                    'label': 'PD/SSFA ToR',
+                    'labelPath': 'tpm_activities.intervention',
+                    'path': 'intervention.title'
+                }, {
+                    'size': 10,
+                    'name': 'date',
+                    'label': 'Date',
+                    'labelPath': 'tpm_activities.date',
+                    'path': 'date'
+                }]}
+        },
       },
 
       _setReportToData: function() {

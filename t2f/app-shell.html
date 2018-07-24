@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
@@ -20,7 +21,7 @@
 
 <link rel="import" href="../bower_components/etools-loading/etools-loading-behavior.html">
 
-<link rel="import" href="scripts/shims.html">
+<link rel="import" href="../scripts/shims.html">
 
 <link rel="import" href="app-config/etools-app-config.html">
 <link rel="import" href="app-elements/user-data/user-data.html">
@@ -175,7 +176,7 @@
               <div class="secondary-header">eTools Community Channels</div>
               <side-bar-item name="Knowledge base" class="lighter-item" icon="maps:local-library" href="https://etools.uservoice.com"></side-bar-item>
               <side-bar-item name="Discussion" class="lighter-item" icon="icons:question-answer" href="https://www.yammer.com/unicef.org/#/threads/inGroup?type=in_group&feedId=5782560"></side-bar-item>
-              <side-bar-item name="Information" class="lighter-item last-one" icon="icons:info" href="http://etools.unicefresults.org"></side-bar-item>
+              <side-bar-item name="Information" class="lighter-item last-one" icon="icons:info" href="http://etoolsinfo.unicef.org"></side-bar-item>
 
           </div>
         </div>
@@ -226,7 +227,7 @@
         loading: {
           type: Boolean,
           value: false,
-          observer: '_loadingObserver'
+          observer: '_handleLoading'
         },
         user: {
           type: Object,
@@ -242,7 +243,6 @@
         },
         baseUrl: {
           type: String,
-          value: baseUrl
         },
         notifications: {
           type: Array,
@@ -262,7 +262,11 @@
       },
 
       attached: function() {
-        this.baseUrl = this.basePath;
+        this.set('baseUrl',this.basePath);
+        this.fire('global-loading', {
+          message: 'Loading data...',
+          active: true
+        });
       },
       _computeIsFfp: function(user) {
         return user && user.t2f && user.t2f.roles && user.t2f.roles.indexOf('Finance Focal Point') > -1;
@@ -295,19 +299,37 @@
         this.$.drawer.toggle();
       },
 
-      _loadingObserver: function(loading) {
-        if (loading) {
-          this.loadingEl = this.createLoading('Loading data');
-          this.loadingEl.active = true;
-          this.loadingEl.setAttribute('absolute', true);
-        } else if (!loading && this.loadingEl) {
-          this.removeLoading(this.loadingEl);
+      _handleLoading: function(loading) {
+        if (!loading) {
+          this.fire('global-loading');
         }
+      },
+
+      confirmToast: function() {
+        this.fire('toast-confirm', {
+          bubbles: true,
+          composed: true
+        });
       },
 
       queueToast: function(e, detail) {
         if (!this._toast) {
           this._toast = document.createElement('paper-toast');
+          let closeBtn = document.createElement('paper-button');
+          closeBtn.innerHTML = 'Ok';
+          closeBtn.setAttribute('hidden', true);
+          closeBtn.addEventListener('tap', ()=> {
+            this._toast.hide();
+            if (detail.reload) {
+              window.location.reload();
+            }
+          });
+          if(detail.showCloseBtn) {
+            detail.duration = 0;
+            closeBtn.removeAttribute('hidden');
+          }
+          this._toast.appendChild(closeBtn);
+
           this.listen(this._toast, 'iron-overlay-closed', 'dequeueToast');
           Polymer.dom(this.$.layout).appendChild(this._toast);
           Polymer.dom.flush();
