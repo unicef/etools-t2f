@@ -31,12 +31,12 @@ function minifyHtml() {
 module.exports = function() {
     return project.splitSource()
         .pipe(linter)
-        .pipe(gulpif('**/*.js', babel({presets: ["babel-preset-env"].map(require.resolve)})))
+        .pipe(gulpif('**/*.js', babel()))
         .pipe(gulpif(function(file) {
             return file.extname === '.html' && file.stem !== 'index';
         }, combine(
             compileHtmlTags('style', function (tag, data) { return data.pipe(minifyCss()) }),
-            compileHtmlTags('script', function (tag, data) { return data.pipe(babel({presets: ["babel-preset-env"].map(require.resolve)})).pipe(minifyJs()); }),
+            compileHtmlTags('script', function (tag, data) { return data.pipe(babel()).pipe(minifyJs()); }),
             minifyHtml()
         )))
         .pipe(project.rejoin()); // Call rejoin when you're finished
