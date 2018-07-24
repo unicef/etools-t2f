@@ -67,6 +67,7 @@
         name="edit-travel"
         user="[[user]]"
         route="{{route}}"
+        active="[[editActive]]"
         detail-loading="{{subLoading}}"
         travel-id="[[travelId]]"
         et2f-permissions="[[et2fPermissions.travel]]"
@@ -161,6 +162,10 @@
           type: Object,
           notify: true
         },
+        editActive: {
+          type: Boolean,
+          computed: '_isEditActive(page)'
+        },
         structureLoading: Boolean,
         permissionsLoading: {
           type: Boolean,
@@ -198,6 +203,9 @@
       },
       _computeLoading: function(structure, permissions, subLoading) {
         return structure || permissions || subLoading;
+      },
+      _isEditActive: function(page) {
+        return page === 'edit-travel'
       }
 
     });

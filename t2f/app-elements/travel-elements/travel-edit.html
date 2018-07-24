@@ -340,21 +340,24 @@
         '_computeTravelPermission(et2fPermissions, status, user, data)',
         '_alignDsaRegionsToSubmissionDate(data, structure)',
         '_transformActionPoints(data)',
-        '_handleLoading(data)'
+        '_handleLoader(active)'
       ],
 
-      attached: function () {
-        this.fire('global-loading', {
-          active: true, message: 'Loading travel details...', loadingSource: 'travel-details'
-        })
+      attached: function(){
+        this._handleLoader();
       },
 
-      _handleLoading: function (data) {
-        if (data.activities){
+      _handleLoader: function(active) {
+        const {route} = this;
+        if (this.active && !(window.location.pathname.indexOf('edit-travel/-1') > -1)) {
+          this.set('actionPoints', null);
           this.fire('global-loading', {
-            loadingSource: 'travel-details'
-          })
+            message: 'Loading travel details...',
+            active: true,
+            loadingSource: 'travel-edit'
+          });
         }
+
       },
 
       // If trip has been submitted before, checks for old DSA regions/rates, else uses newest from structure
@@ -459,6 +462,7 @@
           status: 'Planned'
         });
         this.set('invalids', {});
+        this.set('actionPoints', null);
       },
 
       _formErrorObserver: function(newValue, old) {
@@ -623,9 +627,10 @@
       },
 
       _transformActionPoints({activities}) {
-        if (!activities || !this.structure) {
+        if (!activities || !activities[0].action_points || !this.structure) {
           return
         }
+        this.fire('global-loading', {loadingSource: 'travel-edit'});
         const {sections,offices}= this.structure;
         const addNewFields = (activityId, actionPoints) => actionPoints.map(ap => { 
           ap.related_activity = activityId;

@@ -19,7 +19,8 @@
         display: block;
         border-bottom: 1px solid var(--dark-divider-color, rgba(0, 0, 0, 0.12));
       }
-  
+
+      
       :host .question-title {
         font-weight: 500;
         font-size: 14px !important;
@@ -99,6 +100,7 @@
         opacity: 0;
         background-color: var(--hover-block-bg-color, #eeeeee);
         z-index: 1;
+  
       }
   
       :host .partner-data:hover .hover-icons-block {
@@ -168,7 +170,7 @@
         font-size: 13px;
         color: var(--gray-dark, rgba(0, 0, 0, 0.87));
         background-color: var(#FFFFFF);
-        padding: 0 14px 0 72px !important;
+        padding: 0 14px 0 54px !important;
         box-sizing: border-box;
       }
   
@@ -190,7 +192,6 @@
       }
   
       paper-material ::slotted(*) {
-        overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
       }
@@ -199,8 +200,8 @@
         position: absolute;
         top: 50%;
         margin-top: -24px;
-        padding: 0 24px;
-        margin-left: -72px;
+        padding: 0 16px;
+        margin-left: -54px;
         line-height: 48px;
         cursor: pointer;
       }
@@ -245,7 +246,7 @@
             <a class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate"
                href="[[_getLink(item.link)]]"
                target="[[item.target]]">
-              <span class="truncate">
+              <div class="truncate">
                 <template is="dom-if"
                           if="[[_getValue(item, data)]]">
                   [[_getValue(item, data)]]
@@ -258,14 +259,14 @@
                           if="[[!_getValue(item, data)]]">
                   <span class="">–</span>
                 </template>
-              </span>
+              </div>
             </a>
           </template>
   
           <template is="dom-if"
                     if="[[!_isOneOfType(item, 'link', 'checkbox', 'icon', 'custom', 'html')]]"
                     restamp>
-            <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate extra-pad">
+            <span class$="col-data w[[item.size]] [[item.align]] [[item.class]] truncate">
               <span class$="truncate [[_getPrimaryClass(item)]]">
                 <template is="dom-if"
                           if="[[_getValue(item, data)]]">
@@ -352,7 +353,7 @@
             </span>
           </template>
   
-          <span class="hover-icons-block">
+          <span class="hover-icons-block ">
             <slot name="hover"></slot>
           </span>
         </template>
@@ -520,6 +521,8 @@
         value = this._refactorFilesLinks(value, item.property);
       } else if (item.name === 'styled_array') {
         value = this._arrayAsColumnWithHighlight(value, item.property, item.options);
+      } else if (item.name === 'priority' && data.high_priority) {
+        value = 'High';
       }
 
       if (bool) {

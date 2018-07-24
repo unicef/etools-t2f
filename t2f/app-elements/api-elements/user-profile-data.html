@@ -17,7 +17,6 @@
       is: 'user-profile-data',
       behaviors: [
         etoolsAppConfig.globals,
-        etoolsBehaviors.LoadingBehavior
       ],
       properties: {
         endpointName: {
@@ -73,16 +72,7 @@
       _handleResponse: function(response) {
         this.set('userProfile', response.detail);
         this.set('loading', false);
-      },
-      _loadingObserver: function(loading) {
-        if (loading) {
-          this.loadingEl = this.createLoading('Loading data');
-          this.loadingEl.active = true;
-          this.loadingEl.setAttribute('absolute', true);
-        } else if (!loading && this.loadingEl) {
-          this.removeLoading(this.loadingEl);
-        }
-      },
+      }
     });
 
   </script>

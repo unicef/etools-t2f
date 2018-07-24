@@ -220,11 +220,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       .edit-icon {
         color: var(--dark-icon-color, rgba(0, 0, 0, 0.54));
-        position: absolute;
-        right: 10px;
-        transform: translateY(50%);
-        display: none;
+        /* position: absolute; */
+        /* right: 10px; */
+        /* transform: translateY(50%); */
+        /* display: none; */
         cursor: pointer;
+      }
+
+      .edit-icon:not(:last-child){
+        margin-right: 5px;
       }
 
       /** /deep/ *[starred] /deep/ label::after {*/
