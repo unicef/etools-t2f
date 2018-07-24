@@ -25,7 +25,7 @@ global.config = {
   polymerJsonPath: path.join(process.cwd(), 'polymer.json'),
   build: {
     rootDirectory: 'build/t2f',
-    bundledDirectory: '',
+    bundledDirectory: 'bundled',
     unbundledDirectory: 'unbundled',
     // Accepts either 'bundled', 'unbundled', or 'both'
     // A bundled version will be vulcanized and sharded. An unbundled version
