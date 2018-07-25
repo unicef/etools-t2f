@@ -215,13 +215,12 @@
         this.set('dialogOpened', true);
       },
 
-   
       _configureDialog: function (type) {
         this.set('dialogType', type);
         const dialogTitle = `${type} Action Point`;
         this.set('dialogTitle', dialogTitle);
       },
-
+      
       _openActionPoint: function(e) {
         const {model, target} = e;
         const type = target.getAttribute('name');
@@ -232,6 +231,7 @@
         this._openDialog(e);
       },
 
+      // properties needed for an action point POST object are nested inside travel_activity of the travel object
       _getFormattedActionPoint: function(acp) {
         const relatedActivity= this.data.activities.find(act=> acp.related_activity===act.id);
         return {
@@ -247,35 +247,33 @@
           id: this.dialogType === 'Edit'? acp.id : undefined
         }
       },
-
-     
-
-      _performRequest: function(e) {
+      
+      // edit and duplicate/add are different requests
+      _performRequest: function (e) {
         if (!this.$.actionPtsForm.validateForm()) {
           return;
-        } 
+        }
         this.fire('global-loading', {
           message: 'Saving ...',
           active: true
         });
         const endpoint = this.dialogType === 'Edit' ? etoolsAppConfig.globals.computeTemplate('et2fActionPointDetail', {
-            id: this.actionPointsFormData.id
-          }) : 
+          id: this.actionPointsFormData.id
+        }) :
           etoolsAppConfig.globals.getEndpoint('et2fActionPointList');
-        const method = this.dialogType === 'Edit' ? 'PATCH': 'POST'
+        const method = this.dialogType === 'Edit' ? 'PATCH' : 'POST'
 
         const config = {
           endpoint,
           method,
           body: this.actionPointsFormData
         };
-
+        this.set('dialogOpened', false);
         this.sendRequest(config).then(
           resp => this._handleSuccessResponse(resp)
         ).catch(
           error => this._handleError(error)
         );
-
       },
 
       _handleSuccessResponse: function(resp) {
@@ -285,12 +283,19 @@
           showCloseBtn: true,
           reload: true
         });
-        this.set('dialogOpened', false);
       },
 
       _handleError: function(error){
-        console.log(error);
-
+        let errorMsg = [];
+        for (key in error.response) {
+          errorMsg.push(`${key}: ${error.response[key][0]}`);
+        }
+        errorMsg = errorMsg.join('\n');
+        this.fire('toast', {
+          text: errorMsg,
+          showCloseBtn: true
+        });
+        this.fire('global-loading');
       }
 
     });
