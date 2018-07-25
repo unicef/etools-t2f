@@ -1,18 +1,25 @@
 <!--
 App global configuration
 -->
-<link rel="import" href="../../bower_components/etools-dexiejs/etools-dexiejs.html">
+<script src="../../bower_components/dexie/dist/dexie.js"></script>
 <link rel="import" href="../../scripts/lodash/lodash.html">
 
 <script>
-    'use strict';
 
-    /* exported etoolsAjaxDefaultDexieDbPrefix */
-    var etoolsAjaxDefaultDexieDbPrefix = 't2f';
+  window.EtoolsT2fApp = window.EtoolsT2fApp || {};
+
+    EtoolsT2fApp.t2fDb = new Dexie('t2fApp');
+
+    EtoolsT2fApp.t2fDb.version(1).stores({
+      collectionsList: '&name,expire',
+      countries: 'id, name',
+      ajaxDefaultDataTable: '&cacheKey, data, expire',
+      listsExpireMapTable: '&name, expire',
+    });
+
 
     var etoolsAppConfig = {
       // dexie js
-      appDexieDb: new Dexie('etoolsApp'),
 
       // app endpoints
       endpoints: {
@@ -202,14 +209,9 @@ App global configuration
       },
 
     };
+   
 
-    /**
-     * for db versioning check
-     * https://github.com/dfahlander/Dexie.js/wiki/Design#database-versioning
-     */
-    etoolsAppConfig.appDexieDb.version(1).stores({
-      collectionsList: '&name,expire',
-      countries: 'id, name'
-    });
+    window.EtoolsRequestCacheDb = window.EtoolsRequestCacheDb || EtoolsT2fApp.t2fDb;
+
 
 </script>
