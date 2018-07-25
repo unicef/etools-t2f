@@ -8,6 +8,7 @@
 <link rel="import" href="../../../bower_components/etools-profile-dropdown/etools-profile-dropdown.html">
 <link rel="import" href="../api-elements/user-profile-data.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
+<link rel="import" href="../../app-behaviors/refresh-behavior.html">
 <link rel="import" href="../../styles/shared-styles.html">
 
 <dom-module id="page-header">
@@ -77,6 +78,11 @@
         @apply(--layout-center);
       }
 
+      #refresh,
+      #profile {
+        color: var(--title-toolbar-secondary-text-color);
+      }
+
       @media (min-width: 850px) {
         #menuButton {
           display: none;
@@ -106,7 +112,11 @@
             profile="{{profile}}"
             on-save-profile="_saveProfile"
             on-sign-out="_signOut"></etools-profile-dropdown>
-        <etools-page-refresh id="refresh"></etools-page-refresh>
+        <!-- <etools-page-refresh id="refresh"></etools-page-refresh> -->
+        <paper-icon-button icon="refresh"
+                           id="refresh"
+                           on-tap="refresh"
+                           disabled="[[refreshInProgress]]"></paper-icon-button>
       </div>
     </app-toolbar>
   </template>
@@ -115,7 +125,8 @@
       Polymer({
         is: 'page-header',
         behaviors: [
-            etoolsAppConfig
+            etoolsAppConfig,
+            et2fBehaviors.RefreshBehavior
         ],
         properties: {
           profile: {
