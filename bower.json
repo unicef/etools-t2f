@@ -63,6 +63,7 @@
     "etools-profile-dropdown": "09904ed1",
     "lodash": "^4.17.4",
     "dexie": "^2.0.4"
+
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
