@@ -129,6 +129,9 @@
         officesData: {
           type: Object
         },
+        locationsData: {
+          type: Object
+        },
         wbsGrantsFunds: {
           type: Object
         },
@@ -141,7 +144,7 @@
           value: true,
           computed: '_computeLoading(staticData, sectionsData,' +
           ' officesData, t2fStaticData, usersData, groupsData,' +
-          'driversData, vendorsData, wbsGrantsFundsData, dsaData,' +
+          'driversData, vendorsData, locationsData, wbsGrantsFundsData, dsaData,' +
           'partnersData,  resultsData)'
         },
         staticDataEndpoint: {
