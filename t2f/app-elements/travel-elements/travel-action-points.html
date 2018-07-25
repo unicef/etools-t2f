@@ -215,14 +215,12 @@
         this.set('dialogOpened', true);
       },
 
-    
       _configureDialog: function (type) {
         this.set('dialogType', type);
         const dialogTitle = `${type} Action Point`;
         this.set('dialogTitle', dialogTitle);
       },
       
-
       _openActionPoint: function(e) {
         const {model, target} = e;
         const type = target.getAttribute('name');
@@ -249,6 +247,7 @@
           id: this.dialogType === 'Edit'? acp.id : undefined
         }
       },
+      
       // edit and duplicate/add are different requests
       _performRequest: function (e) {
         if (!this.$.actionPtsForm.validateForm()) {
