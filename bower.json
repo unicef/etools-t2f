@@ -60,7 +60,7 @@
     "es5-shim": "https://github.com/es-shims/es5-shim.git",
     "webcomponentsjs": "^0.7.24",
     "etools-app-selector": "1.0.11",
-    "etools-profile-dropdown": "09904ed1",
+    "etools-profile-dropdown": "15cc714",
     "lodash": "^4.17.4",
     "dexie": "^2.0.4"
 
