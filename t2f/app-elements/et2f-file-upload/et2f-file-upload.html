@@ -267,8 +267,7 @@ attributes:
       },
 
       _isThereNoURL: function(item) {
-
-        return item.path === '';
+        return item && item.path === '';
       },
 
       _isMultiple: function(multiple) { return multiple; },

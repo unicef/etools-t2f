@@ -2,6 +2,7 @@
 <link rel="import" href="../../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax-request-behavior.html">
 
 <dom-module id="countries-dropdown">
   <template>
@@ -69,13 +70,6 @@
 
     </style>
 
-    <etools-ajax
-      id="ajax"
-      method="POST"
-      on-success="_handleResponse"
-      on-fail="_handleError">
-    </etools-ajax>
-
     <paper-dropdown-menu id="menu" label="Country" noink no-label-float>
       <paper-listbox id="countriesListbox" class="dropdown-content" on-iron-select="_countrySelected" attr-for-selected="countryId" selected="[[current]]">
         <template id="repeat" is="dom-repeat" items="[[countries]]">
@@ -100,13 +94,20 @@
         current: Number
       },
 
+      behaviors: [EtoolsAjaxRequestBehavior],
+
       _countrySelected: function(e) {
         if (e.detail.item.countryId !== this.current) {
-            //send post request to change_coutry endpoint
-            console.log('change_country_request');
-            this.$.ajax.body = {country: e.detail.item.countryId};
-            this.$.ajax.endpoint = window.etoolsAppConfig.globals.getEndpoint('changeCountry');
-          }
+          this.sendRequest({
+            method: 'POST',
+            endpoint: window.etoolsAppConfig.globals.getEndpoint('changeCountry'),
+            body: {country: e.detail.item.countryId}
+          }).then(resp => {
+            this._handleResponse(resp)
+          }).catch(error => {
+            this._handleError(error)
+          });
+        }
         this.set('country', this.$.repeat.itemForElement(e.detail.item));
       },
 
@@ -114,8 +115,7 @@
         this.fire('main_refresh');
       },
 
-      _handleError: function(rsp, err) {
-        console.log(rsp);
+      _handleError: function(err) {
         console.log(err);
         this.$.countriesListbox.selected = this.current;
         this.fire('toast', {text: 'Something went wrong changing your workspace. Please try again'});
