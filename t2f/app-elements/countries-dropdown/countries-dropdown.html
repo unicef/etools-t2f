@@ -97,16 +97,15 @@
       behaviors: [EtoolsAjaxRequestBehavior],
 
       _countrySelected: function(e) {
-        var that = this
         if (e.detail.item.countryId !== this.current) {
           this.sendRequest({
             method: 'POST',
             endpoint: window.etoolsAppConfig.globals.getEndpoint('changeCountry'),
             body: {country: e.detail.item.countryId}
-          }).then(function(resp) {
-            that._handleResponse(resp)
-          }).catch(function(error) {
-            that._handleError(error)
+          }).then(resp => {
+            this._handleResponse(resp)
+          }).catch(error => {
+            this._handleError(error)
           });
         }
         this.set('country', this.$.repeat.itemForElement(e.detail.item));
