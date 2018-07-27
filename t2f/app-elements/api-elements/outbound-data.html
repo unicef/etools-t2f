@@ -1,5 +1,5 @@
 <link rel="import" href="../../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax.html">
+<link rel="import" href="../../../bower_components/etools-ajax/etools-ajax-request-behavior.html">
 <link rel="import" href="../../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../../bower_components/paper-tooltip/paper-tooltip.html">
@@ -334,15 +334,15 @@
             </paper-button>
         </paper-dialog>
 
-        <template is="dom-if" if="[[postData]]">
+        <!-- <template is="dom-if" if="[[postData]]">
             <etools-ajax url="[[postEndpoint]]"
               body="[[serverData]]"
               method="[[method]]"
               on-success="_handlePostSuccess"
               on-fail="_handlePostFail"></etools-ajax>
-        </template>
+        </template> -->
 
-        <template is="dom-if" if="[[attachmentData]]">
+        <!-- <template is="dom-if" if="[[attachmentData]]">
             <etools-ajax url="[[attachmentsEndpoint]]"
               body="[[attachment]]"
               method="POST"
@@ -357,7 +357,7 @@
               body="placeholder"
               on-success="_handleAttachmentPostSuccess"
               on-fail="_handlePostFail"></etools-ajax>
-        </template>
+        </template> -->
     </template>
 
     <script>
@@ -433,6 +433,7 @@
             computed: '_computeDisableFinalizeBtn(data.report.*)'
           }
         },
+        behaviors: [EtoolsAjaxRequestBehavior],
         generalModalAction: function() {
           console.log('Default fn. ran!');
         },
@@ -683,49 +684,63 @@
           }
 
           function doSavePost() {
-            // console.log('DATA before touched:', JSON.stringify(self.data));
             prepareData();
-            self.method = 'POST';
-            self.postEndpoint = etoolsAppConfig.endpoints.et2fTravelList.url;
-            self.postData = true;
+            self.sendRequest({
+              method: 'POST',
+              endpoint: etoolsAppConfig.globals.getEndpoint('et2fTravelList'),
+              body: self.serverData
+            }).then(self._handlePostSuccess.bind(self))
+              .catch(self._handlePostFail.bind(self));
+      
           }
 
           function doSaveAndSubmit() {
             prepareData();
-            self.method = 'POST';
-            self.postEndpoint = etoolsAppConfig.endpoints.et2fSaveAndSubmit.url;
-            self.postData = true;
+            self.sendRequest({
+              method: 'POST',
+              endpoint: etoolsAppConfig.globals.getEndpoint('et2fSaveAndSubmit'),
+              body: self.serverData
+            }).then(self._handlePostSuccess.bind(self))
+              .catch(self._handlePostFail.bind(self));
           }
 
           function doSaveUpdate() {
-            // console.log('DATA before touched:', JSON.stringify(self.data));
             prepareData();
-            self.method = 'PATCH';
-            self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
-              'et2fTravelDetail',
-              endpointConfig
-            ).url;
-            self.postData = true;
+            self.sendRequest({
+              method: 'PATCH',
+              endpoint: etoolsAppConfig.globals.computeTemplate(
+                'et2fTravelDetail',
+                endpointConfig
+              ),
+              body: self.serverData
+            }).then(self._handlePostSuccess.bind(self))
+              .catch(self._handlePostFail.bind(self));
           }
 
           function doPut() {
             prepareData();
-            self.method = 'PUT';
-            self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
-              endpointName,
-              endpointConfig
-            ).url;
-            self.postData = true;
+            self.sendRequest({
+              method: 'PUT',
+              endpoint: etoolsAppConfig.globals.computeTemplate(
+                endpointName,
+                endpointConfig
+              ),
+              body: self.serverData
+            }).then(self._handlePostSuccess.bind(self))
+              .catch(self._handlePostFail.bind(self));
           }
 
           function doPost() {
             prepareData();
-            self.method = 'POST';
-            self.postEndpoint = etoolsAppConfig.globals.computeTemplate(
-              endpointName,
-              endpointConfig
-            ).url;
-            self.postData = true;
+            self.sendRequest({
+              method: 'POST',
+              endpoint: etoolsAppConfig.globals.computeTemplate(
+                endpointName,
+                endpointConfig
+              ),
+              body: self.serverData
+            }).then(self._handlePostSuccess.bind(self))
+              .catch(self._handlePostFail.bind(self));
           }
 
           var statusActions = {
@@ -998,39 +1013,61 @@
 
           if (this.deletedAttachments.length > 0) {
             current = this.deletedAttachments.pop();
-            this.set('deleteAttachmentEndpoint', etoolsAppConfig.globals.computeTemplate(
-              'et2fTravelAttachmentDetail',
-              {id: this.travelId, itemId: current}
-            ).url);
+            this.sendRequest({
+              method: 'DELETE',
+              endpoint: etoolsAppConfig.globals.computeTemplate(
+                'et2fTravelAttachmentDetail',
+                {id: this.travelId, itemId: current}
+              )
+              // body: self.serverData
+            }).then(this._handleAttachmentPostSuccess.bind(this))
+              .catch(this._handlePostFail.bind(this));
           }
 
           if (this.attachments.length > 0) {
-            this.set('attachmentsEndpoint', etoolsAppConfig.globals.computeTemplate(
-              'et2fTravelAttachments',
-              {id: this.travelId}
-            ).url);
             current = this.attachments.pop();
             this.attachment = {
               name: current.name,
               file: current.raw,
               type: current.type ? current.type.label : 'Report'
             };
-            this.attachmentData = true;
+            this.sendRequest({
+              method: 'POST',
+              endpoint: etoolsAppConfig.globals.computeTemplate(
+                'et2fTravelAttachments',
+                { id: this.travelId }
+              ),
+              body: this.attachment,
+              multiPart: true
+            }).then(this._handleAttachmentPostSuccess.bind(this))
+              .catch(this._handlePostFail.bind(this));
+
+            // this.set('attachmentsEndpoint', etoolsAppConfig.globals.computeTemplate(
+            //   'et2fTravelAttachments',
+            //   {id: this.travelId}
+            // ).url);
+            // current = this.attachments.pop();
+            // this.attachment = {
+            //   name: current.name,
+            //   file: current.raw,
+            //   type: current.type ? current.type.label : 'Report'
+            // };
+            // this.attachmentData = true;
           }
         },
 
-        _handlePostFail: function(event, i) {
-          this.set('formErrors', i.request.detail.request.xhr.response);
-          console.error('Api call failed: ', i.request.detail.request.xhr.response);
+        _handlePostFail: function(response) {
+          this.set('formErrors', response.message);
+          console.error('Api call failed: ', response.message);
           this.postData = false;
           this.attachmentData = false;
           this.deleteAttachmentEndpoint = undefined;
           this.attachmentsEndpoint = undefined;
         },
 
-        _handleAttachmentPostSuccess: function(e, data) {
+        _handleAttachmentPostSuccess: function(response) {
           this.deleteAttachmentEndpoint = undefined;
-          this.tempImboudData.attachments.push(data);
+          this.tempImboudData.attachments.push(response);
           if (this.attachments.length > 0 || this.deletedAttachments.length > 0) {
             this._doAttachmentUpload();
           } else {
@@ -1042,15 +1079,14 @@
           }
         },
 
-        _handlePostSuccess: function(e, data) {
-          this.postData = false;
-          this.travelId = data.id;
+        _handlePostSuccess: function(response) {
+          this.travelId = response.id;
           this.set('formErrors', []);
-          this.tempImboudData = data;
+          this.tempImboudData = response;
           if (this.attachments.length > 0  || this.deletedAttachments.length > 0) {
             this._doAttachmentUpload();
           } else {
-            this.set('inboundData', data);
+            this.set('inboundData', response);
             this.fire('travel-post-success', this.travelId);
             this._openSuccesModal();
           }

@@ -158,12 +158,6 @@
         if (!this.data.action_points) {
           return result;
         }
-        this.data.action_points.forEach(function(ap) {
-          result = result && ap._validationFunction();
-        });
-        if (!result) {
-          invalids.push('Action Points');
-        }
         if (action.endPoint === 'complete') {
           result = this.$.report_form.validate();
           if (!result) {

@@ -348,7 +348,6 @@
       },
 
       _handleLoader: function(active) {
-        const {route} = this;
         if (this.active && !(window.location.pathname.indexOf('edit-travel/-1') > -1)) {
           this.set('actionPoints', null);
           this.fire('global-loading', {
@@ -626,11 +625,15 @@
         }
       },
 
-      _transformActionPoints({activities}) {
-        if (!activities || !activities[0].action_points || !this.structure) {
-          return
+      _transformActionPoints(data) {
+        const {activities} = data;
+        if (!activities ||  !this.structure) {
+          return;
         }
         this.fire('global-loading', {loadingSource: 'travel-edit'});
+        if (_.isEmpty(activities[0]) || (!_.isEmpty(activities[0]) && !activities[0].action_points)){
+          return;
+        }
         const {sections,offices}= this.structure;
         const addNewFields = (activityId, actionPoints) => actionPoints.map(ap => { 
           ap.related_activity = activityId;
