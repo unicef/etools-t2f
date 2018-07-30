@@ -334,7 +334,6 @@
         return this.$$('#action_point_form').validate();
       },
       _addValidationFunction: function(actionPointsChanged) {
-        debugger
         var actionPoints = actionPointsChanged.base;
         if (!actionPoints._validationFunction && !this.viewMode) {
           actionPoints._validationFunction = this._validateActionPoint.bind(this);
