@@ -92,7 +92,7 @@
           </date-time-picker-input>
 
           <etools-searchable-multiselection-menu label="Responsible Person"
-            value="{{actionPoints.person_responsible}}"
+            value="{{actionPoints.assinged_to.name}}"
             class$="flex-3 [[computedPermission.person_responsible.readOnly]]"
             disabled="[[computedPermission.person_responsible.disabled]]"
             hidden$="[[computedPermission.person_responsible.hidden]]"
@@ -197,8 +197,8 @@
 
       <div class="layout horizontal viewSpacing">
 
-        <etools-searchable-multiselection-menu label="Responsible Person"
-            value="{{actionPoints.person_responsible}}"
+        <etools-searchable-multiselection-menu label="Assigned to"
+            value="{{actionPoints.assigned_to.name}}"
             class$="flex-4 [[actionPointsPermissions.person_responsible.readOnly]]"
             disabled$="[[!actionPointsPermissions.person_responsible.edit]]"
             hidden$="[[!actionPointsPermissions.person_responsible.view]]"
@@ -213,7 +213,7 @@
         <paper-input label="Assigned by"
           class="flex-4 custom-margin readOnly"
           disabled
-          value="[[actionPoints.assigned_by.label]]">
+          value="[[actionPoints.assigned_by.value.name]]">
         </paper-input>
 
         <paper-checkbox class$="flex-4 custom-margin self-end [[actionPointsPermissions.follow_up.readOnly]] alignCheckbox"
@@ -267,9 +267,11 @@
         actionPoints: {
           type: Object,
           notify: true,
+          observer: 'thingy'
         },
         structure: {
           type: Object,
+          observer: 'things'
         },
         user: Object,
         today: {
@@ -294,6 +296,12 @@
         '_addValidationFunction(actionPoints.*)',
       ],
       behaviors: [et2fBehaviors.PermissionLayer],
+      thingy: function() {
+        console.log(this.actionPoints)
+      },
+      things: function() {
+        // console.log(this.structure)
+      },
       _computeDefaultValues: function(actionPoints, structure, user) {
         var status = actionPoints.base.status;
         if (!status && Object.keys(actionPoints.base).length > 1) {
