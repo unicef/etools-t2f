@@ -405,6 +405,8 @@
   Polymer({
     is: 'action-point-collapse-item',
 
+    behaviors: [etoolsAppConfig.globals],
+
     properties: {
     
       details: {
@@ -681,10 +683,9 @@
 
     _getLink: function (pattern) {
       if (typeof pattern !== 'string') { return '#'; }
-      let link = pattern
+      let link = this.baseSite + pattern
         .replace('*ap_link*', this.data.url)
         .replace('*data_id*', this.data.id);
-
       return link.indexOf('undefined') === -1 ? link : '#';
     },
 
