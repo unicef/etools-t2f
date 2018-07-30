@@ -631,6 +631,7 @@
           return;
         }
         this.fire('global-loading', {loadingSource: 'travel-edit'});
+        // necessary since data object keeps changing with additional properties added at different intervals
         if (_.isEmpty(activities[0]) || (!_.isEmpty(activities[0]) && !activities[0].action_points)){
           return;
         }

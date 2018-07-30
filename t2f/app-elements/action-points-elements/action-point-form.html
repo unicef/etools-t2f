@@ -218,7 +218,7 @@
         return [];
       }
       return activities.map(act => ({
-        label: `${act.id} / ${act.result? act.result.label: ''}`,
+        label: `${act.id}/${act.travel_type.label}/${moment.utc(act.date).format('DD-MMM-YYYY')}`,
         value: act.id
       }));
     },
