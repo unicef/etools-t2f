@@ -188,7 +188,7 @@
               'Action Point #': 'action_point_number',
               'Description': 'description',
               'Due Date': 'due_date',
-              'Responsible Person': 'person_responsible',
+              'Assigned To': 'assigned_to',
               'Assigned By': 'assigned_by',
               'Status': 'status',
             };
@@ -214,7 +214,7 @@
           },
           {
             'size': 15,
-            'label': 'Responsible Person'
+            'label': 'Assigned To'
           },
           {
             'size': 15,
@@ -231,18 +231,18 @@
       _computeFilters: function(structure) {
         return [
           {
-            name: 'Responsible person',
-            filterName: 'f_person_responsible',
+            name: 'Assigned To',
+            filterName: 'assigned_to',
             selection: structure.users
           },
           {
             name: 'Assigned By',
-            filterName: 'f_assigned_by',
+            filterName: 'assigned_by',
             selection: structure.users
           },
           {
             name: 'Status',
-            filterName: 'f_status',
+            filterName: 'status',
             selection: [
               {
                 label: 'Open',
@@ -250,20 +250,10 @@
                 apiValue: 'open'
               },
               {
-                label: 'On-going',
-                value: 1,
-                apiValue: 'ongoing'
-              },
-              {
                 label: 'Completed',
-                value: 2,
+                value: 1,
                 apiValue: 'completed'
-              },
-              {
-                label: 'Closed',
-                value: 3,
-                apiValue: 'closed'
-              },
+              }
             ]
           }
         ];
@@ -274,7 +264,7 @@
         var key = e.model.item.filterName;
         var value = e.detail.selectedValues.value;
 
-        if (key === 'f_status') {
+        if (key === 'status') {
           value = this._computeFilters(this.structure)[2].selection.filter(function(item) {
             return item.value === value;
           })[0].apiValue;
