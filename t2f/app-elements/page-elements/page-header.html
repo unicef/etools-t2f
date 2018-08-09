@@ -8,6 +8,7 @@
 <link rel="import" href="../../../bower_components/etools-profile-dropdown/etools-profile-dropdown.html">
 <link rel="import" href="../api-elements/user-profile-data.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
+<link rel="import" href="../../app-behaviors/refresh-behavior.html">
 <link rel="import" href="../../styles/shared-styles.html">
 
 <dom-module id="page-header">
@@ -17,7 +18,7 @@
 
       app-toolbar {
         padding: 0 16px 0 0;
-        background-color: var(--nonprod-header-color, #233944);
+        background-color: var(--header-bg-color, #233944);
       }
 
       div[main-title] {
@@ -30,10 +31,6 @@
         padding-left: 48px;
         font-size: 30px;
         color: var(--light-primary-text-color);
-      }
-
-      etools-page-refresh {
-        color: #BCC1C6; /* TODO: replace with app-theme var */
       }
 
       #menuButton {
@@ -49,24 +46,33 @@
         @apply(--layout-horizontal);
         @apply(--layout-center);
       }
-
-      etools-page-refresh {
-        margin-left: 25px;
-      }
+      
       .titlebar {
         flex: 1 ;
         font-size: 28px;
         font-weight: 300;
         color: var(--light-primary-text-color);
       }
+
       .titlebar img{
         width: 34px;
         margin: 0 8px 0 24px;
       }
 
+      .envWarning {
+        color: var(--nonprod-text-warn-color);
+        font-weight: 700;
+        font-size: 18px;
+      }
+
       .content-align {
         @apply(--layout-horizontal);
         @apply(--layout-center);
+      }
+
+      #refresh,
+      #profile {
+        color: var(--title-toolbar-secondary-text-color);
       }
 
       @media (min-width: 850px) {
@@ -85,6 +91,9 @@
       <div class="titlebar content-align">
         <etools-app-selector id="selector"></etools-app-selector>
         <img id="second-logo" src="../../images/etools-logo-color-white.svg">
+        <template is="dom-if" if="[[isStaging]]">
+          <div class="envWarning"> - STAGING TESTING ENVIRONMENT</div>
+        </template>
       </div>
       <div class="content-align">
         <countries-dropdown id="countries" countries="[[countries]]" current="[[user.profile.country]]"></countries-dropdown>
@@ -95,7 +104,10 @@
             profile="{{profile}}"
             on-save-profile="_saveProfile"
             on-sign-out="_signOut"></etools-profile-dropdown>
-        <etools-page-refresh id="refresh"></etools-page-refresh>
+        <paper-icon-button icon="refresh"
+                           id="refresh"
+                           on-tap="refresh"
+                           disabled="[[refreshInProgress]]"></paper-icon-button>
       </div>
     </app-toolbar>
   </template>
@@ -104,7 +116,8 @@
       Polymer({
         is: 'page-header',
         behaviors: [
-            etoolsAppConfig
+            etoolsAppConfig,
+            et2fBehaviors.RefreshBehavior
         ],
         properties: {
           profile: {
@@ -119,7 +132,11 @@
           structure: {
             type: Object
           },
-          userProfileDialog: Object
+          userProfileDialog: Object,
+          isStaging: {
+            type: Boolean,
+            value: false
+          }
         },
         observers: [
           '_updateCountriesList(user.profile.countries_available)'
@@ -132,7 +149,7 @@
         },
         _refresh_page: function(event) {
             event.stopImmediatePropagation();
-            this.$.refresh.refresh();
+            this.refresh();
         },
         _getFlagIconClass: function(id) {
           var flagIdMap = {
@@ -162,14 +179,18 @@
           this.set('countries', arrayObj);
         },
         ready: function() {
-
-          var location = window.location.href;
-          var production = 'etools.unicef.org';
-
+          this._setBgColor();
+          this._isStaging();
+        },
+        _isStaging: function() {
+          if (etoolsAppConfig.globals.isStagingServer()) {
+            this.set('isStaging', true);
+          }
+        },
+        _setBgColor: function() {
           // If not production environment, changing header color to red
-          if (location.indexOf(production) === -1) {
-            this.customStyle['--nonprod-header-color'] = '#A73838';
-            this.updateStyles();
+          if (!etoolsAppConfig.globals.isProductionServer()) {
+            this.updateStyles({'--header-bg-color': 'var(--nonprod-header-color)'});
           }
         },
         _saveProfile: function(e) {

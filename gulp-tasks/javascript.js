@@ -10,6 +10,8 @@ const jscs = require('gulp-jscs');
 const jscsStylish = require('gulp-jscs-stylish');
 const lazypipe = require('lazypipe'); // Lazy pipe creates a reusable pipe stream
 
+
+
 // Minify Javascript
 function minify() {
   return uglify({
@@ -17,6 +19,7 @@ function minify() {
     // options
   });
 }
+
 
 // Lint Javascript
 var lint = lazypipe()
@@ -29,5 +32,6 @@ var lint = lazypipe()
 
 module.exports = {
   minify: minify,
-  lint: lint
+  lint: lint,
+  babelify
 };

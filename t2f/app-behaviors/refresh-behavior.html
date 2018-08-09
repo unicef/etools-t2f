@@ -1,0 +1,86 @@
+
+
+
+<script>
+  const RefreshBehavior = {
+    properties: {
+      dexieDbsNumber: Number,
+      dbsAttemptedToDelete: Array,
+      refreshInProgress: Boolean
+    },
+    observers: [
+      'triggerPageRefresh(dbsAttemptedToDelete.length)'
+    ],
+    ready: function () {
+      this.dexieDbsNumber = 0;
+      this.dbsAttemptedToDelete = [];
+    },
+
+    refresh: function () {
+      if (!Dexie) { // eslint-disable-line
+        console.log('Dexie not imported', 'etools-page-refresh-mixin');
+      }
+
+      this.refreshInProgress = true;
+      // **Important : Do not clear localStorage before Dexie db ,
+      // because for Firefox, IE, Edge and Safari, Dexie stores the db names
+      // in the localStorage under the key Dexie.DatabaseNames
+      // and method Dexie.getDabasesNames searches for this key
+      // clear DexieDBs for current host then clear local storage and refresh the page
+      this.clearDexieDbs();
+    },
+
+    clearLocalStorage: function () {
+      localStorage.clear();
+    },
+
+    clearDexieDbs: function () {
+      // except Chrome and Opera this method will delete only the dbs created with Dexie
+      // eslint-disable-next-line no-undef
+      Dexie.getDatabaseNames((dbsNames) => {
+        this.dexieDbsNumber = dbsNames.length;
+        if (this.dexieDbsNumber > 0) {
+          dbsNames.forEach((dbName) => {
+            this.deleteDexieDb(dbName);
+          });
+        }
+      });
+    },
+
+    deleteDexieDb: function (dbName) {
+      // eslint-disable-next-line no-undef
+      let db = new Dexie(dbName);
+      db.delete().catch(function(err) {
+        console.log('Could not delete indexedDB: ' + dbName, 'etools-page-refresh', err, true);
+      }.bind(this)).finally(function() {
+        this.push('dbsAttemptedToDelete', dbName);
+      }.bind(this));
+    },
+
+    _refreshPage: function () {
+      this.refreshInProgress = false;
+      window.location.reload(true);
+    },
+
+    triggerPageRefresh: function (deleteAttempts) {
+      if (this.refreshInProgress) {
+        let doRefresh = false;
+        if (this.dexieDbsNumber > 0) {
+          if (deleteAttempts === this.dexieDbsNumber) {
+            this.clearLocalStorage();
+            doRefresh = true;
+          }
+        } else {
+          this.clearLocalStorage();
+          doRefresh = true;
+        }
+        if (doRefresh) {
+          this._refreshPage();
+        }
+      }      
+    }
+  }
+
+  window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
+  window.et2fBehaviors.RefreshBehavior = RefreshBehavior;
+</script>

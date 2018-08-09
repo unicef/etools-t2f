@@ -1,0 +1,286 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-single-selection-menu.html">
+<link rel="import" href="../../styles/shared-styles.html">
+<link rel="import" href="../../styles/et2f-styles.html">
+
+<dom-module id="action-point-form">
+  
+  <template>
+    <style include="shared-styles iron-flex et2f-styles">
+      :host {
+        --esmm-external-wrapper: {
+          margin: 0 12px;
+          width: calc(100% - 24px);
+        }
+      }
+  
+      paper-textarea {
+        @apply --esmm-external-wrapper;
+      }
+  
+      div.horizontal {
+        padding: 8px 0;
+      }
+
+      .duplicate {
+        line-height: 64px;
+        background-color: #eeeeee;
+        margin: -12px -16px 12px -16px;
+        padding: 0 24px;
+      }
+    </style>
+      <form is="iron-form"
+            id="form"
+            class="layout vertical">
+        
+        <template is="dom-if" if="[[_isDuplicating(dialogType)]]">
+            <span class="duplicate">
+              It is required to change at least one of the fields below.
+            </span>
+        </template>
+        
+        <etools-single-selection-menu label="Related Task"
+                                      required
+                                      auto-validate
+                                      id="task"
+                                      selected="{{formData.travel_activity}}"
+                                      options="[[activitiesOptions]]"
+                                      option-value="value"
+                                      starred
+                                      placeholder="Select">
+        </etools-single-selection-menu>
+      
+      
+        <template is="dom-if"
+                  if="[[activitySelected]]">
+          <etools-single-selection-menu label="Related CP Output"
+          auto-validate
+                                        selected="{{formData.cp_output}}"
+                                        options="[[results]]"
+                                        option-value="value"
+                                        placeholder="Select">
+          </etools-single-selection-menu>
+      
+          <div class="layout horizontal">
+            <etools-single-selection-menu label="Related Partner"
+                                          selected="{{formData.partner}}"
+                                          options="[[partners]]"
+                                          auto-validate
+                                          option-value="value"
+                                          placeholder="Select">
+            </etools-single-selection-menu>
+            <etools-single-selection-menu label="Related PD/SSFA"
+                                          selected="{{formData.intervention}}"
+                                          auto-validate
+                                          options="[[interventions]]"
+                                          option-value="value"
+                                          placeholder="Select">
+            </etools-single-selection-menu>
+          </div>
+      
+        </template>
+      
+      
+        <paper-textarea label="Description"
+                        id="description"
+                        placeholder="Enter description"
+                        char-counter
+                        maxlength="2000"
+                        required
+                        starred
+                        on-blur="_validateDescription"
+                        value="{{formData.description}}">
+        </paper-textarea>
+      
+        <div class="layout horizontal">
+          <etools-single-selection-menu label="Assignee"
+                                        id="assignee"
+                                        auto-validate
+                                        required
+                                        selected="{{formData.assigned_to}}"
+                                        options="[[users]]"
+                                        starred
+                                        placeholder="Select">
+          </etools-single-selection-menu>
+          <etools-single-selection-menu label="Section of Assignee"
+                                        required
+                                        auto-validate
+                                        id="section"
+                                        selected="{{formData.section}}"
+                                        options="[[sections]]"
+                                        starred
+                                        placeholder="Select">
+          </etools-single-selection-menu>
+        </div>
+      
+        <div class="layout horizontal">
+          <etools-single-selection-menu label="Office of Assignee"
+                                        id="office"
+                                        required
+                                        auto-validate
+                                        selected="{{formData.office}}"
+                                        options="[[offices]]"
+                                        starred
+                                        placeholder="Select">
+          </etools-single-selection-menu>
+        
+          <date-time-picker-input label="Due Date"
+                                  id="date-input"
+                                  placeholder="select"
+                                  format="YYYY-MM-DD"
+                                  required
+                                  starred
+                                  pretty-date="{{formData.due_date}}">
+          </date-time-picker-input>
+        </div>
+        <paper-checkbox class="custom-margin"
+                        checked="{{formData.high_priority}}">This action point is high priority
+        </paper-checkbox>
+      </form>
+  
+  </template>
+
+<script>
+  Polymer({
+    is: 'action-point-form',
+    properties: {
+      active: {
+        type: Boolean
+      },
+      offices: {
+        type: Array
+      },
+      sections: {
+        type: Array
+      },
+      users: {
+        type: Array
+      },
+      relatedActivities: {
+        type: Array,
+      },
+      activitySelected: {
+        type: Boolean,
+        value: false
+      },
+      activitiesOptions: {
+        type: Array,
+        computed: '_createOptions(relatedActivities)'
+      },
+      emptyForm: {
+        type: Object,
+        value: {}
+      },
+      formData: {
+        type: Object,
+        notify: true
+      },
+      actionPointsFormData: {
+        type: Object,
+        notify: true
+      },
+      originalFormData: {
+        type: Object,
+        notify: true
+      },
+      dialogType: {
+        type: Boolean
+      },
+      requiredFields: {
+        type: Array,
+        value: [
+          'task',
+          'description',
+          'assignee',
+          'section',
+          'office',
+        ]
+      }
+    },
+    observers: [
+      '_formChanged(formData.*)',
+      '_handleActive(active)',
+      '_handleActivitySelected(formData.travel_activity)'
+    ],
+
+
+    _handleActive: function(active) {
+      this._clearInvalids();
+      if (active) {
+        this.set('originalFormData', {...this.actionPointsFormData});
+        this.set('formData', this.dialogType === 'Add' ? { ...this.emptyForm } : { ...this.actionPointsFormData });
+      }
+    },
+
+    _createOptions: function (activities) {
+      if (!activities || !activities[0].id) {
+        return [];
+      }
+      return activities.map(act => ({
+        label: `${act.id}/${act.travel_type.label}/${moment.utc(act.date).format('DD-MMM-YYYY')}`,
+        value: act.id
+      }));
+    },
+
+    _handleActivitySelected: function(activity) {
+      this.set('activitySelected', Boolean(activity));
+      if (!activity) {
+        return;
+      }
+      const relatedActivity = this.relatedActivities.find(act=> activity===act.id);
+
+      this.set('formData.cp_output', _.get(relatedActivity,'result.value', null));
+      this.set('formData.partner', _.get(relatedActivity,'partner.id', null));
+      this.set('formData.intervention', _.get(relatedActivity,'partnership.id', null));
+    },
+
+    _formChanged: function ({base}) {
+      this.set('actionPointsFormData', {...base});
+    },
+
+    _validateDescription: function() {
+      this.$.description.validate();
+    },
+
+    validateForm: function () {
+      const { requiredFields } = this;
+      let valid = true;
+      requiredFields.forEach(selector => {
+        let field = this.$[selector];
+        if (field && !field.validate()) {
+          valid = false;
+        }
+      });
+      if (this.dialogType === 'Duplicate') {
+        const hasChanged = this._differsFromOriginal();
+        if (!hasChanged) {
+          this.fire('toast', {
+            text: 'At least one field needs to be changed.',
+            showCloseBtn: true,
+          });
+        }
+        valid = valid && hasChanged;
+      }
+      return this.$.form.validate() && valid;
+    },
+
+    _clearInvalids: function () {
+      this.$['date-input'].invalid = false;
+      this.requiredFields.map(field => {
+        this.$[field].invalid = false;
+      });
+    },
+
+    _differsFromOriginal: function() {
+      return !_.isEqual(this.actionPointsFormData, this.originalFormData);
+    },
+
+    _isDuplicating: function(type) {
+      return type === 'Duplicate';
+    }
+
+  })
+</script>
+
+</dom-module>

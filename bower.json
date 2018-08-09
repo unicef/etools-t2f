@@ -24,7 +24,7 @@
     "iron-input": "^1.0.10",
     "iron-meta": "^1.1.2",
     "iron-icons": "^1.1.3",
-    "etools-ajax": "^1.0.0",
+    "etools-ajax": "^2.0.4",
     "paper-styles": "^1.1.4",
     "paper-dropdown-menu": "^1.4.1",
     "etools-dropdown": "^1.0.2",
@@ -37,14 +37,14 @@
     "iron-component-page": "PolymerElements/iron-component-page#^1.1.7",
     "paper-date-picker": "polymer-paper-date-picker#^1.2.0",
     "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
-    "etools-datepicker": "^1.0.0",
+    "etools-datepicker": "^1.0.5",
     "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.1",
     "paper-badge": "PolymerElements/paper-badge#^1.1.4",
     "paper-card": "PolymerElements/paper-card#^1.1.6",
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
     "paper-menu": "PolymerElements/paper-menu#^1.2.2",
     "etools-repeatable-field-set": "^1.1.0",
-    "etools-searchable-multiselection-menu": "2.1.6",
+    "etools-searchable-multiselection-menu": "2.2.19",
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1",
     "paper-radio-group": "PolymerElements/paper-radio-group#^1.2.1",
     "paper-listbox": "^1.1.2",
@@ -53,15 +53,17 @@
     "etools-dialog": "^1.0.0",
     "etools-loading": "^2.0.0",
     "etools-page-refresh": "^1.0.0",
-    "etools-content-panel": "^1.0.1",
+    "etools-content-panel": "1.0.6",
     "iron-form": "PolymerElements/iron-form#^1.1.4",
     "paper-tooltip": "PolymerElements/paper-tooltip#^1.1.3",
     "paper-time-picker": "^1.1.4",
     "es5-shim": "https://github.com/es-shims/es5-shim.git",
     "webcomponentsjs": "^0.7.24",
-    "etools-app-selector": "1.0.11",
-    "etools-profile-dropdown": "09904ed1",
-    "lodash": "^4.17.4"
+    "etools-app-selector": "1.1.0",
+    "etools-profile-dropdown": "15cc714",
+    "lodash": "^4.17.4",
+    "dexie": "^2.0.4"
+
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
@@ -69,6 +71,8 @@
   "resolutions": {
     "paper-dialog": "^2.0.0",
     "etools-loading": "^2.0.0",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "etools-ajax": "^2.0.4",
+    "dexie": "^2.0.4"
   }
 }

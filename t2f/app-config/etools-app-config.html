@@ -1,18 +1,25 @@
 <!--
 App global configuration
 -->
-<link rel="import" href="../../bower_components/etools-dexiejs/etools-dexiejs.html">
-<link rel="import" href="../scripts/lodash/lodash.html">
+<script src="../../bower_components/dexie/dist/dexie.js"></script>
+<link rel="import" href="../../scripts/lodash/lodash.html">
 
 <script>
-    'use strict';
 
-    /* exported etoolsAjaxDefaultDexieDbPrefix */
-    var etoolsAjaxDefaultDexieDbPrefix = 't2f';
+  window.EtoolsT2fApp = window.EtoolsT2fApp || {};
+
+    EtoolsT2fApp.t2fDb = new Dexie('t2fApp');
+
+    EtoolsT2fApp.t2fDb.version(1).stores({
+      collectionsList: '&name,expire',
+      countries: 'id, name',
+      ajaxDefaultDataTable: '&cacheKey, data, expire',
+      listsExpireMapTable: '&name, expire',
+    });
+
 
     var etoolsAppConfig = {
       // dexie js
-      appDexieDb: new Dexie('etoolsApp'),
 
       // app endpoints
       endpoints: {
@@ -124,13 +131,13 @@ App global configuration
         },
         // ET2F Action points endpoints
         et2fActionPointList: {
-          url: '/api/t2f/action_points/'
+          url: '/api/action-points/action-points/?related_module=travel'
         },
         et2fActionPointDetail: {
-          template: '/api/t2f/action_points/<%=id%>/'
+          template: '/api/action-points/action-points/<%=id%>/'
         },
         et2fActionPointCSVListExport: {
-          url: '/api/t2f/action_points/export/'
+          url: 'api/action-points/action-points/export/csv/?related_module=t2f'
         },
         // ET2F Invoices endpoints
         et2fInvoiceList: {
@@ -148,6 +155,8 @@ App global configuration
         baseSite: window.location.origin,
         basePath: (window.location.port === '8080') ? '/' : '/t2f/',
         serverBackend: (window.location.port !== '8080'),
+        productionDomain: 'etools.unicef.org',
+        stagingDomain: 'etools-staging.unicef.org',
 
         getEndpoint: function(endpointName, data) {
           var endpoint = etoolsAppConfig.endpoints[endpointName];
@@ -176,6 +185,16 @@ App global configuration
 
         getAllPermissions: function() {
           return etoolsAppConfig.permissions;
+        },
+
+        isProductionServer: function() {
+          var location = window.location.href;
+          return location.indexOf(this.productionDomain) > -1;
+        },
+
+        isStagingServer: function() {
+          var location = window.location.href;
+          return location.indexOf(this.stagingDomain) > -1;
         }
       },
 
@@ -190,14 +209,9 @@ App global configuration
       },
 
     };
+   
 
-    /**
-     * for db versioning check
-     * https://github.com/dfahlander/Dexie.js/wiki/Design#database-versioning
-     */
-    etoolsAppConfig.appDexieDb.version(1).stores({
-      collectionsList: '&name,expire',
-      countries: 'id, name'
-    });
+    window.EtoolsRequestCacheDb = window.EtoolsRequestCacheDb || EtoolsT2fApp.t2fDb;
+
 
 </script>

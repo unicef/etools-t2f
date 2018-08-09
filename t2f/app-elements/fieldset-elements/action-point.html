@@ -5,7 +5,7 @@
 <link rel="import" href="../../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../../bower_components/etools-repeatable-field-set/etools-repeatable-field-set.html">
-<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-searchable-multiselection-menu.html">
+<link rel="import" href="../../../bower_components/etools-searchable-multiselection-menu/etools-single-selection-menu.html">
 
 <link rel="import" href="../datepicker-input/date-time-picker-input.html">
 
@@ -91,8 +91,8 @@
             date="{{actionPoints.due_date}}">
           </date-time-picker-input>
 
-          <etools-searchable-multiselection-menu label="Responsible Person"
-            value="{{actionPoints.person_responsible}}"
+          <etools-single-selection-menu label="Assigned To"
+            selected="{{actionPoints.assinged_to.id}}"
             class$="flex-3 [[computedPermission.person_responsible.readOnly]]"
             disabled="[[computedPermission.person_responsible.disabled]]"
             hidden$="[[computedPermission.person_responsible.hidden]]"
@@ -102,7 +102,7 @@
             empty-value
             dynamic-align
             placeholder="select">
-          </etools-searchable-multiselection-menu>
+          </etools-single-selection-menu>
 
           <paper-checkbox class$="flex-3 custom-margin self-end[[computedPermission.follow_up.readOnly]]"
             hidden$="[[computedPermission.follow_up.hidden]]"
@@ -159,7 +159,7 @@
     <!-- shows on dedicated page -->
     <template is="dom-if" if="[[viewMode]]" id="view_mode">
 
-      <div class="layout horizontal viewSpacing">
+      <!-- <div class="layout horizontal viewSpacing">
         <div class="isLink"  on-tap="_navigateToTravel">
           <paper-input label="Trip Reference"
             class$="flex-3 custom-margin [[actionPointsPermissions.trip_reference_number.readOnly]] tripReference"
@@ -168,7 +168,7 @@
             value="[[actionPoints.trip_reference_number]]"></paper-input>
           </div>
          <div class="flex-9"></div>
-      </div>
+      </div> -->
 
       <div class="layout horizontal viewSpacing">
         <paper-input label="Description"
@@ -197,8 +197,8 @@
 
       <div class="layout horizontal viewSpacing">
 
-        <etools-searchable-multiselection-menu label="Responsible Person"
-            value="{{actionPoints.person_responsible}}"
+        <etools-single-selection-menu label="Assigned to"
+            selected="{{actionPoints.assigned_to.id}}"
             class$="flex-4 [[actionPointsPermissions.person_responsible.readOnly]]"
             disabled$="[[!actionPointsPermissions.person_responsible.edit]]"
             hidden$="[[!actionPointsPermissions.person_responsible.view]]"
@@ -208,12 +208,12 @@
             empty-value
             dynamic-align
             placeholder="select">
-        </etools-searchable-multiselection-menu>
+        </etools-single-selection-menu>
 
         <paper-input label="Assigned by"
           class="flex-4 custom-margin readOnly"
           disabled
-          value="[[actionPoints.assigned_by.label]]">
+          value="[[actionPoints.assigned_by.value.name]]">
         </paper-input>
 
         <paper-checkbox class$="flex-4 custom-margin self-end [[actionPointsPermissions.follow_up.readOnly]] alignCheckbox"

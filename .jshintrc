@@ -1,17 +1,17 @@
 {
+  "maxdepth": 3,
   "node": true,
   "browser": true,
-  "bitwise": true,
+  "esnext": true,
   "camelcase": false,
   "curly": true,
   "eqeqeq": true,
   "immed": true,
-  "indent": 2,
   "latedef": true,
   "noarg": true,
   "quotmark": "single",
   "undef": true,
-  "unused": false,
+  "unused": true,
   "newcap": false,
   "laxbreak": true,
   "globals": {
@@ -19,13 +19,10 @@
     "_": true,
     "Dexie": true,
     "etoolsAppConfig": true,
-    "utilsBehavior": true,
     "etoolsAjaxDefaultDexieDbPrefix": true,
     "DynamicCustomStyleBehavior": true,
-    "URLSearchParams": true,
-    "et2fBehaviors": true,
-    "baseUrl": true,
-    "pdfMake": true,
-    "etoolsBehaviors": true
+    "TPMBehaviors": true,
+    "etoolsBehaviors": true,
+    "moment": true
   }
 }
