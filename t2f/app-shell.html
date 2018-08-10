@@ -138,7 +138,7 @@
 
     <app-route
       route="{{route}}"
-      pattern$="[[baseUrl]]:page"
+      pattern="[[baseUrl]]:page"
       data="{{routeData}}"
       tail="{{subroute}}"></app-route>
 
@@ -155,7 +155,7 @@
           </app-toolbar>
 
           <div class="nav-menu layout vertical">
-            <iron-selector selected="[[page]]" attr-for-selected="value" selectable="side-bar-item" role="navigation">
+            <iron-selector selected="[[page]]" attr-for-selected="value" selectable="side-bar-item" role="main">
               <template is="dom-if" if="{{permissions.loggedInDefault}}">
 
                 <side-bar-item name="Travel2Field" value="travel-list" icon="maps:transfer-within-a-station" href$="[[baseUrl]]travel-list?reverse=true&page=1&page_size=10&search&sort_by=id&show_hidden=false"></side-bar-item>
