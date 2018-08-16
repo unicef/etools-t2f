@@ -69,7 +69,9 @@
             </paper-button>
             <paper-menu class="dropdown-content">
               <template is="dom-repeat" items="[[exportList]]">
-                <paper-item on-tap="_export">{{item.name}}</paper-item>
+                <a href$="[[_getExportUrl(item, exportParams)]]" target="_blank">
+                  <paper-item>{{item.name}}</paper-item>
+                </a>
               </template>
             </paper-menu>
           </paper-menu-button>
@@ -114,7 +116,7 @@
         },
         data: Object,
         exportParams: {
-          type: Object
+          type: Object,
         },
         loadCSV: {
           type: Boolean,
@@ -139,12 +141,33 @@
       print: function() {
         this.$.pdfPrint.printPDF();
       },
-      _export: function(event) {
-        var endpoint = event.model.item.endpoint;
-        this.set('csvEndpoint', endpoint);
+      _getExportUrl: function(item, exportParams) {
+        const endpoint = item.endpoint;
+        return `${endpoint}?${this._buildExportQueryString(exportParams)}`;
+       
+      },
+      _buildExportQueryString(params) {
+        let qsParams = [];
+        for (let pKey in params) {
+          if (params[pKey]) {
+            if (params[pKey] instanceof Array && !_.isEmpty(params[pKey])) {
+              qsParams.push(pKey + '=' + params[pKey].join(','));
+            }
+            if (['string', 'number'].indexOf(typeof params[pKey]) > -1) {
+              let filterStrVal = String(params[pKey]).trim();
+              qsParams.push(pKey + '=' + filterStrVal);
+            }
+          }
+        }
+        qsParams.push('format=csv');
+        return qsParams.join('&');
       },
       _hideNewTravelButton: function(show) {
         return !show;
+      },
+      _computeExportParams: function (params) {
+        params.format = 'csv';
+        return params;
       },
       _handleCSVData: function(e, data) {
         var a = document.createElement('a');
