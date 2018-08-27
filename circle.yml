@@ -28,7 +28,7 @@ jobs:
                 - bower_components
         -run:
             name: Polymer 1 build
-            command: npm run build
+            command: gulp
         - run:
             name: Run Tests
             command: |
