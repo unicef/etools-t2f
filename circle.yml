@@ -1,44 +1,43 @@
-
 version: 2
 jobs:
-  test: 
+  test:
     working_directory: ~/code
-    docker: 
-        -image: robertavram/etools-dash-base:tst
-    steps:
-        -checkout
-        -restore_cache:
-            key: dependency-cache-{{checksum "package.json"}}
-        -run:
-            name: Install npm wee
-            command: npm install
-        - save_cache:
-            key: dependency-cache-{{ checksum "package.json" }}
-            paths:
-                - node_modules
-        - restore_cache:
-            key: dependency-cache-{{ checksum "bower.json" }}
-        - run:
-            name: Install bower components
-            command: bower install --allow-root --config.interactive=false -s
-        - save_cache:
-            key: dependency-cache-{{ checksum "bower.json" }}
-            paths:
-                - bower_components
-        -run:
-            name: Polymer 1 build
-            command: gulp
-        - run:
-            name: Run Tests
-            command: |
-            xvfb-run polymer test --skip-selenium-install
-
-    
-  build_and_deploy:
-    working_directory: ~/code
+    # The primary container is an instance of the first list image listed. Your build commands run in this container.
     docker:
       - image: robertavram/etools-dash-base:tst
-    
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Install npm wee
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - restore_cache:
+          key: dependency-cache-{{ checksum "bower.json" }}
+      - run:
+          name: Install bower components
+          command: bower install --allow-root --config.interactive=false -s
+      - save_cache:
+          key: dependency-cache-{{ checksum "bower.json" }}
+          paths:
+            - bower_components
+      - run:
+          name: Polymer2 Build
+          command: gulp
+      - run:
+          name: Run Tests
+          command: |
+            xvfb-run polymer test --skip-selenium-install
+
+  build_and_deploy:
+    working_directory: ~/code
+    # The primary container is an instance of the first list image listed. Your build commands run in this container.
+    docker:
+      - image: robertavram/etools-dash-base:tst
     steps:
       - checkout
       - setup_remote_docker
