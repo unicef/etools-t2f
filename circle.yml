@@ -14,9 +14,9 @@ jobs:
             name: Install npm wee
             command: npm install
         - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
+            key: dependency-cache-{{ checksum "package.json" }}
+            paths:
+                - node_modules
         - restore_cache:
             key: dependency-cache-{{ checksum "bower.json" }}
         - run:
@@ -25,7 +25,7 @@ jobs:
         - save_cache:
             key: dependency-cache-{{ checksum "bower.json" }}
             paths:
-            - bower_components
+                - bower_components
         -run:
             name: Polymer 1 build
             command: npm run build
