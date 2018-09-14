@@ -461,10 +461,13 @@
       },
 
       // Sets the chosen filter value to the params, auto call API
-      changeFilterValue: function(e) {
-        var key = e.model.item.filterName;
-        var value = e.detail.selectedValues.value;
-
+      changeFilterValue: function({model, detail}) {
+        if (!detail.selectedValues) {
+          return;
+        }
+        var key = model.item.filterName;
+        var value = detail.selectedValues.value;
+        
         if (key === 'f_status') {
           value = this._computeFilters(this.structure)[5].selection.filter(function(item) {
             return item.value === value;
