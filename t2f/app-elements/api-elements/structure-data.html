@@ -239,14 +239,11 @@
         this.set(name, data);
       },
       _staticDataLoaded(...args) {
-        return args.reduce((acc, nxt) => acc && ~_.isEmpty(nxt), true)
+        return args.reduce((acc, nxt) => acc && !_.isEmpty(nxt), true);
       },
       _generateStructure: function (staticData, sections, offices, t2fStaticData, users, groups,
         drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results) {
-        if (!this._staticDataLoaded(staticData, sections, offices, t2fStaticData, users, groups,
-          drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results)) {
-          return;
-        }
+        
         var data = staticData;
         data.sections = sections;
         data.offices = offices;
