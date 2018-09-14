@@ -186,13 +186,21 @@
         }
       };
     },
-    _sortByLabel: function(a, b) {
+    _sortByLabel: function (a, b) {
       return a.label.localeCompare(b.label);
     },
-    _filterByLabel: function(i) {
+    _sortByExpired: function (a, b) {
+      if (!a.label.includes('Expired')) {
+        return -1;
+      } else if (a.label.includes('Expired')) {
+        return 1;
+      }
+    },
+
+    _filterByLabel: function (i) {
       return i && i.label && typeof i.label === 'string' && i.label.trim().length > 0;
     },
-    _parseStructureData: function(data) {
+    _parseStructureData: function (data) {
         var self = this;
         function capitalize(value) {
           if (value === null || value === undefined) {
@@ -264,7 +272,7 @@
             fillPartnershipsWithResults();
             data[key] = data[key].map(function(obj) {
               return {label: obj.name, value: parseInt(obj.id, 10)};
-            }).filter(self._filterByLabel).sort(self._sortByLabel);
+            }).filter(self._filterByLabel).sort(self._sortByExpired);
           },
           currencies: function(key) {
             data[key] = data[key].map(function(obj) {

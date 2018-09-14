@@ -5,99 +5,112 @@
 
 <dom-module id="et2f-structure-data">
   <template>
-    <etools-ajax endpoint="[[staticDataEndpoint]]"
+    <etools-ajax
+      endpoint="[[staticDataEndpoint]]"
       on-success="_handleResponse"
       data-name="staticData"
       loading="{{staticDataLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[sectionsEndpoint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[sectionsEndpoint]]"
       on-success="_handleResponse"
       data-name="sectionsData"
       loading="{{sectionsLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[officesEndpoint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[officesEndpoint]]"
       on-success="_handleResponse"
       data-name="officesData"
       loading="{{officesLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[t2fStaticDataEndpoint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[t2fStaticDataEndpoint]]"
       on-success="_handleResponse"
       data-name="t2fStaticData"
       loading="{{t2fStaticDataLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[usersEndpoint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[usersEndpoint]]"
       on-success="_handleResponse"
       data-name="usersData"
       loading="{{usersLoading}}"
       params="[[usersEndpointParams]]"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[usersEndpoint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[usersEndpoint]]"
       on-success="_handleResponse"
       data-name="driversData"
       loading="{{driversLoading}}"
       params="[[driversEndpointParams]]"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[groupsEndpoint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[groupsEndpoint]]"
       on-success="_handleResponse"
       data-name="groupsData"
       loading="{{groupsLoading}}"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[vendorEndPoint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[vendorEndPoint]]"
       loading="{{vendorNumbersLoading}}"
       on-success="_handleResponse"
       data-name="vendorsData"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[costStructureEndpoint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[costStructureEndpoint]]"
       loading="{{costStructureLoading}}"
       on-success="_handleResponse"
       data-name="wbsGrantsFundsData"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[dsaEndopiint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[dsaEndopiint]]"
       loading="{{dsaLoading}}"
       on-success="_handleResponse"
       data-name="dsaData"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[partnersEndpoint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[partnersEndpoint]]"
       loading="{{partnersLoading}}"
       on-success="_handleResponse"
       data-name="partnersData"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-    <etools-ajax endpoint="[[locationsEndpoint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[locationsEndpoint]]"
       loading="{{locationsLoading}}"
       on-success="_handleResponse"
       data-name="locationsData"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
-      <etools-ajax endpoint="[[resultsEndpoint]]"
+    ></etools-ajax>
+    <etools-ajax
+      endpoint="[[resultsEndpoint]]"
       loading="{{resultsLoading}}"
       on-success="_handleResponse"
       data-name="resultsData"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
-      ></etools-ajax>
+    ></etools-ajax>
 
   </template>
 
@@ -107,13 +120,13 @@
       is: 'et2f-structure-data',
 
       properties: {
-          structure: {
+        structure: {
           type: Object,
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
-          ' officesData, t2fStaticData, usersData, groupsData,' +
-          'driversData, vendorsData, wbsGrantsFundsData, dsaData,' +
-          'partnersData, locationsData, resultsData)'
+            ' officesData, t2fStaticData, usersData, groupsData,' +
+            'driversData, vendorsData, wbsGrantsFundsData, dsaData,' +
+            'partnersData, locationsData, resultsData)'
         },
         rawStructure: {
           type: Object,
@@ -143,9 +156,9 @@
           notify: true,
           value: true,
           computed: '_computeLoading(staticData, sectionsData,' +
-          ' officesData, t2fStaticData, usersData, groupsData,' +
-          'driversData, vendorsData, locationsData, wbsGrantsFundsData, dsaData,' +
-          'partnersData,  resultsData)'
+            ' officesData, t2fStaticData, usersData, groupsData,' +
+            'driversData, vendorsData, locationsData, wbsGrantsFundsData, dsaData,' +
+            'partnersData,  resultsData)'
         },
         staticDataEndpoint: {
           type: String,
@@ -168,10 +181,10 @@
           value: etoolsAppConfig.endpoints.users
         },
         usersEndpointParams: {
-          value: {verbosity: 'minimal'}
+          value: { verbosity: 'minimal' }
         },
         driversEndpointParams: {
-          value: {verbosity: 'minimal', drivers: 'true'}
+          value: { verbosity: 'minimal', drivers: 'true' }
         },
         groupsEndpoint: {
           type: String,
@@ -204,65 +217,71 @@
       },
       behaviors: [et2fBehaviors.ApiBehavior],
 
-      _computeLoading: function(...args) {
+      _computeLoading: function (...args) {
         var result = false;
         for (var i = 0; i < args.length; ++i) {
-           result = result || Boolean(args[i]);
+          result = result || Boolean(args[i]);
         }
         return !result;
       },
-      _checkJSON: function(data) {
+      _checkJSON: function (data) {
         if (typeof data === 'string') {
           data = JSON.parse(data);
         }
         return data;
       },
-      _redirectToLogin: function() {
+      _redirectToLogin: function () {
         window.location.href = '/login/';
       },
-      _handleResponse: function(e, data) {
+      _handleResponse: function (e, data) {
         var name = e.target.dataset.name;
         data = this._checkJSON(data);
         this.set(name, data);
       },
-      _generateStructure: function(staticData, sections, offices, t2fStaticData, users, groups,
+      _staticDataLoaded(...args) {
+        return args.reduce((acc, nxt) => acc && ~_.isEmpty(nxt), true)
+      },
+      _generateStructure: function (staticData, sections, offices, t2fStaticData, users, groups,
         drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results) {
-          var data = staticData;
-          data.sections = sections;
-          data.offices = offices;
-          data.locations = locations;
-          data.results = t2fStaticData.results;
-          data.partnerships = t2fStaticData.partnerships;
-          data.government_partnerships = t2fStaticData.government_partnerships;
-          data.action_point_statuses = t2fStaticData.action_point_statuses;
-          data.users = users;
-          data.groups = groups;
-          data.drivers = drivers;
-          data.vendorNumbers = vendorNumbers;
-          data.wbs = wbsGrantsFunds.wbs;
-          data.grants = wbsGrantsFunds.grants;
-          data.funds = wbsGrantsFunds.funds;
-          data.dsa_regions = dsa_regions;
-          data.partners = partners;
-          data.results = results;
+        if (!this._staticDataLoaded(staticData, sections, offices, t2fStaticData, users, groups,
+          drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results)) {
+          return;
+        }
+        var data = staticData;
+        data.sections = sections;
+        data.offices = offices;
+        data.locations = locations;
+        data.partnerships = t2fStaticData.partnerships;
+        data.government_partnerships = t2fStaticData.government_partnerships;
+        data.action_point_statuses = t2fStaticData.action_point_statuses;
+        data.users = users;
+        data.groups = groups;
+        data.drivers = drivers;
+        data.vendorNumbers = vendorNumbers;
+        data.wbs = wbsGrantsFunds.wbs;
+        data.grants = wbsGrantsFunds.grants;
+        data.funds = wbsGrantsFunds.funds;
+        data.dsa_regions = dsa_regions;
+        data.partners = partners;
+        data.results = results;
 
-          this.set('rawStructure', _.cloneDeep(data));
+        this.set('rawStructure', _.cloneDeep(data));
 
-          var parsedCostStructure = this.parseCostStructure(wbsGrantsFunds);
-          var structure = this._parseStructureData(_.cloneDeep(data));
+        var parsedCostStructure = this.parseCostStructure(wbsGrantsFunds);
+        var structure = this._parseStructureData(_.cloneDeep(data));
 
-          // this should not be parsed
-          structure.attachment_types = [
-            {value: 0, label: 'Ticket Doc'},
-            {value: 1, label: 'Email Correspondence'},
-            {value: 3, label: 'Cleareance Doc'},
-            {value: 4, label: 'HACT Programme Monitoring Report'},
-            {value: 5, label: 'Other'},
-          ];
+        // this should not be parsed
+        structure.attachment_types = [
+          { value: 0, label: 'Ticket Doc' },
+          { value: 1, label: 'Email Correspondence' },
+          { value: 3, label: 'Cleareance Doc' },
+          { value: 4, label: 'HACT Programme Monitoring Report' },
+          { value: 5, label: 'Other' },
+        ];
 
-          Object.assign(structure, parsedCostStructure);
+        Object.assign(structure, parsedCostStructure);
 
-          return structure;
+        return structure;
       }
     });
   </script>
