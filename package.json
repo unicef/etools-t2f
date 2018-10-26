@@ -48,7 +48,7 @@
     "css-slam": "^1.1.0",
     "del": "^2.2.1",
     "express": "^4.14.0",
-    "gulp": "gulpjs/gulp#4.0",
+    "gulp": "gulpjs/gulp",
     "gulp-babel": "^6.1.2",
     "gulp-cli": "^2.0.1",
     "gulp-compile-html-tags": "^1.0.1",
