@@ -130,13 +130,6 @@
 
   <template>
 
-      <etools-ajax
-          method="POST"
-          url="[[enhancedNewTravelUrl]]"
-          body="[[enhancedNewTravelBody]]"
-          on-success="gotBackId">
-      </etools-ajax>
-
       <!-- DUPLICATE MODAL -->
       <paper-dialog
         id="duplicate-modal"
@@ -148,7 +141,7 @@
           <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
         </div>
 
-        <div class="dialog-intro-text">Please select the traveler for whom the trip is being duplicated for.</div>
+        <div class="dialog-intro-text">Please select the traveler for whom the trip is being duplicated.</div>
         <etools-searchable-multiselection-menu label="Select traveler" class="filter-dropdown"
         options="[[users]]"
         on-value-change="duplicationSetTraveler">
@@ -272,15 +265,13 @@
           type: Boolean,
           value: false
         },
-        enhancedNewTravelUrl: String,
-        enhancedNewTravelBody: String,
         route: Object,
         baseUrl: {
           type: String,
           value: null
         }
       },
-      behaviors: [etoolsAppConfig.globals, utilsBehavior],
+      behaviors: [etoolsAppConfig.globals, utilsBehavior, EtoolsAjaxRequestBehavior],
 
       attached: function() {
         this.baseUrl = this.basePath;
@@ -343,11 +334,11 @@
 
         var traveler = this.duplicationTravelerId;
         var travel = this.data.id;
+        var reqBody = {traveler: traveler};
+        var reqUrl = '/api/t2f/travels/' + travel + '/duplicate_travel/';
 
         this.set('hackAroundId', travel);
-
-        this.set('enhancedNewTravelBody', {traveler: traveler});
-        this.set('enhancedNewTravelUrl', '/api/t2f/travels/' + travel + '/duplicate_travel/');
+        this.sendAjaxRequest(reqUrl, reqBody);
       },
       addDriverConfirm: function() {
         if (!this.addDriverTravelerId) {
@@ -357,11 +348,25 @@
 
         var traveler = this.addDriverTravelerId;
         var travel = this.data.id;
+        var reqBody = {traveler: traveler};
+        var reqUrl = '/api/t2f/travels/' + travel + '/add_driver/';
 
         this.set('hackAroundId', travel);
-
-        this.set('enhancedNewTravelBody', {traveler: traveler});
-        this.set('enhancedNewTravelUrl', '/api/t2f/travels/' + travel + '/add_driver/');
+        this.sendAjaxRequest(reqUrl, reqBody);
+      },
+      sendAjaxRequest: function(reqUrl, reqBody) {
+        var that = this
+        this.sendRequest({
+          method: 'POST',
+          endpoint: {
+            url: reqUrl
+          },
+          body: reqBody
+        }).then(function(resp) {
+          that.gotBackId(resp)
+          }).catch(function(error) {
+          console.log(error)
+        });
       },
       duplicationSetTraveler: function(e) {
         this.set('duplicationTravelerId', e.detail.selectedValues.value);
@@ -369,7 +374,7 @@
       addDriverSetTraveler: function(e) {
         this.set('addDriverTravelerId', e.detail.selectedValues.value);
       },
-      gotBackId: function(e, payload) {
+      gotBackId: function(payload) {
         var path = this.route.path.replace('travel-list', 'edit-travel/' + payload.id  + '/');
         this.set('route.path', path);
       },

@@ -36,25 +36,6 @@
     <meta name="msapplication-TileColor" content="#3f51b5">
     <meta name="msapplication-tap-highlight" content="no">
     <script>
-      // var UserVoice = window.UserVoice || [];
-      // UserVoice.push(['addTrigger', {}]);
-      function loadUserVoice() {
-        var uv = document.createElement('script');
-        uv.type = 'text/javascript';
-        uv.async = true;
-        uv.src = '//widget.uservoice.com/s74dylVlP3CUCbVw6famA.js';
-        uv.onload = function() {
-          setTimeout(function() {
-            window.UserVoice.push(['addTrigger'], {});
-            window.UserVoice.push(['set', {
-              target: 'self',
-              screenshot_enabled: false
-            }]);
-          }, 500);
-        };
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(uv, s);
-      }
       // Setup Polymer options
       window.Polymer = {
         dom: 'shadow',
@@ -95,7 +76,6 @@
               new CustomEvent('WebComponentsReady', {bubbles: true})
             );
           }
-          loadUserVoice();
         };
 
         var webComponentsSupported = (
@@ -135,6 +115,12 @@
       document.head.appendChild(appShellImport);
 
     </script>
+    <!-- Start of prphelp Zendesk Widget script -->
+    
+    <script id="ze-snippet"
+            src="https://static.zdassets.com/ekr/snippet.js?key=fd275a17-bb04-499b-bc03-ffe711fa1ba8"> </script>
+    
+    <!-- End of prphelp Zendesk Widget script -->
     <style>
       body {
         margin: 0;
