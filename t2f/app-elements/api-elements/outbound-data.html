@@ -1034,6 +1034,7 @@
         },
 
         _handlePostFail: function(response) {
+          this.fire('global-loading');
           this.set('formErrors', response.message);
           console.error('Api call failed: ', response.message);
           this.postData = false;
