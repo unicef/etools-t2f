@@ -661,6 +661,7 @@
 
           function doSavePost() {
             prepareData();
+            self.fire('global-loading', {active: true});
             self.sendRequest({
               method: 'POST',
               endpoint: etoolsAppConfig.globals.getEndpoint('et2fTravelList'),
@@ -672,6 +673,7 @@
 
           function doSaveAndSubmit() {
             prepareData();
+            self.fire('global-loading', {active: true});
             self.sendRequest({
               method: 'POST',
               endpoint: etoolsAppConfig.globals.getEndpoint('et2fSaveAndSubmit'),
@@ -682,6 +684,7 @@
 
           function doSaveUpdate() {
             prepareData();
+            self.fire('global-loading', {active: true});
             self.sendRequest({
               method: 'PATCH',
               endpoint: etoolsAppConfig.globals.computeTemplate(
@@ -695,6 +698,7 @@
 
           function doPut() {
             prepareData();
+            self.fire('global-loading', {active: true});
             self.sendRequest({
               method: 'PUT',
               endpoint: etoolsAppConfig.globals.computeTemplate(
@@ -708,6 +712,7 @@
 
           function doPost() {
             prepareData();
+            self.fire('global-loading', {active: true});
             self.sendRequest({
               method: 'POST',
               endpoint: etoolsAppConfig.globals.computeTemplate(
@@ -742,17 +747,13 @@
                   security_course: 'not_requested'
                 });
 
-                self._clearancesOnConfirm = function() {
-                  self.$['clearance-modal'].close();
-                  if (endpointConfig.id) {
-                    endpointConfig.status = 'submit_for_approval';
-                    doPost();
-                  } else {
-                    endpointConfig.status = 'save_and_submit';
-                    doSaveAndSubmit();
-                  }
-                };
-                self.clearancesOpened = true;
+                if (endpointConfig.id) {
+                  endpointConfig.status = 'submit_for_approval';
+                  doPost();
+                } else {
+                  endpointConfig.status = 'save_and_submit';
+                  doSaveAndSubmit();
+                }
               };
 
               var startIsFinal = function() {
@@ -1056,6 +1057,7 @@
         },
 
         _handlePostSuccess: function(response) {
+          this.fire('global-loading');
           this.travelId = response.id;
           this.set('formErrors', []);
           this.tempImboudData = response;
