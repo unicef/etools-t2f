@@ -137,61 +137,6 @@
             </div>
         </paper-dialog>
 
-        <!-- Crearances dialog -->
-        <paper-dialog id="clearance-modal" opened="{{clearancesOpened}}" with-backdrop>
-
-            <div class="dialog-head-container layout horizontal">
-              <div class="dialog-heading flex">Trip authorization</div>
-              <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
-            </div>
-
-            <div class="dialog-intro-text">Before you submit this trip for approval, please answer the questions below.</div>
-
-            <div class="layout vertical">
-
-                <div class="layout horizontal center">
-                    <div class="row-container"></div>
-                    <div class="flex small-column-heading">Yes</div>
-                    <div class="flex small-column-heading">No</div>
-                    <div class="flex small-column-heading">Not Applicable</div>
-                </div>
-
-                <div class="layout horizontal center">
-                    <div class="row-container" id="label-sec-clear">Did you obtain Security Clearance?</div>
-                    <paper-radio-group class="flex layout horizontal" selected="{{data.clearances.security_clearance}}">
-                        <paper-radio-button class="flex" name="requested"></paper-radio-button>
-                        <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
-                        <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
-                    </paper-radio-group>
-                </div>
-
-                <div class="layout horizontal center">
-                    <div class="row-container" id="label-med">Did you obtain Medical Clearance?</div>
-                    <paper-radio-group class="flex layout horizontal" selected="{{data.clearances.medical_clearance}}">
-                        <paper-radio-button class="flex" name="requested"></paper-radio-button>
-                        <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
-                        <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
-                    </paper-radio-group>
-                </div>
-
-                <div class="layout horizontal center">
-                    <div class="row-container" id="label-sec-course">Did you obtain Security Course?</div>
-                    <paper-radio-group class="flex layout horizontal" selected="{{data.clearances.security_course}}">
-                        <paper-radio-button class="flex" name="requested"></paper-radio-button>
-                        <paper-radio-button class="flex" name="not_requested"></paper-radio-button>
-                        <paper-radio-button class="flex" name="not_applicable"></paper-radio-button>
-                    </paper-radio-group>
-                </div>
-            </div>
-
-            <paper-button
-              class="dialog-confirm-button"
-              on-click="_clearancesOnConfirm"
-              disabled$="[[_areClearancesWrong(data.clearances.security_clearance, data.clearances.medical_clearance, data.clearances.security_course)]]">
-                Submit for approval
-            </paper-button>
-        </paper-dialog>
-
         <!-- Rejection dialog -->
         <paper-dialog id="rejection-modal" opened="{{rejectionOpened}}" with-backdrop>
 
@@ -1018,18 +963,6 @@
               multiPart: true
             }).then(this._handleAttachmentPostSuccess.bind(this))
               .catch(this._handlePostFail.bind(this));
-
-            // this.set('attachmentsEndpoint', etoolsAppConfig.globals.computeTemplate(
-            //   'et2fTravelAttachments',
-            //   {id: this.travelId}
-            // ).url);
-            // current = this.attachments.pop();
-            // this.attachment = {
-            //   name: current.name,
-            //   file: current.raw,
-            //   type: current.type ? current.type.label : 'Report'
-            // };
-            // this.attachmentData = true;
           }
         },
 
