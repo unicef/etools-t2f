@@ -145,6 +145,11 @@ App global configuration
         },
         et2fCSVListExport: {
           url: '/api/t2f/travels/export/'
+        },
+        interventions: {
+          url: '/api/v2/interventions/',
+          exp: 12 * 60 * 60 * 1000, // 12 hours
+          cachingKey: 'interventions'
         }
       },
       globals: {

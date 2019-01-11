@@ -214,7 +214,7 @@
               if (!parentItem[child] || !(parentItem[child] instanceof Array)) {
                 parentItem[child] = [];
               }
-              if (parentItem.id === childItem[parentKey]) {
+              if (parentItem.name === childItem[parentKey]) {
                 parentItem[child].push(childItem);
               }
             });
@@ -222,12 +222,12 @@
         }
         function fillPartnershipsWithResults() {
           function fillPship(pship) {
-            if (!pship.results) {
-              pship.results = [];
+            if (!pship.cp_outputs) {
+              pship.cp_outputs = [];
               console.error('WARNING: one of the partnership is malformed'
                 + '- probably coming from the ghost data endpoint -  results will be blank');
             }
-            pship.results = pship.results.map(function(innerResId) {
+            pship.cp_outputs = pship.cp_outputs.map(function(innerResId) {
               var rawOne = data.results.find(function(rawRes) {
                 return rawRes.id === innerResId;
               });
@@ -241,7 +241,7 @@
                 label: rawOne.label || rawOne.name
               };
             });
-            pship.results.filter(function(r) {
+            pship.cp_outputs.filter(function(r) {
               return !r.toDelete;
             });
             return pship;
@@ -266,7 +266,7 @@
               obj.value = obj.id;
               return obj;
             }).filter(self._filterByLabel).sort(self._sortByLabel);
-            fillDependencyWithChild(key, 'partners', 'partner');
+            fillDependencyWithChild(key, 'partners', 'partner_name');
           },
           results: function(key) {
             fillPartnershipsWithResults();
