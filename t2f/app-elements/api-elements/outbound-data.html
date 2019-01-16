@@ -379,7 +379,6 @@
             deductions: [],
             itinerary: [],
             activities: [],
-            cost_assignments: [],
             expenses: [],
             clearances: {},
             action_points: []
@@ -458,12 +457,6 @@
             });
           }
 
-          function checkCostAssignments(arr) {
-            return arr.filter(function(item) {
-              return _.keys(item).length > 1;
-            });
-          }
-
           function handleArray(arr, fieldSet) {
             arr = duplicateIdPurging(arr);
             arr = emptyIdPurging(arr);
@@ -471,9 +464,7 @@
               handleObject(obj, fieldSet);
             });
             arr = emptyCollectionPurging(arr);
-            if (fieldSet === 'cost_assignments') {
-              arr = checkCostAssignments(arr);
-            }
+
             return arr;
           }
 

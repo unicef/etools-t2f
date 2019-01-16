@@ -42,9 +42,6 @@ App global configuration
           exp: 1000 * 60 * 60, //1 hour
           cachingKey: 'user-list'
         },
-        profile: {
-          template: '/api/users/<%=id%>/',
-        },
         groups: {
           url: '/api/groups/',
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
@@ -67,7 +64,7 @@ App global configuration
           url: '/api/reports/sectors',
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
           cachingKey: 'sections'
-        }, 
+        },
         offices: {
           url: '/api/offices/',
           exp: 7 * 24 * 60 * 60 * 1000, // 1 week
@@ -77,11 +74,6 @@ App global configuration
           url: '/api/t2f/vendor_numbers/',
           exp: 30 * 60 * 1000, // half an hour
           cachingKey: 'vendor_numbers'
-        },
-        et2fCostStructure: {
-          url: '/api/wbs_grants_funds/',
-          exp:  12 * 60 * 60 * 1000, // 12 hours
-          cachingKey: 'cost_structure'
         },
         et2fPermissionsMatrix: {
           url: '/api/t2f/permission_matrix/',
@@ -206,7 +198,7 @@ App global configuration
       },
 
     };
-   
+
 
     window.EtoolsRequestCacheDb = window.EtoolsRequestCacheDb || EtoolsT2fApp.t2fDb;
 

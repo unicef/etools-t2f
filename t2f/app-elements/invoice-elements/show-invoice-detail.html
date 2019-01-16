@@ -142,36 +142,6 @@
             </div>
           </div>
 
-          <div class="layout vertical">
-            <h5> COST ASSIGNMENT</h5>
-
-            <template is="dom-repeat" items="[[invoice.items]]">
-
-              <div class="layout horizontal underline">
-
-                <div class="flex-3 element layout vertical">
-                  <label>WBS</label>
-                  <div>{{item.wbs.label}}</div>
-                </div>
-
-                <div class="flex-2 element layout vertical">
-                  <label>Grant</label>
-                  <div>{{item.grant.label}}</div>
-                </div>
-
-                <div class="flex-2 element layout vertical">
-                  <label>Fund</label>
-                  <div>{{item.fund.label}}</div>
-                </div>
-
-                <div class="flex-2 element layout vertical">
-                  <label>Amount</label>
-                  <div>{{_printAsFixed2(item.amount)}}</div>
-                </div>
-              </div>
-
-            </template>
-          </div>
         </div>
       </paper-material>
     </div>

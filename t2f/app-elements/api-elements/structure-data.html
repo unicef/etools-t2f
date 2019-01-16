@@ -55,20 +55,11 @@
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
     ></etools-ajax>
-
     <etools-ajax
       endpoint="[[vendorEndPoint]]"
       loading="{{vendorNumbersLoading}}"
       on-success="_handleResponse"
       data-name="vendorsData"
-      on-unauthorized="_redirectToLogin"
-      on-forbidden="_redirectToLogin"
-    ></etools-ajax>
-    <etools-ajax
-      endpoint="[[costStructureEndpoint]]"
-      loading="{{costStructureLoading}}"
-      on-success="_handleResponse"
-      data-name="wbsGrantsFundsData"
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
     ></etools-ajax>
@@ -118,7 +109,7 @@
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
             ' officesData, t2fStaticData, usersData,' +
-            'driversData, vendorsData, wbsGrantsFundsData, dsaData,' +
+            'driversData, vendorsData, dsaData,' +
             'partnersData, locationsData, resultsData)'
         },
         rawStructure: {
@@ -138,9 +129,6 @@
         locationsData: {
           type: Object
         },
-        wbsGrantsFunds: {
-          type: Object
-        },
         userBusinessArea: {
           type: Number,
         },
@@ -150,7 +138,7 @@
           value: true,
           computed: '_computeLoading(staticData, sectionsData,' +
             ' officesData, t2fStaticData, usersData, ' +
-            'driversData, vendorsData, locationsData, wbsGrantsFundsData, dsaData,' +
+            'driversData, vendorsData, locationsData, dsaData,' +
             'partnersData,  resultsData)'
         },
         staticDataEndpoint: {
@@ -182,10 +170,6 @@
         vendorEndPoint: {
           type: String,
           value: etoolsAppConfig.endpoints.et2fVendorList
-        },
-        costStructureEndpoint: {
-          type: String,
-          value: etoolsAppConfig.endpoints.et2fCostStructure
         },
         dsaEndopiint: {
           type: String,
@@ -231,7 +215,7 @@
         return args.reduce((acc, nxt) => acc && !_.isEmpty(nxt), true);
       },
       _generateStructure: function (staticData, sections, offices, t2fStaticData, users,
-      drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results) {
+      drivers, vendorNumbers, dsa_regions, partners, locations, results) {
 
         var data = staticData;
         data.sections = sections;
@@ -242,14 +226,12 @@
         data.users = users;
         data.drivers = drivers;
         data.vendorNumbers = vendorNumbers;
-        data.wbs = wbsGrantsFunds.wbs;
         data.dsa_regions = dsa_regions;
         data.partners = partners;
         data.results = results;
 
         this.set('rawStructure', _.cloneDeep(data));
 
-        var parsedCostStructure = this.parseCostStructure(wbsGrantsFunds);
         var structure = this._parseStructureData(_.cloneDeep(data));
 
         // this should not be parsed
@@ -260,8 +242,6 @@
           { value: 4, label: 'HACT Programme Monitoring Report' },
           { value: 5, label: 'Other' },
         ];
-
-        Object.assign(structure, parsedCostStructure);
 
         return structure;
       }

@@ -36,57 +36,57 @@
         display: block;
         width: 100%;
       }
-  
+
       #label-sec-clear,
       #label-med,
       #label-sec-course {
         display: inline-block;
         width: 220px;
       }
-  
+
       travel-status {
         margin-top: 24px;
         margin-right: 24px;
       }
-  
+
       .dialog-heading {
         font-size: 20px;
         padding-top: 8px;
         color: var(--gray-dark);
         font-weight: 500;
       }
-  
+
       .dismiss-dialog-button {
         cursor: pointer;
       }
-  
+
       .dialog-intro-text {
         color: var(--gray-mid);
         font-size: 16px;
         margin-bottom: 24px;
       }
-  
+
       .missing-action {
         color: var(--et2f-warning);
         text-align: center;
         font-size: 16px;
         font-weight: 500;
       }
-  
+
       .missing-action-header {
         color: var(--gray-dark);
         text-align: center;
         font-size: 18px;
         font-weight: 500;
       }
-  
+
       .dialog-confirm-button {
         color: var(--et2f-primary);
         font-weight: 500;
         height: 40px;
         float: right;
       }
-  
+
       paper-tab iron-icon {
         display: none;
         width: 18px;
@@ -94,15 +94,15 @@
         margin-left: 2px;
         color: var(--et2f-error);
       }
-  
+
       paper-tab[error] iron-icon {
         display: block;
       }
     </style>
-  
+
     <iron-ajax id="historical_dsa"
                on-response="_handleOldDSA"></iron-ajax>
-  
+
     <et2f-inbound-data loading="{{dataLoading}}"
                        route="{{route}}"
                        et2f-data="{{data}}"
@@ -111,12 +111,12 @@
                        raw-structure="[[rawStructure]]"
                        data-to-serialize="[[incomingData]]">
     </et2f-inbound-data>
-  
+
     <et2f-profile-data user-id="[[data.baseDetails.traveler.value]]"
                        loading="{{profileLoading}}"
                        profile="{{travelerProfile}}">
     </et2f-profile-data>
-  
+
     <et2f-outbound-data loading="{{dataLoading}}"
                         id="outbound-data"
                         form-errors="{{formErrors}}"
@@ -125,14 +125,14 @@
                         structure="[[structure]]"
                         inbound-data="{{incomingData}}">
     </et2f-outbound-data>
-  
+
     <ta-print id="taPrint"
               data="[[dataForTa]]"
               structure="[[structure]]"></ta-print>
-  
+
     <paper-dialog id="invalid_modal"
                   with-backdrop>
-  
+
       <div class="dialog-head-container layout horizontal">
         <div class="dialog-heading flex">Warning</div>
         <paper-icon-button class="dismiss-dialog-button"
@@ -140,34 +140,34 @@
                            dialog-dismiss></paper-icon-button>
       </div>
       <div class="dialog-intro-text">You are not allowed to take this action, until you correct the following missing or badly formatted information below:</div>
-  
+
       <div class="missing-action-header flex"
            hidden$="[[!invalids.general]]">Trip</div>
       <template is="dom-repeat"
                 items="[[invalids.general]]">
         <div class="missing-action">[[item]]</div>
       </template>
-  
+
       <div class="missing-action-header flex"
            hidden$="[[!invalids.details]]">Trip Details</div>
       <template is="dom-repeat"
                 items="[[invalids.details]]">
         <div class="missing-action">[[item]]</div>
       </template>
-  
+
       <div class="missing-action-header flex"
            hidden$="[[!invalids.report]]">Report</div>
       <template is="dom-repeat"
                 items="[[invalids.report]]">
         <div class="missing-action">[[item]]</div>
       </template>
-  
+
       <paper-button class="dialog-confirm-button"
                     on-click="closeInvalidModal">
         I understand
       </paper-button>
     </paper-dialog>
-  
+
     <et2f-header title="Edit Trip"
                  data="[[data]]"
                  export-type="details">
@@ -189,15 +189,15 @@
         </paper-tab>
       </paper-tabs>
     </et2f-header>
-  
+
     <form-errors id="apierrors"
                  errors="{{formErrors}}"
                  error-selected="{{errorSelected}}"></form-errors>
-  
+
     <div class="layout horizontal">
       <iron-pages selected="{{selected}}"
                   class="flex">
-  
+
         <travel-details id="travelDetails"
                         scroll-to-fieldset="[[errorSelected]]"
                         structure="[[structure]]"
@@ -205,11 +205,10 @@
                         travel-permissions="[[travelPermissions]]"
                         data="{{data}}"
                         route="{{route}}"
-                        details-loading="{{detailsLoading}}"
                         user-roles="[[userRoles]]"
                         user="[[user]]">
         </travel-details>
-  
+
         <travel-report id="travelReport"
                        structure="[[structure]]"
                        permissions="[[travelPermissions]]"
@@ -218,7 +217,7 @@
                        user-roles="[[userRoles]]"
                        user="[[user]]">
         </travel-report>
-  
+
         <travel-attachments structure="[[structure]]"
                             attachments-permission="[[travelPermissions.attachments]]"
                             notes-permission="[[travelPermissions.additional_notes]]"
@@ -228,7 +227,7 @@
                             status="[[data.status]]"
                             user-roles="[[userRoles]]">
         </travel-attachments>
-  
+
         <travel-action-points data="{{data}}"
                               offices="[[structure.offices]]"
                               sections="[[structure.sections]]"
@@ -240,9 +239,9 @@
                               action-points="{{actionPoints}}"
                               permissions="[[travelPermissions]]"
                               user="[[user]]"></travel-action-points>
-  
+
       </iron-pages>
-  
+
       <travel-status id="travelStatus"
                      user-roles="[[userRoles]]"
                      data="[[data]]"
@@ -250,7 +249,7 @@
                      on-validate="onValidate">
       </travel-status>
     </div>
-  
+
   </template>
 
   <script>
@@ -264,15 +263,12 @@
         travelDataLoading: {
           type: Boolean,
           notify: true,
-          computed: '_computeLoading(dataLoading, profileLoading, detailsLoading, historyDsaLoading)',
+          computed: '_computeLoading(dataLoading, profileLoading, historyDsaLoading)',
         },
         profileLoading: {
           type: Boolean,
         },
         dataLoading: {
-          type: Boolean,
-        },
-        detailsLoading: {
           type: Boolean,
         },
         historyDsaLoading: {
@@ -410,8 +406,8 @@
         this.set('historyDsaLoading', false);
       },
 
-      _computeLoading: function(data, profile, details, dsa) {
-        return data || profile || details || dsa;
+      _computeLoading: function(data, profile, dsa) {
+        return data || profile || dsa;
       },
 
       _computeDataForTa: function(data, profile) {
@@ -450,9 +446,6 @@
           //   'arrival_date': new Date('2017-02-28T10:00:00.000Z'),
           //   'mode_of_travel': {label: 'boat', value: 3},
           // }],
-          cost_assignments: [{
-            delegate: null
-          }],
           cost_summary: {},
           deductions: [],
           expenses: [{}],
@@ -636,7 +629,7 @@
           return;
         }
         const {sections,offices}= this.structure;
-        const addNewFields = (activityId, actionPoints) => actionPoints.map(ap => { 
+        const addNewFields = (activityId, actionPoints) => actionPoints.map(ap => {
           ap.related_activity = activityId;
           let sectionName = sections.find(s=> s.value === ap.section);
           sectionName = sectionName ? sectionName.label : 'none';
@@ -649,7 +642,7 @@
           ({ action_points, id }) => addNewFields(id, action_points)
         );
         const flattened = _.flatten(nested);
-        this.set('actionPoints', flattened);       
+        this.set('actionPoints', flattened);
       }
 
     });

@@ -221,113 +221,6 @@
             ]
         };
 
-        var deductionsBlock = {
-          stack: [
-            {
-              text: 'Deductions',
-              alignment: 'center',
-              style: 'bold'
-            },
-            blackLine(5),
-            {
-              layout: 'noBorders',
-              table: {
-                widths: [80,80,80,80,80,80],
-                headerRows: 1,
-                body: [
-                  [
-                    {text: 'Date', style: 'bold', alignment: 'center'},
-                    {text: 'Breakfast', style: 'bold', alignment: 'center'},
-                    {text: 'Lunch', style: 'bold', alignment: 'center'},
-                    {text: 'Dinner', style: 'bold', alignment: 'center'},
-                    {text: 'Accomodation', style: 'bold', alignment: 'center'},
-                    {text: 'Not applicable', style: 'bold', alignment: 'center'},
-                  ]
-                ].concat(data.deductions.sort(function(a, b) {
-                  return a.date.localeCompare(b.date);
-                }).map(function(dd) {
-                  return [
-                    {text: printDate(dd.date), alignment: 'center'},
-                    {text: printX(dd.breakfast), alignment: 'center'},
-                    {text: printX(dd.lunch), alignment: 'center'},
-                    {text: printX(dd.dinner), alignment: 'center'},
-                    {text: printX(dd.accomodation), alignment: 'center'},
-                    {text: printX(dd.no_dsa), alignment: 'center'},
-                  ];
-                }))
-            }},
-            blackLine(5),
-            {
-              columns: [
-                {
-                  text: 'Total amount of deductions',
-                  style: 'bold',
-                  alignment: 'left'
-                },
-                {
-                  text: printFixed(printNested(data.cost_summary, 'deductions_total')),
-                  alignment: 'right'
-                }
-              ]
-            }
-          ]
-        };
-
-        var expensesBlock = {
-          stack: [
-              {text: 'Breakdown of expenses costs for the trip', alignment: 'center', style: 'bold'},
-              blackLine(5),
-              {layout: 'noBorders',
-                table: {
-                widths: [123,123,123,123],
-                headerRows: 1,
-                body: [
-                  [{text: 'Expense', style: 'bold', alignment: 'left'},
-                  {text: 'Document currency', style: 'bold', alignment: 'center'},
-                  {text: 'Exchange to USD', style: 'bold', alignment: 'center'},
-                  {text: 'Amount', style: 'bold', alignment: 'right'},]
-                ].concat(data.expenses.map(function(ee) {
-                    return [
-                      {text: print(ee.type), alignment: 'left'},
-                      {text: print(ee.document_currency), alignment: 'center'},
-                      {text: print(printNested(ee.document_currency, 'exchange_to_dollar')), alignment: 'center'},
-                      {text: printFixed(ee.amount), alignment: 'right'}
-                    ];
-                  }))
-              }},
-              blackLine(5),
-              {columns: [
-                   {text: 'Total Expense cost for the trip', style: 'bold', alignment: 'left'},
-                   {text: printFixed(exp), alignment: 'right'}
-                ]}
-          ]
-        };
-
-        var costAssignmentsBlock = {
-          stack: [
-              {text: 'Trip cost assignment', alignment: 'center', style: 'bold'},
-              blackLine(5),
-              {layout: 'noBorders',
-                table: {
-                widths: [123,123,123,123],
-                headerRows: 1,
-                body: [
-                  [{text: 'WBS', style: 'bold', alignment: 'left'},
-                  {text: 'Grant', style: 'bold', alignment: 'center'},
-                  {text: 'Fund', style: 'bold', alignment: 'center'},
-                  {text: 'Share', style: 'bold', alignment: 'right'},]
-                ].concat(data.cost_assignments.map(function(ca) {
-                    return [
-                      {text: print(ca.wbs), alignment: 'left'},
-                      {text: print(ca.grant), alignment: 'center'},
-                      {text: print(ca.fund), alignment: 'center'},
-                      {text: print(ca.share, '%'), alignment: 'right'},
-                    ];
-                  }))
-              }}
-          ]
-        };
-
         var itineraryBlock = {
           stack: [
               {text: 'Details of the itinerary', alignment: 'center', style: 'bold'},
@@ -367,12 +260,6 @@
         dataToPrint.push(detailBlock);
         dataToPrint.push(blackLine());
         dataToPrint.push(dsaDetailsBlock);
-        dataToPrint.push(blackLine());
-        dataToPrint.push(deductionsBlock);
-        dataToPrint.push(blackLine());
-        dataToPrint.push(expensesBlock);
-        dataToPrint.push(blackLine());
-        dataToPrint.push(costAssignmentsBlock);
         dataToPrint.push(blackLine());
         dataToPrint.push(itineraryBlock);
         dataToPrint.push(blackLine());

@@ -42,55 +42,6 @@
         });
       }
     },
-    _convertOrKeepId: function(key, structureKey, value, cost_ass_instance) {
-      if (cost_ass_instance && cost_ass_instance.delegate) {
-        var ret = {
-          label: null,
-          value: value,
-          toProcess: true,
-        };
-        return ret;
-      } else {
-        return this.structure[structureKey].find(function(item) {
-          return item.value === value;
-        });
-      }
-    },
-    parseCostStructure: function(data) {
-      var self = this;
-      data.funds = data.funds.map(function(fund) {
-        return {
-          label: fund.name,
-          value: parseInt(fund.id, 10),
-        };
-      }).filter(self._filterByLabel).sort(self._sortByLabel);
-
-      data.grants = data.grants.map(function(grant) {
-        return {
-          label: grant.name,
-          value: parseInt(grant.id, 10),
-          funds: grant.funds.map(function(fundId) {
-            return data.funds.find(function(rawFund) {
-              return rawFund.value === fundId;
-            });
-          }),
-        };
-      }).filter(self._filterByLabel).sort(self._sortByLabel);
-
-      data.wbs = data.wbs.map(function(wbs) {
-        return {
-          business_area: wbs.business_area,
-          label: wbs.name,
-          value: parseInt(wbs.id, 10),
-          grants: wbs.grants.map(function(grantId) {
-            return data.grants.find(function(rawGrant) {
-              return rawGrant.value === grantId;
-            });
-          }),
-        };
-      }).filter(self._filterByLabel).sort(self._sortByLabel);
-      return data;
-    },
     _processLib: function(structureLibValue, value, data) {
       var result = null;
       if (typeof structureLibValue  === 'function') {
@@ -151,12 +102,6 @@
           },
           clearances: {},
           deductions: {},
-          cost_assignments: {
-            business_area: 'business_areas',
-            wbs: this._convertOrKeepId.bind(this, 'wbs', 'wbs'),
-            grant: this._convertOrKeepId.bind(this, 'grant', 'grants'),
-            fund: this._convertOrKeepId.bind(this, 'fund', 'funds')
-          },
           attachments: {
             type: this._searchByLabel.bind(this, 'attachment_types')
           },
@@ -174,14 +119,6 @@
             person_responsible: 'users',
             assigned_by: 'users',
             status: this._searchByLabel.bind(this, 'action_point_statuses')
-          },
-          invoice: {
-            currency: 'currencies',
-            items: {
-              wbs: 'wbs',
-              grant: 'grants',
-              fund: 'funds'
-            }
           }
         }
       };
@@ -288,7 +225,6 @@
             data[key] = data[key].map(function(obj) {
               obj.label = obj.code + ' - ' + obj.name;
               obj.value = obj.id;
-              obj.wbs = obj.wbs;
               return obj;
             }).filter(self._filterByLabel).sort(self._sortByLabel);
           },
