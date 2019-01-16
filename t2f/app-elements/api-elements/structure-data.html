@@ -55,14 +55,7 @@
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
     ></etools-ajax>
-    <etools-ajax
-      endpoint="[[groupsEndpoint]]"
-      on-success="_handleResponse"
-      data-name="groupsData"
-      loading="{{groupsLoading}}"
-      on-unauthorized="_redirectToLogin"
-      on-forbidden="_redirectToLogin"
-    ></etools-ajax>
+
     <etools-ajax
       endpoint="[[vendorEndPoint]]"
       loading="{{vendorNumbersLoading}}"
@@ -124,7 +117,7 @@
           type: Object,
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
-            ' officesData, t2fStaticData, usersData, groupsData,' +
+            ' officesData, t2fStaticData, usersData,' +
             'driversData, vendorsData, wbsGrantsFundsData, dsaData,' +
             'partnersData, locationsData, resultsData)'
         },
@@ -156,7 +149,7 @@
           notify: true,
           value: true,
           computed: '_computeLoading(staticData, sectionsData,' +
-            ' officesData, t2fStaticData, usersData, groupsData,' +
+            ' officesData, t2fStaticData, usersData, ' +
             'driversData, vendorsData, locationsData, wbsGrantsFundsData, dsaData,' +
             'partnersData,  resultsData)'
         },
@@ -185,10 +178,6 @@
         },
         driversEndpointParams: {
           value: { verbosity: 'minimal', drivers: 'true' }
-        },
-        groupsEndpoint: {
-          type: String,
-          value: etoolsAppConfig.endpoints.groups
         },
         vendorEndPoint: {
           type: String,
@@ -241,23 +230,19 @@
       _staticDataLoaded(...args) {
         return args.reduce((acc, nxt) => acc && !_.isEmpty(nxt), true);
       },
-      _generateStructure: function (staticData, sections, offices, t2fStaticData, users, groups,
-        drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results) {
-        
+      _generateStructure: function (staticData, sections, offices, t2fStaticData, users,
+      drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results) {
+
         var data = staticData;
         data.sections = sections;
         data.offices = offices;
         data.locations = locations;
         data.partnerships = t2fStaticData.partnerships;
-        data.government_partnerships = t2fStaticData.government_partnerships;
         data.action_point_statuses = t2fStaticData.action_point_statuses;
         data.users = users;
-        data.groups = groups;
         data.drivers = drivers;
         data.vendorNumbers = vendorNumbers;
         data.wbs = wbsGrantsFunds.wbs;
-        data.grants = wbsGrantsFunds.grants;
-        data.funds = wbsGrantsFunds.funds;
         data.dsa_regions = dsa_regions;
         data.partners = partners;
         data.results = results;
