@@ -87,6 +87,14 @@
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
     ></etools-ajax>
+    <etools-ajax
+      endpoint="[[interventionsEndpoint]]"
+      loading="{{resultsLoading}}"
+      on-success="_handleResponse"
+      data-name="interventionsData"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+    ></etools-ajax>
 
   </template>
 
@@ -101,8 +109,8 @@
           notify: true,
           computed: '_generateStructure(staticData, sectionsData,' +
             ' officesData, t2fStaticData, usersData,' +
-            'driversData, dsaData,' +
-            'partnersData, locationsData, resultsData)'
+            'driversData, dsaData, partnersData, ' +
+            'locationsData, resultsData, interventionsData)'
         },
         rawStructure: {
           type: Object,
@@ -131,7 +139,7 @@
           computed: '_computeLoading(staticData, sectionsData,' +
             ' officesData, t2fStaticData, usersData, ' +
             'driversData, locationsData, dsaData,' +
-            'partnersData,  resultsData)'
+            'partnersData,  resultsData, interventionsData)'
         },
         staticDataEndpoint: {
           type: String,
@@ -152,6 +160,10 @@
         usersEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.users
+        },
+        interventionsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.interventions
         },
         usersEndpointParams: {
           value: { verbosity: 'minimal' }
@@ -203,13 +215,13 @@
         return args.reduce((acc, nxt) => acc && !_.isEmpty(nxt), true);
       },
       _generateStructure: function (staticData, sections, offices, t2fStaticData, users,
-      drivers, dsa_regions, partners, locations, results) {
+      drivers, dsa_regions, partners, locations, results, interventions) {
 
         var data = staticData;
         data.sections = sections;
         data.offices = offices;
         data.locations = locations;
-        data.partnerships = t2fStaticData.partnerships;
+        data.partnerships = interventions;
         data.action_point_statuses = t2fStaticData.action_point_statuses;
         data.users = users;
         data.drivers = drivers;
@@ -218,7 +230,6 @@
         data.results = results;
 
         this.set('rawStructure', _.cloneDeep(data));
-
         var structure = this._parseStructureData(_.cloneDeep(data));
 
         // this should not be parsed
