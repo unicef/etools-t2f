@@ -111,6 +111,14 @@
       on-unauthorized="_redirectToLogin"
       on-forbidden="_redirectToLogin"
     ></etools-ajax>
+    <etools-ajax
+      endpoint="[[interventionsEndpoint]]"
+      loading="{{resultsLoading}}"
+      on-success="_handleResponse"
+      data-name="interventionsData"
+      on-unauthorized="_redirectToLogin"
+      on-forbidden="_redirectToLogin"
+    ></etools-ajax>
 
   </template>
 
@@ -126,7 +134,7 @@
           computed: '_generateStructure(staticData, sectionsData,' +
             ' officesData, t2fStaticData, usersData, groupsData,' +
             'driversData, vendorsData, wbsGrantsFundsData, dsaData,' +
-            'partnersData, locationsData, resultsData)'
+            'partnersData, locationsData, resultsData, interventionsData)'
         },
         rawStructure: {
           type: Object,
@@ -158,7 +166,7 @@
           computed: '_computeLoading(staticData, sectionsData,' +
             ' officesData, t2fStaticData, usersData, groupsData,' +
             'driversData, vendorsData, locationsData, wbsGrantsFundsData, dsaData,' +
-            'partnersData,  resultsData)'
+            'partnersData,  resultsData, interventionsData)'
         },
         staticDataEndpoint: {
           type: String,
@@ -179,6 +187,10 @@
         usersEndpoint: {
           type: String,
           value: etoolsAppConfig.endpoints.users
+        },
+        interventionsEndpoint: {
+          type: String,
+          value: etoolsAppConfig.endpoints.interventions
         },
         usersEndpointParams: {
           value: { verbosity: 'minimal' }
@@ -242,13 +254,13 @@
         return args.reduce((acc, nxt) => acc && !_.isEmpty(nxt), true);
       },
       _generateStructure: function (staticData, sections, offices, t2fStaticData, users, groups,
-        drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results) {
+        drivers, vendorNumbers, wbsGrantsFunds, dsa_regions, partners, locations, results, interventions) {
         
         var data = staticData;
         data.sections = sections;
         data.offices = offices;
         data.locations = locations;
-        data.partnerships = t2fStaticData.partnerships;
+        data.partnerships = interventions;
         data.government_partnerships = t2fStaticData.government_partnerships;
         data.action_point_statuses = t2fStaticData.action_point_statuses;
         data.users = users;
@@ -261,10 +273,9 @@
         data.dsa_regions = dsa_regions;
         data.partners = partners;
         data.results = results;
-
+        
         this.set('rawStructure', _.cloneDeep(data));
-
-        var parsedCostStructure = this.parseCostStructure(wbsGrantsFunds);
+        var parsedCostStructure = this.parseCostStructure(wbsGrantsFunds);  
         var structure = this._parseStructureData(_.cloneDeep(data));
 
         // this should not be parsed
