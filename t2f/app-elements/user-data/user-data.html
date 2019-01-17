@@ -52,12 +52,6 @@
             });
           }
         }
-      } else {
-        //for testing
-        // console.log('setting super permissions');
-        permissions.superPermissions.forEach(function(perm) {
-          _data.permissions[perm] = true;
-        });
       }
 
       this.load(_data);
