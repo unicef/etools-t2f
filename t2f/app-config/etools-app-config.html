@@ -25,9 +25,8 @@ App global configuration
       endpoints: {
         userInfo: {
           url: '/users/api/profile/',
-        },
-        userProfile: {
-          template: '/users/myprofile/',
+          exp: 30 * 60 * 1000, // 30min
+          cachingKey: 'myProfile'
         },
         changeCountry: {
           url: '/users/api/changecountry/'

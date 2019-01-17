@@ -6,7 +6,7 @@
 <link rel="import" href="../../../bower_components/etools-app-selector/etools-app-selector.html">
 <link rel="import" href="../countries-dropdown/countries-dropdown.html">
 <link rel="import" href="../../../bower_components/etools-profile-dropdown/etools-profile-dropdown.html">
-<link rel="import" href="../api-elements/user-profile-data.html">
+<link rel="import" href="../user-data/user-data.html">
 <link rel="import" href="../../app-config/etools-app-config.html">
 <link rel="import" href="../../app-behaviors/refresh-behavior.html">
 <link rel="import" href="../../styles/shared-styles.html">
@@ -43,10 +43,10 @@
       }
 
       .right-side {
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
+        @apply --layout-horizontal;
+        @apply --layout-center;
       }
-      
+
       .titlebar {
         flex: 1 ;
         font-size: 28px;
@@ -66,8 +66,8 @@
       }
 
       .content-align {
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
+        @apply --layout-horizontal;
+        @apply --layout-center;
       }
 
       #refresh,
@@ -85,7 +85,7 @@
       }
     </style>
 
-    <user-profile-data id="userProfileData" user-profile="{{profile}}"></user-profile-data>
+    <user-data user="{{profile}}"></user-data>
     <app-toolbar sticky class="content-align">
       <paper-icon-button id="menuButton" class="light" icon="menu" on-tap="openDrawer"></paper-icon-button>
       <div class="titlebar content-align">
@@ -102,7 +102,6 @@
             offices="[[structure.offices]]"
             users="[[structure.users]]"
             profile="{{profile}}"
-            on-save-profile="_saveProfile"
             on-sign-out="_signOut"></etools-profile-dropdown>
         <paper-icon-button icon="refresh"
                            id="refresh"
@@ -192,10 +191,6 @@
           if (!etoolsAppConfig.globals.isProductionServer()) {
             this.updateStyles({'--header-bg-color': 'var(--nonprod-header-color)'});
           }
-        },
-        _saveProfile: function(e) {
-          this.set('profile', e.detail.profile);
-          this.$.userProfileData.saveProfile(this.profile);
         },
         _signOut: function() {
           this._clearDexieDbs();
