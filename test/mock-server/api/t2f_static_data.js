@@ -268,37 +268,6 @@ window.mockApi.t2f_static_data = {
     'partner': 14,
     'results': []
   }],
-  'government_partnerships': [{
-    'id': 5,
-    'name': '/MoE/201701',
-    'partner': 20,
-    'results': [119]
-  }, {
-    'id': 6,
-    'name': '02/2017',
-    'partner': 32,
-    'results': [119]
-  }, {
-    'id': 40,
-    'name': '1177',
-    'partner': 20,
-    'results': [60]
-  }, {
-    'id': 42,
-    'name': '//01',
-    'partner': 57,
-    'results': [60]
-  }, {
-    'id': 45,
-    'name': 'sarf23 r42rw',
-    'partner': 29,
-    'results': [60]
-  }, {
-    'id': 4,
-    'name': '/Govt Test/201501',
-    'partner': 47,
-    'results': [60]
-  }],
   'results': [{
     'id': 126,
     'name': '100 Social workers have skills in case management'
