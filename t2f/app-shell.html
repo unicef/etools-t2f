@@ -60,7 +60,7 @@
       }
 
       .side-nav-wrapper {
-        @apply(--layout-vertical);
+        @apply --layout-vertical;
 
         height: 100%;
         overflow-y: var(--side-bar-scrolling);
@@ -104,7 +104,7 @@
       }
 
       .nav-menu, .flexy {
-        @apply(--layout-flex);
+        @apply --layout-flex;
       }
 
       system-notification {
@@ -159,10 +159,6 @@
               <template is="dom-if" if="{{permissions.loggedInDefault}}">
 
                 <side-bar-item name="Travel2Field" value="travel-list" icon="maps:transfer-within-a-station" href$="[[baseUrl]]travel-list?reverse=true&page=1&page_size=10&search&sort_by=id&show_hidden=false"></side-bar-item>
-
-                <template is="dom-if" if="[[isFfp]]" restamp>
-                  <side-bar-item name="invoices" value="invoices-list" icon="description" href$="[[baseUrl]]invoices-list?reverse=true&page=1&page_size=10&search&sort_by=id"></side-bar-item>
-                </template>
 
                 <!-- <side-bar-item name="action points" value="action-points-list" icon="flag" href$="[[baseUrl]]action-points-list?reverse=true&page=1&page_size=10&search&sort_by=action_point_number&f_person_responsible=[[user.id]]"></side-bar-item> -->
 
@@ -232,11 +228,6 @@
         user: {
           type: Object,
         },
-        isFfp: {
-          type: Boolean,
-          value: false,
-          computed: '_computeIsFfp(user)',
-        },
         _toastQueue: {
           type: Array,
           value: function() { return []; }
@@ -268,9 +259,7 @@
           active: true
         });
       },
-      _computeIsFfp: function(user) {
-        return user && user.t2f && user.t2f.roles && user.t2f.roles.indexOf('Finance Focal Point') > -1;
-      },
+
       _permissionsPagesStamped: function(permissions, _pagesAvailable) {
         if (!permissions || !_pagesAvailable) {
             return;
