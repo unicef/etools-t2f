@@ -288,12 +288,7 @@
               return {label: obj.name, value: parseInt(obj.id, 10),
                 currency: obj.currency, business_area: obj.business_area};
             }).filter(self._filterByLabel).sort(self._sortByLabel);
-          },
-          vendorNumbers: function(key) {
-            data[key] = data[key].map(function(obj, index) {
-              return {label: capitalize(obj), value: index};
-            }).filter(self._filterByLabel).sort(self._sortByLabel);
-          },
+          }
         };
 
         var dataKeys = Object.keys(data).sort();
