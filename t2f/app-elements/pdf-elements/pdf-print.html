@@ -511,56 +511,6 @@
               };
             }
           },
-          cost_summary: {
-            name: 'Cost summary',
-            generator: function() {
-              return {
-                stack: [
-                  {
-                    table: {
-                      headerRows: 0,
-                      widths: [760],
-                      body: [
-                        [{
-                          columns: [
-                            {text: 'DSA Total'},
-                            {text: ' ' + data.cost_summary.dsa_total, style: 'rightAlign'}
-                          ]
-                        }],
-                        [{
-                          columns: [
-                            {text: 'Expenses Total'},
-                            {text: ' ' + data.cost_summary.expenses_total, style: 'rightAlign'}
-                          ]
-                        }],
-                        [{
-                          columns: [
-                            {text: 'Deductions Total'},
-                            {text: ' ' + data.cost_summary.deductions_total, style: 'rightAlign'}
-                          ]
-                        }]
-                      ]
-                    }
-                  },
-                  {
-                    table: {
-                      headerRows: 0,
-                      widths: [700, 50],
-                      body: [
-                        [{text: 'Total cost'},
-                        {
-                          text: ' ' + ((parseFloat(data.cost_summary.dsa_total) +
-                            parseFloat(data.cost_summary.expenses_total)) -
-                            parseFloat(data.cost_summary.deductions_total)),
-                          style: 'checkboxRight'
-                        }]
-                      ]
-                    }
-                  }
-                ]
-              };
-            }
-          },
           report: {
             name: 'Report',
             generator: function() {

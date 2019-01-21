@@ -18,14 +18,9 @@
 
 <link rel="import" href="../fieldset-elements/travel-activity.html">
 <link rel="import" href="../fieldset-elements/travel-itinerary.html">
-<link rel="import" href="../fieldset-elements/travel-expense.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
-
-<link rel="import" href="../fieldset-elements/travel-costs-assignment.html">
-<link rel="import" href="../fieldset-elements/travel-deductions.html">
-<link rel="import" href="../fieldset-elements/travel-costs-summary.html">
 
 <dom-module id="travel-details">
   <template>
@@ -253,86 +248,6 @@
           </template>
         </etools-repeatable-field-set>
 
-        <etools-repeatable-field-set title="Deductions"
-          id="deductions"
-          hide-vertical-divider
-          model="[1]"
-          hide-plus
-          elevation="1"
-          open="[[sectionPermissions.deductions.open]]"
-          hidden$="[[_hideOnTANotRequired(sectionPermissions.deductions.hidden, data.baseDetails.ta_required)]]">
-
-          <div class="layout vertical flex">
-
-            <travel-deductions
-              disabled="[[!sectionPermissions.deductions.edit]]"
-              itinerary="[[data.itinerary]]"
-              deductions="{{data.deductions}}"
-              permissions-matrix="[[travelPermissions.deductions]]">
-            </travel-deductions>
-          </div>
-        </etools-repeatable-field-set>
-
-        <etools-repeatable-field-set title="Expenses"
-          id="expenses"
-          model="{{data.expenses}}"
-          show-counter
-          hide-plus="[[!sectionPermissions.expenses.edit]]"
-          elevation="1"
-          open="[[sectionPermissions.expenses.open]]"
-          hidden$="[[_hideOnTANotRequired(sectionPermissions.expenses.hidden, data.baseDetails.ta_required)]]">
-
-          <template is="dom-repeat" items="{{data.expenses}}">
-            <travel-expense permissions-matrix="[[travelPermissions.expenses]]"
-              expense="{{item}}"
-              user="[[user]]"
-              local-currency=[[localCurrency]]
-              base-details="[[data.baseDetails]]"
-              document-currency="[[data.baseDetails.currency]]"
-              selected-expenses="[[selectedExpensesType]]"
-              structure="[[structure]]">
-            </travel-expense>
-          </template>
-        </etools-repeatable-field-set>
-
-        <etools-repeatable-field-set title="Cost Assignment"
-          id="cost_assignments"
-          model="{{data.cost_assignments}}"
-          elevation="1"
-          hide-plus="[[!sectionPermissions.cost_assignments.edit]]"
-          open="[[sectionPermissions.cost_assignments.open]]"
-          hidden$="[[_hideOnTANotRequired(sectionPermissions.cost_assignments.hidden, data.baseDetails.ta_required)]]">
-
-          <template is="dom-repeat" items="{{data.cost_assignments}}">
-
-            <travel-cost-assignment permissions-matrix="[[travelPermissions.cost_assignments]]"
-              cost-assignment="{{item}}"
-              user="[[user]]"
-              wbs-loading="{{wbsLoading}}"
-              structure="[[structure]]"
-              default-business-area="[[defaultBusinessArea]]"
-              invalid-shares="[[_invalidShares(data.cost_assignments.*)]]">
-            </travel-cost-assignment>
-
-          </template>
-        </etools-repeatable-field-set>
-
-        <etools-repeatable-field-set title="Cost Summary"
-          id="cost_summary"
-          hide-vertical-divider
-          class="orange-header"
-          model="[1]"
-          hide-plus
-          elevation="1"
-          open="[[sectionPermissions.cost_summary.open]]"
-          hidden$="[[_hideOnTANotRequired(sectionPermissions.cost_summary.hidden, data.baseDetails.ta_required)]]">
-
-          <travel-cost-summary
-            cost-summary="[[data.cost_summary]]"
-            currency="[[data.baseDetails.currency]]"
-            structure="[[structure]]">
-          </travel-cost-summary>
-        </etools-repeatable-field-set>
       </div>
     </div>
   </template>
@@ -359,14 +274,6 @@
           computed:
             '_computeSectionPermissions(travelPermissions,' +
               ' data.baseDetails.international_travel, data.status, userRoles)'
-        },
-        detailsLoading: {
-          type: Boolean,
-          notify: true,
-          computed: '_computeDetailsLoading(wbsLoading)'
-        },
-        wbsLoading: {
-          type: Boolean
         },
         invalids: Array,
         userRoles: {
@@ -452,10 +359,6 @@
           console.error('Data error, the user does not have a default business_area associated');
         }
         return userBusinessArea || {};
-      },
-
-      _computeDetailsLoading: function(wbs) {
-        return wbs;
       },
 
       _computeLocalCurrency: function(defaultBusinessArea, structure) {

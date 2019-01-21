@@ -55,7 +55,7 @@
         }
       },
       behaviors: [et2fBehaviors.ApiBehavior],
-     
+
       _computeUrl: function(travelId) {
         if (this.listen && travelId && travelId !== -1) {
           return etoolsAppConfig.globals.computeTemplate('et2fTravelDetail', {
@@ -104,13 +104,8 @@
           'submitted': 'Submitted',
           'approved': 'Approved',
           'rejected': 'Rejected',
-          'sent_for_payment': 'Sent for payment',
           'cancelled': 'Cancelled',
           'done': 'Certification needed',
-          'certification_approved': 'Certification approved',
-          'certification_rejected': 'Certification rejected',
-          'certification_submitted': 'Certification submitted',
-          'certified': 'Certified',
           'completed': 'Completed'
         };
 
@@ -118,7 +113,6 @@
           'deductions',
           'itinerary',
           'activities',
-          'cost_assignments',
           'expenses',
           'clearances',
           'rejection_note',
@@ -275,24 +269,6 @@
                 category: 'currencies'
               },
             },
-            cost_assignments: {
-              business_area: {
-                url: '/api/static_data/missing/',
-                category: 'business_areas'
-              },
-              fund: {
-                url: '/api/wbs_grants_funds/missing/',
-                category: 'funds'
-              },
-              wbs: {
-                url: '/api/wbs_grants_funds/missing/',
-                category: 'wbs'
-              },
-              grant: {
-                url: '/api/wbs_grants_funds/missing/',
-                category: 'grants'
-              }
-            },
             action_points: {
               person_responsible: {
                 url: '/api/users/',
@@ -336,14 +312,7 @@
                   rawStructure[ghost.category].push(ghost.response);
                 });
 
-                // special handling fot wbs - grant and founds that need to be parsed all at once
-                var costAssingmentStructure = {
-                  wbs: rawStructure.wbs.slice(),
-                  grants: rawStructure.grants.slice(),
-                  funds: rawStructure.funds.slice()
-                };
                 var parsedStructure = self._parseStructureData(rawStructure);
-                parsedStructure = Object.assign({}, parsedStructure, self.parseCostStructure(costAssingmentStructure));
 
                 // set the new complete structure as a the new available structure
                 self.set('structure', {});
