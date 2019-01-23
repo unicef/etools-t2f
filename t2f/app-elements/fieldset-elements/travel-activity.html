@@ -351,10 +351,7 @@
       _formatPdssfa: function (partnerships) {
         return partnerships && partnerships.map(
           partnership => {
-            return {
-              ...partnership,
-              label: `${partnership.number} | ${partnership.status} | ${partnership.title}`
-            }
+            return Object.assign(partnership, {label: `${partnership.number} | ${partnership.status} | ${partnership.title}`});
           }
         ) || [];
       }
