@@ -254,7 +254,7 @@
           travel_types: function(key) {
             data[key] = data[key].map(function(obj, index) {
               return {label: capitalize(obj), value: index};
-            }).filter(self._filterByLabel).filter(self._isNOtSpotCheck).sort(self._sortByLabel);
+            }).filter(self._filterByLabel).filter(self._isNotSpotCheck).sort(self._sortByLabel);
           },
           action_point_statuses: function(key) {
             data[key] = data[key].map(function(obj, index) {
