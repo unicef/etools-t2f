@@ -64,7 +64,7 @@
           hidden$="[[computedPermission.partnership.hidden]]"
           empty-value
           dynamic-align
-          options="[[partnerships]]"
+          options="[[_formatPdssfa(partnerships)]]"
           value="{{activity.partnership}}"
           required$="[[partnershipRequired)]]"
           starred$="[[partnershipRequired]]"
@@ -346,6 +346,14 @@
         var activityVal = this.$.activities_form.validate();
 
         return typeVal && activityVal;
+      },
+
+      _formatPdssfa: function (partnerships) {
+        return partnerships && partnerships.map(
+          partnership => {
+            return Object.assign(partnership, {label: `${partnership.number} | ${partnership.status} | ${partnership.title}`});
+          }
+        ) || [];
       }
     });
   </script>

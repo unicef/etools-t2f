@@ -137,6 +137,12 @@
     _filterByLabel: function (i) {
       return i && i.label && typeof i.label === 'string' && i.label.trim().length > 0;
     },
+    _isNotSpotCheck: function(travelType) {
+      if (travelType.label === "Spot Check"){
+        return false
+      }
+      return true;
+    },
     _parseStructureData: function (data) {
         var self = this;
         function capitalize(value) {
@@ -248,7 +254,7 @@
           travel_types: function(key) {
             data[key] = data[key].map(function(obj, index) {
               return {label: capitalize(obj), value: index};
-            }).filter(self._filterByLabel).sort(self._sortByLabel);
+            }).filter(self._filterByLabel).filter(self._isNOtSpotCheck).sort(self._sortByLabel);
           },
           action_point_statuses: function(key) {
             data[key] = data[key].map(function(obj, index) {
