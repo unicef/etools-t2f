@@ -80,7 +80,7 @@
 
     </style>
 
-    <a id="main" href="[[href]]" on-tap="_handleMainTap">
+    <a id="main" target$="[[_setTarget(external)]]" href="[[href]]" on-tap="_handleMainTap">
       <iron-icon icon="[[icon]]"></iron-icon>
       <div id="name">[[name]]</div>
     </a>
@@ -100,7 +100,11 @@
       is: 'side-bar-item',
 
       properties: {
-        name: String
+        name: String,
+        external: {
+          type: Boolean,
+          value: false
+        }
       },
 
       _handleMainTap: function(event) {
@@ -114,6 +118,11 @@
           this.opened = this.opened ? false : true;
         }
       },
+
+      _setTarget: function() {
+        if (this.external) { return '_blank'; }
+        return '_self'
+      }
 
     });
 
