@@ -68,10 +68,9 @@
         this.listen = false;
         var id = incomingData.id;
         this._handleData(null, incomingData);
-        var route = this.route;
+        var route = Object.assign({}, this.route);
         var routeFragments = route.path.split('/');
         route.path = (routeFragments.slice(0, routeFragments.length - 1).join('/')) + '/' + id;
-        this.set('route', {});
         this.set('route', route);
         this.listen = true;
       },
@@ -175,15 +174,10 @@
         }
 
         function handleArray(fieldSet, key) {
-          if (fieldSet.length === 0 && key !== 'attachments') {
-            // add one empty object in case of empty array
-            fieldSet.push({});
-          } else {
-            //loop on array elements and run the object handling function
-            fieldSet.forEach(function(innerFieldSet) {
-              handleObject(innerFieldSet, key);
-            });
-          }
+          //loop on array elements and run the object handling function
+          fieldSet.forEach(function(innerFieldSet) {
+            handleObject(innerFieldSet, key);
+          });
         }
         var newKeys = Object.keys(incomingData);
         newKeys.forEach(function(fieldSet) {
