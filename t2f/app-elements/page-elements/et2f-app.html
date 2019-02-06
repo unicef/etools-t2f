@@ -73,29 +73,7 @@
         et2f-permissions="[[et2fPermissions.travel]]"
         raw-structure="[[rawStructure]]"
         structure="[[structure]]">
-        </page-edit-travel>
-
-      <template is="dom-if" if="[[ffp]]" restamp>
-
-        <page-invoices-list name="invoices-list"
-          user="[[user]]"
-          structure="[[structure]]"
-          route="{{route}}"
-          refresh-data="{{refreshData}}"
-          list-loading="{{subLoading}}">
-        </page-invoices-list>
-
-        <page-invoice-detail fullbleed
-          name="invoice-detail"
-          user="[[user]]"
-          route="{{route}}"
-          detail-loading="{{subLoading}}"
-          invoice-id="[[invoiceId]]"
-          et2f-permissions="[[et2fPermissions.travel]]"
-          structure="[[structure]]">
-        </page-invoice-detail>
-
-      </template>
+      </page-edit-travel>
 
       <page-action-point fullbleed
         name="action-point"
@@ -147,9 +125,6 @@
         user: {
           type: Object
         },
-        ffp: {
-          type: Boolean,
-        },
         route: {
           type: Object,
           notify: true
@@ -186,10 +161,6 @@
         actionPointId: {
           type: Number,
           computed: '_computeElementId(subroute, "action-point")'
-        },
-        invoiceId: {
-          type: Number,
-          computed: '_computeElementId(subroute, "invoice-detail")'
         },
         isLocalhost: {
           type: Boolean,

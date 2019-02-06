@@ -198,8 +198,8 @@
           <div class="headings textprim w13">[[data.traveler]]</div>
           <div class="headings textprim w13">[[getOffice(data.office, offices)]]</div>
           <div class="headings textprim w13">[[getSection(data.section, sections)]]</div>
-          <div class="headings textprim w11">[[_formatListDate(data.start_date)]]</div>
-          <div class="headings textprim w11">[[_formatListDate(data.end_date)]]</div>
+          <div class="headings textprim w11">[[prettyDate(data.start_date)]]</div>
+          <div class="headings textprim w11">[[prettyDate(data.end_date)]]</div>
           <div class="headings textprim bold capital w23">
             <div class$="statusdiv [[_statusClass(data)]]">
               <span class="statusdivtext">[[_statusMapping(data.status)]]</span>
@@ -285,11 +285,6 @@
           rejected: 'rejected',
           approved: 'approved',
           cancelled: 'cancelled',
-          sent_for_payment: 'sent',
-          certification_submitted: 'submitted',
-          certification_approved: 'approved',
-          certification_rejected: 'rejected',
-          certified: 'sent',
           completed: 'completed'
         }[status];
       },
@@ -301,11 +296,6 @@
           rejected: 'Rejected',
           approved: 'Approved',
           cancelled: 'Cancelled',
-          sent_for_payment: 'Sent for payment',
-          certification_submitted: 'Certification submitted',
-          certification_approved: 'Certification approved',
-          certification_rejected: 'Certification rejected',
-          certified: 'Certified',
           completed: 'Completed'
         };
         return statusLib[status];
