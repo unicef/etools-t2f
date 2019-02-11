@@ -465,6 +465,14 @@
       // Mapping data to the view
       handleListResponse: function(event, data) {
         this.set('datalength', data.total_count);
+        data.data.forEach(function(travel) {	
+          if (travel.start_date) {	
+            travel.start_date = moment(travel.start_date).format('LL');	
+          }	
+          if (travel.end_date) {	
+            travel.end_date = moment(travel.end_date).format('LL');	
+          }	
+        });	
         this.set('data', data.data);
         this.set('listLoading', false);
       },
