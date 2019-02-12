@@ -217,7 +217,6 @@
 
       observers: [
         '_activityObserver(activity.*)',
-        // '_partnershipChanged(activity.partnership, activity.partner)',
         '_ifPrimarySetTraveler(activity.is_primary_traveler)',
       ],
 
@@ -280,9 +279,9 @@
         ].indexOf(changed.path) > -1 || !changed.base) {
           return;
         }
-
         var partner = changed.base.partner;
         var partnership = changed.base.partnership;
+
         var result = changed.base.result;
         var results = [];
         var partnerships = [];
@@ -304,7 +303,7 @@
           }
 
           if (partnership) {
-            results = partnership.results;
+            results = partnership.cp_outputs;
           }
         }
 
