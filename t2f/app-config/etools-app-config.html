@@ -17,6 +17,8 @@ App global configuration
       listsExpireMapTable: '&name, expire',
     });
 
+    // Dexie should open the connection by default, this is for the cases in which it doesn't
+    EtoolsT2fApp.t2fDb.open();
 
     var etoolsAppConfig = {
       // dexie js
