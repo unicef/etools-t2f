@@ -272,13 +272,9 @@
         sectionPermissions: {
           type: Object,
           computed:
-            '_computeSectionPermissions(travelPermissions,' +
-              ' data.baseDetails.international_travel, data.status, userRoles)'
+            '_computeSectionPermissions(travelPermissions)'
         },
         invalids: Array,
-        userRoles: {
-          type: Array,
-        },
         activityValidationArray: {
           type: Array,
           value: []
@@ -382,64 +378,15 @@
         return !taRequired || permissionMatrixHidden;
       },
 
-      _computeSectionPermissions: function(permissions, isInternational, status, userRoles) {
+      _computeSectionPermissions: function(permissions) {
         var self = this;
         var computed = {};
+        var itineraryOpen = self.route.path.indexOf('edit-travel/-1') > -1 ? false : true;
 
-        var collapsedStatus = {
-          'Traveler': {
-            'Planned': ['deductions', 'expenses'],
-            'Submitted': ['deductions', 'expenses'],
-            'Canceled': ['deductions', 'expenses'],
-            'Sent for payment': ['deductions', 'expenses', 'cost_assignments'],
-            'Certification submitted': ['deductions', 'expenses', 'cost_assignments'],
-            'Certification approved': ['deductions', 'expenses', 'cost_assignments'],
-            'Certification rejected': ['deductions', 'expenses', 'cost_assignments'],
-            'Certified': ['deductions', 'expenses', 'cost_assignments'],
-            'Completed': ['deductions', 'expenses', 'cost_assignments'],
-          },
-          'Travel Administrator': {
-            'Canceled': ['deductions', 'expenses', 'cost_assignments'],
-            'Submitted': ['deductions', 'expenses', 'cost_assignments'],
-            'Sent for payment': ['deductions', 'expenses', 'cost_assignments'],
-            'Certification submitted': ['deductions', 'expenses', 'cost_assignments'],
-            'Certification approved': ['deductions', 'expenses', 'cost_assignments'],
-            'Certification rejected': ['deductions', 'expenses', 'cost_assignments'],
-            'Certified': ['deductions', 'expenses', 'cost_assignments'],
-            'Completed': ['deductions', 'expenses', 'cost_assignments'],
-          },
-          'Supervisor': {
-            'Canceled': ['deductions', 'expenses', 'cost_assignments'],
-            'Submitted': ['deductions', 'expenses', 'cost_assignments'],
-            'Sent for payment': ['deductions', 'expenses', 'cost_assignments'],
-            'Approved': ['deductions', 'expenses', 'cost_assignments'],
-            'Rejected': ['deductions', 'expenses', 'cost_assignments'],
-          },
-
-        };
-
-        var hiddenForInternational = [
-          'expenses',
-          'cost_assignments',
-          'deductions',
-          'cost_summary'
-        ];
-        var collapseRule = userRoles.find(function(role) {
-          return Object.keys(collapsedStatus).indexOf(role) > -1;
-        });
-        var hiddenFieldSet = collapseRule ?
-          collapsedStatus[collapseRule][status] ? collapsedStatus[collapseRule][status] : [] : [];
         Object.keys(permissions).forEach(function(key) {
-          var forceHiddenStatus = false;
-          if (isInternational) {
-            forceHiddenStatus = hiddenForInternational.indexOf(key) > -1;
-          }
-          var show = hiddenFieldSet.indexOf(key) === -1;
-          var hide = hiddenFieldSet.indexOf(key) !== -1;
-          var itineraryOpen = self.route.path.indexOf('edit-travel/-1') > -1 ? hide : show;
           computed[key] = {
-            hidden: !permissions[key].view || forceHiddenStatus,
-            open: key === 'itinerary' ? itineraryOpen : show,
+            hidden: !permissions[key].view,
+            open: key === 'itinerary' ? itineraryOpen : true,
             edit: permissions[key].edit
           };
         });
