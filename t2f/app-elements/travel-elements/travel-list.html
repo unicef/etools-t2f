@@ -257,7 +257,6 @@
         var roles = user.t2f.roles;
         exportList.push({name: 'Travel Activity Export', endpoint: '/api/t2f/travels/export/'});
         if (roles.indexOf('Finance Focal Point') > -1) {
-          exportList.push({name: 'Finance Export', endpoint: '/api/t2f/travels/finance-export/'});
           exportList.push({name: 'Travel Admin Export', endpoint: '/api/t2f/travels/travel-admin-export/'});
 
         } else if (roles.indexOf('Travel Admin') > -1 || roles.indexOf('Travel Focal Point') > -1) {
@@ -442,7 +441,7 @@
         }
         var key = model.item.filterName;
         var value = detail.selectedValues.value;
-        
+
         if (key === 'f_status') {
           value = this._computeFilters(this.structure)[5].selection.filter(function(item) {
             return item.value === value;
