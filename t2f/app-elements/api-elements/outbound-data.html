@@ -198,7 +198,7 @@
             </paper-button>
         </paper-dialog>
 
-        <!-- General dialog -->
+        <!-- general dialog-->
         <paper-dialog id="general-modal" opened="{{generalModal.opened}}" with-backdrop>
 
             <div class="dialog-head-container layout horizontal">
@@ -206,6 +206,7 @@
               <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
             </div>
             <div class="dialog-intro-text">[[generalModal.text]]</div>
+            
 
             <paper-button
               class="dialog-confirm-button"
@@ -316,7 +317,8 @@
           },
           formErrors: {
             type: Object,
-            notify: true
+            notify: true,
+            value: [],
           },
           attachmentsEndpoint: {
             type: String,
@@ -631,6 +633,7 @@
           function doPost() {
             prepareData();
             self.fire('global-loading', {active: true});
+            console.log('DON POST');
             self.sendRequest({
               method: 'POST',
               endpoint: etoolsAppConfig.globals.computeTemplate(
@@ -939,10 +942,10 @@
           }
         },
 
-        _handlePostFail: function(response) {
+        _handlePostFail: function({response}) {
           this.fire('global-loading');
-          this.set('formErrors', response.message);
-          console.error('Api call failed: ', response.message);
+          const errorMessages = _.values(response);
+          this.set('formErrors', errorMessages);
           this.postData = false;
           this.attachmentData = false;
           this.deleteAttachmentEndpoint = undefined;
