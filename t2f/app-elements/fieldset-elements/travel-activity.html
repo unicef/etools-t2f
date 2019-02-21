@@ -107,6 +107,8 @@
           class$="flex-4 [[computedPermission.date.readOnly]]"
           disabled="[[computedPermission.date.disabled]]"
           clearable
+          min-date="[[baseDetails.start_date]]"
+          max-date="[[baseDetails.end_date]]"
           hidden$="[[computedPermission.date.hidden]]"
           date="{{activity.date}}"
           placeholder="select">
