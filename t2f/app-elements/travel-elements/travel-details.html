@@ -418,9 +418,6 @@
 
       _fieldSetSizeValidation: function(fieldSet, invalids) {
         var size = fieldSet === 'Itinerary' ? 2 : 1;
-        if (fieldSet === 'Itinerary' && this.data.baseDetails.ta_required === false && this._isItineraryEmpty()) {
-          size = 0;
-        }
         var errorLabel = fieldSet + ' must have at least ' + size + ' valid entry(s)';
         fieldSet = fieldSet.toLowerCase().split(' ').join('_');
         var toValidate = this.data[fieldSet];
@@ -428,10 +425,6 @@
 
         for (var i = 0; i < size; i ++) {
           success = success && toValidate[i] && toValidate[i]._validationFunction(true);
-        }
-
-        if (fieldSet === 'itinerary' && this.data.baseDetails.ta_required === false && this._isItineraryEmpty()) {
-          success = true;
         }
 
         if (!success) {
@@ -549,20 +542,6 @@
 
 
         return invalids;
-      },
-
-      _isItineraryEmpty: function() {
-        var itinerary = this.data.itinerary;
-        return itinerary.lenght === 0 || (itinerary.length === 1 &&
-          Object.keys(itinerary[0]).every(function(key) {
-            if (key === 'airlines') {
-              return Array.isArray(itinerary[0].airlines) && itinerary[0].airlines.length === 0;
-            } else if (key === '_validationFunction') {
-              return typeof itinerary[0]._validationFunction === 'function';
-            } else {
-              return !itinerary[0][key];
-            }
-          }));
       },
 
       _invalidShares: function(changed) { // data.cost_assignments.*
