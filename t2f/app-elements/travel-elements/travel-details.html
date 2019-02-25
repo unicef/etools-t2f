@@ -547,16 +547,6 @@
           fieldSetValidation(['Cost Assignments']);
         }
 
-        if (action.name === 'Save' && !self.$$('#itinerary').hidden) {
-          var itinerary = this.data.itinerary;
-          var emptyItinerary = this._isItineraryEmpty();
-
-          if (this.data.baseDetails.ta_required || !emptyItinerary) {
-            fieldSetValidation(['Itinerary']);
-            self._fieldSetSizeValidation('Itinerary', invalids);
-            self._validateItineraryIntegrity(invalids);
-          }
-        }
 
         return invalids;
       },
