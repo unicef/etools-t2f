@@ -71,6 +71,7 @@
             <div class="layout horizontal">
 
               <etools-searchable-multiselection-menu label="[[item.name]]" class="filter-dropdown"
+                style$="[[item.customStyle]]"
                 id="[[item.filterName]]"
                 options="[[item.selection]]"
                 on-value-change="changeFilterValue"
@@ -340,6 +341,7 @@
           {
             name: 'Partner',
             filterName: 'f_partner',
+            customStyle: 'max-width: 680px;width: 680px;',
             selection: structure.partners
           },
           {
@@ -464,14 +466,14 @@
       // Mapping data to the view
       handleListResponse: function(event, data) {
         this.set('datalength', data.total_count);
-        data.data.forEach(function(travel) {	
-          if (travel.start_date) {	
-            travel.start_date = moment(travel.start_date).format('LL');	
-          }	
-          if (travel.end_date) {	
-            travel.end_date = moment(travel.end_date).format('LL');	
-          }	
-        });	
+        data.data.forEach(function(travel) {
+          if (travel.start_date) {
+            travel.start_date = moment(travel.start_date).format('LL');
+          }
+          if (travel.end_date) {
+            travel.end_date = moment(travel.end_date).format('LL');
+          }
+        });
         this.set('data', data.data);
         this.set('listLoading', false);
       },
