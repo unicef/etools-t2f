@@ -71,6 +71,7 @@
             <div class="layout horizontal">
 
               <etools-searchable-multiselection-menu label="[[item.name]]" class="filter-dropdown"
+                style$="[[item.customStyle]]"
                 id="[[item.filterName]]"
                 options="[[item.selection]]"
                 on-value-change="changeFilterValue"
@@ -257,7 +258,6 @@
         var roles = user.t2f.roles;
         exportList.push({name: 'Travel Activity Export', endpoint: '/api/t2f/travels/export/'});
         if (roles.indexOf('Finance Focal Point') > -1) {
-          exportList.push({name: 'Finance Export', endpoint: '/api/t2f/travels/finance-export/'});
           exportList.push({name: 'Travel Admin Export', endpoint: '/api/t2f/travels/travel-admin-export/'});
 
         } else if (roles.indexOf('Travel Admin') > -1 || roles.indexOf('Travel Focal Point') > -1) {
@@ -341,6 +341,7 @@
           {
             name: 'Partner',
             filterName: 'f_partner',
+            customStyle: 'max-width: 680px;width: 680px;',
             selection: structure.partners
           },
           {
@@ -442,7 +443,7 @@
         }
         var key = model.item.filterName;
         var value = detail.selectedValues.value;
-        
+
         if (key === 'f_status') {
           value = this._computeFilters(this.structure)[5].selection.filter(function(item) {
             return item.value === value;
@@ -465,14 +466,14 @@
       // Mapping data to the view
       handleListResponse: function(event, data) {
         this.set('datalength', data.total_count);
-        data.data.forEach(function(travel) {	
-          if (travel.start_date) {	
-            travel.start_date = moment(travel.start_date).format('LL');	
-          }	
-          if (travel.end_date) {	
-            travel.end_date = moment(travel.end_date).format('LL');	
-          }	
-        });	
+        data.data.forEach(function(travel) {
+          if (travel.start_date) {
+            travel.start_date = moment(travel.start_date).format('LL');
+          }
+          if (travel.end_date) {
+            travel.end_date = moment(travel.end_date).format('LL');
+          }
+        });
         this.set('data', data.data);
         this.set('listLoading', false);
       },

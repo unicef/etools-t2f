@@ -5,7 +5,7 @@
 <link rel="import" href="../../styles/et2f-styles.html">
 
 <dom-module id="action-point-form">
-  
+
   <template>
     <style include="shared-styles iron-flex et2f-styles">
       :host {
@@ -14,11 +14,11 @@
           width: calc(100% - 24px);
         }
       }
-  
+
       paper-textarea {
         @apply --esmm-external-wrapper;
       }
-  
+
       div.horizontal {
         padding: 8px 0;
       }
@@ -33,13 +33,13 @@
       <form is="iron-form"
             id="form"
             class="layout vertical">
-        
+
         <template is="dom-if" if="[[_isDuplicating(dialogType)]]">
             <span class="duplicate">
               It is required to change at least one of the fields below.
             </span>
         </template>
-        
+
         <etools-single-selection-menu label="Related Task"
                                       required
                                       auto-validate
@@ -50,8 +50,8 @@
                                       starred
                                       placeholder="Select">
         </etools-single-selection-menu>
-      
-      
+
+
         <template is="dom-if"
                   if="[[activitySelected]]">
           <etools-single-selection-menu label="Related CP Output"
@@ -61,7 +61,7 @@
                                         option-value="value"
                                         placeholder="Select">
           </etools-single-selection-menu>
-      
+
           <div class="layout horizontal">
             <etools-single-selection-menu label="Related Partner"
                                           selected="{{formData.partner}}"
@@ -78,10 +78,10 @@
                                           placeholder="Select">
             </etools-single-selection-menu>
           </div>
-      
+
         </template>
-      
-      
+
+
         <paper-textarea label="Description"
                         id="description"
                         placeholder="Enter description"
@@ -92,7 +92,7 @@
                         on-blur="_validateDescription"
                         value="{{formData.description}}">
         </paper-textarea>
-      
+
         <div class="layout horizontal">
           <etools-single-selection-menu label="Assignee"
                                         id="assignee"
@@ -113,7 +113,7 @@
                                         placeholder="Select">
           </etools-single-selection-menu>
         </div>
-      
+
         <div class="layout horizontal">
           <etools-single-selection-menu label="Office of Assignee"
                                         id="office"
@@ -124,7 +124,7 @@
                                         starred
                                         placeholder="Select">
           </etools-single-selection-menu>
-        
+
           <date-time-picker-input label="Due Date"
                                   id="date-input"
                                   placeholder="select"
@@ -138,7 +138,7 @@
                         checked="{{formData.high_priority}}">This action point is high priority
         </paper-checkbox>
       </form>
-  
+
   </template>
 
 <script>
@@ -214,7 +214,7 @@
     },
 
     _createOptions: function (activities) {
-      if (!activities || !activities[0].id) {
+      if (!activities || !activities.length || !activities[0].id) {
         return [];
       }
       return activities.map(act => ({

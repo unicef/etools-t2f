@@ -200,6 +200,7 @@
           required$="[[computedPermission.start_date.required]]"
           auto-validate$="[[autoValidate]]"
           placeholder="select"
+          max-date="[[baseDetails.end_date]]"
           disabled$="[[computedPermission.start_date.disabled]]"
           starred$="[[!baseDetails.ta_required]]"
           date="{{baseDetails.start_date}}">
@@ -211,6 +212,7 @@
           hidden$="[[computedPermission.end_date.hidden]]"
           required$="[[computedPermission.end_date.required]]"
           placeholder="select"
+          min-date="[[baseDetails.start_date]]"
           date="{{baseDetails.end_date}}"
           disabled$="[[computedPermission.end_date.disabled]]"
           starred$="[[!baseDetails.ta_required]]"
@@ -311,7 +313,7 @@
       observers: [
         '_valuesObserver(baseDetails.*)',
         '_setDefaultUserValues(user, baseDetails.*, structure, localCurrency)',
-        // '_computeStartAndEndDates(data.itinerary.*, data.activities.*, baseDetails.ta_required)',
+        '_computeStartAndEndDates(data.itinerary.*, data.activities.*, baseDetails.ta_required)',
       ],
 
       _computeStartAndEndDates: function(itCh, actCh, taReq) {
