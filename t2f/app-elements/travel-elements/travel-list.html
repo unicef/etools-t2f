@@ -251,10 +251,10 @@
       // Sets export properties if FFP
       _computeExportList: function(user) {
         var exportList = [];
-        if (!user && !user.t2f) {
+        const roles = _.map(user.groups,'name');
+        if (_.isEmpty(roles)){
           return;
         }
-        var roles = user.t2f.roles;
         exportList.push({name: 'Travel Activity Export', endpoint: '/api/t2f/travels/export/'});
         if (roles.indexOf('Finance Focal Point') > -1) {
           exportList.push({name: 'Travel Admin Export', endpoint: '/api/t2f/travels/travel-admin-export/'});
