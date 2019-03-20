@@ -136,7 +136,8 @@
           return;
         }
         var roles = ['Others'];
-        roles = roles.concat(user.t2f.roles);
+        const t2fRoles = _.map(user.groups,'name');
+        roles = roles.concat(t2fRoles);
         if (actionPoint.assigned_by.value.id === user.id) {
           roles.push('Assigner');
         }

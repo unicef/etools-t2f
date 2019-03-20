@@ -288,7 +288,7 @@
         user: Object,
         defaultBusinessArea: {
           type: Object,
-          computed: '_computeDefaultBusinessArea(user, structure)'
+          value: {}
         },
         localCurrency: {
           type: Object,
@@ -346,16 +346,6 @@
 
       _getTravelCurrency: function(curr) {
         return curr;
-      },
-
-      _computeDefaultBusinessArea: function(user, structure) {
-        var userBusinessArea = structure.business_areas.find(function(ba) {
-          return ba.value === user.t2f.business_area;
-        });
-        if (!userBusinessArea) {
-          console.error('Data error, the user does not have a default business_area associated');
-        }
-        return userBusinessArea || {};
       },
 
       _computeLocalCurrency: function(defaultBusinessArea, structure) {
