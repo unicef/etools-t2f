@@ -499,8 +499,9 @@
         // if (forcedTravelRole) {
         //   travelRole = forcedTravelRole;
         // }
-
-        var userTravelRoles = travelRole ? user.t2f.roles.concat(travelRole) : user.t2f.roles;
+        const t2fRoles = _.map(user.groups,'name');
+        
+        var userTravelRoles = travelRole ? t2fRoles.concat(travelRole) : t2fRoles;
         // console.debug('user roles for this travel: ', userTravelRoles);
         userTravelRoles = userTravelRoles.filter(function(role) {
           return ['Others', 'Assigner', 'PersonResponsible', 'PME'].indexOf(role) === -1;
@@ -531,7 +532,7 @@
                 }
               });
           });
-          // console.debug('Current user roles: ', userTravelRoles);
+          console.debug('Current user roles: ', userTravelRoles);
           this.set('userRoles', userTravelRoles);
           this.set('travelPermissions', {});
           this.set('travelPermissions', userPermissions);

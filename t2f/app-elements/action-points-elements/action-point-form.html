@@ -209,7 +209,7 @@
       this._clearInvalids();
       if (active) {
         this.set('originalFormData', {...this.actionPointsFormData});
-        this.set('formData', this.dialogType === 'Add' ? { ...this.emptyForm } : { ...this.actionPointsFormData });
+        this.set('formData', this.dialogType === 'Add' ? Object.assign({},this.emptyForm) : Object.assign({}, this.actionPointsFormData));
       }
     },
 
