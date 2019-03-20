@@ -349,10 +349,7 @@
       },
 
       _computeLocalCurrency: function(defaultBusinessArea, structure) {
-        var localCurrency = structure.currencies.find(function(curr) {
-            return curr.value === defaultBusinessArea.default_currency;
-          });
-         return localCurrency || false;
+        return false;
       },
 
       _computeSelectedExpensesType: function(expensesChanged) {
