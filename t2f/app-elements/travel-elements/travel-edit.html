@@ -502,13 +502,12 @@
         const t2fRoles = _.map(user.groups,'name');
         
         var userTravelRoles = travelRole ? t2fRoles.concat(travelRole) : t2fRoles;
-        // console.debug('user roles for this travel: ', userTravelRoles);
         userTravelRoles = userTravelRoles.filter(function(role) {
           return ['Others', 'Assigner', 'PersonResponsible', 'PME'].indexOf(role) === -1;
         });
         if (userTravelRoles.length > 0) {
           var userPermissions = {};
-          var draft = permissions[userTravelRoles[0]][status];
+          var draft = permissions['Anyone'][status];
           Object.keys(draft).forEach(function(fieldSet) {
             userPermissions[fieldSet] = {};
               Object.keys(draft[fieldSet]).forEach(function(field) {
