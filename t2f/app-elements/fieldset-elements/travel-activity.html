@@ -12,12 +12,15 @@
 <link rel="import" href="../../styles/shared-styles.html">
 <link rel="import" href="../../styles/et2f-styles.html">
 
-<dom-module id="travel-activities">
+<dom-module id="travel-activity">
   <template>
     <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
       :host {
         display: block;
         width: 100%;
+      }
+      .partnership-dropdown {
+        min-width: 300px;
       }
 
     </style>
@@ -59,7 +62,7 @@
         </etools-searchable-multiselection-menu>
 
         <etools-searchable-multiselection-menu label="Partnership"
-          class$="flex-4 [[computedPermission.partnership.readOnly]]"
+          class$="flex-4 partnership-dropdown [[computedPermission.partnership.readOnly]]"
           disabled="[[disablePartnerships]]"
           hidden$="[[computedPermission.partnership.hidden]]"
           empty-value
@@ -146,7 +149,7 @@
   <script>
     Polymer({
 
-      is: 'travel-activities',
+      is: 'travel-activity',
 
       properties: {
         activity: {
@@ -281,10 +284,10 @@
         ].indexOf(changed.path) > -1 || !changed.base) {
           return;
         }
-        var partner = changed.base.partner;
-        var partnership = changed.base.partnership;
+        var partner = changed.base.partner || null;
+        var partnership = changed.base.partnership || null;
 
-        var result = changed.base.result;
+        var result = changed.base.result || null;
         var results = [];
         var partnerships = [];
 
@@ -318,9 +321,9 @@
         this.set('activity.result', result);
       },
 
-      _activityObserver: function(changed) {
-        this._addValidationFunction(changed);
-        this._partnerPartnershipsHandling(changed);
+      _activityObserver: function(activity) {
+        this._addValidationFunction(activity);
+        this._partnerPartnershipsHandling(activity);
       },
 
       _addValidationFunction: function(changed) {

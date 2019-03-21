@@ -515,17 +515,17 @@
                 if (typeof(item) === 'boolean') {
                   userPermissions[fieldSet][field] = item;
                   userTravelRoles.forEach(function(role) {
-                    userPermissions[fieldSet][field] = userPermissions[fieldSet][field]
-                    || permissions[role][status][fieldSet][field];
+                    userPermissions[fieldSet][field] = _.get(userPermissions,`${fieldSet}.${field}`)
+                    || _.get(permissions, `${role}.${status}.${fieldSet}.${field}`);
                   });
                 } else {
                   userPermissions[fieldSet][field] = {};
                   Object.keys(item).forEach(function(fieldPermission) {
-                    userPermissions[fieldSet][field][fieldPermission] =  draft[fieldSet][field][fieldPermission];
+                    userPermissions[fieldSet][field][fieldPermission] =  _.get(draft, `${fieldSet}.${field}.${fieldPermission}`);
                     userTravelRoles.forEach(function(role) {
                        userPermissions[fieldSet][field][fieldPermission] =
-                       userPermissions[fieldSet][field][fieldPermission]
-                       || permissions[role][status][fieldSet][field][fieldPermission];
+                       _.get(userPermissions,`${fieldSet}.${field}.${fieldPermission}`)
+                       || _.get(permissions, `${role}.${status}.${fieldSet}.${field}.${fieldPermission}`);
                     });
                   });
                 }
