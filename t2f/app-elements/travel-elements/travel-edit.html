@@ -499,15 +499,15 @@
         // if (forcedTravelRole) {
         //   travelRole = forcedTravelRole;
         // }
-
-        var userTravelRoles = travelRole ? user.t2f.roles.concat(travelRole) : user.t2f.roles;
-        // console.debug('user roles for this travel: ', userTravelRoles);
+        const t2fRoles = _.map(user.groups,'name');
+        
+        var userTravelRoles = travelRole ? t2fRoles.concat(travelRole) : t2fRoles;
         userTravelRoles = userTravelRoles.filter(function(role) {
           return ['Others', 'Assigner', 'PersonResponsible', 'PME'].indexOf(role) === -1;
         });
         if (userTravelRoles.length > 0) {
           var userPermissions = {};
-          var draft = permissions[userTravelRoles[0]][status];
+          var draft = permissions['Anyone'][status];
           Object.keys(draft).forEach(function(fieldSet) {
             userPermissions[fieldSet] = {};
               Object.keys(draft[fieldSet]).forEach(function(field) {
@@ -515,23 +515,23 @@
                 if (typeof(item) === 'boolean') {
                   userPermissions[fieldSet][field] = item;
                   userTravelRoles.forEach(function(role) {
-                    userPermissions[fieldSet][field] = userPermissions[fieldSet][field]
-                    || permissions[role][status][fieldSet][field];
+                    userPermissions[fieldSet][field] = _.get(userPermissions,`${fieldSet}.${field}`)
+                    || _.get(permissions, `${role}.${status}.${fieldSet}.${field}`);
                   });
                 } else {
                   userPermissions[fieldSet][field] = {};
                   Object.keys(item).forEach(function(fieldPermission) {
-                    userPermissions[fieldSet][field][fieldPermission] =  draft[fieldSet][field][fieldPermission];
+                    userPermissions[fieldSet][field][fieldPermission] =  _.get(draft, `${fieldSet}.${field}.${fieldPermission}`);
                     userTravelRoles.forEach(function(role) {
                        userPermissions[fieldSet][field][fieldPermission] =
-                       userPermissions[fieldSet][field][fieldPermission]
-                       || permissions[role][status][fieldSet][field][fieldPermission];
+                       _.get(userPermissions,`${fieldSet}.${field}.${fieldPermission}`)
+                       || _.get(permissions, `${role}.${status}.${fieldSet}.${field}.${fieldPermission}`);
                     });
                   });
                 }
               });
           });
-          // console.debug('Current user roles: ', userTravelRoles);
+          console.debug('Current user roles: ', userTravelRoles);
           this.set('userRoles', userTravelRoles);
           this.set('travelPermissions', {});
           this.set('travelPermissions', userPermissions);

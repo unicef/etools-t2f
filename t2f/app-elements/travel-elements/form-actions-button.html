@@ -502,6 +502,32 @@
                 'secondary': [],
               },
             },
+            'UNICEF User': {
+              'Planned': {
+                'primary': 'save',
+                'secondary': ['save_and_submit', 'cancel'],
+              },
+              'Submitted': {
+                'primary': 'save',
+                'secondary': [],
+              },
+              'Approved': {
+                'primary': 'save',
+                'secondary': [],
+              },
+              'Rejected': {
+                'primary': 'save',
+                'secondary': ['planned', 'save_and_submit', 'cancel'],
+              },
+              'Completed': {
+                'primary': 'save',
+                'secondary': [],
+              },
+              'Cancelled': {
+                'primary': '',
+                'secondary': ['planned', 'save_and_submit'],
+              },
+            },
             'Representative': {
               'Planned': {
                 'primary': '',
@@ -574,7 +600,11 @@
           userRoles.reverse();
           try {
             var mainActions = userRoles.reduce(function(result, role) {
-                var primary = lib[role][status].primary;
+              const permissionForRole = _.get(lib, `${role}.${status}`);
+              if (!permissionForRole) {
+                return result;
+              }
+              const { primary } = permissionForRole;
                 if (result.indexOf(primary) === -1 && primary !== '') {
                   return result.concat(primary);
                 }
@@ -582,7 +612,11 @@
             }, []);
 
             var allActions = userRoles.reduce(function(result, role) {
-              var secondary = lib[role][status].secondary.filter(function(action) {
+              const permissionForRole = _.get(lib, `${role}.${status}`);
+              if (!permissionForRole) {
+                return result;
+              }              
+              var secondary = permissionForRole.secondary.filter(function(action) {
                 return result.indexOf(action) === -1 && action !== '';
               });
               return result.concat(secondary);

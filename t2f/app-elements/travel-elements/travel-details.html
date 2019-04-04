@@ -212,7 +212,7 @@
             items="{{data.activities}}"
             strip-whitespace>
 
-            <travel-activities
+            <travel-activity
               class="travel_activity"
               activity="{{item}}"
               base-details="[[data.baseDetails]]"
@@ -220,7 +220,7 @@
               permissions-matrix="[[travelPermissions.activities]]"
               structure="[[structure]]"
               activity-validation-array="{{activityValidationArray}}">
-            </travel-activities>
+            </travel-activity>
           </template>
         </etools-repeatable-field-set>
 
@@ -288,7 +288,7 @@
         user: Object,
         defaultBusinessArea: {
           type: Object,
-          computed: '_computeDefaultBusinessArea(user, structure)'
+          value: {}
         },
         localCurrency: {
           type: Object,
@@ -331,6 +331,21 @@
         },
         route: {
           type: Object
+        },
+        activityModel: {
+          type: Object,
+          value: {
+            action_points: "",
+            date: "",
+            id: "",
+            is_primary_traveler: "",
+            locations: "",
+            partner: "",
+            partnership: null,
+            primary_traveler: "",
+            result: "",
+            travel_type: "",
+          }
         }
       },
 
@@ -348,21 +363,8 @@
         return curr;
       },
 
-      _computeDefaultBusinessArea: function(user, structure) {
-        var userBusinessArea = structure.business_areas.find(function(ba) {
-          return ba.value === user.t2f.business_area;
-        });
-        if (!userBusinessArea) {
-          console.error('Data error, the user does not have a default business_area associated');
-        }
-        return userBusinessArea || {};
-      },
-
       _computeLocalCurrency: function(defaultBusinessArea, structure) {
-        var localCurrency = structure.currencies.find(function(curr) {
-            return curr.value === defaultBusinessArea.default_currency;
-          });
-         return localCurrency || false;
+        return false;
       },
 
       _computeSelectedExpensesType: function(expensesChanged) {

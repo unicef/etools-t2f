@@ -98,8 +98,8 @@
       <div class="titlebar content-align">
         <etools-app-selector id="selector"></etools-app-selector>
         <img id="second-logo" src="../../images/etools-logo-color-white.svg">
-        <template is="dom-if" if="[[isStaging]]">
-          <div class="envWarning"> - STAGING TESTING ENVIRONMENT</div>
+        <template is="dom-if" if="[[environment]]">
+          <div class="envWarning"> - [[environment]] TESTING ENVIRONMENT</div>
         </template>
       </div>
       <div class="content-align">
@@ -141,9 +141,9 @@
             type: Object
           },
           userProfileDialog: Object,
-          isStaging: {
-            type: Boolean,
-            value: false
+          environment: {
+            type: String,
+            value: function() { return etoolsAppConfig.globals._checkEnvironment() }
           }
         },
         observers: [
@@ -188,16 +188,10 @@
         },
         ready: function() {
           this._setBgColor();
-          this._isStaging();
-        },
-        _isStaging: function() {
-          if (etoolsAppConfig.globals.isStagingServer()) {
-            this.set('isStaging', true);
-          }
         },
         _setBgColor: function() {
           // If not production environment, changing header color to red
-          if (!etoolsAppConfig.globals.isProductionServer()) {
+          if (this.environment) {
             this.updateStyles({'--header-bg-color': 'var(--nonprod-header-color)'});
           }
         },
