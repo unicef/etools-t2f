@@ -1,15 +1,15 @@
+
+<link rel="import" href="../../bower_components/moment-element/moment-import.html">
 <script>
 
+  window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
 
-  var ApiBehavior = {
-    properties: {
-    },
-    _convertDate: function(item) {
-      if (!item) {
+  et2fBehaviors.ApiBehaviorImpl = {
+    _formatIncomingDate: function(date) {
+      if (!date) {
         return;
       }
-      var date = new Date(item);
-      return date;
+      return moment.utc(date).format('YYYY-MM-DD');
     },
     _truncateNumber: function(item) {
       if (!item) {
@@ -74,8 +74,8 @@
             supervisor: 'users',
             office: 'offices',
             section: 'sections',
-            start_date: this._convertDate,
-            end_date: this._convertDate,
+            start_date: this._formatIncomingDate,
+            end_date: this._formatIncomingDate,
             mode_of_travel: this._multiFieldConversion.bind(this, 'label', 'travel_modes'),
             currency: 'currencies'
           },
@@ -85,15 +85,15 @@
             partner: 'partners',
             partnership: 'partnerships',
             result: 'results',
-            date: this._convertDate,
+            date: this._formatIncomingDate,
             primary_traveler: 'users'
           },
           itinerary: {
             airlines: this._multiFieldConversion.bind(this, 'value', 'airlines'),
             mode_of_travel: this._searchByLabel.bind(this, 'travel_modes'),
             dsa_region: 'dsa_regions',
-            departure_date: this._convertDate,
-            arrival_date: this._convertDate,
+            departure_date: this._formatIncomingDate,
+            arrival_date: this._formatIncomingDate,
           },
           expenses: {
             type: 'expense_types',
@@ -114,8 +114,8 @@
           completed_at: 'completed_at',
           cost_summary: {},
           action_points: {
-            due_date: this._convertDate,
-            completed_at: this._convertDate,
+            due_date: this._formatIncomingDate,
+            completed_at: this._formatIncomingDate,
             person_responsible: 'users',
             assigned_by: 'users',
             status: this._searchByLabel.bind(this, 'action_point_statuses')
@@ -318,6 +318,5 @@
         return data;
       },
   };
-  window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
-  window.et2fBehaviors.ApiBehavior = ApiBehavior;
+  window.et2fBehaviors.ApiBehavior = et2fBehaviors.ApiBehaviorImpl;
 </script>
