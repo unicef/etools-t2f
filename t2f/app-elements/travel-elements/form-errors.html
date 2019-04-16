@@ -111,14 +111,15 @@
         }
         var errorList = [];
         if (errors) {
+          //This whole thing needs to be wiped and consistent error structure returned via backend
           if (errors instanceof Array) {
             errors.forEach(function(error) {
               const firstError = error[0];
-              const field = Object.keys(firstError)[0];
+              const field =  typeof firstError === 'object'? Object.keys(firstError)[0]: '';
               errorList.push({
                 fieldSet:'',
                 field,
-                error: firstError[field]
+                error: firstError[field] || firstError
               });
             });
           } else {
