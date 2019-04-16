@@ -1,8 +1,9 @@
 <!-- <link rel="import" href="../scripts/lodash/lodash.html"> -->
 <link rel="import" href="../../bower_components/moment-element/moment-import.html">
 <script>
+  window.et2fBehaviors = window.et2fBehaviors ? window.et2fBehaviors : {};
 
-  var utilsBehavior = {
+  et2fBehaviors.utilsBehavior = {
 
     // 'September 12. 2017' => '12 Sept 2017'
     _formatListDate: function(originalDateString) {
