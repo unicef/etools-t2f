@@ -113,10 +113,12 @@
         if (errors) {
           if (errors instanceof Array) {
             errors.forEach(function(error) {
+              const firstError = error[0];
+              const field = Object.keys(firstError)[0];
               errorList.push({
-                fieldSet: '',
-                field: '',
-                error: error
+                fieldSet:'',
+                field,
+                error: firstError[field]
               });
             });
           } else {
