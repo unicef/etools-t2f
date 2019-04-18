@@ -199,11 +199,13 @@
           hidden$="[[computedPermission.start_date.hidden]]"
           required$="[[computedPermission.start_date.required]]"
           auto-validate$="[[autoValidate]]"
+          format="YYYY-MM-DD"
           placeholder="select"
           max-date="[[baseDetails.end_date]]"
           disabled$="[[computedPermission.start_date.disabled]]"
+          clearable$="[[!computedPermission.start_date.disabled]]"
           starred$="[[!baseDetails.ta_required]]"
-          date="{{baseDetails.start_date}}">
+          pretty-date="{{baseDetails.start_date}}">
         </date-time-picker-input>
 
         <date-time-picker-input label="End Date"
@@ -213,7 +215,8 @@
           required$="[[computedPermission.end_date.required]]"
           placeholder="select"
           min-date="[[baseDetails.start_date]]"
-          date="{{baseDetails.end_date}}"
+          clearable$="[[!computedPermission.end_date.disabled]]"
+          pretty-date="{{baseDetails.end_date}}"
           disabled$="[[computedPermission.end_date.disabled]]"
           starred$="[[!baseDetails.ta_required]]"
           auto-validate$="[[autoValidate]]">
