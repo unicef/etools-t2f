@@ -368,17 +368,17 @@
         }
         if (!baseDetails.office) {
           baseDetails.office = structure.offices.find(function(office) {
-            return office.label === user.profile.office;
+            return office.label === user.office;
           });
         }
         if (!baseDetails.section) {
           baseDetails.section = structure.sections.find(function(section) {
-            return section.label === user.profile.section;
+            return section.label === user.section;
           });
         }
         if (!baseDetails.supervisor) {
           baseDetails.supervisor = structure.users.find(function(supervisor) {
-            return supervisor.value === user.profile.supervisor;
+            return supervisor.value === user.supervisor;
           });
         }
 
@@ -390,7 +390,7 @@
       },
 
       _computeTaEligible: function(user, traveler, international) {
-        var vendorNumber = user.profile.vendor_number;
+        var vendorNumber = user.vendor_number;
         var userId = user.id;
         var travelerId = traveler.value;
         if (!vendorNumber && userId === travelerId && !international) {
