@@ -45,7 +45,7 @@
             _data.permissions[perm] = true;
           });
 
-          if (_data.user.profile.partner_staff_member) {
+          if (_data.user.partner_staff_member) {
             // staff that has faked partnership by setting partner_staff_member on their profile
             permissions.partnerPermissions.forEach(function(perm) {
               _data.permissions[perm] = true;
