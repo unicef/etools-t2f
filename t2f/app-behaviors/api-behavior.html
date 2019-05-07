@@ -127,9 +127,9 @@
       return a.label.localeCompare(b.label);
     },
     _sortByExpired: function (a, b) {
-      if (!a.label.includes('Expired')) {
+      if (a.label.indexOf('Expired') === -1) {
         return -1;
-      } else if (a.label.includes('Expired')) {
+      } else if (a.label.indexOf('Expired') > -1) {
         return 1;
       }
     },
