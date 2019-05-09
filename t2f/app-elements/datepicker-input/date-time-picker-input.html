@@ -87,9 +87,7 @@
 
     <paper-dialog id="timePickerDialog" modal on-iron-overlay-closed="_setNewDate" opened="{{datepickerOpened}}">
       <div class="flex layout horizontal no-margin">
-        <template is="dom-if" if ="[[datepickerOpened]]" restamp>
-            <paper-date-picker date="{{internalDate}}" min-date="[[calculatedMinDate]]" max-date="[[calculatedMaxDate]]" force-narrow ></paper-date-picker>
-        </template>
+        <paper-date-picker date="{{internalDate}}" min-date="[[calculatedMinDate]]" max-date="[[calculatedMaxDate]]" force-narrow ></paper-date-picker>
         <paper-time-picker hidden force-narrow time="[[time]]" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
       </div>
       <div class="flex layout horizontal no-margin error" hidden$="[[!showMinDateWarning]]">
@@ -248,6 +246,8 @@
         }
       },
       _calculateMaxDateCalculated: function(date) {
+        console.log(this.label, 'maxdate');
+
         if (date) {
           date = moment(new Date(date));
           this.set('prettyMaxDate', date.format(this.format));
