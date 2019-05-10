@@ -112,8 +112,10 @@
           clearable
           min-date="[[baseDetails.start_date]]"
           max-date="[[baseDetails.end_date]]"
+          required$="[[computedPermission.date.required]]"
+          starred$="[[computedPermission.date.required]]"
           hidden$="[[computedPermission.date.hidden]]"
-          date="{{activity.date}}"
+          pretty-date="{{activity.date}}"
           placeholder="select">
         </date-time-picker-input>
 

@@ -62,7 +62,8 @@
     "etools-app-selector": "^1.1.8",
     "etools-profile-dropdown": "15cc714",
     "lodash": "^4.17.4",
-    "dexie": "^2.0.4"
+    "dexie": "^2.0.4",
+    "etools-piwik-analytics": "git://github.com/unicef-polymer/etools-piwik-analytics#polymer-1"
 
   },
   "devDependencies": {

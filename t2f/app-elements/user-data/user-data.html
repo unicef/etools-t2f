@@ -23,8 +23,8 @@
     var _setUserData = function(data) {
       _data.user = data || {};
       //t2f specific values
-      _data.user.value = _data.user.id;
-      _data.user.label = _data.user.full_name;
+      _data.user.value = data.user;
+      _data.user.label = data.name;
 
       _data.permissions = {};
       var permissions = this.getAllPermissions();
@@ -45,7 +45,7 @@
             _data.permissions[perm] = true;
           });
 
-          if (_data.user.profile.partner_staff_member) {
+          if (_data.user.partner_staff_member) {
             // staff that has faked partnership by setting partner_staff_member on their profile
             permissions.partnerPermissions.forEach(function(perm) {
               _data.permissions[perm] = true;
@@ -118,8 +118,6 @@
       },
 
       _handleResponse: function(res) {
-        // TODO: check response to make sure it contains a valid user
-        // console.log('resp');
         _setUserData.bind(this)(res.detail);
       },
 

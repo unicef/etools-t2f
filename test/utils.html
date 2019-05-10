@@ -25,14 +25,14 @@
         });
 
         test('the behavior is properly attached to the window object', function() {
-            expect(utilsBehavior).to.be.an('Object');
+            expect(et2fBehaviors.utilsBehavior).to.be.an('Object');
         });
 
         test('#184 _formatListDate exist, and fulfills its purpose', function() {
-            expect(utilsBehavior._formatListDate).to.be.a('function');
+            expect(et2fBehaviors.utilsBehavior._formatListDate).to.be.a('function');
             var originalDate = 'September 12. 2017';
             var expected = '12 Sep 2017';
-            expect(utilsBehavior._formatListDate(originalDate)).to.equal(expected);
+            expect(et2fBehaviors.utilsBehavior._formatListDate(originalDate)).to.equal(expected);
         });
     });
 </script>

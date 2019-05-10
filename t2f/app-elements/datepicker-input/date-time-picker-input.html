@@ -11,7 +11,7 @@
 
 
 <dom-module id="date-time-picker-input">
-  <template>
+  <template >
     <style include="shared-styles et2f-styles iron-flex iron-flex-alignment iron-flex-factors">
       :host {
         display: block;
@@ -85,7 +85,7 @@
       <iron-icon prefix icon="date-range" ></iron-icon>
     </paper-input>
 
-    <paper-dialog id="timePickerDialog" modal on-iron-overlay-closed="_setNewDate">
+    <paper-dialog id="timePickerDialog" modal on-iron-overlay-closed="_setNewDate" opened="{{datepickerOpened}}">
       <div class="flex layout horizontal no-margin">
         <paper-date-picker date="{{internalDate}}" min-date="[[calculatedMinDate]]" max-date="[[calculatedMaxDate]]" force-narrow ></paper-date-picker>
         <paper-time-picker hidden force-narrow time="[[time]]" hour="{{hour}}" minute="{{minute}}"></paper-time-picker>
@@ -126,7 +126,7 @@
         },
         format: {
           type: String,
-          value: 'LL'
+          value: 'YYYY-MM-DD'
         },
         invalid: {
           type: Boolean,
@@ -160,6 +160,7 @@
         clearable: {
           type: Boolean,
           value: false,
+          notify: true
         },
         minDate: {
           type: Date,
@@ -245,6 +246,8 @@
         }
       },
       _calculateMaxDateCalculated: function(date) {
+        console.log(this.label, 'maxdate');
+
         if (date) {
           date = moment(new Date(date));
           this.set('prettyMaxDate', date.format(this.format));

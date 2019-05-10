@@ -26,13 +26,13 @@ App global configuration
       // app endpoints
       endpoints: {
         userInfo: {
-          url: '/users/api/profile/',
+          url: '/api/v3/users/profile/',
         },
         userProfile: {
-          template: '/users/myprofile/',
+          template: '/api/v3/users/profile/',
         },
         changeCountry: {
-          url: '/users/api/changecountry/'
+          url: '/api/v3/users/changecountry/'
         },
         testTemplateEndpointUse: {
           template: '/api/country/<%=id%>',
@@ -40,7 +40,7 @@ App global configuration
           cachingKey: 'countries'
         },
         users: {
-          url: '/api/users/',
+          url: '/api/v3/users/',
           exp: 1000 * 60 * 60, //1 hour
           cachingKey: 'user-list'
         },

@@ -152,28 +152,6 @@
         </paper-button>
       </paper-dialog>
 
-      <!-- ADD DRIVER MODAL -->
-      <paper-dialog
-        id="driver-modal"
-        opened="{{driverModalOpened}}"
-        class="layout vertical">
-
-        <div class="dialog-head-container layout horizontal">
-          <div class="dialog-heading flex">Add driver</div>
-          <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
-        </div>
-
-        <div class="dialog-intro-text"> Please select the driver for whom to create a trip for</div>
-
-        <etools-searchable-multiselection-menu label="Select traveler" class="filter-dropdown"
-        options="[[drivers]]"
-        on-value-change="addDriverSetTraveler">
-        </etools-searchable-multiselection-menu>
-
-        <paper-button class="dialog-confirm-button" on-click="addDriverConfirm">
-          ADD DRIVER
-        </paper-button>
-      </paper-dialog>
 
       <div class="full-row">
 
@@ -217,11 +195,6 @@
                 <paper-item on-click="duplicate">
                   <iron-icon icon="social:person-add"></iron-icon>
                   <paper-item-body>Duplicate Trip</paper-item-body>
-                </paper-item>
-
-                <paper-item on-click="addDriver">
-                  <iron-icon icon="maps:directions-car"></iron-icon>
-                  <paper-item-body>Add Driver</paper-item-body>
                 </paper-item>
 
               </paper-menu>
@@ -271,7 +244,7 @@
           value: null
         }
       },
-      behaviors: [etoolsAppConfig.globals, utilsBehavior, EtoolsAjaxRequestBehavior],
+      behaviors: [etoolsAppConfig.globals, et2fBehaviors.utilsBehavior, EtoolsAjaxRequestBehavior],
 
       attached: function() {
         this.baseUrl = this.basePath;
