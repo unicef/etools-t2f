@@ -468,10 +468,10 @@
       _computeTravelPermission: function(permissions, status, user, data) {
         var travelRole;
         if (data.baseDetails.id) {
-          if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.id) {
+          if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.user) {
             travelRole = 'Traveler';
           }
-          if (data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.id) {
+          if (data.baseDetails.supervisor &&  data.baseDetails.supervisor.value === user.user) {
             travelRole = 'Supervisor';
           }
 
