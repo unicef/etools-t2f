@@ -468,8 +468,6 @@
       _computeTravelPermission: function(permissions, status, user, data) {
         var travelRole;
         if (data.baseDetails.id) {
-          debugger 
-          console.log(user.user);
           if (data.baseDetails.traveler &&  data.baseDetails.traveler.value === user.user) {
             travelRole = 'Traveler';
           }
