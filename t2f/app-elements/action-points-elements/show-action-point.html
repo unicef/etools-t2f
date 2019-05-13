@@ -138,10 +138,10 @@
         var roles = ['Others'];
         const t2fRoles = _.map(user.groups,'name');
         roles = roles.concat(t2fRoles);
-        if (actionPoint.assigned_by.value.id === user.id) {
+        if (actionPoint.assigned_by.value.id === user.user) {
           roles.push('Assigner');
         }
-        if (actionPoint.assigned_to.id === user.id) {
+        if (actionPoint.assigned_to.id === user.user) {
           roles.push('PersonResponsible');
         }
 

@@ -391,7 +391,7 @@
 
       _computeTaEligible: function(user, traveler, international) {
         var vendorNumber = user.vendor_number;
-        var userId = user.id;
+        var userId = user.user;
         var travelerId = traveler.value;
         if (!vendorNumber && userId === travelerId && !international) {
           this.set('baseDetails.ta_required', false);
