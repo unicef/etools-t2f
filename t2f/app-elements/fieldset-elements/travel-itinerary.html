@@ -104,7 +104,7 @@
           disabled="[[computedPermission.departure_date.disabled]]"
           hidden$="[[computedPermission.departure_date.hidden]]"
           time-picker
-          date="{{itinerary.departure_date}}"
+          pretty-date="{{itinerary.departure_date}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.departure_date.required]]"
           placeholder="select">
@@ -116,7 +116,7 @@
           hidden$="[[computedPermission.arrival_date.hidden]]"
           time-picker
           min-date="[[itinerary.departure_date]]"
-          date="{{itinerary.arrival_date}}"
+          pretty-date="{{itinerary.arrival_date}}"
           auto-validate$="[[autoValidate]]"
           required$="[[computedPermission.arrival_date.required]]"
           placeholder="select">
