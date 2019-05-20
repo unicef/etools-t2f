@@ -479,12 +479,6 @@
           travelRole = 'Traveler';
         }
 
-        // var urlParams = new URLSearchParams(window.location.search);
-        // var forcedTravelRole = urlParams.get('travelRole');
-
-        // if (forcedTravelRole) {
-        //   travelRole = forcedTravelRole;
-        // }
         const t2fRoles = _.map(user.groups,'name');
         
         var userTravelRoles = travelRole ? t2fRoles.concat(travelRole) : t2fRoles;
