@@ -38,7 +38,6 @@
     <script>
       // Setup Polymer options
       window.Polymer = {
-        dom: 'shadow',
         lazyRegister: true
       };
      var serverBackend = window.location.port === '' || window.location.port === '8082';
@@ -78,21 +77,12 @@
           }
         };
 
-        var webComponentsSupported = (
-            'registerElement' in document
-            && 'import' in document.createElement('link')
-            && 'content' in document.createElement('template')
-        );
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = baseUrl + '/webcomponents-lite.min.js';
+        script.onload = onload;
+        document.head.appendChild(script);
 
-        if (!webComponentsSupported) {
-          var script = document.createElement('script');
-          script.async = true;
-          script.src = baseUrl + '/webcomponents-lite.min.js';
-          script.onload = onload;
-          document.head.appendChild(script);
-        } else {
-          onload();
-        }
       })();
 
       // add base tag with href set to baseUrl

@@ -358,7 +358,6 @@
         },
         behaviors: [EtoolsAjaxRequestBehavior],
         generalModalAction: function() {
-          console.log('Default fn. ran!');
         },
 
         _computeDisableFinalizeBtn: function(report) {
@@ -633,7 +632,6 @@
           function doPost() {
             prepareData();
             self.fire('global-loading', {active: true});
-            console.log('DON POST');
             self.sendRequest({
               method: 'POST',
               endpoint: etoolsAppConfig.globals.computeTemplate(
@@ -927,7 +925,7 @@
             this.attachment = {
               name: current.name,
               file: current.raw,
-              type: current.type ? current.type.label : 'Report'
+              type: current.type ? current.type.label : 'Other'
             };
             this.sendRequest({
               method: 'POST',
