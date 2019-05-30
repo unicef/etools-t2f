@@ -47,11 +47,11 @@
                             panel-title="Action Points">
         <div slot="panel-btns">
           <div hidden$="[[!permissions.action_points.edit]]">
-            <paper-icon-button class="panel-button"
+            <iron-icon class="panel-button add-icon"
                                name="Add"
                                on-tap="_openActionPoint"
                                icon="add-box">
-            </paper-icon-button>
+          </iron-icon>
             <paper-tooltip offset="0">Add</paper-tooltip>
           </div>
         </div>
@@ -224,6 +224,7 @@
       _openActionPoint: function(e) {
         const {model, target} = e;
         const type = target.getAttribute('name');
+        
         this._configureDialog(type);
         if (type !== 'Add') {
           this.set('actionPointsFormData', this._getFormattedActionPoint(model.item))
