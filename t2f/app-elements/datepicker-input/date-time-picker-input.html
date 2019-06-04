@@ -97,7 +97,7 @@
       </div>
       <div class="buttons">
         <paper-button hidden$="[[!clearable]]" on-tap="_clearDate" dialog-dismiss>Clear</paper-button>
-        <paper-button dialog-dismiss on-tap="_close">Cancel</paper-button>
+        <paper-button dialog-dismiss>Cancel</paper-button>
         <paper-button disabled="[[dialogButtonDisabled]]" autofocus dialog-confirm>OK</paper-button>
       </div>
     </paper-dialog>
@@ -199,12 +199,6 @@
         if (oldValue !== undefined && newValue !== undefined && oldValue !== newValue) {
           this.updateStyles();
         }
-      },
-      _close: function(e){
-        this.$.timePickerDialog.close();
-        console.log('opened?', this.datepickerOpened);
-        console.log("TCL: set", e)
-
       },
       _dateObserver: function(changed) {
         var date = changed.base;
