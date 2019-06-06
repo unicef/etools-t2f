@@ -43,6 +43,7 @@
         <etools-single-selection-menu label="Related Task"
                                       required
                                       auto-validate
+                                      disable-on-focus-handling
                                       id="task"
                                       selected="{{formData.travel_activity}}"
                                       options="[[activitiesOptions]]"
@@ -53,11 +54,12 @@
 
 
         <template is="dom-if"
-                  if="[[activitySelected]]">
+                  if="[[activitySelected]]" restamp>
           <etools-single-selection-menu label="Related CP Output"
           auto-validate
                                         selected="{{formData.cp_output}}"
                                         options="[[results]]"
+                                        disable-on-focus-handling
                                         option-value="value"
                                         placeholder="Select">
           </etools-single-selection-menu>
@@ -67,12 +69,14 @@
                                           selected="{{formData.partner}}"
                                           options="[[partners]]"
                                           auto-validate
+                                          disable-on-focus-handling
                                           option-value="value"
                                           placeholder="Select">
             </etools-single-selection-menu>
             <etools-single-selection-menu label="Related PD/SSFA"
                                           selected="{{formData.intervention}}"
                                           auto-validate
+                                          disable-on-focus-handling
                                           options="[[interventions]]"
                                           option-value="value"
                                           placeholder="Select">
@@ -98,6 +102,7 @@
                                         id="assignee"
                                         auto-validate
                                         required
+                                        disable-on-focus-handling
                                         selected="{{formData.assigned_to}}"
                                         options="[[users]]"
                                         starred
@@ -106,6 +111,7 @@
           <etools-single-selection-menu label="Section of Assignee"
                                         required
                                         auto-validate
+                                        disable-on-focus-handling
                                         id="section"
                                         selected="{{formData.section}}"
                                         options="[[sections]]"
@@ -119,6 +125,7 @@
                                         id="office"
                                         required
                                         auto-validate
+                                        disable-on-focus-handling
                                         selected="{{formData.office}}"
                                         options="[[offices]]"
                                         starred
