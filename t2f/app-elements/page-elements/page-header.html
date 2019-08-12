@@ -11,6 +11,8 @@
 <link rel="import" href="../../app-behaviors/refresh-behavior.html">
 <link rel="import" href="../../styles/shared-styles.html">
 
+<link rel="import" href="../common/support-btn.html">
+
 <dom-module id="page-header">
 
   <template>
@@ -70,9 +72,14 @@
         @apply(--layout-center);
       }
 
+      support-btn,
       #refresh,
       #profile {
         color: var(--title-toolbar-secondary-text-color);
+      }
+      
+      support-btn {
+        margin-left: 24px;
       }
 
       @media (min-width: 850px) {
@@ -97,6 +104,7 @@
       </div>
       <div class="content-align">
         <countries-dropdown id="countries" countries="[[countries]]" current="[[user.country.id]]"></countries-dropdown>
+        <support-btn></support-btn>
         <etools-profile-dropdown
             sections="[[structure.sections]]"
             offices="[[structure.offices]]"
