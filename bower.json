@@ -64,7 +64,6 @@
     "lodash": "^4.17.4",
     "dexie": "^2.0.4",
     "etools-piwik-analytics": "git://github.com/unicef-polymer/etools-piwik-analytics#polymer-1"
-
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
