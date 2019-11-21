@@ -196,7 +196,7 @@
           partners: function(key) {
              data[key] = data[key].map(function(obj) {
               obj = Object.assign({}, obj);
-              obj.label = obj.name;
+              obj.label = `${obj.name} (${obj.city})`;
               obj.value = obj.id;
               return obj;
             }).filter(self._filterByLabel).sort(self._sortByLabel);
