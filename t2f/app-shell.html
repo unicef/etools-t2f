@@ -21,6 +21,7 @@
 <link rel="import" href="../bower_components/etools-piwik-analytics/etools-piwik-analytics.html">
 
 <link rel="import" href="../bower_components/etools-loading/etools-loading-behavior.html">
+<link rel="import" href="./app-behaviors/piwik-behavior.html">
 
 <link rel="import" href="../scripts/shims.html">
 
@@ -134,7 +135,9 @@
     </style>
 
     <user-data permissions="{{permissions}}" user="{{user}}"></user-data>
-    <etools-piwik-analytics user="[[user]]" page="[[page]]" toast="[[_toast]]"></etools-piwik-analytics>
+    <etools-piwik-analytics user="[[user]]"
+                            page="[[page]]"
+                            toast="[[_toast]]"></etools-piwik-analytics>
     <et2f-settings notifications="{{notifications}}"></et2f-settings>
 
     <app-location route="{{route}}"></app-location>
