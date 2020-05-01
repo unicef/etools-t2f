@@ -136,7 +136,7 @@
         opened="{{duplicateModalOpened}}"
         class="layout vertical">
 
-        <div class="dialog-head-container layout horizontal">
+        <div class="dialog-head-container layout horizontal" on-tap="[[et2fBehaviors.piwikBehavior.trackAnalytics]]" tracker="duplicate trip">
           <div class="dialog-heading flex">Duplicate Trip</div>
           <paper-icon-button class="dismiss-dialog-button" icon="icons:close" dialog-dismiss></paper-icon-button>
         </div>
