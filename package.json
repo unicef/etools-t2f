@@ -77,10 +77,9 @@
     "merge-stream": "^1.0.0",
     "plylog": "^0.4.0",
     "polymer-build": "^0.4.0",
-    "polymer-cli": "^0.17.0",
+    "polymer-cli": "^1.2.0",
     "through2": "^2.0.3",
-    "yargs": "^5.0.0",
-    "@types/clone": "^2.1.1"
+    "yargs": "^5.0.0"
   },
   "dependencies": {
     "stream-combiner2": "^1.1.1"
