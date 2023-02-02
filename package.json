@@ -47,7 +47,7 @@
     "compression": "^1.6.2",
     "css-slam": "^1.1.0",
     "del": "^2.2.1",
-    "express": "^4.14.0",
+    "express": "^4.15.4",
     "gulp": "gulpjs/gulp",
     "gulp-babel": "^6.1.2",
     "gulp-cli": "^2.0.1",
@@ -57,7 +57,7 @@
     "gulp-html-extract": "^0.2.0",
     "gulp-htmlhint": "^0.3.1",
     "gulp-htmlmin": "^2.0.0",
-    "gulp-if": "^2.0.1",
+    "gulp-if": "^2.0.2",
     "gulp-ignore": "^2.0.2",
     "gulp-imagemin": "^3.0.1",
     "gulp-jscs": "^4.0.0",
@@ -82,6 +82,7 @@
     "yargs": "^5.0.0"
   },
   "dependencies": {
-    "stream-combiner2": "^1.1.1"
+    "stream-combiner2": "^1.1.1",
+    "chokidar": ">=3.3.0"
   }
 }
