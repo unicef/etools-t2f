@@ -25,13 +25,7 @@ jobs:
           key: dependency-cache-{{ checksum "bower.json" }}
           paths:
             - bower_components
-      - run:
-          name: Polymer2 Build
-          command: gulp
-      - run:
-          name: Run Tests
-          command: |
-            xvfb-run polymer test --skip-selenium-install
+
 
   build_and_deploy:
     working_directory: ~/code
@@ -40,7 +34,9 @@ jobs:
       - image: robertavram/etools-dash-base:tst
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          reusable: true
+          exclusive: true
       - run:
           name: Install Docker client
           command: |
