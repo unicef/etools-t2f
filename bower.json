@@ -42,7 +42,7 @@
     "paper-badge": "PolymerElements/paper-badge#^1.1.4",
     "paper-card": "PolymerElements/paper-card#^1.1.6",
     "paper-menu-button": "PolymerElements/paper-menu-button#^1.5.2",
-    "paper-menu": "PolymerElements/paper-menu#^1.2.2",
+    "paper-menu": "PolymerElements/paper-menu#^0.0.4",
     "etools-repeatable-field-set": "^1.1.10",
     "etools-searchable-multiselection-menu": "2.2.19",
     "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.1",
